@@ -6,34 +6,18 @@
 //============================================================================
 
 // インクルードファイル
-#include <windows.h>
-#include "d3dx9.h"
-
-// ライブラリのリンク
-#pragma	comment(lib,"d3d9.lib")		// 描画処理用
-#pragma	comment(lib,"d3dx9.lib")	// [d3d9.lib]の拡張ライブラリ
-#pragma	comment(lib,"dxguid.lib")	// DirectXのコーポネント使用のため
+#include "main.h"
 
 // マクロ定義
-#define SCREEN_WIDTH	1280	// ウインドウの幅
-#define SCREEN_HEIGHT	720		// ウインドウの高さ
-#define FVF_VERTEX_2D	(D3DFVF_XYZRHW | D3DFVF_DIFFUSE)	//頂点フォーマット
 #define CLASS_NAME	"WindowClass"			// ウインドウクラスの名前
 #define WINDOW_NAME	"ウインドウテンプレ"	// ウインドウの名前
 
-// 頂点情報の構造体を定義
-struct VERTEX_2D
-{
-	D3DXVECTOR3 pos;					// 頂点座標
-	float rhw;							// 除算数
-	D3DCOLOR col;						// 頂点カラー
-};
+// ポリゴンクラス
+CPolygon* CPolygon::m_pPolygon = NULL;	// ポリゴン情報格納
 
 // グローバル変数
 LPDIRECT3D9 g_pD3D = NULL;					// Direct3Dオブジェクトのポインタ
 LPDIRECT3DDEVICE9 g_pD3DDevice = NULL;		// Direct3Dデバイスのポインタ
-VERTEX_2D g_aPolygon;						// ポリゴン用
-LPDIRECT3DVERTEXBUFFER9 g_pVtxBuff = NULL;	// 頂点バッファのポインタ
 
 // プロトタイプ宣言
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);	// ウィンドウプロシージャ
@@ -41,11 +25,6 @@ HRESULT InitProcess(HINSTANCE hInstance, HWND hWnd, BOOL bWindiw);	// 初期設定
 void UninitProcess();	// 終了処理
 void UpdateProcess();	// 更新処理
 void DrawProcess();		// 描画処理
-
-void InitPolygon();		// ポリゴン初期処理
-void UninitPolygon();	// ポリゴン終了処理
-void UpdatePolygon();	// ポリゴン更新処理
-void DrawPolygon();		// ポリゴン描画処理
 
 //****************************************************************************
 // メイン関数
@@ -273,11 +252,9 @@ HRESULT InitProcess(HINSTANCE hInstance, HWND hWnd, BOOL bWindiw)
 	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
 	g_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
 
-	// (ワイヤー描画)
-	//g_pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
-
 	// ポリゴン初期設定
-	InitPolygon();
+	CPolygon* pPolygon = CPolygon::GetInstance();
+	pPolygon->Init();
 
 	return S_OK;
 }
@@ -288,7 +265,8 @@ HRESULT InitProcess(HINSTANCE hInstance, HWND hWnd, BOOL bWindiw)
 void UninitProcess()
 {
 	// ポリゴン終了処理
-	UninitPolygon();
+	CPolygon* pPolygon = CPolygon::GetInstance();
+	pPolygon->Uninit();
 
 	// Direct3Dデバイスの破棄
 	if (g_pD3DDevice != NULL)
@@ -311,7 +289,8 @@ void UninitProcess()
 void UpdateProcess()
 {
 	// ポリゴン更新処理
-	UpdatePolygon();
+	CPolygon* pPolygon = CPolygon::GetInstance();
+	pPolygon->Update();
 }
 
 //****************************************************************************
@@ -328,7 +307,8 @@ void DrawProcess()
 	if (SUCCEEDED(g_pD3DDevice->BeginScene()))
 	{
 		// ポリゴン描画処理
-		DrawPolygon();
+		CPolygon* pPolygon = CPolygon::GetInstance();
+		pPolygon->Draw();
 
 		// 描画終了
 		g_pD3DDevice->EndScene();
@@ -338,26 +318,44 @@ void DrawProcess()
 	g_pD3DDevice->Present(NULL, NULL, NULL, NULL);
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 //****************************************************************************
-// ポリゴン初期設定
+// コンストラクタ
 //****************************************************************************
-void InitPolygon()
+CPolygon::CPolygon()
 {
-	g_pVtxBuff = NULL;
+
+}
+
+//****************************************************************************
+// デストラクタ
+//****************************************************************************
+CPolygon::~CPolygon()
+{
+
+}
+
+//****************************************************************************
+// 初期設定
+//****************************************************************************
+void CPolygon::Init()
+{
+	m_pVtxBuff = NULL;
 
 	// 頂点バッファの生成
 	g_pD3DDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
 		D3DUSAGE_WRITEONLY,
 		FVF_VERTEX_2D,
 		D3DPOOL_MANAGED,
-		&g_pVtxBuff,
+		&m_pVtxBuff,
 		NULL);
 
 	// 頂点情報へのポインタ
 	VERTEX_2D* pVtx;
 
 	// 頂点バッファをロック
-	g_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	// 位置の設定
 	pVtx[0].pos = { 400.0f, 100.0f, 0.0f };
@@ -378,37 +376,43 @@ void InitPolygon()
 	pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// 頂点バッファをアンロックする
-	g_pVtxBuff->Unlock();
+	m_pVtxBuff->Unlock();
 }
 
 //****************************************************************************
-// ポリゴン終了処理
+// 終了処理
 //****************************************************************************
-void UninitPolygon()
+void CPolygon::Uninit()
 {
 	// 頂点バッファの破棄
-	if (g_pVtxBuff != NULL)
+	if (m_pVtxBuff != NULL)
 	{
-		g_pVtxBuff->Release();
-		g_pVtxBuff = NULL;
+		m_pVtxBuff->Release();
+		m_pVtxBuff = NULL;
+	}
+
+	if (m_pPolygon != NULL)
+	{ // 情報をもっていたら
+		delete m_pPolygon;	// メモリを解放
+		m_pPolygon = NULL;	// 変数を初期化
 	}
 }
 
 //****************************************************************************
-// ポリゴン更新設定
+// 更新設定
 //****************************************************************************
-void UpdatePolygon()
+void CPolygon::Update()
 {
 
 }
 
 //****************************************************************************
-// ポリゴン描画設定
+// 描画設定
 //****************************************************************************
-void DrawPolygon()
+void CPolygon::Draw()
 {
 	// 頂点バッファをデータストリームに設定
-	g_pD3DDevice->SetStreamSource(0, g_pVtxBuff, 0, sizeof(VERTEX_2D));
+	g_pD3DDevice->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
 
 	//頂点フォーマットの設定
 	g_pD3DDevice->SetFVF(FVF_VERTEX_2D);
@@ -417,4 +421,17 @@ void DrawPolygon()
 	g_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP,	// プリミティブの種類
 		0,												// 頂点情報の先頭アドレス
 		2);												// プリミティブ数
+}
+
+//****************************************************************************
+// 情報取得
+//****************************************************************************
+CPolygon* CPolygon::GetInstance()
+{
+	if (m_pPolygon == NULL)
+	{ // 情報がなければ新規生成
+		m_pPolygon = new CPolygon;
+	}
+
+	return m_pPolygon;
 }
