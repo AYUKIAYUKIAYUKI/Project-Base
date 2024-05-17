@@ -24,15 +24,16 @@
 // 頂点情報の構造体を定義
 struct VERTEX_2D
 {
-	D3DXVECTOR3 pos;	// 頂点座標
-	float rhw;			// 除算数
-	D3DCOLOR col;		// 頂点カラー
+	D3DXVECTOR3 pos;					// 頂点座標
+	float rhw;							// 除算数
+	D3DCOLOR col;						// 頂点カラー
 };
 
 // グローバル変数
-LPDIRECT3D9 g_pD3D = NULL;				// Direct3Dオブジェクトのポインタ
-LPDIRECT3DDEVICE9 g_pD3DDevice = NULL;	// Direct3Dデバイスのポインタ
-VERTEX_2D g_aPolygon[4];				// ポリゴン用
+LPDIRECT3D9 g_pD3D = NULL;					// Direct3Dオブジェクトのポインタ
+LPDIRECT3DDEVICE9 g_pD3DDevice = NULL;		// Direct3Dデバイスのポインタ
+VERTEX_2D g_aPolygon;						// ポリゴン用
+LPDIRECT3DVERTEXBUFFER9 g_pVtxBuff = NULL;	// 頂点バッファのポインタ
 
 // プロトタイプ宣言
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);	// ウィンドウプロシージャ
@@ -342,33 +343,42 @@ void DrawProcess()
 //****************************************************************************
 void InitPolygon()
 {
-	// 位置の設定
-	//g_aPolygon[0].pos = { 100.0f, 100.0f, 0.0f };
-	//g_aPolygon[1].pos = { 200.0f, 100.0f, 0.0f };
-	//g_aPolygon[2].pos = { 100.0f, 200.0f, 0.0f };
-	//g_aPolygon[3].pos = { 200.0f, 200.0f, 0.0f };
+	g_pVtxBuff = NULL;
 
-	g_aPolygon[0].pos = D3DXVECTOR3(400.0f, 620.0f, 0.0f);
-	g_aPolygon[1].pos = D3DXVECTOR3(400.0f, 100.0f, 0.0f);
-	g_aPolygon[2].pos = D3DXVECTOR3(920.0f, 620.0f, 0.0f);
-	g_aPolygon[3].pos = D3DXVECTOR3(920.0f, 100.0f, 0.0f);
+	// 頂点バッファの生成
+	g_pD3DDevice->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
+		D3DUSAGE_WRITEONLY,
+		FVF_VERTEX_2D,
+		D3DPOOL_MANAGED,
+		&g_pVtxBuff,
+		NULL);
+
+	// 頂点情報へのポインタ
+	VERTEX_2D* pVtx;
+
+	// 頂点バッファをロック
+	g_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	// 位置の設定
+	pVtx[0].pos = { 400.0f, 100.0f, 0.0f };
+	pVtx[1].pos = { 920.0f, 100.0f, 0.0f };
+	pVtx[2].pos = { 400.0f, 620.0f, 0.0f };
+	pVtx[3].pos = { 920.0f, 620.0f, 0.0f };
 
 	// 除算数の設定
-	g_aPolygon[0].rhw = 1.0f;
-	g_aPolygon[1].rhw = 1.0f;
-	g_aPolygon[2].rhw = 1.0f;
-	g_aPolygon[3].rhw = 1.0f;
-
-	g_aPolygon[0].col = D3DCOLOR_RGBA(255, 0, 0, 255);
-	g_aPolygon[1].col = D3DCOLOR_RGBA(0, 255, 0, 255);
-	g_aPolygon[2].col = D3DCOLOR_RGBA(0, 0, 255, 255);
-	g_aPolygon[3].col = D3DCOLOR_RGBA(255, 0, 255, 255);
+	pVtx[0].rhw = 1.0f;
+	pVtx[1].rhw = 1.0f;
+	pVtx[2].rhw = 1.0f;
+	pVtx[3].rhw = 1.0f;
 
 	// 色の設定
-	//g_aPolygon[0].col = (D3DCOLOR)(1.0f, 0.0f, 1.0f, 1.0f);
-	//g_aPolygon[1].col = (D3DCOLOR)(1.0f, 1.0f, 0.0f, 1.0f);
-	//g_aPolygon[2].col = (D3DCOLOR)(0.0f, 1.0f, 1.0f, 1.0f);
-	//g_aPolygon[3].col = (D3DCOLOR)(1.0f, 1.0f, 1.0f, 1.0f);
+	pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+
+	// 頂点バッファをアンロックする
+	g_pVtxBuff->Unlock();
 }
 
 //****************************************************************************
@@ -376,7 +386,12 @@ void InitPolygon()
 //****************************************************************************
 void UninitPolygon()
 {
-
+	// 頂点バッファの破棄
+	if (g_pVtxBuff != NULL)
+	{
+		g_pVtxBuff->Release();
+		g_pVtxBuff = NULL;
+	}
 }
 
 //****************************************************************************
@@ -392,17 +407,14 @@ void UpdatePolygon()
 //****************************************************************************
 void DrawPolygon()
 {
+	// 頂点バッファをデータストリームに設定
+	g_pD3DDevice->SetStreamSource(0, g_pVtxBuff, 0, sizeof(VERTEX_2D));
+
 	//頂点フォーマットの設定
 	g_pD3DDevice->SetFVF(FVF_VERTEX_2D);
 
-	////ポリゴンの描画
-	//g_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP,	// プリミティブの種類
-	//	0,												// 頂点情報の先頭アドレス
-	//	2);												// プリミティブ数
-
 	//ポリゴンの描画
-	g_pD3DDevice->DrawPrimitiveUP(D3DPT_TRIANGLESTRIP,	// プリミティブの種類
-		2,												//プリミティブ数
-		&g_aPolygon[0],									//頂点情報の先頭アドレス
-		sizeof(VERTEX_2D));								//頂点情報の構造体のサイズ
+	g_pD3DDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP,	// プリミティブの種類
+		0,												// 頂点情報の先頭アドレス
+		2);												// プリミティブ数
 }
