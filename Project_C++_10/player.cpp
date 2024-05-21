@@ -1,34 +1,26 @@
 //============================================================================
 // 
-// 2Dオブジェクト管理 [object2D.cpp]
+// プレイヤー [player.cpp]
 // Author : 福田歩希
 // 
 //============================================================================
 
 // インクルードファイル
-#include "object2D.h"
-#include "Renderer.h"
+#include "player.h"
+#include "renderer.h"
 
 //****************************************************************************
 // コンストラクタ
 //****************************************************************************
-CObject2D::CObject2D()
+CPlayer::CPlayer() : CObject2D::CObject2D()
 {
-	m_pVtxBuff = nullptr;			// 頂点バッファのポインタを初期化
-	m_pTex = nullptr;				// テクスチャのポインタを初期化
-	m_nCntTexChange = 0;			// テクスチャ変更管理
-	m_nCntTexPattern = 0;			// テクスチャパターン管理
-	m_pos = { 0.0f, 0.0f, 0.0f };	// 中心位置
-	m_rot = { 0.0f, 0.0f, 0.0f };	// 回転量
-	m_fAngle = 0.0f;				// 角度
-	m_size = { 0.0f, 0.0f, 0.0f };	// サイズ
-	m_fLength = 0.0f;				// 対角線
+
 }
 
 //****************************************************************************
 // デストラクタ
 //****************************************************************************
-CObject2D::~CObject2D()
+CPlayer::~CPlayer()
 {
 	Uninit();
 }
@@ -36,15 +28,15 @@ CObject2D::~CObject2D()
 //****************************************************************************
 // 初期設定
 //****************************************************************************
-HRESULT CObject2D::Init()
+HRESULT CPlayer::Init()
 {
 	// デバイスを取得
 	CRenderer* pRenderer = GetRenderer();
 	LPDIRECT3DDEVICE9 pDev = pRenderer->GetDeviece();
-	
+
 	//テクスチャの読込み
 	D3DXCreateTextureFromFile(pDev,
-		"data\\TEXTURE\\.png",
+		"data\\TEXTURE\\runningman000.png",
 		&m_pTex);
 
 	// 頂点バッファの生成
@@ -94,7 +86,7 @@ HRESULT CObject2D::Init()
 //****************************************************************************
 // 終了処理
 //****************************************************************************
-void CObject2D::Uninit()
+void CPlayer::Uninit()
 {
 	// テクスチャの破棄
 	if (m_pTex != nullptr)
@@ -114,7 +106,7 @@ void CObject2D::Uninit()
 //****************************************************************************
 // 更新処理
 //****************************************************************************
-void CObject2D::Update()
+void CPlayer::Update()
 {
 	// 必要な数値を算出
 	m_fLength = sqrtf(m_size.x * m_size.x + m_size.y * m_size.y) * 0.5f;
@@ -127,13 +119,13 @@ void CObject2D::Update()
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	// 位置の設定
-	pVtx[0].pos = { 
+	pVtx[0].pos = {
 		m_pos.x + sinf(m_rot.z - (D3DX_PI - m_fAngle)) * m_fLength,
 		m_pos.y + cosf(m_rot.z - (D3DX_PI - m_fAngle)) * m_fLength,
 		0.0f
 	};
 
-	pVtx[1].pos = { 
+	pVtx[1].pos = {
 		m_pos.x + sinf(m_rot.z + (D3DX_PI - m_fAngle)) * m_fLength,
 		m_pos.y + cosf(m_rot.z + (D3DX_PI - m_fAngle)) * m_fLength,
 		0.0f
@@ -145,20 +137,91 @@ void CObject2D::Update()
 		0.0f
 	};
 
-	pVtx[3].pos = { 
+	pVtx[3].pos = {
 		m_pos.x + sinf(m_rot.z + m_fAngle) * m_fLength,
 		m_pos.y + cosf(m_rot.z + m_fAngle) * m_fLength,
 		0.0f
 	};
 
+	// テクスチャの設定
+	pVtx[0].tex = { m_nCntTexPattern / 8.0f, 0.0f };
+	pVtx[1].tex = { (m_nCntTexPattern + 1) / 8.0f, 0.0f };
+	pVtx[2].tex = { m_nCntTexPattern / 8.0f, 1.0f };
+	pVtx[3].tex = { (m_nCntTexPattern + 1) / 8.0f, 1.0f };
+
 	// 頂点バッファをアンロックする
 	m_pVtxBuff->Unlock();
+
+	// 回転
+	Rotation();
+
+	// 移動
+	Translation();
+
+	// アニメーション
+	Animation();
+}
+
+//****************************************************************************
+// 拡縮
+//****************************************************************************
+void CPlayer::Scaling()
+{
+	m_size *= 2.0f;
+}
+
+//****************************************************************************
+// 回転
+//****************************************************************************
+void CPlayer::Rotation()
+{
+	m_rot.z += 0.05f;
+}
+
+//****************************************************************************
+// 移動
+//****************************************************************************
+void CPlayer::Translation()
+{
+	m_pos.x += 2.0f;
+
+	if ((m_pos.x - m_fLength) > SCREEN_WIDTH)
+	{
+		m_pos.x = 0.0f - m_fLength;
+
+		// 拡縮
+		Scaling();
+	}
+}
+
+//****************************************************************************
+// アニメーション
+//****************************************************************************
+void CPlayer::Animation()
+{
+	// テクスチャ変更管理カウントアップ
+	m_nCntTexChange++;
+
+	if (m_nCntTexChange >= 15)
+	{
+		// テクスチャパターン変更
+		m_nCntTexPattern++;
+
+		if (m_nCntTexPattern >= 8)
+		{
+			// テクスチャパターンをリセっト
+			m_nCntTexPattern = 0;
+		}
+
+		// 変更管理カウントをリセット
+		m_nCntTexChange = 0;
+	}
 }
 
 //****************************************************************************
 // 描画処理
 //****************************************************************************
-void CObject2D::Draw()
+void CPlayer::Draw()
 {
 	CRenderer* pRenderer = GetRenderer();
 	LPDIRECT3DDEVICE9 pDev = pRenderer->GetDeviece();
@@ -181,17 +244,17 @@ void CObject2D::Draw()
 //****************************************************************************
 // 生成
 //****************************************************************************
-CObject2D* CObject2D::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
+CPlayer* CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
-	CObject2D* pObject2D = new CObject2D;
+	CPlayer* pPlayer = new CPlayer;
 
 	// 生成出来ていたら初期設定
-	if (pObject2D != nullptr)
+	if (pPlayer != nullptr)
 	{
-		pObject2D->Init();
-		pObject2D->m_pos = pos;
-		pObject2D->m_size = size;
+		pPlayer->Init();
+		pPlayer->m_pos = pos;
+		pPlayer->m_size = size;
 	}
 
-	return pObject2D;
+	return pPlayer;
 }

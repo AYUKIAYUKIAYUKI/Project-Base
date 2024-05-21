@@ -7,7 +7,7 @@
 
 // インクルードファイル
 #include "main.h"
-#include "Object2D.h"
+#include "object2D.h"
 
 // マクロ定義
 #define CLASS_NAME	"WindowClass"			// ウインドウクラスの名前
@@ -66,6 +66,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 		hInstance,				// インスタンスハンドル
 		NULL);					// ウインドウ作成データ
 
+	// ウインドウの表示
+	ShowWindow(hWnd, SW_NORMAL);	// ウインドウの表示状態を設定
+	UpdateWindow(hWnd);				// クライアント領域を更新
+
 	if (g_pRenderer == nullptr)
 	{
 		g_pRenderer = new CRenderer;	// レンダラー生成
@@ -75,13 +79,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 	{ // 初期化処理が失敗した場合
 		return -1;
 	}
-
-	// ウインドウの表示
-	ShowWindow(hWnd, SW_NORMAL);	// ウインドウの表示状態を設定
-	UpdateWindow(hWnd);				// クライアント領域を更新
-
-	// 2Dオブジェクトの生成
-	CObject2D::Create();
 
 	// メッセージループ
 	while (1)

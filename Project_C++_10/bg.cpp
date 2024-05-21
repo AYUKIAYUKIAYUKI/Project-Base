@@ -1,34 +1,30 @@
 //============================================================================
 // 
-// 2Dオブジェクト管理 [object2D.cpp]
+// 背景 [bg.cpp]
 // Author : 福田歩希
 // 
 //============================================================================
 
 // インクルードファイル
-#include "object2D.h"
-#include "Renderer.h"
+#include "bg.h"
+#include "renderer.h"
 
 //****************************************************************************
 // コンストラクタ
 //****************************************************************************
-CObject2D::CObject2D()
+CBg::CBg()
 {
-	m_pVtxBuff = nullptr;			// 頂点バッファのポインタを初期化
-	m_pTex = nullptr;				// テクスチャのポインタを初期化
-	m_nCntTexChange = 0;			// テクスチャ変更管理
-	m_nCntTexPattern = 0;			// テクスチャパターン管理
-	m_pos = { 0.0f, 0.0f, 0.0f };	// 中心位置
-	m_rot = { 0.0f, 0.0f, 0.0f };	// 回転量
-	m_fAngle = 0.0f;				// 角度
-	m_size = { 0.0f, 0.0f, 0.0f };	// サイズ
-	m_fLength = 0.0f;				// 対角線
+	m_pVtxBuff = nullptr;	// 頂点バッファのポインタを初期化
+	m_pTex = nullptr;		// テクスチャのポインタを初期化
+	m_pos = {};				// 中心位置
+	m_size = {};			// サイズ
+	m_fLength = 0.0f;		// 対角線
 }
 
 //****************************************************************************
 // デストラクタ
 //****************************************************************************
-CObject2D::~CObject2D()
+CBg::~CBg()
 {
 	Uninit();
 }
@@ -36,15 +32,15 @@ CObject2D::~CObject2D()
 //****************************************************************************
 // 初期設定
 //****************************************************************************
-HRESULT CObject2D::Init()
+HRESULT CBg::Init()
 {
 	// デバイスを取得
 	CRenderer* pRenderer = GetRenderer();
 	LPDIRECT3DDEVICE9 pDev = pRenderer->GetDeviece();
-	
+
 	//テクスチャの読込み
 	D3DXCreateTextureFromFile(pDev,
-		"data\\TEXTURE\\.png",
+		"data\\TEXTURE\\KOME.png",
 		&m_pTex);
 
 	// 頂点バッファの生成
@@ -94,7 +90,7 @@ HRESULT CObject2D::Init()
 //****************************************************************************
 // 終了処理
 //****************************************************************************
-void CObject2D::Uninit()
+void CBg::Uninit()
 {
 	// テクスチャの破棄
 	if (m_pTex != nullptr)
@@ -114,11 +110,10 @@ void CObject2D::Uninit()
 //****************************************************************************
 // 更新処理
 //****************************************************************************
-void CObject2D::Update()
+void CBg::Update()
 {
 	// 必要な数値を算出
 	m_fLength = sqrtf(m_size.x * m_size.x + m_size.y * m_size.y) * 0.5f;
-	m_fAngle = atan2f(m_size.x, m_size.y);
 
 	// 頂点情報へのポインタ
 	VERTEX_2D* pVtx;
@@ -127,27 +122,27 @@ void CObject2D::Update()
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	// 位置の設定
-	pVtx[0].pos = { 
-		m_pos.x + sinf(m_rot.z - (D3DX_PI - m_fAngle)) * m_fLength,
-		m_pos.y + cosf(m_rot.z - (D3DX_PI - m_fAngle)) * m_fLength,
+	pVtx[0].pos = {
+		m_pos.x - m_fLength,
+		m_pos.y - m_fLength,
 		0.0f
 	};
 
-	pVtx[1].pos = { 
-		m_pos.x + sinf(m_rot.z + (D3DX_PI - m_fAngle)) * m_fLength,
-		m_pos.y + cosf(m_rot.z + (D3DX_PI - m_fAngle)) * m_fLength,
+	pVtx[1].pos = {
+		m_pos.x + m_fLength,
+		m_pos.y - m_fLength,
 		0.0f
 	};
 
 	pVtx[2].pos = {
-		m_pos.x + sinf(m_rot.z - m_fAngle) * m_fLength,
-		m_pos.y + cosf(m_rot.z - m_fAngle) * m_fLength,
+		m_pos.x - m_fLength,
+		m_pos.y + m_fLength,
 		0.0f
 	};
 
-	pVtx[3].pos = { 
-		m_pos.x + sinf(m_rot.z + m_fAngle) * m_fLength,
-		m_pos.y + cosf(m_rot.z + m_fAngle) * m_fLength,
+	pVtx[3].pos = {
+		m_pos.x + m_fLength,
+		m_pos.y + m_fLength,
 		0.0f
 	};
 
@@ -158,7 +153,7 @@ void CObject2D::Update()
 //****************************************************************************
 // 描画処理
 //****************************************************************************
-void CObject2D::Draw()
+void CBg::Draw()
 {
 	CRenderer* pRenderer = GetRenderer();
 	LPDIRECT3DDEVICE9 pDev = pRenderer->GetDeviece();
@@ -181,17 +176,17 @@ void CObject2D::Draw()
 //****************************************************************************
 // 生成
 //****************************************************************************
-CObject2D* CObject2D::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
+CBg* CBg::Create()
 {
-	CObject2D* pObject2D = new CObject2D;
+	CBg* pBg = new CBg;
 
 	// 生成出来ていたら初期設定
-	if (pObject2D != nullptr)
+	if (pBg != nullptr)
 	{
-		pObject2D->Init();
-		pObject2D->m_pos = pos;
-		pObject2D->m_size = size;
+		pBg->Init();
+		pBg->m_pos = { SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f };
+		pBg->m_size = { SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f };
 	}
 
-	return pObject2D;
+	return pBg;
 }

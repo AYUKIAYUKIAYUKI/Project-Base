@@ -1,13 +1,15 @@
 //============================================================================
 // 
-// レンダラー管理 [Renderer.cpp]
+// レンダラー管理 [renderer.cpp]
 // Author : 福田歩希
 // 
 //============================================================================
 
 // インクルードファイル
-#include "Renderer.h"
-#include "Object.h"
+#include "renderer.h"
+#include "bg.h"
+#include "object.h"
+#include "player.h"
 
 //****************************************************************************
 // コンストラクタ
@@ -36,7 +38,7 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 	// Direct3Dオブジェクトの生成
 	m_pD3D = Direct3DCreate9(D3D_SDK_VERSION);
 
-	if (m_pD3D == NULL)
+	if (m_pD3D == nullptr)
 	{ // 生成に失敗した場合
 		return E_FAIL;
 	}
@@ -100,6 +102,17 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 	m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
 	m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
 
+	// ワイヤー描画
+	//m_pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+
+	// 背景の生成
+	CBg::Create();
+
+	// プレイヤーの生成
+	CPlayer::Create(
+		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// 中心位置
+		{ 50.0f, 100.0f, 0.0f });								// 大きさ
+
 	return S_OK;
 }
 
@@ -112,17 +125,17 @@ void CRenderer::Uninit()
 	CObject::ReleaseAll();
 
 	// Direct3Dデバイスの破棄
-	if (m_pD3DDevice != NULL)
+	if (m_pD3DDevice != nullptr)
 	{
 		m_pD3DDevice->Release();
-		m_pD3DDevice = NULL;
+		m_pD3DDevice = nullptr;
 	}
 
 	// Direct3Dオブジェクトの破棄
-	if (m_pD3D != NULL)
+	if (m_pD3D != nullptr)
 	{
 		m_pD3D->Release();
-		m_pD3D = NULL;
+		m_pD3D = nullptr;
 	}
 }
 

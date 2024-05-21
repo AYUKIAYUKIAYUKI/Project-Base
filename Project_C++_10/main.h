@@ -11,7 +11,7 @@
 // インクルードファイル
 #include <windows.h>
 #include "d3dx9.h"
-#include "Renderer.h"
+#include "renderer.h"
 
 // ライブラリのリンク
 #pragma	comment(lib,"d3d9.lib")		// 描画処理用

@@ -1,15 +1,14 @@
 //============================================================================
 // 
-// オブジェクト管理 [Object.cpp]
+// オブジェクト管理 [object.cpp]
 // Author : 福田歩希
 // 
 //============================================================================
 
 // インクルードファイル
-#include "Object.h"
+#include "object.h"
 
 // 静的初期化
-//const int CObject::MAX_OBJ = 64;			// オブジェクト最大数
 CObject* CObject::m_apObject[MAX_OBJ] = {};	// オブジェクト管理
 int CObject::m_nNumAll = 0;					// オブジェクト総数
 
@@ -77,7 +76,7 @@ void CObject::Draw()
 //****************************************************************************
 void CObject::ReleaseAll()
 {
-	for (int nCnt = 0; nCnt < m_nNumAll; nCnt++)
+	for (int nCnt = 0; nCnt < MAX_OBJ; nCnt++)
 	{
 		if (m_apObject[nCnt] != nullptr)
 		{
@@ -91,7 +90,7 @@ void CObject::ReleaseAll()
 //****************************************************************************
 void CObject::UpdateAll()
 {
-	for (int nCnt = 0; nCnt < m_nNumAll; nCnt++)
+	for (int nCnt = 0; nCnt < MAX_OBJ; nCnt++)
 	{
 		if (m_apObject[nCnt] != nullptr)
 		{
@@ -105,7 +104,7 @@ void CObject::UpdateAll()
 //****************************************************************************
 void CObject::DrawAll()
 {
-	for (int nCnt = 0; nCnt < m_nNumAll; nCnt++)
+	for (int nCnt = 0; nCnt < MAX_OBJ; nCnt++)
 	{
 		if (m_apObject[nCnt] != nullptr)
 		{
