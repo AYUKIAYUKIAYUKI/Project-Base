@@ -9,7 +9,6 @@
 #define _BG_H_	// 二重インクルード防止
 
 // インクルードファイル
-#include "main.h"
 #include "object.h"
 
 // プレイヤークラス

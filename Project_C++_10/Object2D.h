@@ -9,7 +9,6 @@
 #define _OBJECT2D_H_	// 二重インクルード防止
 
 // インクルードファイル
-#include "main.h"
 #include "object.h"
 
 // 2Dオブジェクト管理クラス

@@ -8,12 +8,6 @@
 #ifndef _RENDERER_H_
 #define _RENDERER_H_	// 二重インクルード防止
 
-// インクルードファイル
-//#include "main.h"
-
-#include <windows.h>
-#include "d3dx9.h"
-
 // レンダラークラス
 class CRenderer
 {

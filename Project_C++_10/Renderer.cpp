@@ -7,8 +7,8 @@
 
 // インクルードファイル
 #include "renderer.h"
-#include "bg.h"
 #include "object.h"
+#include "bg.h"
 #include "player.h"
 
 //****************************************************************************

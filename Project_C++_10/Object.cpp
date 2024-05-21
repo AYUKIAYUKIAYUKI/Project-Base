@@ -7,6 +7,7 @@
 
 // インクルードファイル
 #include "object.h"
+#include "main.h"
 
 // 静的初期化
 CObject* CObject::m_apObject[MAX_OBJ] = {};	// オブジェクト管理

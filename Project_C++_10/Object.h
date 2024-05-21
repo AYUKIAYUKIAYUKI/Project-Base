@@ -8,9 +8,6 @@
 #ifndef _OBJECT_H_
 #define _OBJECT_H_	// 二重インクルード防止
 
-// インクルードファイル
-#include "main.h"
-
 // オブジェクトクラス
 class CObject
 {

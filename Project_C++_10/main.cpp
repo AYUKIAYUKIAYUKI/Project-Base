@@ -7,7 +7,6 @@
 
 // インクルードファイル
 #include "main.h"
-#include "object2D.h"
 
 // マクロ定義
 #define CLASS_NAME	"WindowClass"			// ウインドウクラスの名前

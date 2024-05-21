@@ -9,8 +9,7 @@
 #define _PLAYER_H_	// 二重インクルード防止
 
 // インクルードファイル
-#include "main.h"
-#include "object2d.h"
+#include "object2D.h"
 
 // プレイヤークラス
 class CPlayer : public CObject2D
