@@ -8,4 +8,23 @@
 #ifndef _MANAGER_H_
 #define _MANAGER_H_	// 二重インクルード防止
 
+// インクルードファイル
+#include "renderer.h"
+
+// マネージャークラス
+class CManager
+{
+public:
+	CManager();		// コンストラクタ
+	~CManager();	// デストラクタ
+	HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow);	// 初期設定
+	void Uninit();	// 終了処理
+	void Update();	// 更新処理
+	void Draw();	// 描画処理
+	static CRenderer* GetRenderer();	// レンダラー取得
+
+private:
+	static CRenderer* m_pRenderer;	// レンダラー管理
+};
+
 #endif // _MANAGER_H_

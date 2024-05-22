@@ -8,6 +8,7 @@
 // インクルードファイル
 #include "bg.h"
 #include "main.h"
+#include "manager.h"
 
 //****************************************************************************
 // コンストラクタ
@@ -35,7 +36,7 @@ CBg::~CBg()
 HRESULT CBg::Init()
 {
 	// デバイスを取得
-	CRenderer* pRenderer = GetRenderer();
+	CRenderer* pRenderer = CManager::GetRenderer();
 	LPDIRECT3DDEVICE9 pDev = pRenderer->GetDeviece();
 
 	//テクスチャの読込み
@@ -155,7 +156,8 @@ void CBg::Update()
 //****************************************************************************
 void CBg::Draw()
 {
-	CRenderer* pRenderer = GetRenderer();
+	// デバイスを取得
+	CRenderer* pRenderer = CManager::GetRenderer();
 	LPDIRECT3DDEVICE9 pDev = pRenderer->GetDeviece();
 
 	// 頂点バッファをデータストリームに設定

@@ -9,7 +9,7 @@
 #include "object.h"
 #include "main.h"
 
-// 静的初期化
+// 静的メンバの初期化
 CObject* CObject::m_apObject[MAX_OBJ] = {};	// オブジェクト管理
 int CObject::m_nNumAll = 0;					// オブジェクト総数
 

@@ -7,13 +7,14 @@
 
 // インクルードファイル
 #include "main.h"
+#include "manager.h"
 
 // マクロ定義
 #define CLASS_NAME	"WindowClass"			// ウインドウクラスの名前
 #define WINDOW_NAME	"ウインドウテンプレ"	// ウインドウの名前
 
 // グローバル変数
-CRenderer* g_pRenderer = nullptr;	// レンダラークラスのポインタ
+CManager* g_pManager = nullptr;	// マネージャー管理
 
 // プロトタイプ宣言
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);	// ウィンドウプロシージャ
@@ -69,12 +70,15 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 	ShowWindow(hWnd, SW_NORMAL);	// ウインドウの表示状態を設定
 	UpdateWindow(hWnd);				// クライアント領域を更新
 
-	if (g_pRenderer == nullptr)
-	{
-		g_pRenderer = new CRenderer;	// レンダラー生成
+	// マネージャーの生成
+	g_pManager = new CManager;
+
+	if (g_pManager == nullptr)
+	{ // 生成失敗
+		return -1;
 	}
 
-	if (FAILED(g_pRenderer->Init(hWnd, TRUE)))
+	if (FAILED(g_pManager->Init(hInstance, hWnd, TRUE)))
 	{ // 初期化処理が失敗した場合
 		return -1;
 	}
@@ -100,20 +104,21 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 		else
 		{
 			// 更新処理
-			g_pRenderer->Update();
+			g_pManager->Update();
 
 			// 描画処理
-			g_pRenderer->Draw();
+			g_pManager->Draw();
 		}
 	}
 
 	// 終了処理
-	g_pRenderer->Uninit();
+	g_pManager->Uninit();
 
-	if (g_pRenderer != nullptr)
+	// マネージャーの破棄
+	if (g_pManager != nullptr)
 	{
-		delete g_pRenderer;		// メモリを解放
-		g_pRenderer = nullptr;	// ポインタを初期化
+		delete g_pManager;		// メモリを解放
+		g_pManager = nullptr;	// ポインタを初期化
 	}
 
 	// ウインドウクラスの登録を解除
@@ -178,12 +183,4 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 	}
 
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);	// 既定の処理を返す
-}
-
-//****************************************************************************
-// レンダラーの取得
-//****************************************************************************
-CRenderer* GetRenderer(void)
-{ 
-	return g_pRenderer;
 }

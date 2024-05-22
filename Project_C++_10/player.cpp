@@ -8,6 +8,7 @@
 // インクルードファイル
 #include "player.h"
 #include "main.h"
+#include "manager.h"
 
 //****************************************************************************
 // コンストラクタ
@@ -31,7 +32,7 @@ CPlayer::~CPlayer()
 HRESULT CPlayer::Init()
 {
 	// デバイスを取得
-	CRenderer* pRenderer = GetRenderer();
+	CRenderer* pRenderer = CManager::GetRenderer();
 	LPDIRECT3DDEVICE9 pDev = pRenderer->GetDeviece();
 
 	//テクスチャの読込み
@@ -223,7 +224,8 @@ void CPlayer::Animation()
 //****************************************************************************
 void CPlayer::Draw()
 {
-	CRenderer* pRenderer = GetRenderer();
+	// デバイスを取得
+	CRenderer* pRenderer = CManager::GetRenderer();
 	LPDIRECT3DDEVICE9 pDev = pRenderer->GetDeviece();
 
 	// 頂点バッファをデータストリームに設定

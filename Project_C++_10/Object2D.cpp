@@ -8,6 +8,7 @@
 // インクルードファイル
 #include "object2D.h"
 #include "main.h"
+#include "manager.h"
 
 //****************************************************************************
 // コンストラクタ
@@ -39,7 +40,7 @@ CObject2D::~CObject2D()
 HRESULT CObject2D::Init()
 {
 	// デバイスを取得
-	CRenderer* pRenderer = GetRenderer();
+	CRenderer* pRenderer = CManager::GetRenderer();
 	LPDIRECT3DDEVICE9 pDev = pRenderer->GetDeviece();
 	
 	//テクスチャの読込み
@@ -160,7 +161,8 @@ void CObject2D::Update()
 //****************************************************************************
 void CObject2D::Draw()
 {
-	CRenderer* pRenderer = GetRenderer();
+	// デバイスを取得
+	CRenderer* pRenderer = CManager::GetRenderer();
 	LPDIRECT3DDEVICE9 pDev = pRenderer->GetDeviece();
 
 	// 頂点バッファをデータストリームに設定
