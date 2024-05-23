@@ -196,6 +196,25 @@ void CPlayer::Rotation()
 //****************************************************************************
 void CPlayer::Translation()
 {
+	// 左スティック取得
+	CInputPad* pPad = CManager::GetPad();
+	CInputPad::JOYSTICK Stick = pPad->GetJoyStickL();
+
+	// デバッグ用にサウンド再生
+	if (pPad->GetTrigger(CInputPad::JOYKEY_B))
+	{
+		CSound* pSound = CManager::GetSound();
+		pSound->PlaySound(CSound::SOUND_LABEL_00);
+	}
+
+	// 入力があれば移動
+	if (Stick.X != 0 || Stick.Y != 0)
+	{
+		// 移動量と目標向きを設定
+		m_pos.x += sinf(atan2f(Stick.X, -Stick.Y)) * 5.0f;
+		m_pos.y += cosf(atan2f(Stick.X, -Stick.Y)) * 5.0f;
+	}
+
 	// キーボード取得
 	CInputKeyboard* pKeyboard = CManager::GetKeyboard();
 
@@ -224,11 +243,6 @@ void CPlayer::Translation()
 		X = 1.0f;
 	}
 
-	if (pKeyboard->GetPress(DIK_D))
-	{
-		X = 1.0f;
-	}
-
 	// デバッグ用にサウンド再生
 	if (pKeyboard->GetTrigger(DIK_RETURN))
 	{
@@ -236,23 +250,17 @@ void CPlayer::Translation()
 		pSound->PlaySound(CSound::SOUND_LABEL_00);
 	}
 
-	if (bMove)
+	// 何か入力していれば移動判定を出す
+	if (X != 0.0f || Y != 0.0f)
 	{
-		// 移動量と目標向きを設定
-		m_pos.x += sinf(atan2f(X, Y)) * 5.0f;
-		m_pos.y += cosf(atan2f(X, Y)) * 5.0f;
+		bMove = true;
 	}
 
-	// 左スティック取得
-	CInputPad* pPad = CManager::GetPad();
-	CInputPad::JOYSTICK Stick = pPad->GetJoyStickL();
-
-	// 入力があれば移動
-	if (Stick.X != 0 || Stick.Y != 0)
+	if (bMove)
 	{
-		// 移動量と目標向きを設定
-		m_pos.x += sinf(atan2f(Stick.X, Stick.Y)) * 5.0f;
-		m_pos.y += cosf(atan2f(Stick.X, Stick.Y)) * 5.0f;
+		// 移動を反映
+		m_pos.x += sinf(atan2f(X, Y)) * 5.0f;
+		m_pos.y += cosf(atan2f(X, Y)) * 5.0f;
 	}
 }
 
