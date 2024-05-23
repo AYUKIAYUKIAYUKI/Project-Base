@@ -28,6 +28,14 @@ private:
 	void Rotation();	// 回転
 	void Translation();	// 移動
 	void Animation();	// アニメーション
+
+	int m_nCntTexChange;	// テクスチャ変更管理
+	int m_nCntTexPattern;	// テクスチャパターン管理
+	D3DXVECTOR3 m_pos;		// 中心座標
+	D3DXVECTOR3 m_rot;		// 回転量
+	float m_fAngle;			// 角度
+	D3DXVECTOR3 m_size;		// 大きさ
+	float m_fLength;		// 対角線
 };
 
 #endif // _PALYER_H_

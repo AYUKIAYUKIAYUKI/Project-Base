@@ -15,7 +15,13 @@
 //****************************************************************************
 CPlayer::CPlayer() : CObject2D::CObject2D()
 {
-
+	m_nCntTexChange = 0;			// テクスチャ変更管理
+	m_nCntTexPattern = 0;			// テクスチャパターン管理
+	m_pos = { 0.0f, 0.0f, 0.0f };	// 中心位置
+	m_rot = { 0.0f, 0.0f, 0.0f };	// 回転量
+	m_fAngle = 0.0f;				// 角度
+	m_size = { 0.0f, 0.0f, 0.0f };	// サイズ
+	m_fLength = 0.0f;				// 対角線
 }
 
 //****************************************************************************
@@ -23,7 +29,7 @@ CPlayer::CPlayer() : CObject2D::CObject2D()
 //****************************************************************************
 CPlayer::~CPlayer()
 {
-	Uninit();
+
 }
 
 //****************************************************************************
@@ -31,57 +37,10 @@ CPlayer::~CPlayer()
 //****************************************************************************
 HRESULT CPlayer::Init()
 {
-	// デバイスを取得
-	CRenderer* pRenderer = CManager::GetRenderer();
-	LPDIRECT3DDEVICE9 pDev = pRenderer->GetDeviece();
+	// 基底クラスの初期設定
+	HRESULT hr = CObject2D::Init();
 
-	//テクスチャの読込み
-	D3DXCreateTextureFromFile(pDev,
-		"data\\TEXTURE\\runningman000.png",
-		&m_pTex);
-
-	// 頂点バッファの生成
-	pDev->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
-		D3DUSAGE_WRITEONLY,
-		FVF_VERTEX_2D,
-		D3DPOOL_MANAGED,
-		&m_pVtxBuff,
-		NULL);
-
-	// 頂点情報へのポインタ
-	VERTEX_2D* pVtx;
-
-	// 頂点バッファをロック
-	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-
-	// 位置の設定
-	pVtx[0].pos = { 0.0f, 0.0f, 0.0f };
-	pVtx[1].pos = { 0.0f, 0.0f, 0.0f };
-	pVtx[2].pos = { 0.0f, 0.0f, 0.0f };
-	pVtx[3].pos = { 0.0f, 0.0f, 0.0f };
-
-	// 除算数の設定
-	pVtx[0].rhw = 1.0f;
-	pVtx[1].rhw = 1.0f;
-	pVtx[2].rhw = 1.0f;
-	pVtx[3].rhw = 1.0f;
-
-	// 色の設定
-	pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-
-	// テクスチャの設定
-	pVtx[0].tex = { 0.0f, 0.0f };
-	pVtx[1].tex = { 1.0f, 0.0f };
-	pVtx[2].tex = { 0.0f, 1.0f };
-	pVtx[3].tex = { 1.0f, 1.0f };
-
-	// 頂点バッファをアンロックする
-	m_pVtxBuff->Unlock();
-
-	return S_OK;
+	return hr;
 }
 
 //****************************************************************************
@@ -89,19 +48,8 @@ HRESULT CPlayer::Init()
 //****************************************************************************
 void CPlayer::Uninit()
 {
-	// テクスチャの破棄
-	if (m_pTex != nullptr)
-	{
-		m_pTex->Release();
-		m_pTex = nullptr;
-	}
-
-	// 頂点バッファの破棄
-	if (m_pVtxBuff != nullptr)
-	{
-		m_pVtxBuff->Release();
-		m_pVtxBuff = nullptr;
-	}
+	// 基底クラスの終了処理
+	CObject2D::Uninit();
 }
 
 //****************************************************************************
@@ -116,8 +64,11 @@ void CPlayer::Update()
 	// 頂点情報へのポインタ
 	VERTEX_2D* pVtx;
 
+	// 頂点バッファを取得
+	LPDIRECT3DVERTEXBUFFER9 pVtxBuff = GetVtxBuff();
+
 	// 頂点バッファをロック
-	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+	pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
 
 	// 位置の設定
 	pVtx[0].pos = {
@@ -151,7 +102,7 @@ void CPlayer::Update()
 	pVtx[3].tex = { (m_nCntTexPattern + 1) / 8.0f, 1.0f };
 
 	// 頂点バッファをアンロックする
-	m_pVtxBuff->Unlock();
+	pVtxBuff->Unlock();
 
 	// 拡縮
 	Scaling();
@@ -293,23 +244,8 @@ void CPlayer::Animation()
 //****************************************************************************
 void CPlayer::Draw()
 {
-	// デバイスを取得
-	CRenderer* pRenderer = CManager::GetRenderer();
-	LPDIRECT3DDEVICE9 pDev = pRenderer->GetDeviece();
-
-	// 頂点バッファをデータストリームに設定
-	pDev->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
-
-	//頂点フォーマットの設定
-	pDev->SetFVF(FVF_VERTEX_2D);
-
-	// テクスチャの設定
-	pDev->SetTexture(0, m_pTex);
-
-	//ポリゴンの描画
-	pDev->DrawPrimitive(D3DPT_TRIANGLESTRIP,	// プリミティブの種類
-		0,										// 頂点情報の先頭アドレス
-		2);										// プリミティブ数
+	// 基底クラスの描画処理
+	CObject2D::Draw();
 }
 
 //****************************************************************************

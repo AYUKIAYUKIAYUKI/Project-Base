@@ -123,6 +123,7 @@ void CObject::Release()
 
 	if (m_apObject[nID] != nullptr)
 	{
+		m_apObject[nID]->Uninit();	// 終了処理
 		delete m_apObject[nID];		// メモリを解放
 		m_apObject[nID] = nullptr;	// ポインタを初期化
 		m_nNumAll--;				// 総数をカウントダウン

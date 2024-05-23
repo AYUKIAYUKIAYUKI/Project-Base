@@ -21,18 +21,16 @@ public:
 	void Uninit() override;		// 終了処理
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
-	static CObject2D* Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);	// 生成
+	static CObject2D* Create();	// 生成
 
-protected:
+	// 頂点バッファのポインタを取得する
+	LPDIRECT3DVERTEXBUFFER9 GetVtxBuff() { 
+		return m_pVtxBuff;
+	}
+
+private:
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	// 頂点バッファのポインタ
 	LPDIRECT3DTEXTURE9 m_pTex;			// テクスチャのポインタ
-	int m_nCntTexChange;				// テクスチャ変更管理
-	int m_nCntTexPattern;				// テクスチャパターン管理
-	D3DXVECTOR3 m_pos;					// 中心座標
-	D3DXVECTOR3 m_rot;					// 回転量
-	float m_fAngle;						// 角度
-	D3DXVECTOR3 m_size;					// 大きさ
-	float m_fLength;					// 対角線
 };
 
 #endif // _OBJECT2D_H_
