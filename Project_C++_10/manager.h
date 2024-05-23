@@ -11,6 +11,7 @@
 // インクルードファイル
 #include "renderer.h"
 #include "input.h"
+#include "sound.h"
 
 // マネージャークラス
 class CManager
@@ -22,14 +23,16 @@ public:
 	void Uninit();	// 終了処理
 	void Update();	// 更新処理
 	void Draw();	// 描画処理
-	static CRenderer* GetRenderer();		// レンダラー取得
-	static CInputKeyboard* GetKeyboard();	// キーボード取得
-	static CInputPad* GetPad();				// パッド取得
+	static CRenderer* GetRenderer() { return m_pRenderer; }			// レンダラー取得
+	static CInputKeyboard* GetKeyboard() { return m_pKeyboard; };	// キーボード取得
+	static CInputPad* GetPad() { return m_pPad; };					// パッド取得
+	static CSound* GetSound() { return m_pSound; };					// サウンド取得
 
 private:
 	static CRenderer* m_pRenderer;		// レンダラー管理
 	static CInputKeyboard* m_pKeyboard;	// キーボード管理
 	static CInputPad* m_pPad;			// パッド管理
+	static CSound* m_pSound;			// サウンド管理
 };
 
 #endif // _MANAGER_H_

@@ -13,6 +13,7 @@
 #define DIRECTINPUT_VERSION	0x0800	// DirectInputのバージョン
 #include "dinput.h"					// DirectInput動作用
 #include "xinput.h"					// コントローラー動作用
+#include "xaudio2.h"				// サウンド動作用
 
 // ライブラリのリンク
 #pragma	comment(lib,"d3d9.lib")		// 描画処理用

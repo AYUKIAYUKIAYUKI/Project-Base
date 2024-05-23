@@ -224,9 +224,16 @@ void CPlayer::Translation()
 		X = 1.0f;
 	}
 
-	if (X != 0.0f || Y != 0.0f)
-	{ // 何か入力していれば
-		bMove = true;
+	if (pKeyboard->GetPress(DIK_D))
+	{
+		X = 1.0f;
+	}
+
+	// デバッグ用にサウンド再生
+	if (pKeyboard->GetTrigger(DIK_RETURN))
+	{
+		CSound* pSound = CManager::GetSound();
+		pSound->PlaySound(CSound::SOUND_LABEL_00);
 	}
 
 	if (bMove)

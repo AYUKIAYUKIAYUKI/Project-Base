@@ -151,11 +151,11 @@ void CInputKeyboard::Update()
 	{
 		for (int i = 0; i < MAX_KEY; i++)
 		{
-			// キーボードのプレス情報を保存
-			m_aKeyState[i] = state_keyboard[i];
-
 			// キーボードのトリガー情報を保存
 			m_aKeyStateTrigger[i] = (m_aKeyState[i] ^ state_keyboard[i]) & state_keyboard[i];
+
+			// キーボードのプレス情報を保存
+			m_aKeyState[i] = state_keyboard[i];
 		}
 	}
 	else
