@@ -7,15 +7,23 @@
 #pragma once	// 二重インクルード防止
 
 // インクルードファイル
-#include <windows.h>
-#include "d3dx9.h"
+#include <windows.h>	// Windowsアプリケーション動作用
+#include "d3dx9.h"		// DirectX9動作用
+
+#define DIRECTINPUT_VERSION	0x0800	// DirectInputのバージョン
+#include "dinput.h"					// DirectInput動作用
 
 // ライブラリのリンク
 #pragma	comment(lib,"d3d9.lib")		// 描画処理用
 #pragma	comment(lib,"d3dx9.lib")	// [d3d9.lib]の拡張ライブラリ
 #pragma	comment(lib,"dxguid.lib")	// DirectXのコーポネント使用のため
+#pragma	comment(lib,"dinput8.lib")	// DirectInput動作用
 
 // マクロ定義
-#define FVF_VERTEX_2D	(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)	// 頂点フォーマット
+
+// 頂点フォーマット
+#define FVF_VERTEX_2D	(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)
+
+// ウィンドウサイズ
 #define SCREEN_WIDTH	1280	// ウインドウの幅
 #define SCREEN_HEIGHT	720		// ウインドウの高さ

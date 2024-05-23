@@ -24,6 +24,8 @@ public:
 	static CBg* Create();		// 生成
 
 private:
+	void Translation();	// 移動
+
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	// 頂点バッファのポインタ
 	LPDIRECT3DTEXTURE9 m_pTex;			// テクスチャのポインタ
 	D3DXVECTOR3 m_pos;					// 中心座標

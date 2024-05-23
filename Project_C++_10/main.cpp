@@ -111,12 +111,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 		}
 	}
 
-	// 終了処理
-	g_pManager->Uninit();
-
 	// マネージャーの破棄
 	if (g_pManager != nullptr)
 	{
+		g_pManager->Uninit();	// 終了処理
 		delete g_pManager;		// メモリを解放
 		g_pManager = nullptr;	// ポインタを初期化
 	}

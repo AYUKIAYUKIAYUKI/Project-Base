@@ -149,6 +149,9 @@ void CBg::Update()
 
 	// 頂点バッファをアンロックする
 	m_pVtxBuff->Unlock();
+
+	// 移動
+	Translation();
 }
 
 //****************************************************************************
@@ -191,4 +194,50 @@ CBg* CBg::Create()
 	}
 
 	return pBg;
+}
+
+//****************************************************************************
+// 移動
+//****************************************************************************
+void CBg::Translation()
+{
+	// キーボード取得
+	CInputKeyboard* pKeyboard = CManager::GetKeyboard();
+
+	// 移動方向用
+	bool bMove = 0;
+	float X = 0.0f;
+	float Y = 0.0f;
+
+	// Y軸
+	if (pKeyboard->GetPress(DIK_W))
+	{
+		Y = -1.0f;
+	}
+	else if (pKeyboard->GetPress(DIK_S))
+	{
+		Y = 1.0f;
+	}
+	
+	// X軸
+	if (pKeyboard->GetPress(DIK_A))
+	{
+		X = -1.0f;
+	}
+	else if (pKeyboard->GetPress(DIK_D))
+	{
+		X = 1.0f;
+	}
+
+	if (X != 0.0f || Y != 0.0f)
+	{ // 何か入力していれば
+		bMove = true;
+	}
+
+	if (bMove)
+	{
+		// 移動量と目標向きを設定
+		m_pos.x += sinf(atan2f(X, Y));
+		m_pos.y += cosf(atan2f(X, Y));
+	}
 }

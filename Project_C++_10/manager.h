@@ -10,6 +10,7 @@
 
 // インクルードファイル
 #include "renderer.h"
+#include "input.h"
 
 // マネージャークラス
 class CManager
@@ -21,10 +22,12 @@ public:
 	void Uninit();	// 終了処理
 	void Update();	// 更新処理
 	void Draw();	// 描画処理
-	static CRenderer* GetRenderer();	// レンダラー取得
+	static CRenderer* GetRenderer();		// レンダラー取得
+	static CInputKeyboard* GetKeyboard();	// キーボード取得
 
 private:
-	static CRenderer* m_pRenderer;	// レンダラー管理
+	static CRenderer* m_pRenderer;		// レンダラー管理
+	static CInputKeyboard* m_pKeyboard;	// キーボード管理
 };
 
 #endif // _MANAGER_H_

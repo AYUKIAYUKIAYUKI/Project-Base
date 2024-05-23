@@ -9,7 +9,8 @@
 #include "manager.h"
 
 // 静的メンバの初期化
-CRenderer* CManager::m_pRenderer = nullptr;	// レンダラー管理
+CRenderer* CManager::m_pRenderer = nullptr;			// レンダラー管理
+CInputKeyboard* CManager::m_pKeyboard = nullptr;	// キーボード管理
 
 //****************************************************************************
 // コンストラクタ
@@ -43,6 +44,17 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// レンダラーの初期化
 	m_pRenderer->Init(hWnd, bWindow);
 
+	// キーボードの生成
+	m_pKeyboard = new CInputKeyboard;
+
+	if (m_pKeyboard == nullptr)
+	{ // 生成失敗
+		return E_FAIL;
+	}
+
+	// キーボードの初期化
+	m_pKeyboard->Init(hInstance, hWnd);
+
 	return S_OK;
 }
 
@@ -58,6 +70,14 @@ void CManager::Uninit()
 		delete m_pRenderer;		// メモリを解放
 		m_pRenderer = nullptr;	// ポインタを初期化
 	}
+
+	// キーボードの破棄
+	if (m_pKeyboard != nullptr)
+	{
+		m_pKeyboard->Uninit();	// 終了処理
+		delete m_pKeyboard;		// メモリを解放
+		m_pKeyboard = nullptr;	// ポインタを初期化
+	}
 }
 
 //****************************************************************************
@@ -67,6 +87,9 @@ void CManager::Update()
 {
 	// レンダラーの更新
 	m_pRenderer->Update();
+
+	// キーボードの更新
+	m_pKeyboard->Update();
 }
 
 //****************************************************************************
@@ -84,4 +107,12 @@ void CManager::Draw()
 CRenderer* CManager::GetRenderer()
 {
 	return m_pRenderer;
+}
+
+//****************************************************************************
+// キーボード取得
+//****************************************************************************
+CInputKeyboard* CManager::GetKeyboard()
+{
+	return m_pKeyboard;
 }
