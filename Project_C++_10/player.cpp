@@ -235,6 +235,18 @@ void CPlayer::Translation()
 		m_pos.x += sinf(atan2f(X, Y)) * 5.0f;
 		m_pos.y += cosf(atan2f(X, Y)) * 5.0f;
 	}
+
+	// 左スティック取得
+	CInputPad* pPad = CManager::GetPad();
+	CInputPad::JOYSTICK Stick = pPad->GetJoyStickL();
+
+	// 入力があれば移動
+	if (Stick.X != 0 || Stick.Y != 0)
+	{
+		// 移動量と目標向きを設定
+		m_pos.x += sinf(atan2f(Stick.X, Stick.Y)) * 5.0f;
+		m_pos.y += cosf(atan2f(Stick.X, Stick.Y)) * 5.0f;
+	}
 }
 
 //****************************************************************************
