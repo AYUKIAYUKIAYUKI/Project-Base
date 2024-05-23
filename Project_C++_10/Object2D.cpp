@@ -37,11 +37,6 @@ HRESULT CObject2D::Init()
 	// デバイスを取得
 	CRenderer* pRenderer = CManager::GetRenderer();
 	LPDIRECT3DDEVICE9 pDev = pRenderer->GetDeviece();
-	
-	// テクスチャの読込み
-	D3DXCreateTextureFromFile(pDev,
-		"data\\TEXTURE\\.png",
-		&m_pTex);
 
 	// 頂点バッファの生成
 	pDev->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
@@ -159,4 +154,12 @@ CObject2D* CObject2D::Create()
 	}
 
 	return pObject2D;
+}
+
+//============================================================================
+// テクスチャ割当
+//============================================================================
+void CObject2D::BindTex(LPDIRECT3DTEXTURE9 pTex)
+{
+	m_pTex = pTex;
 }

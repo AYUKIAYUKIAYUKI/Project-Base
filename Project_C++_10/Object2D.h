@@ -19,13 +19,14 @@
 class CObject2D : public CObject
 {
 public:
-	CObject2D();				// コンストラクタ
-	~CObject2D();				// デストラクタ
-	HRESULT Init() override;	// 初期設定
-	void Uninit() override;		// 終了処理
-	void Update() override;		// 更新処理
-	void Draw() override;		// 描画処理
-	static CObject2D* Create();	// 生成
+	CObject2D();							// コンストラクタ
+	~CObject2D();							// デストラクタ
+	HRESULT Init() override;				// 初期設定
+	void Uninit() override;					// 終了処理
+	void Update() override;					// 更新処理
+	void Draw() override;					// 描画処理
+	static CObject2D* Create();				// 生成
+	void BindTex(LPDIRECT3DTEXTURE9 pTex);	// テクスチャ割当
 
 	// 頂点バッファのポインタを取得する
 	LPDIRECT3DVERTEXBUFFER9 GetVtxBuff() { 

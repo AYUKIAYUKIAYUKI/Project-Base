@@ -265,5 +265,20 @@ CPlayer* CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 		pPlayer->m_size = size;
 	}
 
+	// デバイスを取得
+	CRenderer* pRenderer = CManager::GetRenderer();
+	LPDIRECT3DDEVICE9 pDev = pRenderer->GetDeviece();
+
+	// テクスチャのポインタ
+	LPDIRECT3DTEXTURE9 pTex = nullptr;
+
+	// テクスチャの生成
+	D3DXCreateTextureFromFile(pDev,
+		"data\\TEXTURE\\runningman000.png",
+		&pTex);
+
+	// テクスチャを設定
+	pPlayer->BindTex(pTex);
+
 	return pPlayer;
 }
