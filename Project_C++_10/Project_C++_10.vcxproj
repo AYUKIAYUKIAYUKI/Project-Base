@@ -163,6 +163,7 @@
   <ItemGroup>
     <ClCompile Include="bg.cpp" />
     <ClCompile Include="bullet.cpp" />
+    <ClCompile Include="explosion.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manager.cpp" />
@@ -179,6 +180,7 @@
   <ItemGroup>
     <ClInclude Include="bg.h" />
     <ClInclude Include="bullet.h" />
+    <ClInclude Include="explosion.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="manager.h" />

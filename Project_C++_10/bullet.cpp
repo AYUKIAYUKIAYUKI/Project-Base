@@ -11,6 +11,7 @@
 #include "bullet.h"
 #include "main.h"
 #include "manager.h"
+#include "explosion.h"
 
 //============================================================================
 // コンストラクタ
@@ -172,6 +173,12 @@ void CBullet::Progress()
 	// 使用期間がなくなると消滅
 	if (m_nRemain <= 0)
 	{
-		CObject::Release();	// 自信を破棄
+		// 自身を破棄
+		CObject::Release();
+
+		// 爆発を生成
+		CExplosion::Create(
+			m_pos,						// 中心位置
+			{ 50.0f, 50.0f, 0.0f });	// サイズ
 	}
 }

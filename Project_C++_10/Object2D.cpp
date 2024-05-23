@@ -58,12 +58,6 @@ HRESULT CObject2D::Init()
 	pVtx[2].pos = { 0.0f, 0.0f, 0.0f };
 	pVtx[3].pos = { 0.0f, 0.0f, 0.0f };
 
-	// âº
-	pVtx[0].pos = { 100.0f, 100.0f, 0.0f };
-	pVtx[1].pos = { 200.0f, 100.0f, 0.0f };
-	pVtx[2].pos = { 100.0f, 200.0f, 0.0f };
-	pVtx[3].pos = { 200.0f, 200.0f, 0.0f };
-
 	// èúéZêîÇÃê›íË
 	pVtx[0].rhw = 1.0f;
 	pVtx[1].rhw = 1.0f;
