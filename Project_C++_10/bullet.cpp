@@ -17,14 +17,13 @@
 //============================================================================
 CBullet::CBullet() : CObject2D::CObject2D()
 {
-	m_nCntTexChange = 0;			// テクスチャ変更管理
-	m_nCntTexPattern = 0;			// テクスチャパターン管理
 	m_pos = { 0.0f, 0.0f, 0.0f };	// 中心位置
 	m_rot = { 0.0f, 0.0f, 0.0f };	// 回転量
 	m_fAngle = 0.0f;				// 角度
 	m_size = { 0.0f, 0.0f, 0.0f };	// サイズ
 	m_fLength = 0.0f;				// 対角線
 	m_nRemain = 0;					// 使用期間
+	m_fFlyAngle = 0;				// 飛ぶ角度
 }
 
 //============================================================================
@@ -120,7 +119,7 @@ void CBullet::Draw()
 //============================================================================
 // 生成
 //============================================================================
-CBullet* CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, int m_nRemain)
+CBullet* CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nRemain, float fFlyAngle)
 {
 	CBullet* pBullet = new CBullet;
 
@@ -130,7 +129,8 @@ CBullet* CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, int m_nRemain)
 		pBullet->Init();
 		pBullet->m_pos = pos;
 		pBullet->m_size = size;
-		pBullet->m_nRemain = m_nRemain;
+		pBullet->m_nRemain = nRemain;
+		pBullet->m_fFlyAngle = fFlyAngle;
 	}
 
 	// デバイスを取得
@@ -156,7 +156,9 @@ CBullet* CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, int m_nRemain)
 //============================================================================
 void CBullet::Translation()
 {
-
+	// 設定された角度に飛んでいく
+	m_pos.x += sinf(m_fFlyAngle) * 10.0f;
+	m_pos.y += cosf(m_fFlyAngle) * 10.0f;
 }
 
 //============================================================================

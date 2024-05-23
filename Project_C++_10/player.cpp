@@ -220,6 +220,17 @@ void CPlayer::Translation()
 		m_rot_tgt.z = atan2f(Stick.X, -Stick.Y);
 	}
 
+	// 弾を発射 (キーボード取得があるのでここで)
+	if (pPad->GetTrigger(CInputPad::JOYKEY_X))
+	{
+		// 弾の生成
+		CBullet::Create(
+			m_pos,					// 中心位置
+			{ 30.0f, 30.0f, 0.0f },	// サイズ
+			50,						// 使用期間
+			m_rot.z);				// 飛ぶ角度
+	}
+
 	// デバッグ用にサウンド再生 (パッド取得があるのでここで)
 	if (pPad->GetTrigger(CInputPad::JOYKEY_B))
 	{
@@ -266,7 +277,7 @@ void CPlayer::Translation()
 		// 移動量と目標回転量を設定
 		m_pos.x += sinf(atan2f(X, Y)) * 5.0f;
 		m_pos.y += cosf(atan2f(X, Y)) * 5.0f;
-		m_rot_tgt.z = atan2f(-X, -Y);
+		m_rot_tgt.z = atan2f(X, Y);
 	}
 
 	// 弾を発射 (キーボード取得があるのでここで)
@@ -276,7 +287,8 @@ void CPlayer::Translation()
 		CBullet::Create(
 			m_pos,					// 中心位置
 			{ 30.0f, 30.0f, 0.0f },	// サイズ
-			50);					// 使用期間
+			50,						// 使用期間
+			m_rot.z);				// 飛ぶ角度
 	}
 
 	// デバッグ用にサウンド再生 (キーボード取得があるのでここで)
