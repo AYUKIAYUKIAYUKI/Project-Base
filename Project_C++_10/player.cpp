@@ -153,6 +153,9 @@ void CPlayer::Update()
 	// 頂点バッファをアンロックする
 	m_pVtxBuff->Unlock();
 
+	// 拡縮
+	Scaling();
+
 	// 回転
 	Rotation();
 
@@ -168,7 +171,16 @@ void CPlayer::Update()
 //****************************************************************************
 void CPlayer::Scaling()
 {
-	m_size *= 2.0f;
+	if ((m_pos.x - m_fLength) > SCREEN_WIDTH)
+	{ // 画面の右端に到達で拡大しループ
+		m_pos.x = 0.0f - m_fLength;
+		m_size *= 3.0f;
+	}
+	else if ((m_pos.x + m_fLength) < 0.0f)
+	{ // 画面の右端に到達で縮小しループ
+		m_pos.x = SCREEN_WIDTH;
+		m_size /= 3.0f;
+	}
 }
 
 //****************************************************************************
@@ -184,14 +196,44 @@ void CPlayer::Rotation()
 //****************************************************************************
 void CPlayer::Translation()
 {
-	m_pos.x += 2.0f;
+	// キーボード取得
+	CInputKeyboard* pKeyboard = CManager::GetKeyboard();
 
-	if ((m_pos.x - m_fLength) > SCREEN_WIDTH)
+	// 移動方向用
+	bool bMove = 0;
+	float X = 0.0f;
+	float Y = 0.0f;
+
+	// Y軸
+	if (pKeyboard->GetPress(DIK_W))
 	{
-		m_pos.x = 0.0f - m_fLength;
+		Y = -1.0f;
+	}
+	else if (pKeyboard->GetPress(DIK_S))
+	{
+		Y = 1.0f;
+	}
 
-		// 拡縮
-		Scaling();
+	// X軸
+	if (pKeyboard->GetPress(DIK_A))
+	{
+		X = -1.0f;
+	}
+	else if (pKeyboard->GetPress(DIK_D))
+	{
+		X = 1.0f;
+	}
+
+	if (X != 0.0f || Y != 0.0f)
+	{ // 何か入力していれば
+		bMove = true;
+	}
+
+	if (bMove)
+	{
+		// 移動量と目標向きを設定
+		m_pos.x += sinf(atan2f(X, Y)) * 5.0f;
+		m_pos.y += cosf(atan2f(X, Y)) * 5.0f;
 	}
 }
 
