@@ -24,10 +24,12 @@ public:
 	void Draw();	// 描画処理
 	static CRenderer* GetRenderer();		// レンダラー取得
 	static CInputKeyboard* GetKeyboard();	// キーボード取得
+	static CInputPad* GetPad();				// パッド取得
 
 private:
 	static CRenderer* m_pRenderer;		// レンダラー管理
 	static CInputKeyboard* m_pKeyboard;	// キーボード管理
+	static CInputPad* m_pPad;			// パッド管理
 };
 
 #endif // _MANAGER_H_

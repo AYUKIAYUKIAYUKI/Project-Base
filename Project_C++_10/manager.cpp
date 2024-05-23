@@ -11,6 +11,7 @@
 // 静的メンバの初期化
 CRenderer* CManager::m_pRenderer = nullptr;			// レンダラー管理
 CInputKeyboard* CManager::m_pKeyboard = nullptr;	// キーボード管理
+CInputPad* CManager::m_pPad = nullptr;				// パッド管理
 
 //****************************************************************************
 // コンストラクタ
@@ -18,6 +19,8 @@ CInputKeyboard* CManager::m_pKeyboard = nullptr;	// キーボード管理
 CManager::CManager()
 {
 	m_pRenderer = nullptr;
+	m_pKeyboard = nullptr;
+	m_pPad = nullptr;
 }
 
 //****************************************************************************
@@ -55,6 +58,17 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// キーボードの初期化
 	m_pKeyboard->Init(hInstance, hWnd);
 
+	// パッドの生成
+	m_pPad = new CInputPad;
+
+	if (m_pPad == nullptr)
+	{ // 生成失敗
+		return E_FAIL;
+	}
+
+	// キーボードの初期化
+	m_pPad->Init();
+
 	return S_OK;
 }
 
@@ -78,6 +92,14 @@ void CManager::Uninit()
 		delete m_pKeyboard;		// メモリを解放
 		m_pKeyboard = nullptr;	// ポインタを初期化
 	}
+
+	// パッドの破棄
+	if (m_pPad != nullptr)
+	{
+		m_pPad->Uninit();	// 終了処理
+		delete m_pPad;		// メモリを解放
+		m_pPad = nullptr;	// ポインタを初期化
+	}
 }
 
 //****************************************************************************
@@ -90,6 +112,9 @@ void CManager::Update()
 
 	// キーボードの更新
 	m_pKeyboard->Update();
+
+	// パッドの更新
+	m_pPad->Update();
 }
 
 //****************************************************************************
@@ -115,4 +140,12 @@ CRenderer* CManager::GetRenderer()
 CInputKeyboard* CManager::GetKeyboard()
 {
 	return m_pKeyboard;
+}
+
+//****************************************************************************
+// パッド取得
+//****************************************************************************
+CInputPad* CManager::GetPad()
+{
+	return m_pPad;
 }

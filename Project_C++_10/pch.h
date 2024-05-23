@@ -12,12 +12,14 @@
 
 #define DIRECTINPUT_VERSION	0x0800	// DirectInputのバージョン
 #include "dinput.h"					// DirectInput動作用
+#include "xinput.h"					// コントローラー動作用
 
 // ライブラリのリンク
 #pragma	comment(lib,"d3d9.lib")		// 描画処理用
 #pragma	comment(lib,"d3dx9.lib")	// [d3d9.lib]の拡張ライブラリ
 #pragma	comment(lib,"dxguid.lib")	// DirectXのコーポネント使用のため
 #pragma	comment(lib,"dinput8.lib")	// DirectInput動作用
+#pragma comment(lib,"xinput.lib")	// コントローラ動作用
 
 // マクロ定義
 
