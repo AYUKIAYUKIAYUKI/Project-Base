@@ -113,7 +113,7 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 	// プレイヤーの生成
 	CPlayer::Create(
 		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// 中心位置
-		{ 50.0f, 100.0f, 0.0f });								// 大きさ
+		{ 50.0f, 100.0f, 0.0f });								// サイズ
 
 	return S_OK;
 }
