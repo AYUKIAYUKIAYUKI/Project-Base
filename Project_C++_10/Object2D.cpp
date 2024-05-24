@@ -112,6 +112,11 @@ void CObject2D::Uninit()
 //============================================================================
 void CObject2D::Update()
 {
+	if (m_pVtxBuff == nullptr)
+	{ // バッファが存在しなければ
+		return;
+	}
+
 	// 必要な数値を算出
 	m_fLength = sqrtf(m_size.x * m_size.x + m_size.y * m_size.y) * 0.5f;
 	m_fAngle = atan2f(m_size.x, m_size.y);
