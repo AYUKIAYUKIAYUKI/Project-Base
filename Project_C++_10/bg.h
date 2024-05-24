@@ -19,15 +19,19 @@
 class CBg : public CObject
 {
 public:
-	CBg();						// コンストラクタ
-	~CBg();						// デストラクタ
+
+	CBg();	// コンストラクタ
+	~CBg();	// デストラクタ
+
 	HRESULT Init() override;	// 初期設定
 	void Uninit() override;		// 終了処理
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
+
 	static CBg* Create();		// 生成
 
 private:
+
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	// 頂点バッファのポインタ
 	LPDIRECT3DTEXTURE9 m_pTex;			// テクスチャのポインタ
 	D3DXVECTOR3 m_pos;					// 中心座標

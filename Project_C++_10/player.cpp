@@ -11,20 +11,16 @@
 #include "player.h"
 #include "main.h"
 #include "manager.h"
-#include "bullet.h"
+//#include "bullet.h"
 
 //============================================================================
 // コンストラクタ
 //============================================================================
 CPlayer::CPlayer() : CObject2D::CObject2D()
 {
-	m_nCntTexChange = 0;			// テクスチャ変更管理
-	m_nCntTexPattern = 0;			// テクスチャパターン管理
-	m_pos = { 0.0f, 0.0f, 0.0f };	// 中心位置
-	m_rot = { 0.0f, 0.0f, 0.0f };	// 回転量
-	m_fAngle = 0.0f;				// 角度
-	m_size = { 0.0f, 0.0f, 0.0f };	// サイズ
-	m_fLength = 0.0f;				// 対角線
+	m_nCntTexChange = 0;				// テクスチャ変更管理
+	m_nCntTexPattern = 0;				// テクスチャパターン管理
+	m_rot_tgt = { 0.0f, 0.0f, 0.0f };	// 目標向き
 }
 
 //============================================================================
@@ -60,53 +56,6 @@ void CPlayer::Uninit()
 //============================================================================
 void CPlayer::Update()
 {
-	// 必要な数値を算出
-	m_fLength = sqrtf(m_size.x * m_size.x + m_size.y * m_size.y) * 0.5f;
-	m_fAngle = atan2f(m_size.x, m_size.y);
-
-	// 頂点情報へのポインタ
-	VERTEX_2D* pVtx;
-
-	// 頂点バッファを取得
-	LPDIRECT3DVERTEXBUFFER9 pVtxBuff = GetVtxBuff();
-
-	// 頂点バッファをロック
-	pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-
-	// 位置の設定
-	pVtx[0].pos = {
-		m_pos.x + sinf(m_rot.z - (D3DX_PI - m_fAngle)) * m_fLength,
-		m_pos.y + cosf(m_rot.z - (D3DX_PI - m_fAngle)) * m_fLength,
-		0.0f
-	};
-
-	pVtx[1].pos = {
-		m_pos.x + sinf(m_rot.z + (D3DX_PI - m_fAngle)) * m_fLength,
-		m_pos.y + cosf(m_rot.z + (D3DX_PI - m_fAngle)) * m_fLength,
-		0.0f
-	};
-
-	pVtx[2].pos = {
-		m_pos.x + sinf(m_rot.z - m_fAngle) * m_fLength,
-		m_pos.y + cosf(m_rot.z - m_fAngle) * m_fLength,
-		0.0f
-	};
-
-	pVtx[3].pos = {
-		m_pos.x + sinf(m_rot.z + m_fAngle) * m_fLength,
-		m_pos.y + cosf(m_rot.z + m_fAngle) * m_fLength,
-		0.0f
-	};
-
-	// テクスチャの設定
-	pVtx[0].tex = { m_nCntTexPattern / 8.0f, 0.0f };
-	pVtx[1].tex = { (m_nCntTexPattern + 1) / 8.0f, 0.0f };
-	pVtx[2].tex = { m_nCntTexPattern / 8.0f, 1.0f };
-	pVtx[3].tex = { (m_nCntTexPattern + 1) / 8.0f, 1.0f };
-
-	// 頂点バッファをアンロックする
-	pVtxBuff->Unlock();
-
 	// 拡縮
 	Scaling();
 
@@ -118,6 +67,9 @@ void CPlayer::Update()
 
 	// アニメーション
 	Animation();
+
+	// 基底クラスの更新
+	CObject2D::Update();
 }
 
 //============================================================================
@@ -132,21 +84,20 @@ void CPlayer::Draw()
 //============================================================================
 // 生成
 //============================================================================
-CPlayer* CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
+CPlayer* CPlayer::Create(D3DXVECTOR3 pos_arg, D3DXVECTOR3 size_arg)
 {
 	CPlayer* pPlayer = new CPlayer;
 
 	// 生成出来ていたら初期設定
 	if (pPlayer != nullptr)
 	{
-		pPlayer->Init();
-		pPlayer->m_pos = pos;
-		pPlayer->m_size = size;
+		pPlayer->Init();			// 基底クラスの初期設定
+		pPlayer->SetPos(pos_arg);	// 中心位置の設定
+		pPlayer->SetSize(size_arg);	// サイズの設定
 	}
 
 	// デバイスを取得
-	CRenderer* pRenderer = CManager::GetRenderer();
-	LPDIRECT3DDEVICE9 pDev = pRenderer->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
 
 	// テクスチャのポインタ
 	LPDIRECT3DTEXTURE9 pTex = nullptr;
@@ -167,16 +118,25 @@ CPlayer* CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 //============================================================================
 void CPlayer::Scaling()
 {
-	if ((m_pos.x - m_fLength) > SCREEN_WIDTH)
+	// 必要な情報を取得
+	D3DXVECTOR3 pos = CObject2D::GetPos();		// 中心位置情報
+	D3DXVECTOR3 size = CObject2D::GetSize();	// サイズ情報
+	float fLength = CObject2D::GetLength();		// 展開用対角線情報
+
+	if ((pos.x - fLength) > SCREEN_WIDTH)
 	{ // 画面の右端に到達で拡大しループ
-		m_pos.x = 0.0f - m_fLength;
-		m_size *= 3.0f;
+		pos.x = 0.0f - fLength;
+		size *= 3.0f;
 	}
-	else if ((m_pos.x + m_fLength) < 0.0f)
+	else if ((pos.x + fLength) < 0.0f)
 	{ // 画面の右端に到達で縮小しループ
-		m_pos.x = SCREEN_WIDTH;
-		m_size /= 3.0f;
+		pos.x = SCREEN_WIDTH;
+		size /= 3.0f;
 	}
+
+	// 必要な情報を設定
+	CObject2D::SetPos(pos);		// 中心位置を設定
+	CObject2D::SetSize(size);	// サイズを設定
 }
 
 //============================================================================
@@ -184,22 +144,28 @@ void CPlayer::Scaling()
 //============================================================================
 void CPlayer::Rotation()
 {
+	// 向き情報取得
+	D3DXVECTOR3 rot = CObject2D::GetRot();
+
 	// ブレーキ力
 	float fStopEnergy = 0.1f;
 
 	// 回転反映と回転量の減衰
-	if (m_rot_tgt.z - m_rot.z > D3DX_PI)
+	if (m_rot_tgt.z - rot.z > D3DX_PI)
 	{
-		m_rot.z += ((m_rot_tgt.z - m_rot.z) * fStopEnergy + (D3DX_PI * 1.8f));
+		rot.z += ((m_rot_tgt.z - rot.z) * fStopEnergy + (D3DX_PI * 1.8f));
 	}
-	else if (m_rot_tgt.z - m_rot.z < -D3DX_PI)
+	else if (m_rot_tgt.z - rot.z < -D3DX_PI)
 	{
-		m_rot.z += ((m_rot_tgt.z - m_rot.z) * fStopEnergy + (D3DX_PI * -1.8f));
+		rot.z += ((m_rot_tgt.z - rot.z) * fStopEnergy + (D3DX_PI * -1.8f));
 	}
 	else
 	{
-		m_rot.z += ((m_rot_tgt.z - m_rot.z) * fStopEnergy);
+		rot.z += ((m_rot_tgt.z - rot.z) * fStopEnergy);
 	}
+
+	// 向き情報設定
+	CObject2D::SetRot(rot);
 }
 
 //============================================================================
@@ -207,6 +173,9 @@ void CPlayer::Rotation()
 //============================================================================
 void CPlayer::Translation()
 {
+	// 中心位置情報を取得
+	D3DXVECTOR3 pos = CObject2D::GetPos();
+
 	// 左スティック取得
 	CInputPad* pPad = CManager::GetPad();
 	CInputPad::JOYSTICK Stick = pPad->GetJoyStickL();
@@ -215,27 +184,9 @@ void CPlayer::Translation()
 	if (Stick.X != 0 || Stick.Y != 0)
 	{
 		// 移動量と目標回転量を設定
-		m_pos.x += sinf(atan2f(Stick.X, -Stick.Y)) * 5.0f;
-		m_pos.y += cosf(atan2f(Stick.X, -Stick.Y)) * 5.0f;
+		pos.x += sinf(atan2f(Stick.X, -Stick.Y)) * 5.0f;
+		pos.y += cosf(atan2f(Stick.X, -Stick.Y)) * 5.0f;
 		m_rot_tgt.z = atan2f(Stick.X, -Stick.Y);
-	}
-
-	// 弾を発射 (キーボード取得があるのでここで)
-	if (pPad->GetTrigger(CInputPad::JOYKEY_X))
-	{
-		// 弾の生成
-		CBullet::Create(
-			m_pos,					// 中心位置
-			{ 30.0f, 30.0f, 0.0f },	// サイズ
-			50,						// 使用期間
-			m_rot.z);				// 飛ぶ角度
-	}
-
-	// デバッグ用にサウンド再生 (パッド取得があるのでここで)
-	if (pPad->GetTrigger(CInputPad::JOYKEY_B))
-	{
-		CSound* pSound = CManager::GetSound();
-		pSound->PlaySound(CSound::SOUND_LABEL_00);
 	}
 
 	// キーボード取得
@@ -275,28 +226,31 @@ void CPlayer::Translation()
 	if (bMove)
 	{
 		// 移動量と目標回転量を設定
-		m_pos.x += sinf(atan2f(X, Y)) * 5.0f;
-		m_pos.y += cosf(atan2f(X, Y)) * 5.0f;
+		pos.x += sinf(atan2f(X, Y)) * 5.0f;
+		pos.y += cosf(atan2f(X, Y)) * 5.0f;
 		m_rot_tgt.z = atan2f(X, Y);
 	}
 
-	// 弾を発射 (キーボード取得があるのでここで)
-	if (pKeyboard->GetTrigger(DIK_SPACE))
+	// 弾を発射 (キーボード、パッド取得があるのでここで)
+	if (pKeyboard->GetTrigger(DIK_SPACE) || pPad->GetTrigger(CInputPad::JOYKEY_X))
 	{
 		// 弾の生成
-		CBullet::Create(
-			m_pos,					// 中心位置
-			{ 30.0f, 30.0f, 0.0f },	// サイズ
-			50,						// 使用期間
-			m_rot.z);				// 飛ぶ角度
+		//CBullet::Create(
+		//	m_pos,					// 中心位置
+		//	{ 30.0f, 30.0f, 0.0f },	// サイズ
+		//	50,						// 使用期間
+		//	m_rot.z);				// 飛ぶ角度
 	}
 
-	// デバッグ用にサウンド再生 (キーボード取得があるのでここで)
-	if (pKeyboard->GetTrigger(DIK_RETURN))
+	// デバッグ用にサウンド再生 (キーボード、パッド取得があるのでここで)
+	if (pKeyboard->GetTrigger(DIK_RETURN) || pPad->GetTrigger(CInputPad::JOYKEY_B))
 	{
 		CSound* pSound = CManager::GetSound();
 		pSound->PlaySound(CSound::SOUND_LABEL_00);
 	}
+
+	// 中心位置を設定
+	CObject2D::SetPos(pos);
 }
 
 //============================================================================

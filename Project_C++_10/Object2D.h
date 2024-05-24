@@ -19,23 +19,41 @@
 class CObject2D : public CObject
 {
 public:
-	CObject2D();							// コンストラクタ
-	~CObject2D();							// デストラクタ
-	HRESULT Init() override;				// 初期設定
-	void Uninit() override;					// 終了処理
-	void Update() override;					// 更新処理
-	void Draw() override;					// 描画処理
-	static CObject2D* Create();				// 生成
+	
+
+	CObject2D();	// コンストラクタ
+	~CObject2D();	// デストラクタ
+
+	HRESULT Init() override;	// 初期設定
+	void Uninit() override;		// 終了処理
+	void Update() override;		// 更新処理
+	void Draw() override;		// 描画処理
+
 	void BindTex(LPDIRECT3DTEXTURE9 pTex);	// テクスチャ割当
 
-	// 頂点バッファのポインタを取得する
-	LPDIRECT3DVERTEXBUFFER9 GetVtxBuff() { 
-		return m_pVtxBuff;
-	}
+	D3DXVECTOR3 GetPos();			// 中心位置取得
+	void SetPos(D3DXVECTOR3 pos);	// 中心位置設定
+
+	D3DXVECTOR3 GetRot();			// 向き取得
+	void SetRot(D3DXVECTOR3 rot);	// 向き設定
+
+	D3DXVECTOR3 GetSize();			// サイズ取得
+	void SetSize(D3DXVECTOR3 size);	// サイズ設定
+
+	float GetLength();	// 展開用対角線取得
+
+	static CObject2D* Create();	// 生成
 
 private:
+
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	// 頂点バッファのポインタ
 	LPDIRECT3DTEXTURE9 m_pTex;			// テクスチャのポインタ
+
+	D3DXVECTOR3 m_pos;	// 中心位置
+	D3DXVECTOR3 m_rot;	// 向き
+	D3DXVECTOR3 m_size;	// サイズ
+	float m_fLength;	// 展開用対角線
+	float m_fAngle;		// 対角線用角度
 };
 
 #endif // _OBJECT2D_H_

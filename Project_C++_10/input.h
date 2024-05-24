@@ -22,13 +22,16 @@
 class CInput
 {
 public:
-	CInput();					// コンストラクタ
-	~CInput();					// デストラクタ
+
+	CInput();	// コンストラクタ
+	~CInput();	// デストラクタ
+
 	virtual HRESULT Init(HINSTANCE hInstance, HWND hWnd);	// 初期設定
 	virtual void Uninit();		// 終了処理
 	virtual void Update() = 0;	// 更新処理
 
 protected:
+
 	static LPDIRECTINPUT8 m_Input;	// DirectInputオブジェクト
 	LPDIRECTINPUTDEVICE8 m_pDevice;	// 入力デバイス
 };
@@ -39,15 +42,19 @@ protected:
 class CInputKeyboard : public CInput
 {
 public:
-	CInputKeyboard();			// コンストラクタ
-	~CInputKeyboard();			// デストラクタ
+
+	CInputKeyboard();	// コンストラクタ
+	~CInputKeyboard();	// デストラクタ
+
 	HRESULT Init(HINSTANCE hInstance, HWND hWnd) override;	// 初期設定
-	void Uninit() override;		// 終了処理
-	void Update() override;		// 更新処理
+	void Uninit() override;	// 終了処理
+	void Update() override;	// 更新処理
+
 	bool GetPress(int nKey);	// プレス情報取得
 	bool GetTrigger(int nKey);	// トリガー情報取得
 
 private:
+
 	BYTE m_aKeyState[MAX_KEY];			// プレス情報
 	BYTE m_aKeyStateTrigger[MAX_KEY];	// トリガー情報
 };
@@ -92,17 +99,20 @@ public:
 		SHORT Y;
 	} JOYSTICK;
 
-	CInputPad();					// コンストラクタ
-	~CInputPad();					// デストラクタ
-	HRESULT Init();					// 初期設定
-	void Uninit() override;			// 終了処理
-	void Update() override;			// 更新処理
+	CInputPad();	// コンストラクタ
+	~CInputPad();	// デストラクタ
+
+	HRESULT Init();			// 初期設定
+	void Uninit() override;	// 終了処理
+	void Update() override;	// 更新処理
+
 	bool GetPress(JOYKEY Key);		// プレス情報取得
 	bool GetTrigger(JOYKEY Key);	// トリガー情報取得
 	JOYSTICK GetJoyStickL();		// 左スティックの傾き取得
 	JOYSTICK GetJoyStickR();		// 右スティックの傾き取得
 
 private:
+
 	void AdjustJoyStick();	// スティックの調整
 
 	XINPUT_STATE m_aKeyState;			// プレス情報

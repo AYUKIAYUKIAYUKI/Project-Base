@@ -28,8 +28,9 @@ public:
 		SOUND_LABEL_MAX,
 	};
 
-	CSound();								// コンストラクタ
-	~CSound();								// デストラクタ
+	CSound();	// コンストラクタ
+	~CSound();	// デストラクタ
+
 	HRESULT Init(HWND hWnd);				// 初期設定
 	void Uninit(void);						// 終了処理
 	HRESULT PlaySound(SOUND_LABEL label);	// 再生
@@ -58,9 +59,7 @@ private:
 	IXAudio2SourceVoice* m_apSourceVoice[SOUND_LABEL_MAX];	// ソースボイス
 	BYTE* m_apDataAudio[SOUND_LABEL_MAX];					// オーディオデータ
 	DWORD m_aSizeAudio[SOUND_LABEL_MAX];					// オーディオデータサイズ
-
-	// サウンド情報 (仮)
-	SOUNDINFO m_aSoundInfo[SOUND_LABEL_MAX];
+	SOUNDINFO m_aSoundInfo[SOUND_LABEL_MAX];				// サウンド情報 (仮)
 };
 
 #endif	// _SOUND_H_

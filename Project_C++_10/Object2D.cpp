@@ -17,8 +17,14 @@
 //============================================================================
 CObject2D::CObject2D()
 {
-	m_pVtxBuff = nullptr;			// 頂点バッファのポインタを初期化
-	m_pTex = nullptr;				// テクスチャのポインタを初期化
+	m_pVtxBuff = nullptr;	// 頂点バッファのポインタを初期化
+	m_pTex = nullptr;		// テクスチャのポインタを初期化
+
+	m_pos = { 0.0f, 0.0f, 0.0f };	// 中心位置
+	m_rot = { 0.0f, 0.0f, 0.0f };	// 向き
+	m_size = { 0.0f, 0.0f, 0.0f };	// サイズ
+	m_fLength = 0.0f;				// 展開用対角線
+	m_fAngle = 0.0f;				// 対角線用角度
 }
 
 //============================================================================
@@ -35,8 +41,7 @@ CObject2D::~CObject2D()
 HRESULT CObject2D::Init()
 {
 	// デバイスを取得
-	CRenderer* pRenderer = CManager::GetRenderer();
-	LPDIRECT3DDEVICE9 pDev = pRenderer->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
 
 	// 頂点バッファの生成
 	pDev->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
@@ -107,7 +112,55 @@ void CObject2D::Uninit()
 //============================================================================
 void CObject2D::Update()
 {
+	// 必要な数値を算出
+	m_fLength = sqrtf(m_size.x * m_size.x + m_size.y * m_size.y) * 0.5f;
+	m_fAngle = atan2f(m_size.x, m_size.y);
 
+	// 頂点情報へのポインタ
+	VERTEX_2D* pVtx;
+
+	// 頂点バッファをロック
+	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+
+	// 位置の設定
+	pVtx[0].pos = {
+		m_pos.x + sinf(m_rot.z - (D3DX_PI - m_fAngle)) * m_fLength,
+		m_pos.y + cosf(m_rot.z - (D3DX_PI - m_fAngle)) * m_fLength,
+		0.0f
+	};
+
+	pVtx[1].pos = {
+		m_pos.x + sinf(m_rot.z + (D3DX_PI - m_fAngle)) * m_fLength,
+		m_pos.y + cosf(m_rot.z + (D3DX_PI - m_fAngle)) * m_fLength,
+		0.0f
+	};
+
+	pVtx[2].pos = {
+		m_pos.x + sinf(m_rot.z - m_fAngle) * m_fLength,
+		m_pos.y + cosf(m_rot.z - m_fAngle) * m_fLength,
+		0.0f
+	};
+
+	pVtx[3].pos = {
+		m_pos.x + sinf(m_rot.z + m_fAngle) * m_fLength,
+		m_pos.y + cosf(m_rot.z + m_fAngle) * m_fLength,
+		0.0f
+	};
+
+	// テクスチャの設定
+	//pVtx[0].tex = { m_nCntTexPattern / 8.0f, 0.0f };
+	//pVtx[1].tex = { (m_nCntTexPattern + 1) / 8.0f, 0.0f };
+	//pVtx[2].tex = { m_nCntTexPattern / 8.0f, 1.0f };
+	//pVtx[3].tex = { (m_nCntTexPattern + 1) / 8.0f, 1.0f };
+
+	// テクスチャの設定 (仮)
+	pVtx[0].tex = { 0 / 8.0f, 0.0f };
+	pVtx[1].tex = { 1 / 8.0f, 0.0f };
+	pVtx[2].tex = { 0 / 8.0f, 1.0f };
+	pVtx[3].tex = { 1 / 8.0f, 1.0f };
+
+	// 頂点バッファをアンロックする
+	m_pVtxBuff->Unlock();
 }
 
 //============================================================================
@@ -116,8 +169,7 @@ void CObject2D::Update()
 void CObject2D::Draw()
 {
 	// デバイスを取得
-	CRenderer* pRenderer = CManager::GetRenderer();
-	LPDIRECT3DDEVICE9 pDev = pRenderer->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
 
 	// 頂点バッファをデータストリームに設定
 	pDev->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
@@ -135,6 +187,70 @@ void CObject2D::Draw()
 }
 
 //============================================================================
+// テクスチャ割当
+//============================================================================
+void CObject2D::BindTex(LPDIRECT3DTEXTURE9 pTex)
+{
+	m_pTex = pTex;
+}
+
+//============================================================================
+// 中心位置取得
+//============================================================================
+D3DXVECTOR3 CObject2D::GetPos()
+{
+	return m_pos;
+}
+
+//============================================================================
+// 中心位置設定
+//============================================================================
+void CObject2D::SetPos(D3DXVECTOR3 pos)
+{
+	m_pos = pos;
+}
+
+//============================================================================
+// 向き取得
+//============================================================================
+D3DXVECTOR3 CObject2D::GetRot()
+{
+	return m_rot;
+}
+
+//============================================================================
+// 向き設定
+//============================================================================
+void CObject2D::SetRot(D3DXVECTOR3 rot)
+{
+	m_rot = rot;
+}
+
+//============================================================================
+// サイズ取得
+//============================================================================
+D3DXVECTOR3 CObject2D::GetSize()
+{
+	return m_size;
+}
+
+//============================================================================
+// サイズ設定
+//============================================================================
+void CObject2D::SetSize(D3DXVECTOR3 size)
+{
+	m_size = size;
+}
+
+//============================================================================
+// 展開用対角線取得
+//============================================================================
+float CObject2D::GetLength()
+{
+	return m_fLength;
+}
+
+//============================================================================
 // 生成
 //============================================================================
 CObject2D* CObject2D::Create()
@@ -148,12 +264,4 @@ CObject2D* CObject2D::Create()
 	}
 
 	return pObject2D;
-}
-
-//============================================================================
-// テクスチャ割当
-//============================================================================
-void CObject2D::BindTex(LPDIRECT3DTEXTURE9 pTex)
-{
-	m_pTex = pTex;
 }
