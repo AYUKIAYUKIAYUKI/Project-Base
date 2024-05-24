@@ -20,15 +20,15 @@ class CPlayer : public CObject2D
 {
 public:
 
-	CPlayer();					// コンストラクタ
-	~CPlayer();					// デストラクタ
+	CPlayer();	// コンストラクタ
+	~CPlayer();	// デストラクタ
 
 	HRESULT Init() override;	// 初期設定
 	void Uninit() override;		// 終了処理
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
 
-	static CPlayer* Create(D3DXVECTOR3 pos_arg, D3DXVECTOR3 size_arg);	// 生成
+	static CPlayer* Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);	// 生成
 
 private:
 

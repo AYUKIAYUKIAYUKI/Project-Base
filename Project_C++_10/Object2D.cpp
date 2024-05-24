@@ -154,10 +154,10 @@ void CObject2D::Update()
 	//pVtx[3].tex = { (m_nCntTexPattern + 1) / 8.0f, 1.0f };
 
 	// テクスチャの設定 (仮)
-	pVtx[0].tex = { 0 / 8.0f, 0.0f };
-	pVtx[1].tex = { 1 / 8.0f, 0.0f };
-	pVtx[2].tex = { 0 / 8.0f, 1.0f };
-	pVtx[3].tex = { 1 / 8.0f, 1.0f };
+	pVtx[0].tex = { 0.0f, 0.0f };
+	pVtx[1].tex = { 1.0f, 0.0f };
+	pVtx[2].tex = { 0.0f, 1.0f };
+	pVtx[3].tex = { 1.0f, 1.0f };
 
 	// 頂点バッファをアンロックする
 	m_pVtxBuff->Unlock();

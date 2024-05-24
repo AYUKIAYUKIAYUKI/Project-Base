@@ -11,7 +11,7 @@
 #include "player.h"
 #include "main.h"
 #include "manager.h"
-//#include "bullet.h"
+#include "bullet.h"
 
 //============================================================================
 // コンストラクタ
@@ -56,6 +56,9 @@ void CPlayer::Uninit()
 //============================================================================
 void CPlayer::Update()
 {
+	// 基底クラスの更新
+	CObject2D::Update();
+
 	// 拡縮
 	Scaling();
 
@@ -67,9 +70,6 @@ void CPlayer::Update()
 
 	// アニメーション
 	Animation();
-
-	// 基底クラスの更新
-	CObject2D::Update();
 }
 
 //============================================================================
@@ -84,16 +84,17 @@ void CPlayer::Draw()
 //============================================================================
 // 生成
 //============================================================================
-CPlayer* CPlayer::Create(D3DXVECTOR3 pos_arg, D3DXVECTOR3 size_arg)
+CPlayer* CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
+	// プレイヤーを生成
 	CPlayer* pPlayer = new CPlayer;
 
 	// 生成出来ていたら初期設定
 	if (pPlayer != nullptr)
 	{
-		pPlayer->Init();			// 基底クラスの初期設定
-		pPlayer->SetPos(pos_arg);	// 中心位置の設定
-		pPlayer->SetSize(size_arg);	// サイズの設定
+		pPlayer->Init();		// 基底クラスの初期設定
+		pPlayer->SetPos(pos);	// 中心位置の設定
+		pPlayer->SetSize(size);	// サイズの設定
 	}
 
 	// デバイスを取得
@@ -234,12 +235,15 @@ void CPlayer::Translation()
 	// 弾を発射 (キーボード、パッド取得があるのでここで)
 	if (pKeyboard->GetTrigger(DIK_SPACE) || pPad->GetTrigger(CInputPad::JOYKEY_X))
 	{
+		// 向き情報を取得
+		D3DXVECTOR3 rot = CObject2D::GetRot();
+
 		// 弾の生成
-		//CBullet::Create(
-		//	m_pos,					// 中心位置
-		//	{ 30.0f, 30.0f, 0.0f },	// サイズ
-		//	50,						// 使用期間
-		//	m_rot.z);				// 飛ぶ角度
+		CBullet::Create(
+			pos,					// 中心位置
+			{ 30.0f, 30.0f, 0.0f },	// サイズ
+			50,						// 使用期間
+			rot.z);					// 飛ぶ角度
 	}
 
 	// デバッグ用にサウンド再生 (キーボード、パッド取得があるのでここで)
