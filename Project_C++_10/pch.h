@@ -9,13 +9,14 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
+#include <assert.h>
 #include <windows.h>	// Windowsアプリケーション動作用
-#include "d3dx9.h"		// DirectX9動作用
+#include <d3dx9.h>		// DirectX9動作用
 
 #define DIRECTINPUT_VERSION	0x0800	// DirectInputのバージョン
-#include "dinput.h"					// DirectInput動作用
-#include "xinput.h"					// コントローラー動作用
-#include "xaudio2.h"				// サウンド動作用
+#include <dinput.h>					// DirectInput動作用
+#include <xinput.h>					// コントローラー動作用
+#include <xaudio2.h>				// サウンド動作用
 
 //****************************************************
 // ライブラリのリンク

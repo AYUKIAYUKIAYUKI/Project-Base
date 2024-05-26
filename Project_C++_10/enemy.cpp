@@ -1,6 +1,6 @@
 //============================================================================
 // 
-// 爆発 [explosion.cpp]
+// プレイヤー [enemy.cpp]
 // Author : 福田歩希
 // 
 //============================================================================
@@ -8,7 +8,7 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
-#include "explosion.h"
+#include "enemy.h"
 #include "main.h"
 #include "manager.h"
 #include "bullet.h"
@@ -16,15 +16,15 @@
 //============================================================================
 // コンストラクタ
 //============================================================================
-CExplosion::CExplosion() : CObject2D::CObject2D()
+CEnemy::CEnemy() : CObject2D::CObject2D()
 {
-	m_nCntTexChange = 0;	// テクスチャ変更管理
+	m_rot_tgt = { 0.0f, 0.0f, 0.0f };	// 目標向き
 }
 
 //============================================================================
 // デストラクタ
 //============================================================================
-CExplosion::~CExplosion()
+CEnemy::~CEnemy()
 {
 
 }
@@ -32,7 +32,7 @@ CExplosion::~CExplosion()
 //============================================================================
 // 初期設定
 //============================================================================
-HRESULT CExplosion::Init()
+HRESULT CEnemy::Init()
 {
 	// 基底クラスの初期設定
 	HRESULT hr = CObject2D::Init();
@@ -43,7 +43,7 @@ HRESULT CExplosion::Init()
 //============================================================================
 // 終了処理
 //============================================================================
-void CExplosion::Uninit()
+void CEnemy::Uninit()
 {
 	// 基底クラスの終了処理
 	CObject2D::Uninit();
@@ -52,10 +52,13 @@ void CExplosion::Uninit()
 //============================================================================
 // 更新処理
 //============================================================================
-void CExplosion::Update()
+void CEnemy::Update()
 {
-	// アニメーション
-	Animation();
+	// 回転
+	Rotation();
+
+	// 移動
+	Translation();
 
 	// 基底クラスの更新
 	CObject2D::Update();
@@ -64,7 +67,7 @@ void CExplosion::Update()
 //============================================================================
 // 描画処理
 //============================================================================
-void CExplosion::Draw()
+void CEnemy::Draw()
 {
 	// 基底クラスの描画処理
 	CObject2D::Draw();
@@ -73,68 +76,96 @@ void CExplosion::Draw()
 //============================================================================
 // 生成
 //============================================================================
-CExplosion* CExplosion::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
+CEnemy* CEnemy::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
-	// 爆発を生成
-	CExplosion* pExplosion = new CExplosion;
+	CEnemy* pEnemy = new CEnemy;
 
 	// 生成出来ていたら初期設定
-	if (pExplosion != nullptr)
+	if (pEnemy != nullptr)
 	{
-		pExplosion->SetType(TYPE::NONE);	// タイプを設定
+		pEnemy->SetType(TYPE::ENEMY);	// タイプを設定
 
-		pExplosion->Init();			// 基底クラスの初期設定
-		pExplosion->SetPos(pos);	// 中心位置の設定
-		pExplosion->SetSize(size);	// サイズの設定
-
-		pExplosion->SetTexWidth(1.0f / 8.0f);	// 横テクスチャ分割幅
-		pExplosion->SetTexHeight(1.0f);			// 縦テクスチャ分縦幅
+		pEnemy->Init();			// 基底クラスの初期設定
+		pEnemy->SetPos(pos);	// 中心位置の設定
+		pEnemy->SetSize(size);	// サイズの設定
 	}
 
 	// デバイスを取得
-	CRenderer* pRenderer = CManager::GetRenderer();
-	LPDIRECT3DDEVICE9 pDev = pRenderer->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
 
 	// テクスチャのポインタ
 	LPDIRECT3DTEXTURE9 pTex = nullptr;
 
 	// テクスチャの生成
 	D3DXCreateTextureFromFile(pDev,
-		"data\\TEXTURE\\explosion000.png",
+		"data\\TEXTURE\\runningman0.png",
 		&pTex);
 
 	// テクスチャを設定
-	pExplosion->BindTex(pTex);
+	pEnemy->BindTex(pTex);
 
-	return pExplosion;
+	return pEnemy;
 }
 
 //============================================================================
-// アニメーション
+// 回転
 //============================================================================
-void CExplosion::Animation()
+void CEnemy::Rotation()
 {
-	// テクスチャ変更管理カウントアップ
-	m_nCntTexChange++;
+	// 向き情報取得
+	D3DXVECTOR3 rot = CObject2D::GetRot();
 
-	if (m_nCntTexChange >= 15)
+	// ブレーキ力
+	float fStopEnergy = 0.1f;
+
+	// 回転反映と回転量の減衰
+	if (m_rot_tgt.z - rot.z > D3DX_PI)
 	{
-		// 横テクスチャ種類情報取得
-		int nTexPatternU = CObject2D::GetNowPatternU();
-
-		// 横テクスチャ種類変更
-		nTexPatternU++;
-
-		if (nTexPatternU >= 8)
-		{
-			// 自身を破棄
-			CObject::Release();
-		}
-
-		// 横テクスチャ種類情報設定
-		CObject2D::SetNowPatternU(nTexPatternU);
-
-		// 変更管理カウントをリセット
-		m_nCntTexChange = 0;
+		rot.z += ((m_rot_tgt.z - rot.z) * fStopEnergy + (D3DX_PI * 1.8f));
 	}
+	else if (m_rot_tgt.z - rot.z < -D3DX_PI)
+	{
+		rot.z += ((m_rot_tgt.z - rot.z) * fStopEnergy + (D3DX_PI * -1.8f));
+	}
+	else
+	{
+		rot.z += ((m_rot_tgt.z - rot.z) * fStopEnergy);
+	}
+
+	// 向き情報設定
+	CObject2D::SetRot(rot);
+}
+
+//============================================================================
+// 移動
+//============================================================================
+void CEnemy::Translation()
+{
+	// 中心位置情報を取得
+	D3DXVECTOR3 pos = CObject2D::GetPos();
+
+	pos.x += 0.5f;
+	pos.y += -0.5f;
+
+	// 端へ到達でループ
+	if ((pos.x - CObject2D::GetSize().x) > SCREEN_WIDTH)
+	{
+		pos.x = 0.0f - CObject2D::GetSize().x;
+	}
+	else if ((pos.x + CObject2D::GetSize().x) < 0.0f)
+	{
+		pos.x = SCREEN_WIDTH;
+	}
+
+	if ((pos.y + CObject2D::GetSize().y) < 0.0f)
+	{
+		pos.y = SCREEN_HEIGHT + CObject2D::GetSize().y;
+	}
+	else if ((pos.y - CObject2D::GetSize().y) > SCREEN_HEIGHT)
+	{
+		pos.y = 0.0f;
+	}
+
+	// 中心位置を設定
+	CObject2D::SetPos(pos);
 }

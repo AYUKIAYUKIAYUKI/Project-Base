@@ -122,7 +122,7 @@ void CObject2D::Update()
 	}
 
 	// 必要な数値を算出
-	m_fLength = sqrtf(m_size.x * m_size.x + m_size.y * m_size.y) * 0.5f;
+	m_fLength = sqrtf(m_size.x * m_size.x + m_size.y * m_size.y);
 	m_fAngle = atan2f(m_size.x, m_size.y);
 
 	// 頂点情報へのポインタ

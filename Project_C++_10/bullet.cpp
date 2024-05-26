@@ -11,6 +11,7 @@
 #include "bullet.h"
 #include "main.h"
 #include "manager.h"
+#include "enemy.h"
 #include "explosion.h"
 
 //============================================================================
@@ -47,7 +48,7 @@ HRESULT CBullet::Init()
 void CBullet::Uninit()
 {
 	// 基底クラスの終了処理
-	CObject2D::Uninit();
+ 	CObject2D::Uninit();
 }
 
 //============================================================================
@@ -57,6 +58,12 @@ void CBullet::Update()
 {
 	// 移動
 	Translation();
+
+	// 当たり判定
+	if (CollisionEnemy())
+	{
+		return;
+	}
 
 	// 期間経過
 	Progress();
@@ -84,6 +91,8 @@ CBullet* CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nRemain, float f
 	// 生成出来ていたら初期設定
 	if (pBullet != nullptr)
 	{
+		pBullet->SetType(TYPE::NONE);	// タイプを設定
+
 		pBullet->Init();		// 基底クラスの初期設定
 		pBullet->SetPos(pos);	// 中心位置の設定
 		pBullet->SetSize(size);	// サイズの設定
@@ -126,6 +135,55 @@ void CBullet::Translation()
 }
 
 //============================================================================
+// 当たり判定
+//============================================================================
+bool CBullet::CollisionEnemy()
+{
+	// オブジェクトの総数を取得
+	//int nMaxObj = CObject::GetNumAll();
+
+	for (int nCntObj = 0; nCntObj < 64; nCntObj++)
+	{
+		// オブジェクト情報を取得
+		CObject* pObject = CObject::GetObject(nCntObj);
+
+		if (pObject == nullptr)
+		{ // カウントエラー
+			continue;
+		}
+
+		// 敵との当たり判定を行う
+		if (pObject->GetType() == CObject::TYPE::ENEMY)
+		{
+			// オブジェクトクラスをエネミークラスへダウンキャスト
+			CEnemy* pEnemy = (CEnemy*)pObject;
+
+			// 衝突したら
+			if (CObject2D::GetPos().x + CObject2D::GetSize().x >= pEnemy->GetPos().x - pEnemy->GetSize().x &&
+				CObject2D::GetPos().x - CObject2D::GetSize().x <= pEnemy->GetPos().x + pEnemy->GetSize().x &&
+				CObject2D::GetPos().y + CObject2D::GetSize().y >= pEnemy->GetPos().y - pEnemy->GetSize().y &&
+				CObject2D::GetPos().y - CObject2D::GetSize().y <= pEnemy->GetPos().y + pEnemy->GetSize().y)
+			{
+				// 自身を破棄
+				CObject::Release();
+
+				// エネミーを破棄
+				pObject->Release();
+
+				// 爆発を生成
+				CExplosion::Create(
+					CObject2D::GetPos(),		// 中心位置
+					{ 25.0f, 25.0f, 0.0f });	// サイズ
+
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+//============================================================================
 // 期間経過
 //============================================================================
 void CBullet::Progress()
@@ -142,6 +200,6 @@ void CBullet::Progress()
 		// 爆発を生成
 		CExplosion::Create(
 			CObject2D::GetPos(),		// 中心位置
-			{ 50.0f, 50.0f, 0.0f });	// サイズ
+			{ 25.0f, 25.0f, 0.0f });	// サイズ
 	}
 }

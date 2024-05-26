@@ -12,6 +12,7 @@
 #include "object.h"
 #include "bg.h"
 #include "player.h"
+#include "enemy.h"
 
 //============================================================================
 // コンストラクタ
@@ -113,7 +114,12 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 	// プレイヤーの生成
 	CPlayer::Create(
 		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// 中心位置
-		{ 50.0f, 100.0f, 0.0f });								// サイズ
+		{ 25.0f, 50.0f, 0.0f });								// サイズ
+
+	// エネミーの生成
+	CEnemy::Create(
+		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// 中心位置
+		{ 50.0f, 50.0f, 0.0f });								// サイズ
 
 	return S_OK;
 }

@@ -91,6 +91,8 @@ CPlayer* CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	// 生成出来ていたら初期設定
 	if (pPlayer != nullptr)
 	{
+		pPlayer->SetType(TYPE::PLAYER);	// タイプを設定
+
 		pPlayer->Init();		// 基底クラスの初期設定
 		pPlayer->SetPos(pos);	// 中心位置の設定
 		pPlayer->SetSize(size);	// サイズの設定
@@ -240,7 +242,7 @@ void CPlayer::Translation()
 		// 弾の生成
 		CBullet::Create(
 			pos,					// 中心位置
-			{ 30.0f, 30.0f, 0.0f },	// サイズ
+			{ 15.0f, 15.0f, 0.0f },	// サイズ
 			50,						// 使用期間
 			CObject2D::GetRot().z);	// 飛ぶ角度
 	}

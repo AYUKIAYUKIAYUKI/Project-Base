@@ -1,12 +1,12 @@
 //============================================================================
 // 
-// 弾、ヘッダファイル [bullet.h]
+// エネミー、ヘッダファイル [enemy.h]
 // Author : 福田歩希
 // 
 //============================================================================
 
-#ifndef _BULLET_H_
-#define _BULLET_H_	// 二重インクルード防止
+#ifndef _ENEMY_H_
+#define _ENEMY_H_	// 二重インクルード防止
 
 //****************************************************
 // インクルードファイル
@@ -14,30 +14,28 @@
 #include "object2D.h"
 
 //****************************************************
-// バレットクラス
+// エネミークラス
 //****************************************************
-class CBullet : public CObject2D
+class CEnemy : public CObject2D
 {
 public:
 
-	CBullet();				// コンストラクタ
-	~CBullet() override;	// デストラクタ
+	CEnemy();				// コンストラクタ
+	~CEnemy() override;	// デストラクタ
 
 	HRESULT Init() override;	// 初期設定
 	void Uninit() override;		// 終了処理
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
 
-	static CBullet* Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nRemain, float fFlyAngle);	// 生成
+	static CEnemy* Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);	// 生成
 
 private:
 
-	void Translation();		// 移動
-	bool CollisionEnemy();	// 当たり判定
-	void Progress();		// 期間経過
+	void Rotation();	// 回転
+	void Translation();	// 移動
 
-	int m_nRemain;		// 使用期間
-	float m_fFlyAngle;	// 飛ぶ角度
+	D3DXVECTOR3 m_rot_tgt;	// 目標向き
 };
 
-#endif // _PALYER_H_
+#endif // _ENEMY_H_
