@@ -1,6 +1,6 @@
 //============================================================================
 // 
-// エネミー [enemy.cpp]
+// エフェクト [effect.cpp]
 // Author : 福田歩希
 // 
 //============================================================================
@@ -8,22 +8,21 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
-#include "enemy.h"
+#include "effect.h"
 #include "manager.h"
-#include "bullet.h"
 
 //============================================================================
 // コンストラクタ
 //============================================================================
-CEnemy::CEnemy() : CObject2D::CObject2D()
+CEffect::CEffect() : CObject2D::CObject2D()
 {
-	m_rot_tgt = { 0.0f, 0.0f, 0.0f };	// 目標向き
+
 }
 
 //============================================================================
 // デストラクタ
 //============================================================================
-CEnemy::~CEnemy()
+CEffect::~CEffect()
 {
 
 }
@@ -31,7 +30,7 @@ CEnemy::~CEnemy()
 //============================================================================
 // 初期設定
 //============================================================================
-HRESULT CEnemy::Init()
+HRESULT CEffect::Init()
 {
 	// 基底クラスの初期設定
 	HRESULT hr = CObject2D::Init();
@@ -42,7 +41,7 @@ HRESULT CEnemy::Init()
 //============================================================================
 // 終了処理
 //============================================================================
-void CEnemy::Uninit()
+void CEffect::Uninit()
 {
 	// 基底クラスの終了処理
 	CObject2D::Uninit();
@@ -51,13 +50,10 @@ void CEnemy::Uninit()
 //============================================================================
 // 更新処理
 //============================================================================
-void CEnemy::Update()
+void CEffect::Update()
 {
-	// 回転
-	Rotation();
-
-	// 移動
-	Translation();
+	// 期間経過
+	Progress();
 
 	// 基底クラスの更新
 	CObject2D::Update();
@@ -66,97 +62,69 @@ void CEnemy::Update()
 //============================================================================
 // 描画処理
 //============================================================================
-void CEnemy::Draw()
+void CEffect::Draw()
 {
+	// デバイスを取得
+	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
+
+	// アルファブレンディングを加算合成に設定
+	pDev->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+	pDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	pDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
+
 	// 基底クラスの描画処理
 	CObject2D::Draw();
+
+	// アルファブレンディングをの設定を戻す
+	pDev->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
+	pDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
+	pDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 }
 
 //============================================================================
 // 生成
 //============================================================================
-CEnemy* CEnemy::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
+CEffect* CEffect::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
-	CEnemy* pEnemy = new CEnemy;
+	CEffect* pEffect = new CEffect;
 
 	// 生成出来ていたら初期設定
-	if (pEnemy != nullptr)
+	if (pEffect != nullptr)
 	{
-		pEnemy->SetType(TYPE::ENEMY);	// タイプを設定
+		pEffect->SetType(TYPE::NONE);	// タイプを設定
 
-		pEnemy->Init();			// 基底クラスの初期設定
-		pEnemy->SetPos(pos);	// 中心位置の設定
-		pEnemy->SetSize(size);	// サイズの設定
+		pEffect->Init();		// 基底クラスの初期設定
+		pEffect->SetPos(pos);	// 中心位置の設定
+		pEffect->SetSize(size);	// サイズの設定
 	}
 
 	// テクスチャを取得
-	LPDIRECT3DTEXTURE9 pTex = CManager::GetTexture()->GetTex(CTexture::TEX_TYPE::ENEMY_000);
+	LPDIRECT3DTEXTURE9 pTex = CManager::GetTexture()->GetTex(CTexture::TEX_TYPE::EFFECT_000);
 
 	// テクスチャを設定
-	pEnemy->BindTex(pTex);
+	pEffect->BindTex(pTex);
 
-	return pEnemy;
+	return pEffect;
 }
 
 //============================================================================
-// 回転
+// 期間経過
 //============================================================================
-void CEnemy::Rotation()
+void CEffect::Progress()
 {
-	// 向き情報取得
-	D3DXVECTOR3 rot = CObject2D::GetRot();
+	// サイズ情報を取得
+	D3DXVECTOR3 size = CObject2D::GetSize();
 
-	// ブレーキ力
-	float fStopEnergy = 0.1f;
+	// 縮小
+	size.x += -0.5f;
+	size.y += -0.5f;
 
-	// 回転反映と回転量の減衰
-	if (m_rot_tgt.z - rot.z > D3DX_PI)
+	// 裏返ったタイミングで消滅
+	if (size.x <= 0)
 	{
-		rot.z += ((m_rot_tgt.z - rot.z) * fStopEnergy + (D3DX_PI * 1.8f));
-	}
-	else if (m_rot_tgt.z - rot.z < -D3DX_PI)
-	{
-		rot.z += ((m_rot_tgt.z - rot.z) * fStopEnergy + (D3DX_PI * -1.8f));
-	}
-	else
-	{
-		rot.z += ((m_rot_tgt.z - rot.z) * fStopEnergy);
+		CObject::Release();	// 自身を破棄
 	}
 
-	// 向き情報設定
-	CObject2D::SetRot(rot);
-}
-
-//============================================================================
-// 移動
-//============================================================================
-void CEnemy::Translation()
-{
-	// 中心位置情報を取得
-	D3DXVECTOR3 pos = CObject2D::GetPos();
-
-	pos.x += 0.5f;
-	pos.y += -0.5f;
-
-	// 端へ到達でループ
-	if ((pos.x - CObject2D::GetSize().x) > SCREEN_WIDTH)
-	{
-		pos.x = 0.0f - CObject2D::GetSize().x;
-	}
-	else if ((pos.x + CObject2D::GetSize().x) < 0.0f)
-	{
-		pos.x = SCREEN_WIDTH;
-	}
-
-	if ((pos.y + CObject2D::GetSize().y) < 0.0f)
-	{
-		pos.y = SCREEN_HEIGHT + CObject2D::GetSize().y;
-	}
-	else if ((pos.y - CObject2D::GetSize().y) > SCREEN_HEIGHT)
-	{
-		pos.y = 0.0f;
-	}
-
-	// 中心位置を設定
-	CObject2D::SetPos(pos);
+	// サイズ情報を設定
+	CObject2D::SetSize(size);
 }

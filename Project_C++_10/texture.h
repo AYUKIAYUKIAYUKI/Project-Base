@@ -20,11 +20,12 @@ public:
 	//****************************************************
 	enum TEX_TYPE
 	{
-		BG_000 = 0,		// 背景
-		PLAYER_000,		// プレイヤー
-		BULLET_000,		// 弾
-		EXPLOSION_000,	// 爆発
-		ENEMY_000,		// 敵
+		BG_000 = 0,		// 背景000
+		PLAYER_000,		// プレイヤー000
+		BULLET_000,		// 弾000
+		EFFECT_000,		// エフェクト000
+		EXPLOSION_000,	// 爆発000
+		ENEMY_000,		// 敵000
 		MAX,
 	};
 
@@ -42,8 +43,9 @@ private:
 
 	// ↓これは削除しろ->あとテクスチャマネージャーは順序的にレンダラーのメンバの方が楽そう
 	const char* m_aFilename[TEX_TYPE::MAX] = {
-		"data\\TEXTURE\\KOME.png",
+		"data\\TEXTURE\\peroro.png",
 		"data\\TEXTURE\\runningman000.png",
+		"data\\TEXTURE\\effect000.jpg",
 		"data\\TEXTURE\\bullet000.png",
 		"data\\TEXTURE\\explosion000.png",
 		"data\\TEXTURE\\AL-1S.png",

@@ -51,7 +51,7 @@ protected:
 
 private:
 
-	static const int MAX_OBJ = 64;	// オブジェクト最大数
+	static const int MAX_OBJ = 512;	// オブジェクト最大数
 
 	static CObject* m_apObject[MAX_OBJ];	// オブジェクト管理
 	static int m_nNumAll;					// オブジェクト総数
@@ -61,4 +61,4 @@ private:
 
 };
 
-#endif // _RENDERER_H_
+#endif // _OBJECT_H_

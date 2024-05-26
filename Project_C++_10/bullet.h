@@ -40,4 +40,4 @@ private:
 	float m_fFlyAngle;	// ”ò‚ÔŠp“x
 };
 
-#endif // _PALYER_H_
+#endif // _BULLET_H_

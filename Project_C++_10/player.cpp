@@ -9,7 +9,6 @@
 // インクルードファイル
 //****************************************************
 #include "player.h"
-#include "main.h"
 #include "manager.h"
 #include "bullet.h"
 
@@ -235,7 +234,7 @@ void CPlayer::Translation()
 		CBullet::Create(
 			pos,					// 中心位置
 			{ 15.0f, 15.0f, 0.0f },	// サイズ
-			50,						// 使用期間
+			100,					// 使用期間
 			CObject2D::GetRot().z);	// 飛ぶ角度
 	}
 

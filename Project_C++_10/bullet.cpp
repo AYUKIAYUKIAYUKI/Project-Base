@@ -9,9 +9,9 @@
 // インクルードファイル
 //****************************************************
 #include "bullet.h"
-#include "main.h"
 #include "manager.h"
 #include "enemy.h"
+#include "effect.h"
 #include "explosion.h"
 
 //============================================================================
@@ -119,8 +119,8 @@ void CBullet::Translation()
 	D3DXVECTOR3 pos = CObject2D::GetPos();
 
 	// 設定された角度に飛んでいく
-	pos.x += sinf(m_fFlyAngle) * 10.0f;
-	pos.y += cosf(m_fFlyAngle) * 10.0f;
+	pos.x += sinf(m_fFlyAngle) * 5.0f;
+	pos.y += cosf(m_fFlyAngle) * 5.0f;
 
 	// 中心位置を設定
 	CObject2D::SetPos(pos);
@@ -182,6 +182,10 @@ void CBullet::Progress()
 {
 	// 使用期間カウントダウン
 	m_nRemain--;
+
+	// エフェクト生成
+	CEffect::Create(CObject2D::GetPos(),	// 中心位置
+		CObject2D::GetSize());				// サイズ
 
 	// 使用期間がなくなると消滅
 	if (m_nRemain <= 0)

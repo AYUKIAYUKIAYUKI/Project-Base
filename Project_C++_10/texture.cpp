@@ -23,7 +23,7 @@ CTexture::CTexture()
 {
 	for (int i = 0; i < MAX_TEX; i++)
 	{
-		m_apTexTemp[i] = nullptr;
+		m_apTexTemp[i] = nullptr;	// テクスチャ情報の初期化
 	}
 }
 
@@ -49,6 +49,11 @@ HRESULT CTexture::Load()
 		D3DXCreateTextureFromFile(pDev,
 			m_aFilename[i],
 			&m_apTexTemp[i]);
+
+		if (m_apTexTemp[i] == nullptr)
+		{ // テクスチャ生成失敗
+			assert(false);
+		}
 	}
 
 	return S_OK;
@@ -75,5 +80,10 @@ void CTexture::Unload()
 //============================================================================
 LPDIRECT3DTEXTURE9 CTexture::GetTex(TEX_TYPE type)
 {
+	if (m_apTexTemp[type] == nullptr)
+	{ // テクスチャ取得不能
+		assert(false);
+	}
+
 	return m_apTexTemp[type];
 }

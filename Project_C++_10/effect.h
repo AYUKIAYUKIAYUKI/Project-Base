@@ -1,12 +1,12 @@
 //============================================================================
 // 
-// 爆発、ヘッダファイル [explosion.h]
+// エフェクト、ヘッダファイル [effect.h]
 // Author : 福田歩希
 // 
 //============================================================================
 
-#ifndef _EXPLOSION_H_
-#define _EXPLOSION_H_	// 二重インクルード防止
+#ifndef _EFFECT_H_
+#define _EFFECT_H_	// 二重インクルード防止
 
 //****************************************************
 // インクルードファイル
@@ -14,27 +14,25 @@
 #include "object2D.h"
 
 //****************************************************
-// エクスプロージョンクラス
+// エネミークラス
 //****************************************************
-class CExplosion : public CObject2D
+class CEffect : public CObject2D
 {
 public:
 
-	CExplosion();			// コンストラクタ
-	~CExplosion() override;	// デストラクタ
+	CEffect();				// コンストラクタ
+	~CEffect() override;	// デストラクタ
 
 	HRESULT Init() override;	// 初期設定
 	void Uninit() override;		// 終了処理
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
 
-	static CExplosion* Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);	// 生成
+	static CEffect* Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);	// 生成
 
 private:
 
-	void Animation();	// アニメーション
-
-	int m_nCntTexChange;	// テクスチャ変更管理
+	void Progress();	// 期間経過
 };
 
-#endif // _EXPLOSION_H_
+#endif // _EFFECT_H_

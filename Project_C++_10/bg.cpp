@@ -43,7 +43,7 @@ HRESULT CBg::Init()
 
 	//テクスチャの読込み
 	D3DXCreateTextureFromFile(pDev,
-		"data\\TEXTURE\\KOME.png",
+		"data\\TEXTURE\\RIDAKURU.png",
 		&m_pTex);
 
 	// 頂点バッファの生成
@@ -73,10 +73,10 @@ HRESULT CBg::Init()
 	pVtx[3].rhw = 1.0f;
 
 	// 色の設定
-	pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
-	pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	pVtx[0].col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
+	pVtx[1].col = D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f);
+	pVtx[2].col = D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f);
+	pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f);
 
 	// テクスチャの設定
 	pVtx[0].tex = { 0.0f, 0.0f };
