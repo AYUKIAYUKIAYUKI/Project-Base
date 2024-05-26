@@ -10,6 +10,7 @@
 //****************************************************
 #include "manager.h"
 
+// ‰¼
 #include "bg.h"
 #include "player.h"
 #include "enemy.h"

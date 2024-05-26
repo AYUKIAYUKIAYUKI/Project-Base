@@ -9,7 +9,6 @@
 // インクルードファイル
 //****************************************************
 #include "explosion.h"
-#include "main.h"
 #include "manager.h"
 #include "bullet.h"
 
