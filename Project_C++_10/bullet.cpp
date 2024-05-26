@@ -101,16 +101,8 @@ CBullet* CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nRemain, float f
 		pBullet->m_fFlyAngle = fFlyAngle;	// 飛ぶ角度の設定
 	}
 
-	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
-
-	// テクスチャのポインタ
-	LPDIRECT3DTEXTURE9 pTex = nullptr;
-
-	// テクスチャの生成
-	D3DXCreateTextureFromFile(pDev,
-		"data\\TEXTURE\\bullet000.png",
-		&pTex);
+	// テクスチャを取得
+	LPDIRECT3DTEXTURE9 pTex = CManager::GetTexture()->GetTex(CTexture::TEX_TYPE::BULLET_000);
 
 	// テクスチャを設定
 	pBullet->BindTex(pTex);

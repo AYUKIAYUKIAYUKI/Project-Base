@@ -177,6 +177,7 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="renderer.cpp" />
     <ClCompile Include="sound.cpp" />
+    <ClCompile Include="texture.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="bg.h" />
@@ -192,6 +193,7 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="renderer.h" />
     <ClInclude Include="sound.h" />
+    <ClInclude Include="texture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

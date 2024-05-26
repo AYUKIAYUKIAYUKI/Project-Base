@@ -12,6 +12,7 @@
 // インクルードファイル
 //****************************************************
 #include "renderer.h"
+#include "texture.h"
 #include "input.h"
 #include "sound.h"
 
@@ -31,6 +32,7 @@ public:
 	void Draw();	// 描画処理
 
 	static CRenderer* GetRenderer();		// レンダラー取得
+	static CTexture* GetTexture();			// テクスチャ取得
 	static CInputKeyboard* GetKeyboard();	// キーボード取得
 	static CInputPad* GetPad();				// パッド取得
 	static CSound* GetSound();				// サウド取得
@@ -38,6 +40,7 @@ public:
 private:
 
 	static CRenderer* m_pRenderer;		// レンダラー管理
+	static CTexture* m_pTexture;		// テクスチャ管理
 	static CInputKeyboard* m_pKeyboard;	// キーボード管理
 	static CInputPad* m_pPad;			// パッド管理
 	static CSound* m_pSound;			// サウンド管理

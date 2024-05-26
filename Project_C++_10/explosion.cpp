@@ -91,17 +91,8 @@ CExplosion* CExplosion::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 		pExplosion->SetTexHeight(1.0f);			// 縦テクスチャ分縦幅
 	}
 
-	// デバイスを取得
-	CRenderer* pRenderer = CManager::GetRenderer();
-	LPDIRECT3DDEVICE9 pDev = pRenderer->GetDeviece();
-
-	// テクスチャのポインタ
-	LPDIRECT3DTEXTURE9 pTex = nullptr;
-
-	// テクスチャの生成
-	D3DXCreateTextureFromFile(pDev,
-		"data\\TEXTURE\\explosion000.png",
-		&pTex);
+	// テクスチャを取得
+	LPDIRECT3DTEXTURE9 pTex = CManager::GetTexture()->GetTex(CTexture::TEX_TYPE::EXPLOSION_000);
 
 	// テクスチャを設定
 	pExplosion->BindTex(pTex);

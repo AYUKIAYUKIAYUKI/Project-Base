@@ -101,16 +101,8 @@ CPlayer* CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 		pPlayer->SetTexHeight(1.0f);		// 縦テクスチャ分縦幅
 	}
 
-	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
-
-	// テクスチャのポインタ
-	LPDIRECT3DTEXTURE9 pTex = nullptr;
-
-	// テクスチャの生成
-	D3DXCreateTextureFromFile(pDev,
-		"data\\TEXTURE\\runningman000.png",
-		&pTex);
+	// テクスチャを取得
+	LPDIRECT3DTEXTURE9 pTex = CManager::GetTexture()->GetTex(CTexture::TEX_TYPE::PLAYER_000);
 
 	// テクスチャを設定
 	pPlayer->BindTex(pTex);

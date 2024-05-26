@@ -90,16 +90,8 @@ CEnemy* CEnemy::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 		pEnemy->SetSize(size);	// サイズの設定
 	}
 
-	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
-
-	// テクスチャのポインタ
-	LPDIRECT3DTEXTURE9 pTex = nullptr;
-
-	// テクスチャの生成
-	D3DXCreateTextureFromFile(pDev,
-		"data\\TEXTURE\\runningman0.png",
-		&pTex);
+	// テクスチャを取得
+	LPDIRECT3DTEXTURE9 pTex = CManager::GetTexture()->GetTex(CTexture::TEX_TYPE::ENEMY_000);
 
 	// テクスチャを設定
 	pEnemy->BindTex(pTex);

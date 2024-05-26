@@ -96,13 +96,6 @@ HRESULT CObject2D::Init()
 //============================================================================
 void CObject2D::Uninit()
 {
-	// テクスチャの破棄
-	if (m_pTex != nullptr)
-	{
-		m_pTex->Release();
-		m_pTex = nullptr;
-	}
-
 	// 頂点バッファの破棄
 	if (m_pVtxBuff != nullptr)
 	{
