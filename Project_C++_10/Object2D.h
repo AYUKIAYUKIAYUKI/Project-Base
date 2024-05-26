@@ -20,9 +20,8 @@ class CObject2D : public CObject
 {
 public:
 	
-
-	CObject2D();	// コンストラクタ
-	~CObject2D();	// デストラクタ
+	CObject2D();			// コンストラクタ
+	~CObject2D() override;	// デストラクタ
 
 	HRESULT Init() override;	// 初期設定
 	void Uninit() override;		// 終了処理
@@ -42,6 +41,15 @@ public:
 
 	float GetLength();	// 展開用対角線取得
 
+	void SetTexWidth(float fWidth);		// 横テクスチャ分割幅設定
+	void SetTexHeight(float fHeight);	// 縦テクスチャ分割幅設定
+
+	int GetNowPatternU();					// 現在のテクスチャ横分割幅取得
+	void SetNowPatternU(int nNowPatternU);	// 現在のテクスチャ横分割幅設定
+
+	int GetNowPatternV();					// 現在のテクスチャ縦分割幅取得
+	void SetNowPatternV(int nNowPatternV);	// 現在のテクスチャ縦分割幅設定
+
 	static CObject2D* Create();	// 生成
 
 private:
@@ -54,6 +62,34 @@ private:
 	D3DXVECTOR3 m_size;	// サイズ
 	float m_fLength;	// 展開用対角線
 	float m_fAngle;		// 対角線用角度
+	float m_fTexWidth;	// 横テクスチャ分割幅
+	float m_fTexHeight;	// 縦テクスチャ分縦幅
+	int m_nNowPatternU;	// 現在の横テクスチャ種類
+	int m_nNowPatternV;	// 現在の縦テクスチャ種類
 };
+
+////****************************************************
+//// 2Dアニメーションオブジェクトクラス
+////****************************************************
+//class CAnimationObject2D : public CObject2D
+//{
+//public:
+//
+//	CAnimationObject2D();			// コンストラクタ
+//	~CAnimationObject2D() override;	// デストラクタ
+//
+//	HRESULT Init() override;	// 初期設定
+//	void Uninit() override;		// 終了処理
+//	void Update() override;		// 更新処理
+//	void Draw() override;		// 描画処理
+//
+//	static CAnimationObject2D* Create();	// 生成
+//
+//private:
+//
+//	float m_nNowPatternU;		// 現在のテクスチャU座標
+//	float m_nNowPatternV;		// 現在のテクスチャV座標
+//};
+
 
 #endif // _OBJECT2D_H_

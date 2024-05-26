@@ -20,8 +20,8 @@ class CPlayer : public CObject2D
 {
 public:
 
-	CPlayer();	// コンストラクタ
-	~CPlayer();	// デストラクタ
+	CPlayer();				// コンストラクタ
+	~CPlayer() override;	// デストラクタ
 
 	HRESULT Init() override;	// 初期設定
 	void Uninit() override;		// 終了処理
@@ -36,9 +36,8 @@ private:
 	void Rotation();	// 回転
 	void Translation();	// 移動
 	void Animation();	// アニメーション
-
+	
 	int m_nCntTexChange;	// テクスチャ変更管理
-	int m_nCntTexPattern;	// テクスチャパターン管理
 	D3DXVECTOR3 m_rot_tgt;	// 目標向き
 };
 

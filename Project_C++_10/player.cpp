@@ -19,7 +19,6 @@
 CPlayer::CPlayer() : CObject2D::CObject2D()
 {
 	m_nCntTexChange = 0;				// テクスチャ変更管理
-	m_nCntTexPattern = 0;				// テクスチャパターン管理
 	m_rot_tgt = { 0.0f, 0.0f, 0.0f };	// 目標向き
 }
 
@@ -95,6 +94,9 @@ CPlayer* CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 		pPlayer->Init();		// 基底クラスの初期設定
 		pPlayer->SetPos(pos);	// 中心位置の設定
 		pPlayer->SetSize(size);	// サイズの設定
+
+		pPlayer->SetTexWidth(1.0f / 8.0f);	// 横テクスチャ分割幅
+		pPlayer->SetTexHeight(1.0f);		// 縦テクスチャ分縦幅
 	}
 
 	// デバイスを取得
@@ -235,15 +237,12 @@ void CPlayer::Translation()
 	// 弾を発射 (キーボード、パッド取得があるのでここで)
 	if (pKeyboard->GetTrigger(DIK_SPACE) || pPad->GetTrigger(CInputPad::JOYKEY_X))
 	{
-		// 向き情報を取得
-		D3DXVECTOR3 rot = CObject2D::GetRot();
-
 		// 弾の生成
 		CBullet::Create(
 			pos,					// 中心位置
 			{ 30.0f, 30.0f, 0.0f },	// サイズ
 			50,						// 使用期間
-			rot.z);					// 飛ぶ角度
+			CObject2D::GetRot().z);	// 飛ぶ角度
 	}
 
 	// デバッグ用にサウンド再生 (キーボード、パッド取得があるのでここで)
@@ -267,14 +266,20 @@ void CPlayer::Animation()
 
 	if (m_nCntTexChange >= 15)
 	{
-		// テクスチャパターン変更
-		m_nCntTexPattern++;
+		// 横テクスチャ種類情報取得
+		int nTexPatternU = CObject2D::GetNowPatternU();
 
-		if (m_nCntTexPattern >= 8)
+		// 横テクスチャ種類変更
+		nTexPatternU++;
+
+		if (nTexPatternU >= 8)
 		{
 			// テクスチャパターンをリセット
-			m_nCntTexPattern = 0;
+			nTexPatternU = 0;
 		}
+
+		// 横テクスチャ種類情報設定
+		CObject2D::SetNowPatternU(nTexPatternU);
 
 		// 変更管理カウントをリセット
 		m_nCntTexChange = 0;

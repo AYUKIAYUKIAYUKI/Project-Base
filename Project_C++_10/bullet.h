@@ -20,8 +20,8 @@ class CBullet : public CObject2D
 {
 public:
 
-	CBullet();	// コンストラクタ
-	~CBullet();	// デストラクタ
+	CBullet();				// コンストラクタ
+	~CBullet() override;	// デストラクタ
 
 	HRESULT Init() override;	// 初期設定
 	void Uninit() override;		// 終了処理

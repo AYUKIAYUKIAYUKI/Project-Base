@@ -84,9 +84,10 @@ CBullet* CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nRemain, float f
 	// 生成出来ていたら初期設定
 	if (pBullet != nullptr)
 	{
-		pBullet->Init();					// 基底クラスの初期設定
-		pBullet->SetPos(pos);				// 中心位置の設定
-		pBullet->SetSize(size);				// サイズの設定
+		pBullet->Init();		// 基底クラスの初期設定
+		pBullet->SetPos(pos);	// 中心位置の設定
+		pBullet->SetSize(size);	// サイズの設定
+
 		pBullet->m_nRemain = nRemain;		// 使用期間の設定
 		pBullet->m_fFlyAngle = fFlyAngle;	// 飛ぶ角度の設定
 	}
@@ -139,8 +140,8 @@ void CBullet::Progress()
 		CObject::Release();
 
 		// 爆発を生成
-		//CExplosion::Create(
-		//	m_pos,						// 中心位置
-		//	{ 50.0f, 50.0f, 0.0f });	// サイズ
+		CExplosion::Create(
+			CObject2D::GetPos(),		// 中心位置
+			{ 50.0f, 50.0f, 0.0f });	// サイズ
 	}
 }

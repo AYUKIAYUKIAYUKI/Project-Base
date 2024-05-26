@@ -20,8 +20,8 @@ class CBg : public CObject
 {
 public:
 
-	CBg();	// コンストラクタ
-	~CBg();	// デストラクタ
+	CBg();				// コンストラクタ
+	~CBg() override;	// デストラクタ
 
 	HRESULT Init() override;	// 初期設定
 	void Uninit() override;		// 終了処理
