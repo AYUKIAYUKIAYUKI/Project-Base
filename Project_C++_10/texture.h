@@ -26,6 +26,7 @@ public:
 		EFFECT_000,		// エフェクト000
 		EXPLOSION_000,	// 爆発000
 		ENEMY_000,		// 敵000
+		NUMBER_000,		// 数字000
 		MAX,
 	};
 
@@ -49,6 +50,7 @@ private:
 		"data\\TEXTURE\\effect000.png",
 		"data\\TEXTURE\\explosion000.png",
 		"data\\TEXTURE\\AL-1S.png",
+		"data\\TEXTURE\\number000.png",
 	};
 
 	static LPDIRECT3DTEXTURE9 m_apTexTemp[MAX_TEX];	// テクスチャ管理

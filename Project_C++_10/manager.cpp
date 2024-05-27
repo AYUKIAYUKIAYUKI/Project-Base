@@ -14,6 +14,7 @@
 #include "bg.h"
 #include "player.h"
 #include "enemy.h"
+#include "number.h"
 
 //****************************************************
 // 静的メンバの初期化
@@ -116,6 +117,12 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	CEnemy::Create(
 		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// 中心位置
 		{ 50.0f, 50.0f, 0.0f });								// サイズ
+
+	// 数字の生成
+	CNumber::Create(
+		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// 中心位置
+		{ 25.0f, 20.0f, 0.0f });								// サイズ
+
 
 	return S_OK;
 }

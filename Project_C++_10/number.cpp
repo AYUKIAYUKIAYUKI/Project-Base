@@ -1,6 +1,6 @@
 //============================================================================
 // 
-// エフェクト [effect.cpp]
+// 数字 [number.cpp]
 // Author : 福田歩希
 // 
 //============================================================================
@@ -8,21 +8,21 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
-#include "effect.h"
+#include "number.h"
 #include "manager.h"
 
 //============================================================================
 // コンストラクタ
 //============================================================================
-CEffect::CEffect() : CObject2D::CObject2D()
+CNumber::CNumber() : CObject2D::CObject2D()
 {
-
+	m_nNum = 0;	// 数字の割当
 }
 
 //============================================================================
 // デストラクタ
 //============================================================================
-CEffect::~CEffect()
+CNumber::~CNumber()
 {
 
 }
@@ -30,7 +30,7 @@ CEffect::~CEffect()
 //============================================================================
 // 初期設定
 //============================================================================
-HRESULT CEffect::Init()
+HRESULT CNumber::Init()
 {
 	// 基底クラスの初期設定
 	HRESULT hr = CObject2D::Init();
@@ -41,7 +41,7 @@ HRESULT CEffect::Init()
 //============================================================================
 // 終了処理
 //============================================================================
-void CEffect::Uninit()
+void CNumber::Uninit()
 {
 	// 基底クラスの終了処理
 	CObject2D::Uninit();
@@ -50,10 +50,16 @@ void CEffect::Uninit()
 //============================================================================
 // 更新処理
 //============================================================================
-void CEffect::Update()
+void CNumber::Update()
 {
-	// 期間経過
-	Progress();
+	// お試しで数字を加算
+	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
+	{
+		m_nNum++;
+	}
+
+	// アニメーション
+	Animation();
 
 	// 基底クラスの更新
 	CObject2D::Update();
@@ -62,69 +68,52 @@ void CEffect::Update()
 //============================================================================
 // 描画処理
 //============================================================================
-void CEffect::Draw()
+void CNumber::Draw()
 {
-	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
-
-	// アルファブレンディングを加算合成に設定
-	pDev->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
-	pDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-	pDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
-
 	// 基底クラスの描画処理
 	CObject2D::Draw();
-
-	// アルファブレンディングをの設定を戻す
-	pDev->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);
-	pDev->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCALPHA);
-	pDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVSRCALPHA);
 }
 
 //============================================================================
 // 生成
 //============================================================================
-CEffect* CEffect::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
+CNumber* CNumber::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
-	CEffect* pEffect = new CEffect;
+	CNumber* pNumber = new CNumber;
 
 	// 生成出来ていたら初期設定
-	if (pEffect != nullptr)
+	if (pNumber != nullptr)
 	{
-		pEffect->SetType(TYPE::NONE);	// タイプを設定
+		pNumber->SetType(TYPE::NONE);	// タイプを設定
 
-		pEffect->Init();		// 基底クラスの初期設定
-		pEffect->SetPos(pos);	// 中心位置の設定
-		pEffect->SetSize(size);	// サイズの設定
+		pNumber->Init();		// 基底クラスの初期設定
+		pNumber->SetPos(pos);	// 中心位置の設定
+		pNumber->SetSize(size);	// サイズの設定
+
+		pNumber->SetTexWidth(0.1f);		// 横テクスチャ分割幅
+		pNumber->SetTexHeight(1.0f);	// 縦テクスチャ分縦幅
 	}
 
 	// テクスチャを取得
-	LPDIRECT3DTEXTURE9 pTex = CManager::GetTexture()->GetTex(CTexture::TEX_TYPE::EFFECT_000);
+	LPDIRECT3DTEXTURE9 pTex = CManager::GetTexture()->GetTex(CTexture::TEX_TYPE::NUMBER_000);
 
 	// テクスチャを設定
-	pEffect->BindTex(pTex);
+	pNumber->BindTex(pTex);
 
-	return pEffect;
+	return pNumber;
 }
 
 //============================================================================
-// 期間経過
+// アニメーション
 //============================================================================
-void CEffect::Progress()
+void CNumber::Animation()
 {
-	// サイズ情報を取得
-	D3DXVECTOR3 size = CObject2D::GetSize();
+	// 横テクスチャ種類情報取得
+	int nTexPatternU = CObject2D::GetNowPatternU();
 
-	// 縮小
-	size.x += size.x * -0.05f;
-	size.y += size.y * -0.05f;
+	// 横テクスチャ種類を割り当て
+	nTexPatternU = m_nNum;
 
-	// 見えなくなったタイミングで消滅
-	if (size.x <= 0.25f)
-	{
-		CObject::Release();	// 自身を破棄
-	}
-
-	// サイズ情報を設定
-	CObject2D::SetSize(size);
+	// 横テクスチャ種類情報設定
+	CObject2D::SetNowPatternU(nTexPatternU);
 }
