@@ -116,11 +116,11 @@ void CEffect::Progress()
 	D3DXVECTOR3 size = CObject2D::GetSize();
 
 	// 縮小
-	size.x += -0.5f;
-	size.y += -0.5f;
+	size.x += size.x * -0.05f;
+	size.y += size.y * -0.05f;
 
 	// 裏返ったタイミングで消滅
-	if (size.x <= 0)
+	if (size.x <= 0.1f)
 	{
 		CObject::Release();	// 自身を破棄
 	}

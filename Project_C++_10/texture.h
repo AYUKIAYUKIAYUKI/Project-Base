@@ -45,8 +45,8 @@ private:
 	const char* m_aFilename[TEX_TYPE::MAX] = {
 		"data\\TEXTURE\\peroro.png",
 		"data\\TEXTURE\\runningman000.png",
-		"data\\TEXTURE\\effect000.jpg",
 		"data\\TEXTURE\\bullet000.png",
+		"data\\TEXTURE\\effect000.png",
 		"data\\TEXTURE\\explosion000.png",
 		"data\\TEXTURE\\AL-1S.png",
 	};

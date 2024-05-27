@@ -121,8 +121,8 @@ void CParticle::Translate()
 	D3DXVECTOR3 pos = CObject2D::GetPos();
 
 	// 設定された角度に飛んでいく
-	pos.x += sinf(m_fFlyAngle) * 5.0f;
-	pos.y += cosf(m_fFlyAngle) * 5.0f;
+	pos.x += sinf(m_fFlyAngle) * 1.0f;
+	pos.y += cosf(m_fFlyAngle) * 1.0f;
 
 	// 中心位置を設定
 	CObject2D::SetPos(pos);
@@ -137,8 +137,8 @@ void CParticle::Progress()
 	D3DXVECTOR3 size = CObject2D::GetSize();
 
 	// 縮小
-	size.x += -0.5f;
-	size.y += -0.5f;
+	size.x += -0.25f;
+	size.y += -0.25f;
 
 	// 裏返ったタイミングで消滅
 	if (size.x <= 0)

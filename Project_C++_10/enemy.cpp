@@ -30,7 +30,7 @@ CEnemy::~CEnemy()
 	for (int i = 0; i < 10; i++)
 	{
 		CParticle::Create(CObject2D::GetPos(),	// 中心位置
-			CObject2D::GetSize() * 0.5f,		// サイズ
+			CObject2D::GetSize(),				// サイズ
 			atan2f((float)(rand() % 314), (float)(rand() % 314)) * (rand() % 314));	// 飛ぶ角度
 	}
 }
