@@ -132,22 +132,23 @@ void CBullet::Translation()
 //============================================================================
 bool CBullet::CollisionEnemy()
 {
-	// オブジェクトの総数を取得
-	//int nMaxObj = CObject::GetNumAll();
-
-	for (int nCntObj = 0; nCntObj < 64; nCntObj++)
+	for (int nCntPriority = 0; nCntPriority < CObject::MAX_PRIO; nCntPriority++)
 	{
-		// オブジェクト情報を取得
-		CObject* pObject = CObject::GetObject(nCntObj);
-
-		if (pObject == nullptr)
-		{ // カウントエラー
-			continue;
-		}
-
-		// 敵との当たり判定を行う
-		if (pObject->GetType() == CObject::TYPE::ENEMY)
+		for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
 		{
+			// オブジェクト情報を取得
+			CObject* pObject = CObject::GetObject(nCntPriority, nCntObj);
+
+			if (pObject == nullptr)
+			{ // 情報がなければコンティニュー
+				continue;
+			}
+
+			if (pObject->GetType() != CObject::TYPE::ENEMY)
+			{ // エネミータイプ以外はコンティニュー
+				continue;
+			}
+
 			// オブジェクトクラスをエネミークラスへダウンキャスト
 			CEnemy* pEnemy = dynamic_cast<CEnemy*>(pObject);
 
@@ -156,13 +157,13 @@ bool CBullet::CollisionEnemy()
 				assert(false);
 			}
 
-			// 衝突したら
+			// 敵と衝突したら
 			if (CObject2D::GetPos().x + CObject2D::GetSize().x >= pEnemy->GetPos().x - pEnemy->GetSize().x &&
 				CObject2D::GetPos().x - CObject2D::GetSize().x <= pEnemy->GetPos().x + pEnemy->GetSize().x &&
 				CObject2D::GetPos().y + CObject2D::GetSize().y >= pEnemy->GetPos().y - pEnemy->GetSize().y &&
 				CObject2D::GetPos().y - CObject2D::GetSize().y <= pEnemy->GetPos().y + pEnemy->GetSize().y)
 			{
-				// スコアを加算
+				// スコアインスタンスを取得
 				CObject* pFindObject = FindScoreInstance();
 
 				// オブジェクトクラスをエネミークラスへダウンキャスト

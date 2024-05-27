@@ -15,6 +15,9 @@ class CObject
 {
 public:
 
+	static const int MAX_OBJ = 512;	// オブジェクト最大数
+	static const int MAX_PRIO = 4;	// プライオリティ最大数
+
 	//****************************************************
 	// オブジェクトの種類識別
 	//****************************************************
@@ -27,8 +30,8 @@ public:
 		MAX
 	};
 
-	CObject();				// コンストラクタ
-	virtual ~CObject() = 0;	// デストラクタ
+	CObject(int nPriority = MAX_PRIO - 1);	// コンストラクタ
+	virtual ~CObject() = 0;					// デストラクタ
 
 	virtual HRESULT Init() = 0;	// 初期設定
 	virtual void Uninit() = 0;	// 終了処理
@@ -39,8 +42,8 @@ public:
 	static void UpdateAll();	// 全オブジェクト更新処理
 	static void DrawAll();		// 全オブジェクト描画処理
 
-	static CObject* GetObject(int nID);	// オブジェクト情報取得
-	static int GetNumAll();				// オブジェクト総数取得
+	static CObject* GetObject(int nPriority, int nID);	// オブジェクト情報取得
+	static int GetNumAll();								// オブジェクト総数取得
 
 	TYPE GetType();					// タイプ取得
 	CObject* FindScoreInstance();	// スコアのインスタンスを探す
@@ -53,14 +56,12 @@ protected:
 
 private:
 
-	static const int MAX_OBJ = 512;	// オブジェクト最大数
+	static CObject* m_apObject[MAX_PRIO][MAX_OBJ];	// オブジェクト管理
+	static int m_nNumAll;							// オブジェクト総数
 
-	static CObject* m_apObject[MAX_OBJ];	// オブジェクト管理
-	static int m_nNumAll;					// オブジェクト総数
-
-	int m_nID;		// 自分自身のID
-	TYPE m_type;	// タイプ識別 
-
+	int m_nPriority;	// 描画優先度
+	int m_nID;			// 自分自身のID
+	TYPE m_type;		// タイプ識別 
 };
 
 #endif // _OBJECT_H_

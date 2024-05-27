@@ -14,23 +14,21 @@
 //****************************************************
 // 静的メンバの初期化
 //****************************************************
-CObject* CObject::m_apObject[MAX_OBJ] = {};	// オブジェクト管理
-int CObject::m_nNumAll = 0;					// オブジェクト総数
+CObject* CObject::m_apObject[MAX_PRIO][MAX_OBJ] = {};	// オブジェクト管理
+int CObject::m_nNumAll = 0;								// オブジェクト総数
 
 //============================================================================
 // コンストラクタ
 //============================================================================
-CObject::CObject() : m_nID(0), m_type(TYPE::NONE)
+CObject::CObject(int nPriority) : m_nPriority(nPriority), m_nID(0), m_type(TYPE::NONE)
 {
-	int nCnt = 0;
-
-	for (nCnt = 0; nCnt < MAX_OBJ; nCnt++)
+	for (int nCntObj = 0; nCntObj < MAX_OBJ; nCntObj++)
 	{
-		if (m_apObject[nCnt] == nullptr)
+		if (m_apObject[m_nPriority][nCntObj] == nullptr)
 		{
-			m_apObject[nCnt] = this;	// 自分自身のポインタを代入
-			m_nID = nCnt;				// 自分自身のIDを代入
-			m_nNumAll++;				// 総数をカウントアップ
+			m_apObject[m_nPriority][nCntObj] = this;	// 自分自身のポインタを代入
+			m_nID = nCntObj;							// 自分自身のIDを代入
+			m_nNumAll++;								// 総数をカウントアップ
 			break;
 		}
 	}
@@ -81,11 +79,14 @@ void CObject::Draw()
 //============================================================================
 void CObject::ReleaseAll()
 {
-	for (int nCnt = 0; nCnt < MAX_OBJ; nCnt++)
+	for (int nCntPriority = 0; nCntPriority < MAX_PRIO; nCntPriority++)
 	{
-		if (m_apObject[nCnt] != nullptr)
+		for (int nCntObj = 0; nCntObj < MAX_OBJ; nCntObj++)
 		{
-			m_apObject[nCnt]->Release();	// 解放処理
+			if (m_apObject[nCntPriority][nCntObj] != nullptr)
+			{
+				m_apObject[nCntPriority][nCntObj]->Release();	// 解放処理
+			}
 		}
 	}
 }
@@ -95,11 +96,14 @@ void CObject::ReleaseAll()
 //============================================================================
 void CObject::UpdateAll()
 {
-	for (int nCnt = 0; nCnt < MAX_OBJ; nCnt++)
+	for (int nCntPriority = 0; nCntPriority < MAX_PRIO; nCntPriority++)
 	{
-		if (m_apObject[nCnt] != nullptr)
+		for (int nCntObj = 0; nCntObj < MAX_OBJ; nCntObj++)
 		{
-			m_apObject[nCnt]->Update();	// 更新処理
+			if (m_apObject[nCntPriority][nCntObj] != nullptr)
+			{
+				m_apObject[nCntPriority][nCntObj]->Update();	// 更新処理
+			}
 		}
 	}
 }
@@ -109,11 +113,14 @@ void CObject::UpdateAll()
 //============================================================================
 void CObject::DrawAll()
 {
-	for (int nCnt = 0; nCnt < MAX_OBJ; nCnt++)
+	for (int nCntPriority = 0; nCntPriority < MAX_PRIO; nCntPriority++)
 	{
-		if (m_apObject[nCnt] != nullptr)
+		for (int nCntObj = 0; nCntObj < MAX_OBJ; nCntObj++)
 		{
-			m_apObject[nCnt]->Draw();	// 描画処理
+			if (m_apObject[nCntPriority][nCntObj] != nullptr)
+			{
+				m_apObject[nCntPriority][nCntObj]->Draw();	// 描画処理
+			}
 		}
 	}
 }
@@ -121,9 +128,9 @@ void CObject::DrawAll()
 //============================================================================
 // オブジェクト情報取得
 //============================================================================
-CObject* CObject::GetObject(int nID)
+CObject* CObject::GetObject(int nPriority, int nID)
 {
-	return m_apObject[nID];
+	return m_apObject[nPriority][nID];
 }
 
 //============================================================================
@@ -147,15 +154,25 @@ CObject::TYPE CObject::GetType()
 //============================================================================
 CObject* CObject::FindScoreInstance()
 {
-	for (int nCntObj = 0; nCntObj < MAX_OBJ; nCntObj++)
+	int AL_1S = 0;
+
+	for (int nCntPriority = 0; nCntPriority < MAX_PRIO; nCntPriority++)
 	{
-		if (m_apObject[nCntObj]->GetType() == TYPE::SCORE)
+		for (int nCntObj = 0; nCntObj < MAX_OBJ; nCntObj++)
 		{
-			return m_apObject[nCntObj];
+			if (m_apObject[nCntPriority][nCntObj] == nullptr)
+			{ // 情報がなければコンティニュー
+				continue;
+			}
+
+			if (m_apObject[nCntPriority][nCntObj]->GetType() == TYPE::SCORE)
+			{ // スコアタイプならリターン
+				return m_apObject[nCntPriority][nCntObj];
+			}
 		}
 	}
 
-	// エラー
+	// 発見できなければエラー
 	assert(false);
 
 	return nullptr;
@@ -174,13 +191,14 @@ void CObject::SetType(TYPE type)
 //============================================================================
 void CObject::Release()
 {
-	int nID = m_nID;	// 自分自身のIDをコピーしておく
+	int nPriority = m_nPriority;	// プライオリティをコピーしておく
+	int nID = m_nID;				// IDをコピーしておく
 
-	if (m_apObject[nID] != nullptr)
+	if (m_apObject[nPriority][nID] != nullptr)
 	{
-		m_apObject[nID]->Uninit();	// 終了処理
-		delete m_apObject[nID];		// メモリを解放
-		m_apObject[nID] = nullptr;	// ポインタを初期化
-		m_nNumAll--;				// 総数をカウントダウン
+		m_apObject[nPriority][nID]->Uninit();	// 終了処理
+		delete m_apObject[nPriority][nID];		// メモリを解放
+		m_apObject[nPriority][nID] = nullptr;	// ポインタを初期化
+		m_nNumAll--;							// 総数をカウントダウン
 	}
 }
