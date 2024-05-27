@@ -27,6 +27,8 @@ public:
 	void Uninit() override;		// I—¹ˆ—
 	void Update() override;		// XVˆ—
 	void Draw() override;		// •`‰æˆ—
+	
+	void SetNumber(int nNum);	// ”š‚ğİ’è
 
 	static CNumber* Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);	// ¶¬
 

@@ -52,12 +52,6 @@ void CNumber::Uninit()
 //============================================================================
 void CNumber::Update()
 {
-	// お試しで数字を加算
-	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
-	{
-		m_nNum++;
-	}
-
 	// アニメーション
 	Animation();
 
@@ -101,6 +95,14 @@ CNumber* CNumber::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	pNumber->BindTex(pTex);
 
 	return pNumber;
+}
+
+//============================================================================
+// 数字を設定
+//============================================================================
+void CNumber::SetNumber(int nNum)
+{
+	m_nNum = nNum;
 }
 
 //============================================================================

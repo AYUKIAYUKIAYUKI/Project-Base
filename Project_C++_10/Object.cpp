@@ -143,6 +143,25 @@ CObject::TYPE CObject::GetType()
 }
 
 //============================================================================
+// スコアインスタンスを探す
+//============================================================================
+CObject* CObject::FindScoreInstance()
+{
+	for (int nCntObj = 0; nCntObj < MAX_OBJ; nCntObj++)
+	{
+		if (m_apObject[nCntObj]->GetType() == TYPE::SCORE)
+		{
+			return m_apObject[nCntObj];
+		}
+	}
+
+	// エラー
+	assert(false);
+
+	return nullptr;
+}
+
+//============================================================================
 // タイプ設定
 //============================================================================
 void CObject::SetType(TYPE type) 

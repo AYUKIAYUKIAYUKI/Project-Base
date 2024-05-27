@@ -21,8 +21,9 @@ public:
 	enum TYPE
 	{
 		NONE = 0,	// 無し
-		PLAYER,	// プレイヤー
+		PLAYER,		// プレイヤー
 		ENEMY,		// エネミー
+		SCORE,		// スコア
 		MAX
 	};
 
@@ -41,7 +42,8 @@ public:
 	static CObject* GetObject(int nID);	// オブジェクト情報取得
 	static int GetNumAll();				// オブジェクト総数取得
 
-	TYPE GetType();	// タイプ取得
+	TYPE GetType();					// タイプ取得
+	CObject* FindScoreInstance();	// スコアのインスタンスを探す
 
 	void Release();	// 個別解放処理 (仮)
 

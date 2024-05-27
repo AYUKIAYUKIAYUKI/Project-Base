@@ -13,6 +13,7 @@
 #include "enemy.h"
 #include "effect.h"
 #include "explosion.h"
+#include "score.h"
 
 //============================================================================
 // コンストラクタ
@@ -148,7 +149,12 @@ bool CBullet::CollisionEnemy()
 		if (pObject->GetType() == CObject::TYPE::ENEMY)
 		{
 			// オブジェクトクラスをエネミークラスへダウンキャスト
-			CEnemy* pEnemy = (CEnemy*)pObject;
+			CEnemy* pEnemy = dynamic_cast<CEnemy*>(pObject);
+
+			if (pEnemy == nullptr)
+			{ // ダウンキャスト失敗
+				assert(false);
+			}
 
 			// 衝突したら
 			if (CObject2D::GetPos().x + CObject2D::GetSize().x >= pEnemy->GetPos().x - pEnemy->GetSize().x &&
@@ -156,6 +162,20 @@ bool CBullet::CollisionEnemy()
 				CObject2D::GetPos().y + CObject2D::GetSize().y >= pEnemy->GetPos().y - pEnemy->GetSize().y &&
 				CObject2D::GetPos().y - CObject2D::GetSize().y <= pEnemy->GetPos().y + pEnemy->GetSize().y)
 			{
+				// スコアを加算
+				CObject* pFindObject = FindScoreInstance();
+
+				// オブジェクトクラスをエネミークラスへダウンキャスト
+				CScore* pScore = dynamic_cast<CScore*>(pFindObject);
+
+				if (pScore == nullptr)
+				{ // ダウンキャスト失敗
+					assert(false);
+				}
+
+				// スコアを加算
+				pScore->SetScore(pScore->GetScore() + 114514);
+
 				// 爆発を生成
 				CExplosion::Create(
 					CObject2D::GetPos(),		// 中心位置
