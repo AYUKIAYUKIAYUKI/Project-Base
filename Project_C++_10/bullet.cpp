@@ -119,8 +119,8 @@ void CBullet::Translation()
 	D3DXVECTOR3 pos = CObject2D::GetPos();
 
 	// 設定された角度に飛んでいく
-	pos.x += sinf(m_fFlyAngle) * 5.0f;
-	pos.y += cosf(m_fFlyAngle) * 5.0f;
+	pos.x += sinf(m_fFlyAngle) * 3.0f;
+	pos.y += cosf(m_fFlyAngle) * 3.0f;
 
 	// 中心位置を設定
 	CObject2D::SetPos(pos);
@@ -156,16 +156,16 @@ bool CBullet::CollisionEnemy()
 				CObject2D::GetPos().y + CObject2D::GetSize().y >= pEnemy->GetPos().y - pEnemy->GetSize().y &&
 				CObject2D::GetPos().y - CObject2D::GetSize().y <= pEnemy->GetPos().y + pEnemy->GetSize().y)
 			{
+				// 爆発を生成
+				CExplosion::Create(
+					CObject2D::GetPos(),		// 中心位置
+					{ 40.0f, 40.0f, 0.0f });	// サイズ
+
 				// 自身を破棄
 				CObject::Release();
 
 				// エネミーを破棄
 				pObject->Release();
-
-				// 爆発を生成
-				CExplosion::Create(
-					CObject2D::GetPos(),		// 中心位置
-					{ 25.0f, 25.0f, 0.0f });	// サイズ
 
 				return true;
 			}
@@ -196,6 +196,6 @@ void CBullet::Progress()
 		// 爆発を生成
 		CExplosion::Create(
 			CObject2D::GetPos(),		// 中心位置
-			{ 25.0f, 25.0f, 0.0f });	// サイズ
+			{ 40.0f, 40.0f, 0.0f });	// サイズ
 	}
 }
