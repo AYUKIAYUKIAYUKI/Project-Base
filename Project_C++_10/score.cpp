@@ -10,6 +10,7 @@
 //****************************************************
 #include "score.h"
 #include "manager.h"
+#include "particle.h"
 
 //****************************************************
 // 静的メンバの初期化
@@ -21,9 +22,10 @@ CNumber* CScore::m_apNumber[MAX_DIGIT];	// 数字管理
 //============================================================================
 CScore::CScore() : CObject::CObject()
 {
-	m_nScore = 0;	// 現在のスコア
-	m_pos = {};		// 数列の先頭位置
-	m_fSpan = 0.0f;	// 数列の配置間隔
+	m_nScore = 0;		// 現在のスコア
+	m_nScore_old = 0;	// 過去のスコア
+	m_pos = {};			// 数列の先頭位置
+	m_fSpan = 0.0f;		// 数列の配置間隔
 }
 
 //============================================================================
@@ -60,9 +62,8 @@ void CScore::Update()
 	{
 		m_nScore++;
 	}
-
 	// お試しで数字を減算
-	if (CManager::GetKeyboard()->GetTrigger(DIK_BACK))
+	else if (CManager::GetKeyboard()->GetTrigger(DIK_BACK))
 	{
 		m_nScore--;
 	}
@@ -70,8 +71,32 @@ void CScore::Update()
 	// 変動制限
 	Adjust();
 
+	if (m_nScore_old != m_nScore)
+	{
+		for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
+		{
+			D3DXVECTOR3 pos = {
+				m_pos.x + (m_fSpan * ((MAX_DIGIT - 1) - nCntNum)),
+				m_pos.y,
+				0.0f,
+			};
+
+			// パーティクルを生成
+			for (int i = 0; i < 10; i++)
+			{
+				CParticle::Create(
+					pos,					// 中心位置
+					{ 40.0f, 40.0f, 0.0f },	// サイズ
+					atan2f((float)(rand() % 314), (float)(rand() % 314)) * (rand() % 314));	// 飛ぶ角度
+			}
+		}
+	}
+
 	// アニメーション
 	Animation();
+
+	// スコアを保存
+	m_nScore_old = m_nScore;
 }
 
 //============================================================================
@@ -119,9 +144,9 @@ CScore* CScore::Create(D3DXVECTOR3 pos, float fSpan)
 	for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
 	{
 		m_apNumber[nCntNum] = CNumber::Create(
-			{ pScore->m_pos.x + (fSpan * (MAX_DIGIT - nCntNum)),	// X座標位置
-			pScore->m_pos.y, 0.0f },								// Y座標位置
-			{ 25.0f, 20.0f, 0.0f });								// サイズ
+			{ pScore->m_pos.x + (pScore->m_fSpan * ((MAX_DIGIT - 1) - nCntNum)),	// X座標位置
+			pScore->m_pos.y, 0.0f },												// Y座標位置
+			{ 25.0f, 20.0f, 0.0f });												// サイズ
 	}
 
 	return pScore;

@@ -45,6 +45,7 @@ private:
 	static CNumber* m_apNumber[MAX_DIGIT];	// 数字管理
 
 	int m_nScore;		// 現在のスコア
+	int m_nScore_old;	// 過去のスコア
 	D3DXVECTOR3 m_pos;	// 数列の先頭位置
 	float m_fSpan;		// 数列の配置間隔
 };
