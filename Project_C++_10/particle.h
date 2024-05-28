@@ -33,7 +33,7 @@ public:
 private:
 
 	void Translate();	// ˆÚ“®
-	void Progress();	// ŠúŠÔŒo‰ß
+	bool Progress();	// ŠúŠÔŒo‰ß
 
 	float m_fFlyAngle;	// ”ò‚ÔŠp“x
 };

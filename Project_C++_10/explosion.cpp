@@ -54,7 +54,10 @@ void CExplosion::Uninit()
 void CExplosion::Update()
 {
 	// アニメーション
-	Animation();
+	if (!Animation())
+	{ // 破棄されていたら更新終了
+		return;
+	}
 
 	// 基底クラスの更新
 	CObject2D::Update();
@@ -102,7 +105,7 @@ CExplosion* CExplosion::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 //============================================================================
 // アニメーション
 //============================================================================
-void CExplosion::Animation()
+bool CExplosion::Animation()
 {
 	// テクスチャ変更管理カウントアップ
 	m_nCntTexChange++;
@@ -119,6 +122,9 @@ void CExplosion::Animation()
 		{
 			// 自身を破棄
 			CObject::Release();
+
+			// 終了
+			return false;
 		}
 
 		// 横テクスチャ種類情報設定
@@ -127,4 +133,6 @@ void CExplosion::Animation()
 		// 変更管理カウントをリセット
 		m_nCntTexChange = 0;
 	}
+
+	return true;
 }

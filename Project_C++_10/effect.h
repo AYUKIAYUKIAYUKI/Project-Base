@@ -32,7 +32,7 @@ public:
 
 private:
 
-	void Progress();	// ŠúŠÔŒo‰ß
+	bool Progress();	// ŠúŠÔŒo‰ß
 };
 
 #endif // _EFFECT_H_

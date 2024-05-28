@@ -56,7 +56,10 @@ void CParticle::Update()
 	Translate();
 
 	// 期間経過
-	Progress();
+	if (!Progress())
+	{ // 破棄されていたら更新終了
+		return;
+	}
 
 	// 基底クラスの更新
 	CObject2D::Update();
@@ -131,7 +134,7 @@ void CParticle::Translate()
 //============================================================================
 // 期間経過
 //============================================================================
-void CParticle::Progress()
+bool CParticle::Progress()
 {
 	// サイズ情報を取得
 	D3DXVECTOR3 size = CObject2D::GetSize();
@@ -143,9 +146,15 @@ void CParticle::Progress()
 	// 裏返ったタイミングで消滅
 	if (size.x <= 0)
 	{
-		CObject::Release();	// 自身を破棄
+		// 自身を破棄
+		CObject::Release();
+
+		// 終了
+		return false;
 	}
 
 	// サイズ情報を設定
 	CObject2D::SetSize(size);
+
+	return true;
 }

@@ -53,7 +53,10 @@ void CEffect::Uninit()
 void CEffect::Update()
 {
 	// 期間経過
-	Progress();
+	if (!Progress())
+	{ // 破棄されていたら更新終了
+		return;
+	}
 
 	// 基底クラスの更新
 	CObject2D::Update();
@@ -110,7 +113,7 @@ CEffect* CEffect::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 //============================================================================
 // 期間経過
 //============================================================================
-void CEffect::Progress()
+bool CEffect::Progress()
 {
 	// サイズ情報を取得
 	D3DXVECTOR3 size = CObject2D::GetSize();
@@ -122,9 +125,15 @@ void CEffect::Progress()
 	// 見えなくなったタイミングで消滅
 	if (size.x <= 0.25f)
 	{
-		CObject::Release();	// 自身を破棄
+		// 自身を破棄
+		CObject::Release();
+
+		// 終了
+		return false;
 	}
 
 	// サイズ情報を設定
 	CObject2D::SetSize(size);
+
+	return true;
 }

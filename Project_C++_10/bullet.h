@@ -34,7 +34,7 @@ private:
 
 	void Translation();		// 移動
 	bool CollisionEnemy();	// 当たり判定
-	void Progress();		// 期間経過
+	bool Progress();		// 期間経過
 
 	int m_nRemain;		// 使用期間
 	float m_fFlyAngle;	// 飛ぶ角度

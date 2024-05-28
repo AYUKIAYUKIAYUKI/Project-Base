@@ -61,13 +61,16 @@ void CBullet::Update()
 	Translation();
 
 	// 当たり判定
-	if (CollisionEnemy())
-	{
+	if (!CollisionEnemy())
+	{ // 破棄されていたら更新終了
 		return;
 	}
 
 	// 期間経過
-	Progress();
+	if (!Progress())
+	{ // 破棄されていたら更新終了
+		return;
+	}
 
 	// 基底クラスの更新
 	CObject2D::Update();
@@ -175,7 +178,7 @@ bool CBullet::CollisionEnemy()
 				}
 
 				// スコアを加算
-				pScore->SetScore(pScore->GetScore() + 114514);
+				pScore->SetScore(pScore->GetScore() + 123456);
 
 				// 爆発を生成
 				CExplosion::Create(
@@ -188,18 +191,19 @@ bool CBullet::CollisionEnemy()
 				// エネミーを破棄
 				pObject->Release();
 
-				return true;
+				// 終了
+				return false;
 			}
 		}
 	}
 
-	return false;
+	return true;
 }
 
 //============================================================================
 // 期間経過
 //============================================================================
-void CBullet::Progress()
+bool CBullet::Progress()
 {
 	// 使用期間カウントダウン
 	m_nRemain--;
@@ -218,5 +222,10 @@ void CBullet::Progress()
 		CExplosion::Create(
 			CObject2D::GetPos(),		// 中心位置
 			{ 40.0f, 40.0f, 0.0f });	// サイズ
+
+		// 終了
+		return false;
 	}
+
+	return true;
 }

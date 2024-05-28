@@ -32,7 +32,7 @@ public:
 
 private:
 
-	void Animation();	// アニメーション
+	bool Animation();	// アニメーション
 
 	int m_nCntTexChange;	// テクスチャ変更管理
 };

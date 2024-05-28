@@ -11,6 +11,10 @@
 #include "texture.h"
 #include "manager.h"
 
+// ファイル読み取り用
+#include <fstream>
+#include <string>
+
 //****************************************************
 // 静的メンバの初期化
 //****************************************************
@@ -40,12 +44,11 @@ CTexture::~CTexture()
 //============================================================================
 HRESULT CTexture::Load()
 {
-	// ファイルポインタ
-	FILE* pF = nullptr;
+	// テクスチャ名管理ファイルを展開
+	std::ifstream file("data\\TXT\\texture_path.txt");
 
-	// ファイルを読み取りで展開
-	if (fopen_s(&pF, "data\\TXT\\texture_path.txt", "r") != 0)
-	{ // ファイル展開失敗
+	if (!file)
+	{ // 展開に失敗
 		assert(false);
 	}
 
@@ -54,25 +57,25 @@ HRESULT CTexture::Load()
 
 	for (int i = 0; i < TEX_TYPE::MAX; i++)
 	{
-		// ファイル名格納
-		char aFilename[64] = {};
+		// テクスチャ名格納先
+		std::string filename;
 
-		// ファイル名読み取り
-		fscanf_s(pF, "%s", &aFilename[0], sizeof(aFilename));
+		// テクスチャ名を取得する
+		std::getline(file, filename);
 
 		// テクスチャの生成
 		D3DXCreateTextureFromFile(pDev,
-			&aFilename[0],
+			filename.c_str(),
 			&m_apTexTemp[i]);
 
 		if (m_apTexTemp[i] == nullptr)
 		{ // テクスチャ生成失敗
-			fclose(pF);	// ファイルを閉じる
+			file.close();	// ファイルを閉じる
 			assert(false);
 		}
 	}
 
-	fclose(pF);	// ファイルを閉じる
+	file.close();	// ファイルを閉じる
 
 	return S_OK;
 }
