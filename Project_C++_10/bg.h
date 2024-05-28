@@ -11,12 +11,12 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
-#include "object.h"
+#include "object2D.h"
 
 //****************************************************
 // 背景クラス
 //****************************************************
-class CBg : public CObject
+class CBg : public CObject2D
 {
 public:
 
@@ -28,15 +28,14 @@ public:
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
 
-	static CBg* Create();		// 生成
+	static CBg* Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);	// 生成
 
 private:
 
-	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	// 頂点バッファのポインタ
-	LPDIRECT3DTEXTURE9 m_pTex;			// テクスチャのポインタ
-	D3DXVECTOR3 m_pos;					// 中心座標
-	D3DXVECTOR3 m_size;					// 大きさ
-	float m_fLength;					// 対角線
+	void PAKUPAKU();	// パクパクします
+
+	int m_nCntPAKU;	// パクパク回数
+	int m_nDelayPAKU;	// パクパク遅延
 };
 
 #endif // _BG_H_

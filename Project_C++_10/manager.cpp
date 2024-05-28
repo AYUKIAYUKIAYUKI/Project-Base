@@ -106,7 +106,9 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	m_pSound->Init(hWnd);
 
 	// 背景の生成 (仮)
-	CBg::Create();
+	CBg::Create(
+		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// 中心位置
+		{ SCREEN_HEIGHT * 0.5f,  SCREEN_HEIGHT * 0.5f, 0.0f });	// サイズ
 
 	// プレイヤーの生成 (仮)
 	CPlayer::Create(
@@ -122,8 +124,6 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	CScore::Create(
 		{ 680.0f, 145.0f, 0.0f },	// 中心位置
 		25.0f);						// 数列の配置間隔
-
-
 
 	return S_OK;
 }

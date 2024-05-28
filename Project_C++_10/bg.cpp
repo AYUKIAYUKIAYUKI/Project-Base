@@ -9,19 +9,15 @@
 // インクルードファイル
 //****************************************************
 #include "bg.h"
-#include "main.h"
 #include "manager.h"
 
 //============================================================================
 // コンストラクタ
 //============================================================================
-CBg::CBg() : CObject(CObject::LAYER::BACK)
+CBg::CBg() : CObject2D(LAYER::BACK)
 {
-	m_pVtxBuff = nullptr;	// 頂点バッファのポインタを初期化
-	m_pTex = nullptr;		// テクスチャのポインタを初期化
-	m_pos = {};				// 中心位置
-	m_size = {};			// サイズ
-	m_fLength = 0.0f;		// 対角線
+	m_nCntPAKU = 0;		// パクパク回数
+	m_nDelayPAKU = 0;	// パクパク遅延
 }
 
 //============================================================================
@@ -29,7 +25,7 @@ CBg::CBg() : CObject(CObject::LAYER::BACK)
 //============================================================================
 CBg::~CBg()
 {
-	Uninit();
+
 }
 
 //============================================================================
@@ -37,57 +33,10 @@ CBg::~CBg()
 //============================================================================
 HRESULT CBg::Init()
 {
-	// デバイスを取得
-	CRenderer* pRenderer = CManager::GetRenderer();
-	LPDIRECT3DDEVICE9 pDev = pRenderer->GetDeviece();
+	// 基底クラスの初期設定
+	HRESULT hr = CObject2D::Init();
 
-	//テクスチャの読込み
-	D3DXCreateTextureFromFile(pDev,
-		"data\\TEXTURE\\RIDAKURU.png",
-		&m_pTex);
-
-	// 頂点バッファの生成
-	pDev->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
-		D3DUSAGE_WRITEONLY,
-		FVF_VERTEX_2D,
-		D3DPOOL_MANAGED,
-		&m_pVtxBuff,
-		NULL);
-
-	// 頂点情報へのポインタ
-	VERTEX_2D* pVtx;
-
-	// 頂点バッファをロック
-	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-
-	// 位置の設定
-	pVtx[0].pos = { 0.0f, 0.0f, 0.0f };
-	pVtx[1].pos = { 0.0f, 0.0f, 0.0f };
-	pVtx[2].pos = { 0.0f, 0.0f, 0.0f };
-	pVtx[3].pos = { 0.0f, 0.0f, 0.0f };
-
-	// 除算数の設定
-	pVtx[0].rhw = 1.0f;
-	pVtx[1].rhw = 1.0f;
-	pVtx[2].rhw = 1.0f;
-	pVtx[3].rhw = 1.0f;
-
-	// 色の設定
-	pVtx[0].col = D3DXCOLOR(1.0f, 0.0f, 0.0f, 1.0f);
-	pVtx[1].col = D3DXCOLOR(0.0f, 1.0f, 0.0f, 1.0f);
-	pVtx[2].col = D3DXCOLOR(0.0f, 0.0f, 1.0f, 1.0f);
-	pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 0.0f, 1.0f);
-
-	// テクスチャの設定
-	pVtx[0].tex = { 0.0f, 0.0f };
-	pVtx[1].tex = { 1.0f, 0.0f };
-	pVtx[2].tex = { 0.0f, 1.0f };
-	pVtx[3].tex = { 1.0f, 1.0f };
-
-	// 頂点バッファをアンロックする
-	m_pVtxBuff->Unlock();
-
-	return S_OK;
+	return hr;
 }
 
 //============================================================================
@@ -95,19 +44,8 @@ HRESULT CBg::Init()
 //============================================================================
 void CBg::Uninit()
 {
-	// テクスチャの破棄
-	if (m_pTex != nullptr)
-	{
-		m_pTex->Release();
-		m_pTex = nullptr;
-	}
-
-	// 頂点バッファの破棄
-	if (m_pVtxBuff != nullptr)
-	{
-		m_pVtxBuff->Release();
-		m_pVtxBuff = nullptr;
-	}
+	// 基底クラスの終了処理
+	CObject2D::Uninit();
 }
 
 //============================================================================
@@ -115,42 +53,11 @@ void CBg::Uninit()
 //============================================================================
 void CBg::Update()
 {
-	// 必要な数値を算出
-	m_fLength = sqrtf(m_size.x * m_size.x + m_size.y * m_size.y) * 0.5f;
+	// パクパクします
+	PAKUPAKU();
 
-	// 頂点情報へのポインタ
-	VERTEX_2D* pVtx;
-
-	// 頂点バッファをロック
-	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-
-	// 位置の設定
-	pVtx[0].pos = {
-		m_pos.x - m_fLength,
-		m_pos.y - m_fLength,
-		0.0f
-	};
-
-	pVtx[1].pos = {
-		m_pos.x + m_fLength,
-		m_pos.y - m_fLength,
-		0.0f
-	};
-
-	pVtx[2].pos = {
-		m_pos.x - m_fLength,
-		m_pos.y + m_fLength,
-		0.0f
-	};
-
-	pVtx[3].pos = {
-		m_pos.x + m_fLength,
-		m_pos.y + m_fLength,
-		0.0f
-	};
-
-	// 頂点バッファをアンロックする
-	m_pVtxBuff->Unlock();
+	// 基底クラスの更新
+	CObject2D::Update();
 }
 
 //============================================================================
@@ -158,39 +65,76 @@ void CBg::Update()
 //============================================================================
 void CBg::Draw()
 {
-	// デバイスを取得
-	CRenderer* pRenderer = CManager::GetRenderer();
-	LPDIRECT3DDEVICE9 pDev = pRenderer->GetDeviece();
-
-	// 頂点バッファをデータストリームに設定
-	pDev->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
-
-	//頂点フォーマットの設定
-	pDev->SetFVF(FVF_VERTEX_2D);
-
-	// テクスチャの設定
-	pDev->SetTexture(0, m_pTex);
-
-	//ポリゴンの描画
-	pDev->DrawPrimitive(D3DPT_TRIANGLESTRIP,	// プリミティブの種類
-		0,										// 頂点情報の先頭アドレス
-		2);										// プリミティブ数
+	// 基底クラスの描画処理
+	CObject2D::Draw();
 }
 
 //============================================================================
 // 生成
 //============================================================================
-CBg* CBg::Create()
+CBg* CBg::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	CBg* pBg = new CBg;
 
 	// 生成出来ていたら初期設定
 	if (pBg != nullptr)
 	{
-		pBg->Init();
-		pBg->m_pos = { SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f };
-		pBg->m_size = { SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f };
+		pBg->SetType(TYPE::NONE);	// タイプを設定
+
+		pBg->Init();		// 基底クラスの初期設定
+		pBg->SetPos(pos);	// 中心位置の設定
+		pBg->SetSize(size);	// サイズの設定
 	}
 
+	// テクスチャを取得
+	LPDIRECT3DTEXTURE9 pTex = CManager::GetTexture()->GetTex(CTexture::TEX_TYPE::BG_000);
+
+	// テクスチャを設定
+	pBg->BindTex(pTex);
+
 	return pBg;
+}
+
+//============================================================================
+// パクパクします
+//============================================================================
+void CBg::PAKUPAKU()
+{
+	m_nDelayPAKU++;
+
+	if (m_nCntPAKU <= 0)
+	{
+		if (m_nDelayPAKU >= 140)
+		{
+			BindTex(CManager::GetTexture()->GetTex(CTexture::TEX_TYPE::BG_000));
+
+			m_nCntPAKU++;
+
+			m_nDelayPAKU = 0;
+		}
+		if (m_nDelayPAKU >= 120)
+		{
+			BindTex(CManager::GetTexture()->GetTex(CTexture::TEX_TYPE::BG_001));
+		}
+	}
+	else
+	{
+		if (m_nDelayPAKU >= 40)
+		{
+			BindTex(CManager::GetTexture()->GetTex(CTexture::TEX_TYPE::BG_000));
+
+			m_nCntPAKU++;
+
+			m_nDelayPAKU = 0;
+
+			if (m_nCntPAKU >= 4)
+			{
+				m_nCntPAKU = 0;
+			}
+		}
+		if (m_nDelayPAKU >= 20)
+		{
+			BindTex(CManager::GetTexture()->GetTex(CTexture::TEX_TYPE::BG_001));
+		}
+	}
 }
