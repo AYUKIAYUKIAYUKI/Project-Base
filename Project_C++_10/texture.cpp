@@ -14,14 +14,14 @@
 //****************************************************
 // 静的メンバの初期化
 //****************************************************
-LPDIRECT3DTEXTURE9 CTexture::m_apTexTemp[MAX_TEX];	// テクスチャ管理
+LPDIRECT3DTEXTURE9 CTexture::m_apTexTemp[TEX_TYPE::MAX];	// テクスチャ管理
 
 //============================================================================
 // コンストラクタ
 //============================================================================
 CTexture::CTexture()
 {
-	for (int i = 0; i < MAX_TEX; i++)
+	for (int i = 0; i < TEX_TYPE::MAX; i++)
 	{
 		m_apTexTemp[i] = nullptr;	// テクスチャ情報の初期化
 	}
@@ -40,21 +40,39 @@ CTexture::~CTexture()
 //============================================================================
 HRESULT CTexture::Load()
 {
+	// ファイルポインタ
+	FILE* pF = nullptr;
+
+	// ファイルを読み取りで展開
+	if (fopen_s(&pF, "data\\TXT\\texture_path.txt", "r") != 0)
+	{ // ファイル展開失敗
+		assert(false);
+	}
+
 	// デバイスを取得
 	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
 
 	for (int i = 0; i < TEX_TYPE::MAX; i++)
 	{
+		// ファイル名格納
+		char aFilename[64] = {};
+
+		// ファイル名読み取り
+		fscanf_s(pF, "%s", &aFilename[0], sizeof(aFilename));
+
 		// テクスチャの生成
 		D3DXCreateTextureFromFile(pDev,
-			m_aFilename[i],
+			&aFilename[0],
 			&m_apTexTemp[i]);
 
 		if (m_apTexTemp[i] == nullptr)
 		{ // テクスチャ生成失敗
+			fclose(pF);	// ファイルを閉じる
 			assert(false);
 		}
 	}
+
+	fclose(pF);	// ファイルを閉じる
 
 	return S_OK;
 }
@@ -78,7 +96,7 @@ void CTexture::Unload()
 //============================================================================
 // テクスチャを取得
 //============================================================================
-LPDIRECT3DTEXTURE9 CTexture::GetTex(TEX_TYPE type)
+LPDIRECT3DTEXTURE9 CTexture::GetTexture(TEX_TYPE type)
 {
 	if (m_apTexTemp[type] == nullptr)
 	{ // テクスチャ取得不能

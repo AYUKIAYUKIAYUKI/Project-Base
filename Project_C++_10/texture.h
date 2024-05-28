@@ -21,7 +21,7 @@ public:
 	enum TEX_TYPE
 	{
 		BG_000 = 0,		// 背景000
-		BG_001,			// 背景000
+		BG_001,			// 背景001
 		PLAYER_000,		// プレイヤー000
 		BULLET_000,		// 弾000
 		EFFECT_000,		// エフェクト000
@@ -37,25 +37,11 @@ public:
 	HRESULT Load();	// テクスチャ読込
 	void Unload();	// テクスチャ破棄
 
-	LPDIRECT3DTEXTURE9 GetTex(TEX_TYPE type);	// テクスチャを取得
+	LPDIRECT3DTEXTURE9 GetTexture(TEX_TYPE type);	// テクスチャを取得
 
 private:
 
-	static const int MAX_TEX = 64;	// 最大テクスチャ数
-
-	// ↓これは削除しろ->あとテクスチャマネージャーは順序的にレンダラーのメンバの方が楽そう
-	const char* m_aFilename[TEX_TYPE::MAX] = {
-		"data\\TEXTURE\\RIDAKURU.png",
-		"data\\TEXTURE\\RIDAKURU_Alt.png",
-		"data\\TEXTURE\\runningman000.png",
-		"data\\TEXTURE\\bullet000.png",
-		"data\\TEXTURE\\effect000.png",
-		"data\\TEXTURE\\explosion000.png",
-		"data\\TEXTURE\\AL-1S.png",
-		"data\\TEXTURE\\number000.png",
-	};
-
-	static LPDIRECT3DTEXTURE9 m_apTexTemp[MAX_TEX];	// テクスチャ管理
+	static LPDIRECT3DTEXTURE9 m_apTexTemp[TEX_TYPE::MAX];	// テクスチャ管理
 };
 
 #endif // _ENEMY_H_

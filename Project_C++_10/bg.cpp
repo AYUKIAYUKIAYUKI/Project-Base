@@ -87,7 +87,7 @@ CBg* CBg::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	}
 
 	// テクスチャを取得
-	LPDIRECT3DTEXTURE9 pTex = CManager::GetTexture()->GetTex(CTexture::TEX_TYPE::BG_000);
+	LPDIRECT3DTEXTURE9 pTex = CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BG_000);
 
 	// テクスチャを設定
 	pBg->BindTex(pTex);
@@ -106,7 +106,7 @@ void CBg::PAKUPAKU()
 	{
 		if (m_nDelayPAKU >= 140)
 		{
-			BindTex(CManager::GetTexture()->GetTex(CTexture::TEX_TYPE::BG_000));
+			BindTex(CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BG_000));
 
 			m_nCntPAKU++;
 
@@ -114,14 +114,14 @@ void CBg::PAKUPAKU()
 		}
 		if (m_nDelayPAKU >= 120)
 		{
-			BindTex(CManager::GetTexture()->GetTex(CTexture::TEX_TYPE::BG_001));
+			BindTex(CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BG_001));
 		}
 	}
 	else
 	{
 		if (m_nDelayPAKU >= 40)
 		{
-			BindTex(CManager::GetTexture()->GetTex(CTexture::TEX_TYPE::BG_000));
+			BindTex(CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BG_000));
 
 			m_nCntPAKU++;
 
@@ -134,7 +134,7 @@ void CBg::PAKUPAKU()
 		}
 		if (m_nDelayPAKU >= 20)
 		{
-			BindTex(CManager::GetTexture()->GetTex(CTexture::TEX_TYPE::BG_001));
+			BindTex(CManager::CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BG_001));
 		}
 	}
 }

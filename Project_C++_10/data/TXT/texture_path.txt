@@ -1,0 +1,8 @@
+data\\TEXTURE\\RIDAKURU.png
+data\\TEXTURE\\RIDAKURU_Alt.png
+data\\TEXTURE\\runningman000.png
+data\\TEXTURE\\bullet000.png
+data\\TEXTURE\\effect000.png
+data\\TEXTURE\\explosion000.png
+data\\TEXTURE\\AL-1S.png
+data\\TEXTURE\\number000.png

@@ -91,7 +91,7 @@ CExplosion* CExplosion::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	}
 
 	// テクスチャを取得
-	LPDIRECT3DTEXTURE9 pTex = CManager::GetTexture()->GetTex(CTexture::TEX_TYPE::EXPLOSION_000);
+	LPDIRECT3DTEXTURE9 pTex = CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::EXPLOSION_000);
 
 	// テクスチャを設定
 	pExplosion->BindTex(pTex);

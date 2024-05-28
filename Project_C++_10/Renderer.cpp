@@ -11,10 +11,16 @@
 #include "renderer.h"
 #include "object.h"
 
+// 仮
+#include "bg.h"
+#include "player.h"
+#include "enemy.h"
+#include "score.h"
+
 //============================================================================
 // コンストラクタ
 //============================================================================
-CRenderer::CRenderer() : m_pD3D(nullptr), m_pD3DDevice(nullptr)
+CRenderer::CRenderer() : m_pD3D(nullptr), m_pD3DDevice(nullptr), m_pTexture(nullptr)
 {
 
 }
@@ -105,6 +111,40 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 	// ワイヤー描画
 	//m_pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 
+	// テクスチャインスタンスを生成
+	if (m_pTexture == nullptr)
+	{
+		m_pTexture = new CTexture;
+	}
+
+	if (m_pTexture == nullptr)
+	{ //  テクスチャインスタンス生成失敗
+		return E_FAIL;
+	}
+
+	// テクスチャ読み込み
+	m_pTexture->Load();
+
+	// 背景の生成 (仮)
+	CBg::Create(
+		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// 中心位置
+		{ SCREEN_HEIGHT * 0.5f,  SCREEN_HEIGHT * 0.5f, 0.0f });	// サイズ
+
+	// プレイヤーの生成 (仮)
+	CPlayer::Create(
+		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// 中心位置
+		{ 25.0f, 50.0f, 0.0f });								// サイズ
+
+	// エネミーの生成 (仮)
+	CEnemy::Create(
+		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// 中心位置
+		{ 50.0f, 50.0f, 0.0f });								// サイズ
+
+	// スコアの生成 (仮)
+	CScore::Create(
+		{ 680.0f, 145.0f, 0.0f },	// 中心位置
+		25.0f);						// 数列の配置間隔
+
 	return S_OK;
 }
 
@@ -115,6 +155,12 @@ void CRenderer::Uninit()
 {
 	// 全オブジェクト解放処理
 	CObject::ReleaseAll();
+
+	//  テクスチャ破棄
+	if (m_pTexture != nullptr)
+	{
+		m_pTexture->Unload();
+	}
 
 	// Direct3Dデバイスの破棄
 	if (m_pD3DDevice != nullptr)
@@ -165,9 +211,17 @@ void CRenderer::Draw()
 }
 
 //============================================================================
-// デバイスを取得
+// デバイスの取得
 //============================================================================
 LPDIRECT3DDEVICE9 CRenderer::GetDeviece()
 {
 	return m_pD3DDevice;
+}
+
+//============================================================================
+// テクスチャ管理の取得
+//============================================================================
+CTexture* CRenderer::GetTextureInstane()
+{
+	return m_pTexture;
 }
