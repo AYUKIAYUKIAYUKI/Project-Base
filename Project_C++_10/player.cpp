@@ -17,8 +17,10 @@
 //============================================================================
 CPlayer::CPlayer() : CObject2D(FRONT_MIDDLE)
 {
-	m_nCntTexChange = 0;				// テクスチャ変更管理
-	m_rot_tgt = { 0.0f, 0.0f, 0.0f };	// 目標向き
+	m_nCntTexChange = 0;	// テクスチャ変更管理
+	m_velocity = {};		// 加速度
+	m_pos_tgt = {};			// 目標位置
+	m_rot_tgt = {};			// 目標向き
 }
 
 //============================================================================
@@ -54,14 +56,20 @@ void CPlayer::Uninit()
 //============================================================================
 void CPlayer::Update()
 {
-	// 拡縮
-	Scaling();
+	// 現在位置を取得、以降このコピーを目標位置として変更を加えていく
+	m_pos_tgt = CObject2D::GetPos();
 
-	// 回転
-	Rotation();
+	// 操作
+	Control();
 
-	// 移動
-	Translation();
+	// 重力加速
+	GravityFall();
+
+	// 当たり判定
+	Collision();
+
+	// 位置を調整、この処理の終わりに目標位置を反映させる
+	AdjustPos();
 
 	// アニメーション
 	Animation();
@@ -110,68 +118,10 @@ CPlayer* CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 }
 
 //============================================================================
-// 拡縮
+// 操作
 //============================================================================
-void CPlayer::Scaling()
+void CPlayer::Control()
 {
-	// 必要な情報を取得
-	D3DXVECTOR3 pos = CObject2D::GetPos();		// 中心位置情報
-	D3DXVECTOR3 size = CObject2D::GetSize();	// サイズ情報
-	float fLength = CObject2D::GetLength();		// 展開用対角線情報
-
-	if ((pos.x - fLength) > SCREEN_WIDTH)
-	{ // 画面の右端に到達で拡大しループ
-		pos.x = 0.0f - fLength;
-		size *= 3.0f;
-	}
-	else if ((pos.x + fLength) < 0.0f)
-	{ // 画面の右端に到達で縮小しループ
-		pos.x = SCREEN_WIDTH;
-		size /= 3.0f;
-	}
-
-	// 必要な情報を設定
-	CObject2D::SetPos(pos);		// 中心位置を設定
-	CObject2D::SetSize(size);	// サイズを設定
-}
-
-//============================================================================
-// 回転
-//============================================================================
-void CPlayer::Rotation()
-{
-	// 向き情報取得
-	D3DXVECTOR3 rot = CObject2D::GetRot();
-
-	// ブレーキ力
-	float fStopEnergy = 0.1f;
-
-	// 回転反映と回転量の減衰
-	if (m_rot_tgt.z - rot.z > D3DX_PI)
-	{
-		rot.z += ((m_rot_tgt.z - rot.z) * fStopEnergy + (D3DX_PI * 1.8f));
-	}
-	else if (m_rot_tgt.z - rot.z < -D3DX_PI)
-	{
-		rot.z += ((m_rot_tgt.z - rot.z) * fStopEnergy + (D3DX_PI * -1.8f));
-	}
-	else
-	{
-		rot.z += ((m_rot_tgt.z - rot.z) * fStopEnergy);
-	}
-
-	// 向き情報設定
-	CObject2D::SetRot(rot);
-}
-
-//============================================================================
-// 移動
-//============================================================================
-void CPlayer::Translation()
-{
-	// 中心位置情報を取得
-	D3DXVECTOR3 pos = CObject2D::GetPos();
-
 	// 左スティック取得
 	CInputPad* pPad = CManager::GetPad();
 	CInputPad::JOYSTICK Stick = pPad->GetJoyStickL();
@@ -180,9 +130,7 @@ void CPlayer::Translation()
 	if (Stick.X != 0 || Stick.Y != 0)
 	{
 		// 移動量と目標回転量を設定
-		pos.x += sinf(atan2f(Stick.X, -Stick.Y)) * 5.0f;
-		pos.y += cosf(atan2f(Stick.X, -Stick.Y)) * 5.0f;
-		m_rot_tgt.z = atan2f(Stick.X, -Stick.Y);
+		m_pos_tgt.x += sinf(atan2f(Stick.X, -Stick.Y)) * 5.0f;
 	}
 
 	// キーボード取得
@@ -222,20 +170,14 @@ void CPlayer::Translation()
 	if (bMove)
 	{
 		// 移動量と目標回転量を設定
-		pos.x += sinf(atan2f(X, Y)) * 5.0f;
-		pos.y += cosf(atan2f(X, Y)) * 5.0f;
-		m_rot_tgt.z = atan2f(X, Y);
+		m_pos_tgt.x += sinf(atan2f(X, Y)) * 5.0f;
 	}
 
-	// 弾を発射 (キーボード、パッド取得があるのでここで)
+	// ジャンプ
 	if (pKeyboard->GetTrigger(DIK_SPACE) || pPad->GetTrigger(CInputPad::JOYKEY_X))
 	{
-		// 弾の生成
-		CBullet::Create(
-			pos,					// 中心位置
-			{ 15.0f, 15.0f, 0.0f },	// サイズ
-			100,					// 使用期間
-			CObject2D::GetRot().z);	// 飛ぶ角度
+		// Y軸方向の加速度を上方向へ固定
+		m_velocity.y = -10.0f;
 	}
 
 	// デバッグ用にサウンド再生 (キーボード、パッド取得があるのでここで)
@@ -243,10 +185,113 @@ void CPlayer::Translation()
 	{
 		CSound* pSound = CManager::GetSound();
 		pSound->PlaySound(CSound::SOUND_LABEL_00);
+
+		// おまけに弾の生成
+		CBullet::Create(
+			m_pos_tgt,				// 中心位置
+			{ 15.0f, 15.0f, 0.0f },	// サイズ
+			100,					// 使用期間
+			0.0f);					// 飛ぶ角度
+	}
+}
+
+////============================================================================
+//// 拡縮
+////============================================================================
+//void CPlayer::Scaling()
+//{
+//
+//}
+//
+////============================================================================
+//// 回転
+////============================================================================
+//void CPlayer::Rotation()
+//{
+//	//// 向き情報取得
+//	//D3DXVECTOR3 rot = CObject2D::GetRot();
+//
+//	//// ブレーキ力
+//	//float fStopEnergy = 0.1f;
+//
+//	//// 回転反映と回転量の減衰
+//	//if (m_rot_tgt.z - rot.z > D3DX_PI)
+//	//{
+//	//	rot.z += ((m_rot_tgt.z - rot.z) * fStopEnergy + (D3DX_PI * 1.8f));
+//	//}
+//	//else if (m_rot_tgt.z - rot.z < -D3DX_PI)
+//	//{
+//	//	rot.z += ((m_rot_tgt.z - rot.z) * fStopEnergy + (D3DX_PI * -1.8f));
+//	//}
+//	//else
+//	//{
+//	//	rot.z += ((m_rot_tgt.z - rot.z) * fStopEnergy);
+//	//}
+//
+//	//// 向き情報設定
+//	//CObject2D::SetRot(rot);
+//}
+//
+////============================================================================
+//// 移動
+////============================================================================
+//void CPlayer::Translation()
+//{
+//
+//}
+
+//============================================================================
+// 重力落下
+//============================================================================
+void CPlayer::GravityFall()
+{
+	// 重力分、下方向への加速度増加
+	m_velocity.y = m_velocity.y + 0.25f;
+}
+
+//============================================================================
+// 当たり判定
+//============================================================================
+void CPlayer::Collision()
+{
+	
+}
+
+//============================================================================
+// 位置調整
+//============================================================================
+void CPlayer::AdjustPos()
+{
+	// 加速度分位置を変動
+	m_pos_tgt += m_velocity;
+
+	// 展開用対角線を取得
+	float fLength = CObject2D::GetLength();
+
+	// 画面の左右端に到達でそれぞれループ
+	if (m_pos_tgt.x - fLength > SCREEN_WIDTH)
+	{
+		// 左端へ設定
+		m_pos_tgt.x = 0.0f - fLength;
+	}
+	else if (m_pos_tgt.x + fLength < 0.0f)
+	{
+		// 右端へ設定
+		m_pos_tgt.x = SCREEN_WIDTH + fLength;
 	}
 
-	// 中心位置を設定
-	CObject2D::SetPos(pos);
+	// 画面の下端に到達で下降制限
+	if (m_pos_tgt.y + fLength > SCREEN_HEIGHT)
+	{
+		// 下端に設定
+		m_pos_tgt.y = SCREEN_HEIGHT - fLength;
+
+		// Y軸方向の加速度をリセット
+		m_velocity.y = 0.0f;
+	}
+
+	// 中心位置情報を設定
+	CObject2D::SetPos(m_pos_tgt);
 }
 
 //============================================================================

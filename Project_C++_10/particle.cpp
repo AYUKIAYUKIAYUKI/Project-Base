@@ -136,7 +136,7 @@ void CParticle::Translate()
 //============================================================================
 bool CParticle::Progress()
 {
-	// サイズ情報を取得
+	// サイズを取得
 	D3DXVECTOR3 size = CObject2D::GetSize();
 
 	// 縮小
@@ -153,7 +153,7 @@ bool CParticle::Progress()
 		return false;
 	}
 
-	// サイズ情報を設定
+	// サイズを設定
 	CObject2D::SetSize(size);
 
 	return true;

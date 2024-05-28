@@ -115,7 +115,7 @@ CEffect* CEffect::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 //============================================================================
 bool CEffect::Progress()
 {
-	// サイズ情報を取得
+	// サイズを取得
 	D3DXVECTOR3 size = CObject2D::GetSize();
 
 	// 縮小
@@ -132,7 +132,7 @@ bool CEffect::Progress()
 		return false;
 	}
 
-	// サイズ情報を設定
+	// サイズを設定
 	CObject2D::SetSize(size);
 
 	return true;

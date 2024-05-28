@@ -119,14 +119,14 @@ CBullet* CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nRemain, float f
 //============================================================================
 void CBullet::Translation()
 {
-	// 中心位置情報を取得
+	// 位置を取得
 	D3DXVECTOR3 pos = CObject2D::GetPos();
 
 	// 設定された角度に飛んでいく
 	pos.x += sinf(m_fFlyAngle) * 3.0f;
 	pos.y += cosf(m_fFlyAngle) * 3.0f;
 
-	// 中心位置を設定
+	// 位置を設定
 	CObject2D::SetPos(pos);
 }
 
