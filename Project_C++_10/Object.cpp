@@ -14,7 +14,7 @@
 //****************************************************
 // 静的メンバの初期化
 //****************************************************
-CObject* CObject::m_apObject[MAX_PRIO][MAX_OBJ] = {};	// オブジェクト管理
+CObject* CObject::m_apObject[MAX_LAYER][MAX_OBJ] = {};	// オブジェクト管理
 int CObject::m_nNumAll = 0;								// オブジェクト総数
 
 //============================================================================
@@ -79,7 +79,7 @@ void CObject::Draw()
 //============================================================================
 void CObject::ReleaseAll()
 {
-	for (int nCntPriority = 0; nCntPriority < MAX_PRIO; nCntPriority++)
+	for (int nCntPriority = 0; nCntPriority < MAX_LAYER; nCntPriority++)
 	{
 		for (int nCntObj = 0; nCntObj < MAX_OBJ; nCntObj++)
 		{
@@ -96,7 +96,7 @@ void CObject::ReleaseAll()
 //============================================================================
 void CObject::UpdateAll()
 {
-	for (int nCntPriority = 0; nCntPriority < MAX_PRIO; nCntPriority++)
+	for (int nCntPriority = 0; nCntPriority < MAX_LAYER; nCntPriority++)
 	{
 		for (int nCntObj = 0; nCntObj < MAX_OBJ; nCntObj++)
 		{
@@ -113,7 +113,7 @@ void CObject::UpdateAll()
 //============================================================================
 void CObject::DrawAll()
 {
-	for (int nCntPriority = 0; nCntPriority < MAX_PRIO; nCntPriority++)
+	for (int nCntPriority = 0; nCntPriority < MAX_LAYER; nCntPriority++)
 	{
 		for (int nCntObj = 0; nCntObj < MAX_OBJ; nCntObj++)
 		{
@@ -156,7 +156,7 @@ CObject* CObject::FindScoreInstance()
 {
 	int AL_1S = 0;
 
-	for (int nCntPriority = 0; nCntPriority < MAX_PRIO; nCntPriority++)
+	for (int nCntPriority = 0; nCntPriority < MAX_LAYER; nCntPriority++)
 	{
 		for (int nCntObj = 0; nCntObj < MAX_OBJ; nCntObj++)
 		{
@@ -165,7 +165,7 @@ CObject* CObject::FindScoreInstance()
 				continue;
 			}
 
-			if (m_apObject[nCntPriority][nCntObj]->GetType() == TYPE::SCORE)
+			if (m_apObject[nCntPriority][nCntObj]->GetType() == CObject::TYPE::SCORE)
 			{ // スコアタイプならリターン
 				return m_apObject[nCntPriority][nCntObj];
 			}

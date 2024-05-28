@@ -20,8 +20,8 @@ class CObject2D : public CObject
 {
 public:
 	
-	CObject2D();			// コンストラクタ
-	~CObject2D() override;	// デストラクタ
+	CObject2D(int nPriority = MAX_LAYER - 1);	// コンストラクタ
+	~CObject2D() override;						// デストラクタ
 
 	HRESULT Init() override;	// 初期設定
 	void Uninit() override;		// 終了処理

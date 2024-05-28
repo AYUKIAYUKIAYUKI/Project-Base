@@ -16,7 +16,6 @@ class CObject
 public:
 
 	static const int MAX_OBJ = 512;	// オブジェクト最大数
-	static const int MAX_PRIO = 4;	// プライオリティ最大数
 
 	//****************************************************
 	// オブジェクトの種類識別
@@ -27,10 +26,22 @@ public:
 		PLAYER,		// プレイヤー
 		ENEMY,		// エネミー
 		SCORE,		// スコア
-		MAX
+		MAX_TYPE,
 	};
 
-	CObject(int nPriority = MAX_PRIO - 1);	// コンストラクタ
+	//****************************************************
+	// オブジェクトのレイヤー識別
+	//****************************************************
+	enum LAYER
+	{
+		BACK = 0,		// 背景
+		BACK_MIDDLE,	// 後ろ側
+		FRONT_MIDDLE,	// 前川
+		FRONT,			// 前景
+		MAX_LAYER,
+	};
+
+	CObject(int nPriority = MAX_LAYER - 1);	// コンストラクタ
 	virtual ~CObject() = 0;					// デストラクタ
 
 	virtual HRESULT Init() = 0;	// 初期設定
@@ -56,7 +67,7 @@ protected:
 
 private:
 
-	static CObject* m_apObject[MAX_PRIO][MAX_OBJ];	// オブジェクト管理
+	static CObject* m_apObject[MAX_LAYER][MAX_OBJ];	// オブジェクト管理
 	static int m_nNumAll;							// オブジェクト総数
 
 	int m_nPriority;	// 描画優先度
