@@ -154,8 +154,6 @@ CObject::TYPE CObject::GetType()
 //============================================================================
 CObject* CObject::FindScoreInstance()
 {
-	int AL_1S = 0;
-
 	for (int nCntPriority = 0; nCntPriority < MAX_LAYER; nCntPriority++)
 	{
 		for (int nCntObj = 0; nCntObj < MAX_OBJ; nCntObj++)

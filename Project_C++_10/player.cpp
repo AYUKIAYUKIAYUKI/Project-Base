@@ -12,6 +12,16 @@
 #include "manager.h"
 #include "bullet.h"
 
+//****************************************************
+// 静的メンバ変数の初期化
+//****************************************************
+const int CPlayer::TEXTURE_DIVIDE_U = 30;	// テクスチャのU方向分割数
+const int CPlayer::TEXTURE_DIVIDE_V = 1;	// テクスチャのV方向分割数
+const float CPlayer::MAX_VELOCITY = 5.0f;	// 加速度上限
+const float CPlayer::JUMP_FORCE = -10.0f;	// ジャンプ力
+const float CPlayer::BRAKING_FORCE = 0.9f;	// 制動力
+const float CPlayer::GRAVITY_FORCE = 0.25f;	// 重力
+
 //============================================================================
 // コンストラクタ
 //============================================================================
@@ -62,6 +72,9 @@ void CPlayer::Update()
 	// 操作
 	Control();
 
+	// 制動調整
+	Braking();
+
 	// 重力加速
 	GravityFall();
 
@@ -104,8 +117,8 @@ CPlayer* CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 		pPlayer->SetPos(pos);	// 中心位置の設定
 		pPlayer->SetSize(size);	// サイズの設定
 
-		pPlayer->SetTexWidth(1.0f / 8.0f);	// 横テクスチャ分割幅
-		pPlayer->SetTexHeight(1.0f);		// 縦テクスチャ分縦幅
+		pPlayer->SetTexWidth(1.0f / (float)TEXTURE_DIVIDE_U);	// 横テクスチャ分割幅
+		pPlayer->SetTexHeight(1.0f / (float) TEXTURE_DIVIDE_V);	// 縦テクスチャ分縦幅
 	}
 
 	// テクスチャを取得
@@ -130,7 +143,7 @@ void CPlayer::Control()
 	if (Stick.X != 0 || Stick.Y != 0)
 	{
 		// 移動量と目標回転量を設定
-		m_pos_tgt.x += sinf(atan2f(Stick.X, -Stick.Y)) * 5.0f;
+		m_velocity.x += sinf(atan2f((float)Stick.X, (float)-Stick.Y));
 	}
 
 	// キーボード取得
@@ -170,14 +183,14 @@ void CPlayer::Control()
 	if (bMove)
 	{
 		// 移動量と目標回転量を設定
-		m_pos_tgt.x += sinf(atan2f(X, Y)) * 5.0f;
+		m_velocity.x += sinf(atan2f(X, Y));
 	}
 
 	// ジャンプ
 	if (pKeyboard->GetTrigger(DIK_SPACE) || pPad->GetTrigger(CInputPad::JOYKEY_X))
 	{
 		// Y軸方向の加速度を上方向へ固定
-		m_velocity.y = -10.0f;
+		m_velocity.y = JUMP_FORCE;
 	}
 
 	// デバッグ用にサウンド再生 (キーボード、パッド取得があるのでここで)
@@ -241,12 +254,30 @@ void CPlayer::Control()
 //}
 
 //============================================================================
+// 制動調整
+//============================================================================
+void CPlayer::Braking()
+{
+	if (m_velocity.x > MAX_VELOCITY)
+	{
+		m_velocity.x = MAX_VELOCITY;
+	}
+	else if (m_velocity.x < -MAX_VELOCITY)
+	{
+		m_velocity.x = -MAX_VELOCITY;
+	}
+
+	// 少しずつX軸方向への加速度を失う
+	m_velocity.x = m_velocity.x * BRAKING_FORCE;
+}
+
+//============================================================================
 // 重力落下
 //============================================================================
 void CPlayer::GravityFall()
 {
 	// 重力分、下方向への加速度増加
-	m_velocity.y = m_velocity.y + 0.25f;
+	m_velocity.y = m_velocity.y + GRAVITY_FORCE;
 }
 
 //============================================================================
@@ -265,26 +296,26 @@ void CPlayer::AdjustPos()
 	// 加速度分位置を変動
 	m_pos_tgt += m_velocity;
 
-	// 展開用対角線を取得
-	float fLength = CObject2D::GetLength();
+	// サイズを取得
+	D3DXVECTOR3 fSize = CObject2D::GetSize();
 
 	// 画面の左右端に到達でそれぞれループ
-	if (m_pos_tgt.x - fLength > SCREEN_WIDTH)
+	if (m_pos_tgt.x - fSize.x > SCREEN_WIDTH)
 	{
 		// 左端へ設定
-		m_pos_tgt.x = 0.0f - fLength;
+		m_pos_tgt.x = 0.0f - fSize.x;
 	}
-	else if (m_pos_tgt.x + fLength < 0.0f)
+	else if (m_pos_tgt.x + fSize.x < 0.0f)
 	{
 		// 右端へ設定
-		m_pos_tgt.x = SCREEN_WIDTH + fLength;
+		m_pos_tgt.x = SCREEN_WIDTH + fSize.x;
 	}
 
 	// 画面の下端に到達で下降制限
-	if (m_pos_tgt.y + fLength > SCREEN_HEIGHT)
+	if (m_pos_tgt.y + fSize.y > SCREEN_HEIGHT)
 	{
 		// 下端に設定
-		m_pos_tgt.y = SCREEN_HEIGHT - fLength;
+		m_pos_tgt.y = SCREEN_HEIGHT - fSize.y;
 
 		// Y軸方向の加速度をリセット
 		m_velocity.y = 0.0f;
@@ -310,7 +341,7 @@ void CPlayer::Animation()
 		// 横テクスチャ種類変更
 		nTexPatternU++;
 
-		if (nTexPatternU >= 8)
+		if (nTexPatternU >= TEXTURE_DIVIDE_U)
 		{
 			// テクスチャパターンをリセット
 			nTexPatternU = 0;
