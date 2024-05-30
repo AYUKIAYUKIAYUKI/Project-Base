@@ -45,11 +45,12 @@ private:
 	//void Translation();	// 移動
 	void Braking();			// 制動調整
 	void GravityFall();		// 重力加速
-	void Collision();		// 当たり判定
 	void AdjustPos();		// 位置を調整
+	void Collision();		// 当たり判定
 	void Animation();		// アニメーション
 	
 	int m_nCntTexChange;	// テクスチャ変更管理
+	int m_nLeftNumJump;		// ジャンプ可能回数
 	D3DXVECTOR3 m_velocity;	// 加速度
 	D3DXVECTOR3 m_pos_tgt;	// 目標位置
 	D3DXVECTOR3 m_rot_tgt;	// 目標向き

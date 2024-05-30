@@ -13,8 +13,9 @@
 
 // 仮
 #include "bg.h"
-#include "player.h"
+#include "block.h"
 #include "enemy.h"
+#include "player.h"
 #include "score.h"
 
 //============================================================================
@@ -130,15 +131,30 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// 中心位置
 		{ SCREEN_HEIGHT * 0.5f,  SCREEN_HEIGHT * 0.5f, 0.0f });	// サイズ
 
-	// プレイヤーの生成 (仮)
-	CPlayer::Create(
-		{ SCREEN_WIDTH * 0.5f, 0.0f, 0.0f },	// 中心位置
-		{ 40.0f, 50.0f, 0.0f });				// サイズ
+	// ブロックの生成 (仮)
+	CBlock::Create(
+		{ SCREEN_WIDTH * 0.25f, SCREEN_HEIGHT * 0.7f, 0.0f },	// 中心位置
+		{ 50.0f, 100.0f, 0.0f });								// サイズ
+
+	// ブロックの生成 (仮)
+	CBlock::Create(
+		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// 中心位置
+		{ 75.0f, 75.0f, 0.0f });								// サイズ
+
+	// ブロックの生成 (仮)
+	CBlock::Create(
+		{ SCREEN_WIDTH * 0.75f, SCREEN_HEIGHT * 0.3f, 0.0f },	// 中心位置
+		{ 100.0f, 50.0f, 0.0f });								// サイズ
 
 	// エネミーの生成 (仮)
 	CEnemy::Create(
 		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// 中心位置
 		{ 50.0f, 50.0f, 0.0f });								// サイズ
+
+	// プレイヤーの生成 (仮)
+	CPlayer::Create(
+		{ SCREEN_WIDTH * 0.5f, 0.0f, 0.0f },	// 中心位置
+		{ 40.0f, 50.0f, 0.0f });				// サイズ
 
 	// スコアの生成 (仮)
 	CScore::Create(

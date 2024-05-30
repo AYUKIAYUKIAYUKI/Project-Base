@@ -24,6 +24,7 @@ public:
 	{
 		NONE = 0,	// 無し
 		PLAYER,		// プレイヤー
+		BLOCK,		// ブロック
 		ENEMY,		// エネミー
 		SCORE,		// スコア
 		MAX_TYPE,
@@ -56,10 +57,10 @@ public:
 	static CObject* GetObject(int nPriority, int nID);	// オブジェクト情報取得
 	static int GetNumAll();								// オブジェクト総数取得
 
+	void Release();	// 個別解放処理 (仮)
+	
 	TYPE GetType();					// タイプ取得
 	CObject* FindScoreInstance();	// スコアのインスタンスを探す
-
-	void Release();	// 個別解放処理 (仮)
 
 protected:
 
