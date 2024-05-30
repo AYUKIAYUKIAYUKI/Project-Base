@@ -15,6 +15,7 @@
 #include "bg.h"
 #include "block.h"
 #include "enemy.h"
+#include "item.h"
 #include "player.h"
 #include "score.h"
 
@@ -151,9 +152,14 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// 中心位置
 		{ 50.0f, 50.0f, 0.0f });								// サイズ
 
+	// アイテムの生成 (仮)
+	CItem::Create(
+		{ SCREEN_WIDTH * 0.75f, SCREEN_HEIGHT * 0.25f, 0.0f },	// 中心位置
+		{ 80.0f, 80.0f, 0.0f });								// サイズ
+
 	// プレイヤーの生成 (仮)
 	CPlayer::Create(
-		{ SCREEN_WIDTH * 0.5f, 0.0f, 0.0f },	// 中心位置
+		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT, 0.0f },	// 中心位置
 		{ 40.0f, 50.0f, 0.0f });				// サイズ
 
 	// スコアの生成 (仮)

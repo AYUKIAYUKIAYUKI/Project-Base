@@ -12,6 +12,8 @@
 #include "manager.h"
 #include "block.h"
 #include "bullet.h"
+#include "item.h"
+#include "particle.h"
 
 //****************************************************
 // 静的メンバ変数の初期化
@@ -21,7 +23,7 @@ const int CPlayer::TEXTURE_DIVIDE_V = 1;	// テクスチャのV方向分割数
 const float CPlayer::MAX_VELOCITY = 3.0f;	// 加速度上限
 const float CPlayer::JUMP_FORCE = -10.;		// ジャンプ力
 const float CPlayer::BRAKING_FORCE = 0.9f;	// 制動力
-const float CPlayer::GRAVITY_FORCE = 0.25f;	// 重力
+//const float CPlayer::GRAVITY_FORCE = 0.25f;	// 重力
 
 //============================================================================
 // コンストラクタ
@@ -33,6 +35,8 @@ CPlayer::CPlayer() : CObject2D(FRONT_MIDDLE)
 	m_velocity = {};		// 加速度
 	m_pos_tgt = {};			// 目標位置
 	m_rot_tgt = {};			// 目標向き
+
+	m_bAnimationLock = false;	// ( 試験的 )
 }
 
 //============================================================================
@@ -116,12 +120,17 @@ CPlayer* CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 		pPlayer->SetPos(pos);	// 中心位置の設定
 		pPlayer->SetSize(size);	// サイズの設定
 
-		pPlayer->SetTexWidth(1.0f / (float)TEXTURE_DIVIDE_U);	// 横テクスチャ分割幅
-		pPlayer->SetTexHeight(1.0f / (float) TEXTURE_DIVIDE_V);	// 縦テクスチャ分縦幅
+		pPlayer->SetTexWidth(1.0f / (float)CPlayer::TEXTURE_DIVIDE_U);	// 横テクスチャ分割幅
+		pPlayer->SetTexHeight(1.0f / (float)CPlayer::TEXTURE_DIVIDE_V);	// 縦テクスチャ分縦幅
 	}
 
 	// テクスチャを取得
 	LPDIRECT3DTEXTURE9 pTex = CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::PLAYER_000);
+
+	if (pTex == nullptr)
+	{ // 取得失敗
+		assert(false);
+	}
 
 	// テクスチャを設定
 	pPlayer->BindTex(pTex);
@@ -192,7 +201,7 @@ void CPlayer::Control()
 		{ // ジャンプ可能回数が残っていれば
 
 			// Y軸方向の加速度を上方向へ固定
-			m_velocity.y = JUMP_FORCE;
+			m_velocity.y = CPlayer::JUMP_FORCE;
 
 			// ジャンプ可能回数を減少
 			m_nLeftNumJump--;
@@ -264,17 +273,17 @@ void CPlayer::Control()
 //============================================================================
 void CPlayer::Braking()
 {
-	if (m_velocity.x > MAX_VELOCITY)
+	if (m_velocity.x > CPlayer::MAX_VELOCITY)
 	{
-		m_velocity.x = MAX_VELOCITY;
+		m_velocity.x = CPlayer::MAX_VELOCITY;
 	}
-	else if (m_velocity.x < -MAX_VELOCITY)
+	else if (m_velocity.x < -CPlayer::MAX_VELOCITY)
 	{
-		m_velocity.x = -MAX_VELOCITY;
+		m_velocity.x = -CPlayer::MAX_VELOCITY;
 	}
 
 	// 少しずつX軸方向への加速度を失う
-	m_velocity.x = m_velocity.x * BRAKING_FORCE;
+	m_velocity.x = m_velocity.x * CPlayer::BRAKING_FORCE;
 }
 
 //============================================================================
@@ -283,7 +292,7 @@ void CPlayer::Braking()
 void CPlayer::GravityFall()
 {
 	// 重力分、下方向への加速度増加
-	m_velocity.y = m_velocity.y + GRAVITY_FORCE;
+	m_velocity.y = m_velocity.y + CObject::GRAVITY_FORCE;
 }
 
 //============================================================================
@@ -346,106 +355,149 @@ void CPlayer::Collision()
 				continue;
 			}
 
-			if (pObject->GetType() != CObject::TYPE::BLOCK)
-			{ // ブロックタイプ以外はコンティニュー
-				continue;
-			}
+			if (pObject->GetType() == CObject::TYPE::BLOCK)
+			{ // ブロックタイプなら
 
-			// オブジェクトクラスをブロッククラスへダウンキャスト
-			CBlock* pBlock = dynamic_cast<CBlock*>(pObject);
+				// オブジェクトクラスをブロッククラスへダウンキャスト
+				CBlock* pBlock = dynamic_cast<CBlock*>(pObject);
 
-			if (pBlock == nullptr)
-			{ // ダウンキャスト失敗
-				assert(false);
-			}
+				if (pBlock == nullptr)
+				{ // ダウンキャスト失敗
+					assert(false);
+				}
 
 #if 0
-			// ブロックと衝突する場合
-			if (m_pos_tgt.x + CObject2D::GetSize().x >= pBlock->GetPos().x - pBlock->GetSize().x &&
-				m_pos_tgt.x - CObject2D::GetSize().x <= pBlock->GetPos().x + pBlock->GetSize().x &&
-				m_pos_tgt.y + CObject2D::GetSize().y >= pBlock->GetPos().y - pBlock->GetSize().y &&
-				m_pos_tgt.y - CObject2D::GetSize().y <= pBlock->GetPos().y + pBlock->GetSize().y)
-			{
-				// お互いの距離を算出
-				D3DXVECTOR3 dist = pBlock->GetPos() - CObject2D::GetPos();
-
-				// 衝突前からその軸方向にいる場合
-				if (dist.x * dist.x > dist.y * dist.y)
+				// ブロックと衝突する場合
+				if (m_pos_tgt.x + CObject2D::GetSize().x >= pBlock->GetPos().x - pBlock->GetSize().x &&
+					m_pos_tgt.x - CObject2D::GetSize().x <= pBlock->GetPos().x + pBlock->GetSize().x &&
+					m_pos_tgt.y + CObject2D::GetSize().y >= pBlock->GetPos().y - pBlock->GetSize().y &&
+					m_pos_tgt.y - CObject2D::GetSize().y <= pBlock->GetPos().y + pBlock->GetSize().y)
 				{
-					if (CObject2D::GetPos().x < pBlock->GetPos().x)
+					// お互いの距離を算出
+					D3DXVECTOR3 dist = pBlock->GetPos() - CObject2D::GetPos();
+
+					// 衝突前からその軸方向にいる場合
+					if (dist.x * dist.x > dist.y * dist.y)
 					{
-						// 位置をこのブロックの左端に設定
-						m_pos_tgt.x = -CObject2D::GetSize().x + (pBlock->GetPos().x - pBlock->GetSize().x);
+						if (CObject2D::GetPos().x < pBlock->GetPos().x)
+						{
+							// 位置をこのブロックの左端に設定
+							m_pos_tgt.x = -CObject2D::GetSize().x + (pBlock->GetPos().x - pBlock->GetSize().x);
+						}
+						else if (CObject2D::GetPos().x > pBlock->GetPos().x)
+						{
+							// 位置をこのブロックの右端に設定
+							m_pos_tgt.x = CObject2D::GetSize().x + (pBlock->GetPos().x + pBlock->GetSize().x);
+						}
 					}
-					else if (CObject2D::GetPos().x > pBlock->GetPos().x)
+					else
 					{
-						// 位置をこのブロックの右端に設定
-						m_pos_tgt.x = CObject2D::GetSize().x + (pBlock->GetPos().x + pBlock->GetSize().x);
+						if (CObject2D::GetPos().y < pBlock->GetPos().y)
+						{
+							// ジャンプ可能回数を設定
+							m_nLeftNumJump = 2;
+
+							// 位置をこのブロックの上端に設定
+							m_pos_tgt.y = -CObject2D::GetSize().y + (pBlock->GetPos().y - pBlock->GetSize().y);
+
+							// Y軸方向の加速度をリセット
+							m_velocity.y = 0.0f;
+						}
+						else if (CObject2D::GetPos().y > pBlock->GetPos().y)
+						{
+							// 位置をこのブロックの下端に設定
+							m_pos_tgt.y = CObject2D::GetSize().y + (pBlock->GetPos().y + pBlock->GetSize().y);
+						}
 					}
 				}
-				else
+#else
+				// ブロックと衝突する場合
+				if (m_pos_tgt.x + CObject2D::GetSize().x >= pBlock->GetPos().x - pBlock->GetSize().x &&
+					m_pos_tgt.x - CObject2D::GetSize().x <= pBlock->GetPos().x + pBlock->GetSize().x &&
+					m_pos_tgt.y + CObject2D::GetSize().y >= pBlock->GetPos().y - pBlock->GetSize().y &&
+					m_pos_tgt.y - CObject2D::GetSize().y <= pBlock->GetPos().y + pBlock->GetSize().y)
 				{
-					if (CObject2D::GetPos().y < pBlock->GetPos().y)
+					// 過去の位置がどちらかの軸方向に重なっていたかで処理分岐
+					if (CObject2D::GetPos().x + CObject2D::GetSize().x > pBlock->GetPos().x - pBlock->GetSize().x &&
+						CObject2D::GetPos().x - CObject2D::GetSize().x < pBlock->GetPos().x + pBlock->GetSize().x)
 					{
-						// ジャンプ可能回数を設定
-						m_nLeftNumJump = 2;
+						if (CObject2D::GetPos().y < pBlock->GetPos().y)
+						{
+							// ジャンプ可能回数を設定
+							m_nLeftNumJump = 2;
 
-						// 位置をこのブロックの上端に設定
-						m_pos_tgt.y = -CObject2D::GetSize().y + (pBlock->GetPos().y - pBlock->GetSize().y);
+							// 位置をこのブロックの上端に設定
+							m_pos_tgt.y = -CObject2D::GetSize().y + (pBlock->GetPos().y - pBlock->GetSize().y);
 
-						// Y軸方向の加速度をリセット
-						m_velocity.y = 0.0f;
+							// Y軸方向の加速度をリセット
+							m_velocity.y = 0.0f;
+						}
+						else if (CObject2D::GetPos().y > pBlock->GetPos().y)
+						{
+							// 位置をこのブロックの下端に設定
+							m_pos_tgt.y = CObject2D::GetSize().y + (pBlock->GetPos().y + pBlock->GetSize().y);
+						}
 					}
-					else if (CObject2D::GetPos().y > pBlock->GetPos().y)
+					else
 					{
-						// 位置をこのブロックの下端に設定
-						m_pos_tgt.y = CObject2D::GetSize().y + (pBlock->GetPos().y + pBlock->GetSize().y);
+						if (CObject2D::GetPos().x < pBlock->GetPos().x)
+						{
+							// 位置をこのブロックの左端に設定
+							m_pos_tgt.x = -CObject2D::GetSize().x + (pBlock->GetPos().x - pBlock->GetSize().x);
+						}
+						else if (CObject2D::GetPos().x > pBlock->GetPos().x)
+						{
+							// 位置をこのブロックの右端に設定
+							m_pos_tgt.x = CObject2D::GetSize().x + (pBlock->GetPos().x + pBlock->GetSize().x);
+						}
 					}
 				}
-			}
-#elif 1
-			// ブロックと衝突する場合
-			if (m_pos_tgt.x + CObject2D::GetSize().x >= pBlock->GetPos().x - pBlock->GetSize().x &&
-				m_pos_tgt.x - CObject2D::GetSize().x <= pBlock->GetPos().x + pBlock->GetSize().x &&
-				m_pos_tgt.y + CObject2D::GetSize().y >= pBlock->GetPos().y - pBlock->GetSize().y &&
-				m_pos_tgt.y - CObject2D::GetSize().y <= pBlock->GetPos().y + pBlock->GetSize().y)
-			{
-				// 過去の位置がどちらかの軸方向に重なっていたかで処理分岐
-				if (CObject2D::GetPos().x + CObject2D::GetSize().x > pBlock->GetPos().x - pBlock->GetSize().x &&
-					CObject2D::GetPos().x - CObject2D::GetSize().x < pBlock->GetPos().x + pBlock->GetSize().x)
-				{
-					if (CObject2D::GetPos().y < pBlock->GetPos().y)
-					{
-						// ジャンプ可能回数を設定
-						m_nLeftNumJump = 2;
-
-						// 位置をこのブロックの上端に設定
-						m_pos_tgt.y = -CObject2D::GetSize().y + (pBlock->GetPos().y - pBlock->GetSize().y);
-
-						// Y軸方向の加速度をリセット
-						m_velocity.y = 0.0f;
-					}
-					else if (CObject2D::GetPos().y > pBlock->GetPos().y)
-					{
-						// 位置をこのブロックの下端に設定
-						m_pos_tgt.y = CObject2D::GetSize().y + (pBlock->GetPos().y + pBlock->GetSize().y);
-					}
-				}
-				else
-				{
-					if (CObject2D::GetPos().x < pBlock->GetPos().x)
-					{
-						// 位置をこのブロックの左端に設定
-						m_pos_tgt.x = -CObject2D::GetSize().x + (pBlock->GetPos().x - pBlock->GetSize().x);
-					}
-					else if (CObject2D::GetPos().x > pBlock->GetPos().x)
-					{
-						// 位置をこのブロックの右端に設定
-						m_pos_tgt.x = CObject2D::GetSize().x + (pBlock->GetPos().x + pBlock->GetSize().x);
-					}
-				}
-			}
 #endif
+			}
+			else if (pObject->GetType() == CObject::TYPE::ITEM)
+			{ // アイテムタイプなら
+
+				// オブジェクトクラスをアイテムクラスへダウンキャスト
+				CItem* pItem = dynamic_cast<CItem*>(pObject);
+
+				if (pItem == nullptr)
+				{ // ダウンキャスト失敗
+					assert(false);
+				}
+
+				// アイテムと衝突する場合
+				if (m_pos_tgt.x + CObject2D::GetSize().x >= pItem->GetPos().x - pItem->GetSize().x &&
+					m_pos_tgt.x - CObject2D::GetSize().x <= pItem->GetPos().x + pItem->GetSize().x &&
+					m_pos_tgt.y + CObject2D::GetSize().y >= pItem->GetPos().y - pItem->GetSize().y &&
+					m_pos_tgt.y - CObject2D::GetSize().y <= pItem->GetPos().y + pItem->GetSize().y)
+				{
+					// パーティクルを生成
+					for (int i = 0; i < 10; i++)
+					{
+						CParticle::Create(
+							m_pos_tgt,			// 中心位置
+							pItem->GetSize(),	// サイズ
+							atan2f((float)(rand() % 314), (float)(rand() % 314)) * (rand() % 314));	// 飛ぶ角度
+					}
+
+					// 試験的にテクスチャを変更
+					LPDIRECT3DTEXTURE9 pTex = CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::PLAYER_001);
+
+					if (pTex == nullptr)
+					{ // 取得失敗
+						assert(false);
+					}
+
+					// テクスチャを設定
+					CObject2D::BindTex(pTex);
+
+					// アニメーションをロック
+					m_bAnimationLock = true;
+
+					// アイテムを破棄
+					pObject->Release();
+				}
+			}
 		}
 	}
 }
@@ -455,27 +507,38 @@ void CPlayer::Collision()
 //============================================================================
 void CPlayer::Animation()
 {
-	// テクスチャ変更管理カウントアップ
-	m_nCntTexChange++;
-
-	if (m_nCntTexChange >= 15)
+	if (!m_bAnimationLock)
 	{
-		// 横テクスチャ種類情報取得
-		int nTexPatternU = CObject2D::GetNowPatternU();
+		// テクスチャ変更管理カウントアップ
+		m_nCntTexChange++;
 
-		// 横テクスチャ種類変更
-		nTexPatternU++;
+		if (m_nCntTexChange >= 15)
+		{ // 一定時間経過により
 
-		if (nTexPatternU >= TEXTURE_DIVIDE_U)
-		{
-			// テクスチャパターンをリセット
-			nTexPatternU = 0;
+			// 横テクスチャ種類情報取得
+			int nTexPatternU = CObject2D::GetNowPatternU();
+
+			// 横テクスチャ種類変更
+			nTexPatternU++;
+
+			if (nTexPatternU >= CPlayer::TEXTURE_DIVIDE_U)
+			{ // U方向の分割数を超えると
+
+				// テクスチャパターンをリセット
+				nTexPatternU = 0;
+			}
+
+			// 横テクスチャ種類情報設定
+			CObject2D::SetNowPatternU(nTexPatternU);
+
+			// 変更管理カウントをリセット
+			m_nCntTexChange = 0;
 		}
-
-		// 横テクスチャ種類情報設定
-		CObject2D::SetNowPatternU(nTexPatternU);
-
-		// 変更管理カウントをリセット
-		m_nCntTexChange = 0;
+	}
+	else
+	{
+		// 一旦、強制的にテクスチャサイズを設定
+		CObject2D::SetTexWidth(1.0f);
+		CObject2D::SetNowPatternU(1);
 	}
 }

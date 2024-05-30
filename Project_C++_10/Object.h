@@ -15,7 +15,8 @@ class CObject
 {
 public:
 
-	static const int MAX_OBJ = 512;	// オブジェクト最大数
+	static const int MAX_OBJ = 512;		// オブジェクト最大数
+	static const float GRAVITY_FORCE;	// 重力
 
 	//****************************************************
 	// オブジェクトの種類識別
@@ -24,8 +25,9 @@ public:
 	{
 		NONE = 0,	// 無し
 		PLAYER,		// プレイヤー
-		BLOCK,		// ブロック
 		ENEMY,		// エネミー
+		BLOCK,		// ブロック
+		ITEM,		// アイテム
 		SCORE,		// スコア
 		MAX_TYPE,
 	};

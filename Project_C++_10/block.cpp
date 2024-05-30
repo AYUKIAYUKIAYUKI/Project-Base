@@ -78,7 +78,7 @@ CBlock* CBlock::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	{
 		pBlock->SetType(TYPE::BLOCK);	// タイプを設定
 
-		pBlock->Init();		// 基底クラスの初期設定
+		pBlock->Init();			// 基底クラスの初期設定
 		pBlock->SetPos(pos);	// 中心位置の設定
 		pBlock->SetSize(size);	// サイズの設定
 	}

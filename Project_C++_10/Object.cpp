@@ -14,6 +14,7 @@
 //****************************************************
 // 静的メンバの初期化
 //****************************************************
+const float CObject::GRAVITY_FORCE = 0.25f;				// 重力
 CObject* CObject::m_apObject[MAX_LAYER][MAX_OBJ] = {};	// オブジェクト管理
 int CObject::m_nNumAll = 0;								// オブジェクト総数
 

@@ -37,7 +37,6 @@ private:
 	static const float MAX_VELOCITY;	// 加速度上限
 	static const float JUMP_FORCE;		// ジャンプ力
 	static const float BRAKING_FORCE;	// 制動力
-	static const float GRAVITY_FORCE;	// 重力
 
 	void Control();			// 操作
 	//void Scaling();		// 拡縮
@@ -54,6 +53,8 @@ private:
 	D3DXVECTOR3 m_velocity;	// 加速度
 	D3DXVECTOR3 m_pos_tgt;	// 目標位置
 	D3DXVECTOR3 m_rot_tgt;	// 目標向き
+
+	bool m_bAnimationLock;	// ( 試験的 )
 };
 
 #endif // _PALYER_H_
