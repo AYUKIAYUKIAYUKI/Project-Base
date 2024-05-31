@@ -13,12 +13,20 @@
 #include "bullet.h"
 #include "particle.h"
 
+//****************************************************
+// 静的メンバ変数の初期化
+//****************************************************
+const float CEnemy::MAX_VELOCITY = 2.0f;	// 加速度上限
+const float CEnemy::BRAKING_FORCE = 0.9f;	// 制動力
+
 //============================================================================
 // コンストラクタ
 //============================================================================
 CEnemy::CEnemy() : CObject2D(LAYER::BACK_MIDDLE)
 {
-	m_rot_tgt = { 0.0f, 0.0f, 0.0f };	// 目標向き
+	m_velocity = {};	// 加速度
+	m_posTarget = {};	// 目標位置
+	m_rotTarget = {};	// 目標向き
 }
 
 //============================================================================
@@ -61,11 +69,17 @@ void CEnemy::Uninit()
 //============================================================================
 void CEnemy::Update()
 {
-	// 回転
-	Rotation();
+	// 現在位置を取得、以降このコピーを目標位置として変更を加えていく
+	m_posTarget = CObject2D::GetPos();
 
 	// 移動
 	Translation();
+
+	// 制動調整
+	Braking();
+
+	// 位置を調整、この処理の終わりに目標位置を反映させる
+	AdjustPos();
 
 	// 基底クラスの更新
 	CObject2D::Update();
@@ -100,6 +114,11 @@ CEnemy* CEnemy::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	// テクスチャを取得
 	LPDIRECT3DTEXTURE9 pTex = CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::ENEMY_000);
 
+	if (pTex == nullptr)
+	{ // 取得失敗
+		assert(false);
+	}
+
 	// テクスチャを設定
 	pEnemy->BindTex(pTex);
 
@@ -107,64 +126,78 @@ CEnemy* CEnemy::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 }
 
 //============================================================================
-// 回転
-//============================================================================
-void CEnemy::Rotation()
-{
-	// 向き情報取得
-	D3DXVECTOR3 rot = CObject2D::GetRot();
-
-	// ブレーキ力
-	float fStopEnergy = 0.1f;
-
-	// 回転反映と回転量の減衰
-	if (m_rot_tgt.z - rot.z > D3DX_PI)
-	{
-		rot.z += ((m_rot_tgt.z - rot.z) * fStopEnergy + (D3DX_PI * 1.8f));
-	}
-	else if (m_rot_tgt.z - rot.z < -D3DX_PI)
-	{
-		rot.z += ((m_rot_tgt.z - rot.z) * fStopEnergy + (D3DX_PI * -1.8f));
-	}
-	else
-	{
-		rot.z += ((m_rot_tgt.z - rot.z) * fStopEnergy);
-	}
-
-	// 向き情報設定
-	CObject2D::SetRot(rot);
-}
-
-//============================================================================
 // 移動
 //============================================================================
 void CEnemy::Translation()
 {
-	// 中心位置情報を取得
-	D3DXVECTOR3 pos = CObject2D::GetPos();
+	// 移動
+	m_velocity.x += 5.0f;
+	m_velocity.y += -5.0f;
+}
 
-	pos.x += 0.5f;
-	pos.y += -0.5f;
-
-	// 端へ到達でループ
-	if ((pos.x - CObject2D::GetSize().x) > SCREEN_WIDTH)
+//============================================================================
+// 制動調整
+//============================================================================
+void CEnemy::Braking()
+{
+	// 加速度上限に到達で速度固定
+	if (m_velocity.x > CEnemy::MAX_VELOCITY)
 	{
-		pos.x = 0.0f - CObject2D::GetSize().x;
+		m_velocity.x = CEnemy::MAX_VELOCITY;
 	}
-	else if ((pos.x + CObject2D::GetSize().x) < 0.0f)
+	else if (m_velocity.x < -CEnemy::MAX_VELOCITY)
 	{
-		pos.x = SCREEN_WIDTH;
-	}
-
-	if ((pos.y + CObject2D::GetSize().y) < 0.0f)
-	{
-		pos.y = SCREEN_HEIGHT + CObject2D::GetSize().y;
-	}
-	else if ((pos.y - CObject2D::GetSize().y) > SCREEN_HEIGHT)
-	{
-		pos.y = 0.0f;
+		m_velocity.x = -CEnemy::MAX_VELOCITY;
 	}
 
-	// 中心位置を設定
-	CObject2D::SetPos(pos);
+	if (m_velocity.y > CEnemy::MAX_VELOCITY)
+	{
+		m_velocity.y = CEnemy::MAX_VELOCITY;
+	}
+	else if (m_velocity.y < -CEnemy::MAX_VELOCITY)
+	{
+		m_velocity.y = -CEnemy::MAX_VELOCITY;
+	}
+
+	// 少しずつ加速度を失う
+	m_velocity = m_velocity * CEnemy::BRAKING_FORCE;
+}
+
+//============================================================================
+// 位置調整
+//============================================================================
+void CEnemy::AdjustPos()
+{
+	// 加速度分位置を変動
+	m_posTarget += m_velocity;
+
+	// サイズを取得
+	D3DXVECTOR3 fSize = CObject2D::GetSize();
+
+	// 画面の左右端に到達でそれぞれループ
+	if (m_posTarget.x - fSize.x > SCREEN_WIDTH)
+	{
+		// 位置を左端へ設定
+		m_posTarget.x = 0.0f - fSize.x;
+	}
+	else if (m_posTarget.x + fSize.x < 0.0f)
+	{
+		// 位置を右端へ設定
+		m_posTarget.x = SCREEN_WIDTH + fSize.x;
+	}
+
+	// 画面の上下端に到達でそれぞれループ
+	if (m_posTarget.y - fSize.y > SCREEN_HEIGHT)
+	{
+		// 位置を上端に設定
+		m_posTarget.y = 0.0f - fSize.y;
+	}
+	else if (m_posTarget.y + fSize.y < 0.0f)
+	{
+		// 位置を下端に設定
+		m_posTarget.y = SCREEN_HEIGHT + fSize.y;
+	}
+
+	// 中心位置情報を設定
+	CObject2D::SetPos(m_posTarget);
 }

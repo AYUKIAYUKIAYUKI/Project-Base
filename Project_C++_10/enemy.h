@@ -20,7 +20,7 @@ class CEnemy : public CObject2D
 {
 public:
 
-	CEnemy();				// コンストラクタ
+	CEnemy();			// コンストラクタ
 	~CEnemy() override;	// デストラクタ
 
 	HRESULT Init() override;	// 初期設定
@@ -30,12 +30,21 @@ public:
 
 	static CEnemy* Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);	// 生成
 
+	D3DXVECTOR3 GetVelocity() { return m_velocity; }
+
 private:
 
-	void Rotation();	// 回転
-	void Translation();	// 移動
+	static const float MAX_VELOCITY;	// 加速度上限
+	static const float JUMP_FORCE;		// ジャンプ力
+	static const float BRAKING_FORCE;	// 制動力
 
-	D3DXVECTOR3 m_rot_tgt;	// 目標向き
+	void Translation();	// 移動
+	void Braking();		// 制動調整
+	void AdjustPos();	// 位置調整
+
+	D3DXVECTOR3 m_velocity;		// 加速度
+	D3DXVECTOR3 m_posTarget;	// 目標位置
+	D3DXVECTOR3 m_rotTarget;	// 目標向き
 };
 
 #endif // _ENEMY_H_

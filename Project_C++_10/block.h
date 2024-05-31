@@ -20,7 +20,7 @@ class CBlock : public CObject2D
 {
 public:
 
-	CBlock();				// コンストラクタ
+	CBlock();			// コンストラクタ
 	~CBlock() override;	// デストラクタ
 
 	HRESULT Init() override;	// 初期設定

@@ -10,6 +10,7 @@
 //****************************************************
 #include "bullet.h"
 #include "manager.h"
+#include "block.h"
 #include "enemy.h"
 #include "effect.h"
 #include "explosion.h"
@@ -108,6 +109,11 @@ CBullet* CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nRemain, float f
 	// テクスチャを取得
 	LPDIRECT3DTEXTURE9 pTex = CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BULLET_000);
 
+	if (pTex == nullptr)
+	{ // 取得失敗
+		assert(false);
+	}
+
 	// テクスチャを設定
 	pBullet->BindTex(pTex);
 
@@ -147,52 +153,97 @@ bool CBullet::CollisionEnemy()
 				continue;
 			}
 
-			if (pObject->GetType() != CObject::TYPE::ENEMY)
-			{ // エネミータイプ以外はコンティニュー
-				continue;
-			}
-
-			// オブジェクトクラスをエネミークラスへダウンキャスト
-			CEnemy* pEnemy = dynamic_cast<CEnemy*>(pObject);
-
-			if (pEnemy == nullptr)
-			{ // ダウンキャスト失敗
-				assert(false);
-			}
-
-			// 敵と衝突したら
-			if (CObject2D::GetPos().x + CObject2D::GetSize().x >= pEnemy->GetPos().x - pEnemy->GetSize().x &&
-				CObject2D::GetPos().x - CObject2D::GetSize().x <= pEnemy->GetPos().x + pEnemy->GetSize().x &&
-				CObject2D::GetPos().y + CObject2D::GetSize().y >= pEnemy->GetPos().y - pEnemy->GetSize().y &&
-				CObject2D::GetPos().y - CObject2D::GetSize().y <= pEnemy->GetPos().y + pEnemy->GetSize().y)
-			{
-				// スコアインスタンスを取得
-				CObject* pFindObject = FindScoreInstance();
+			if (pObject->GetType() == CObject::TYPE::ENEMY)
+			{ // エネミータイプなら
 
 				// オブジェクトクラスをエネミークラスへダウンキャスト
-				CScore* pScore = dynamic_cast<CScore*>(pFindObject);
+				CEnemy* pEnemy = dynamic_cast<CEnemy*>(pObject);
 
-				if (pScore == nullptr)
+				if (pEnemy == nullptr)
 				{ // ダウンキャスト失敗
 					assert(false);
 				}
 
-				// スコアを加算
-				pScore->SetScore(pScore->GetScore() + 123456);
+				// 敵と衝突したら
+				if (CObject2D::GetPos().x + CObject2D::GetSize().x >= pEnemy->GetPos().x - pEnemy->GetSize().x &&
+					CObject2D::GetPos().x - CObject2D::GetSize().x <= pEnemy->GetPos().x + pEnemy->GetSize().x &&
+					CObject2D::GetPos().y + CObject2D::GetSize().y >= pEnemy->GetPos().y - pEnemy->GetSize().y &&
+					CObject2D::GetPos().y - CObject2D::GetSize().y <= pEnemy->GetPos().y + pEnemy->GetSize().y)
+				{
+					// スコアインスタンスを取得
+					CObject* pFindObject = FindScoreInstance();
 
-				// 爆発を生成
-				CExplosion::Create(
-					CObject2D::GetPos(),		// 中心位置
-					{ 40.0f, 40.0f, 0.0f });	// サイズ
+					// オブジェクトクラスをスコアクラスへダウンキャスト
+					CScore* pScore = dynamic_cast<CScore*>(pFindObject);
 
-				// 自身を破棄
-				CObject::Release();
+					if (pScore == nullptr)
+					{ // ダウンキャスト失敗
+						assert(false);
+					}
 
-				// エネミーを破棄
-				pObject->Release();
+					// スコアを加算
+					pScore->SetScore(pScore->GetScore() + 123456);
 
-				// 終了
-				return false;
+					// 爆発を生成
+					CExplosion::Create(
+						CObject2D::GetPos(),		// 中心位置
+						{ 40.0f, 40.0f, 0.0f });	// サイズ
+
+					// 自身を破棄
+					CObject::Release();
+
+					// エネミーを破棄
+					pObject->Release();
+
+					// 終了
+					return false;
+				}
+			}
+			else if (pObject->GetType() == CObject::TYPE::BLOCK)
+			{ // ブロックタイプなら
+
+				// オブジェクトクラスをブロッククラスへダウンキャスト
+				CBlock* pBlock = dynamic_cast<CBlock*>(pObject);
+
+				if (pBlock == nullptr)
+				{ // ダウンキャスト失敗
+					assert(false);
+				}
+
+				// ブロックと衝突したら
+				if (CObject2D::GetPos().x + CObject2D::GetSize().x >= pBlock->GetPos().x - pBlock->GetSize().x &&
+					CObject2D::GetPos().x - CObject2D::GetSize().x <= pBlock->GetPos().x + pBlock->GetSize().x &&
+					CObject2D::GetPos().y + CObject2D::GetSize().y >= pBlock->GetPos().y - pBlock->GetSize().y &&
+					CObject2D::GetPos().y - CObject2D::GetSize().y <= pBlock->GetPos().y + pBlock->GetSize().y)
+				{
+					// スコアインスタンスを取得
+					CObject* pFindObject = FindScoreInstance();
+
+					// オブジェクトクラスをスコアクラスへダウンキャスト
+					CScore* pScore = dynamic_cast<CScore*>(pFindObject);
+
+					if (pScore == nullptr)
+					{ // ダウンキャスト失敗
+						assert(false);
+					}
+
+					// スコアを加算
+					pScore->SetScore(pScore->GetScore() + 62);
+
+					// 爆発を生成
+					CExplosion::Create(
+						CObject2D::GetPos(),		// 中心位置
+						{ 40.0f, 40.0f, 0.0f });	// サイズ
+
+					// 自身を破棄
+					CObject::Release();
+
+					// ブロックを破棄
+					pObject->Release();
+
+					// 終了
+					return false;
+				}
 			}
 		}
 	}

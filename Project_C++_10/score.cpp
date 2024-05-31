@@ -57,20 +57,10 @@ void CScore::Uninit()
 //============================================================================
 void CScore::Update()
 {
-	// お試しで数字を加算
-	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
-	{
-		m_nScore++;
-	}
-	// お試しで数字を減算
-	else if (CManager::GetKeyboard()->GetTrigger(DIK_BACK))
-	{
-		m_nScore--;
-	}
-
 	// 変動制限
 	Adjust();
-
+	
+	// スコアに変動があればパーティクルを飛ばす
 	if (m_nScore_old != m_nScore)
 	{
 		for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
@@ -82,11 +72,11 @@ void CScore::Update()
 			};
 
 			// パーティクルを生成
-			for (int i = 0; i < 10; i++)
+			for (int i = 0; i < 20; i++)
 			{
 				CParticle::Create(
 					pos,					// 中心位置
-					{ 40.0f, 40.0f, 0.0f },	// サイズ
+					{ 15.0f, 15.0f, 0.0f },	// サイズ
 					atan2f((float)(rand() % 314), (float)(rand() % 314)) * (rand() % 314));	// 飛ぶ角度
 			}
 		}

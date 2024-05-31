@@ -10,6 +10,7 @@
 //****************************************************
 #include "block.h"
 #include "manager.h"
+#include "particle.h"
 
 //============================================================================
 // コンストラクタ
@@ -24,7 +25,14 @@ CBlock::CBlock() : CObject2D(BACK_MIDDLE)
 //============================================================================
 CBlock::~CBlock()
 {
-
+	// パーティクルを生成
+	for (int i = 0; i < 10; i++)
+	{
+		CParticle::Create(
+			CObject2D::GetPos(),	// 中心位置
+			{ 20.0f, 20.0f, 0.0f },	// サイズ
+			atan2f((float)(rand() % 314), (float)(rand() % 314)) * (rand() % 314));	// 飛ぶ角度
+	}
 }
 
 //============================================================================
@@ -85,6 +93,11 @@ CBlock* CBlock::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 
 	// テクスチャを取得
 	LPDIRECT3DTEXTURE9 pTex = CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BLOCK_000);
+
+	if (pTex == nullptr)
+	{ // 取得失敗
+		assert(false);
+	}
 
 	// テクスチャを設定
 	pBlock->BindTex(pTex);

@@ -48,11 +48,11 @@ private:
 	void Collision();		// 当たり判定
 	void Animation();		// アニメーション
 	
-	int m_nCntTexChange;	// テクスチャ変更管理
-	int m_nLeftNumJump;		// ジャンプ可能回数
-	D3DXVECTOR3 m_velocity;	// 加速度
-	D3DXVECTOR3 m_pos_tgt;	// 目標位置
-	D3DXVECTOR3 m_rot_tgt;	// 目標向き
+	int m_nCntTexChange;		// テクスチャ変更管理
+	int m_nLeftNumJump;			// ジャンプ可能回数
+	D3DXVECTOR3 m_velocity;		// 加速度
+	D3DXVECTOR3 m_posTarget;	// 目標位置
+	D3DXVECTOR3 m_rotTarget;	// 目標向き
 
 	bool m_bAnimationLock;	// ( 試験的 )
 };

@@ -12,17 +12,18 @@
 #include "manager.h"
 #include "block.h"
 #include "bullet.h"
+#include "enemy.h"
 #include "item.h"
 #include "particle.h"
 
 //****************************************************
 // 静的メンバ変数の初期化
 //****************************************************
-const int CPlayer::TEXTURE_DIVIDE_U = 30;	// テクスチャのU方向分割数
-const int CPlayer::TEXTURE_DIVIDE_V = 1;	// テクスチャのV方向分割数
-const float CPlayer::MAX_VELOCITY = 3.0f;	// 加速度上限
-const float CPlayer::JUMP_FORCE = -10.;		// ジャンプ力
-const float CPlayer::BRAKING_FORCE = 0.9f;	// 制動力
+const int CPlayer::TEXTURE_DIVIDE_U = 30;		// テクスチャのU方向分割数
+const int CPlayer::TEXTURE_DIVIDE_V = 1;		// テクスチャのV方向分割数
+const float CPlayer::MAX_VELOCITY = 3.0f;		// 加速度上限
+const float CPlayer::JUMP_FORCE = -10.;			// ジャンプ力
+const float CPlayer::BRAKING_FORCE = 0.9f;		// 制動力
 //const float CPlayer::GRAVITY_FORCE = 0.25f;	// 重力
 
 //============================================================================
@@ -33,8 +34,8 @@ CPlayer::CPlayer() : CObject2D(FRONT_MIDDLE)
 	m_nCntTexChange = 0;	// テクスチャ変更管理
 	m_nLeftNumJump = 0;		// ジャンプ可能回数
 	m_velocity = {};		// 加速度
-	m_pos_tgt = {};			// 目標位置
-	m_rot_tgt = {};			// 目標向き
+	m_posTarget = {};		// 目標位置
+	m_rotTarget = {};		// 目標向き
 
 	m_bAnimationLock = false;	// ( 試験的 )
 }
@@ -73,7 +74,7 @@ void CPlayer::Uninit()
 void CPlayer::Update()
 {
 	// 現在位置を取得、以降このコピーを目標位置として変更を加えていく
-	m_pos_tgt = CObject2D::GetPos();
+	m_posTarget = CObject2D::GetPos();
 
 	// 操作
 	Control();
@@ -216,7 +217,7 @@ void CPlayer::Control()
 
 		// おまけに弾の生成
 		CBullet::Create(
-			m_pos_tgt,				// 中心位置
+			m_posTarget,			// 中心位置
 			{ 15.0f, 15.0f, 0.0f },	// サイズ
 			100,					// 使用期間
 			0.0f);					// 飛ぶ角度
@@ -243,17 +244,17 @@ void CPlayer::Control()
 //	//float fStopEnergy = 0.1f;
 //
 //	//// 回転反映と回転量の減衰
-//	//if (m_rot_tgt.z - rot.z > D3DX_PI)
+//	//if (m_rotTarget.z - rot.z > D3DX_PI)
 //	//{
-//	//	rot.z += ((m_rot_tgt.z - rot.z) * fStopEnergy + (D3DX_PI * 1.8f));
+//	//	rot.z += ((m_rotTarget.z - rot.z) * fStopEnergy + (D3DX_PI * 1.8f));
 //	//}
-//	//else if (m_rot_tgt.z - rot.z < -D3DX_PI)
+//	//else if (m_rotTarget.z - rot.z < -D3DX_PI)
 //	//{
-//	//	rot.z += ((m_rot_tgt.z - rot.z) * fStopEnergy + (D3DX_PI * -1.8f));
+//	//	rot.z += ((m_rotTarget.z - rot.z) * fStopEnergy + (D3DX_PI * -1.8f));
 //	//}
 //	//else
 //	//{
-//	//	rot.z += ((m_rot_tgt.z - rot.z) * fStopEnergy);
+//	//	rot.z += ((m_rotTarget.z - rot.z) * fStopEnergy);
 //	//}
 //
 //	//// 向き情報設定
@@ -273,6 +274,7 @@ void CPlayer::Control()
 //============================================================================
 void CPlayer::Braking()
 {
+	// 加速度上限に到達で速度固定
 	if (m_velocity.x > CPlayer::MAX_VELOCITY)
 	{
 		m_velocity.x = CPlayer::MAX_VELOCITY;
@@ -301,7 +303,7 @@ void CPlayer::GravityFall()
 void CPlayer::AdjustPos()
 {
 	// 加速度分位置を変動
-	m_pos_tgt += m_velocity;
+	m_posTarget += m_velocity;
 
 	// 当たり判定
 	Collision();
@@ -310,32 +312,32 @@ void CPlayer::AdjustPos()
 	D3DXVECTOR3 fSize = CObject2D::GetSize();
 
 	// 画面の左右端に到達でそれぞれループ
-	if (m_pos_tgt.x - fSize.x > SCREEN_WIDTH)
+	if (m_posTarget.x - fSize.x > SCREEN_WIDTH)
 	{
 		// 位置を左端へ設定
-		m_pos_tgt.x = 0.0f - fSize.x;
+		m_posTarget.x = 0.0f - fSize.x;
 	}
-	else if (m_pos_tgt.x + fSize.x < 0.0f)
+	else if (m_posTarget.x + fSize.x < 0.0f)
 	{
 		// 位置を右端へ設定
-		m_pos_tgt.x = SCREEN_WIDTH + fSize.x;
+		m_posTarget.x = SCREEN_WIDTH + fSize.x;
 	}
 
 	// 画面の下端に到達で下降制限
-	if (m_pos_tgt.y + fSize.y > SCREEN_HEIGHT)
+	if (m_posTarget.y + fSize.y > SCREEN_HEIGHT)
 	{
 		// ジャンプ可能回数を設定
 		m_nLeftNumJump = 2;
 
 		// 位置を下端に設定
-		m_pos_tgt.y = SCREEN_HEIGHT - fSize.y;
+		m_posTarget.y = SCREEN_HEIGHT - fSize.y;
 
 		// Y軸方向の加速度をリセット
 		m_velocity.y = 0.0f;
 	}
 
 	// 中心位置情報を設定
-	CObject2D::SetPos(m_pos_tgt);
+	CObject2D::SetPos(m_posTarget);
 }
 
 //============================================================================
@@ -343,6 +345,8 @@ void CPlayer::AdjustPos()
 //============================================================================
 void CPlayer::Collision()
 {
+	D3DXVECTOR3 copy = m_posTarget;
+
 	for (int nCntPriority = 0; nCntPriority < MAX_LAYER; nCntPriority++)
 	{
 		for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
@@ -368,10 +372,10 @@ void CPlayer::Collision()
 
 #if 0
 				// ブロックと衝突する場合
-				if (m_pos_tgt.x + CObject2D::GetSize().x >= pBlock->GetPos().x - pBlock->GetSize().x &&
-					m_pos_tgt.x - CObject2D::GetSize().x <= pBlock->GetPos().x + pBlock->GetSize().x &&
-					m_pos_tgt.y + CObject2D::GetSize().y >= pBlock->GetPos().y - pBlock->GetSize().y &&
-					m_pos_tgt.y - CObject2D::GetSize().y <= pBlock->GetPos().y + pBlock->GetSize().y)
+				if (m_posTarget.x + CObject2D::GetSize().x >= pBlock->GetPos().x - pBlock->GetSize().x &&
+					m_posTarget.x - CObject2D::GetSize().x <= pBlock->GetPos().x + pBlock->GetSize().x &&
+					m_posTarget.y + CObject2D::GetSize().y >= pBlock->GetPos().y - pBlock->GetSize().y &&
+					m_posTarget.y - CObject2D::GetSize().y <= pBlock->GetPos().y + pBlock->GetSize().y)
 				{
 					// お互いの距離を算出
 					D3DXVECTOR3 dist = pBlock->GetPos() - CObject2D::GetPos();
@@ -382,12 +386,12 @@ void CPlayer::Collision()
 						if (CObject2D::GetPos().x < pBlock->GetPos().x)
 						{
 							// 位置をこのブロックの左端に設定
-							m_pos_tgt.x = -CObject2D::GetSize().x + (pBlock->GetPos().x - pBlock->GetSize().x);
+							m_posTarget.x = -CObject2D::GetSize().x + (pBlock->GetPos().x - pBlock->GetSize().x);
 						}
 						else if (CObject2D::GetPos().x > pBlock->GetPos().x)
 						{
 							// 位置をこのブロックの右端に設定
-							m_pos_tgt.x = CObject2D::GetSize().x + (pBlock->GetPos().x + pBlock->GetSize().x);
+							m_posTarget.x = CObject2D::GetSize().x + (pBlock->GetPos().x + pBlock->GetSize().x);
 						}
 					}
 					else
@@ -398,7 +402,7 @@ void CPlayer::Collision()
 							m_nLeftNumJump = 2;
 
 							// 位置をこのブロックの上端に設定
-							m_pos_tgt.y = -CObject2D::GetSize().y + (pBlock->GetPos().y - pBlock->GetSize().y);
+							m_posTarget.y = -CObject2D::GetSize().y + (pBlock->GetPos().y - pBlock->GetSize().y);
 
 							// Y軸方向の加速度をリセット
 							m_velocity.y = 0.0f;
@@ -406,16 +410,16 @@ void CPlayer::Collision()
 						else if (CObject2D::GetPos().y > pBlock->GetPos().y)
 						{
 							// 位置をこのブロックの下端に設定
-							m_pos_tgt.y = CObject2D::GetSize().y + (pBlock->GetPos().y + pBlock->GetSize().y);
+							m_posTarget.y = CObject2D::GetSize().y + (pBlock->GetPos().y + pBlock->GetSize().y);
 						}
 					}
 				}
 #else
 				// ブロックと衝突する場合
-				if (m_pos_tgt.x + CObject2D::GetSize().x >= pBlock->GetPos().x - pBlock->GetSize().x &&
-					m_pos_tgt.x - CObject2D::GetSize().x <= pBlock->GetPos().x + pBlock->GetSize().x &&
-					m_pos_tgt.y + CObject2D::GetSize().y >= pBlock->GetPos().y - pBlock->GetSize().y &&
-					m_pos_tgt.y - CObject2D::GetSize().y <= pBlock->GetPos().y + pBlock->GetSize().y)
+				if (copy.x + CObject2D::GetSize().x >= pBlock->GetPos().x - pBlock->GetSize().x &&
+					copy.x - CObject2D::GetSize().x <= pBlock->GetPos().x + pBlock->GetSize().x &&
+					copy.y + CObject2D::GetSize().y >= pBlock->GetPos().y - pBlock->GetSize().y &&
+					copy.y - CObject2D::GetSize().y <= pBlock->GetPos().y + pBlock->GetSize().y)
 				{
 					// 過去の位置がどちらかの軸方向に重なっていたかで処理分岐
 					if (CObject2D::GetPos().x + CObject2D::GetSize().x > pBlock->GetPos().x - pBlock->GetSize().x &&
@@ -427,33 +431,98 @@ void CPlayer::Collision()
 							m_nLeftNumJump = 2;
 
 							// 位置をこのブロックの上端に設定
-							m_pos_tgt.y = -CObject2D::GetSize().y + (pBlock->GetPos().y - pBlock->GetSize().y);
-
-							// Y軸方向の加速度をリセット
-							m_velocity.y = 0.0f;
+							m_posTarget.y = -CObject2D::GetSize().y + (pBlock->GetPos().y - pBlock->GetSize().y);
 						}
 						else if (CObject2D::GetPos().y > pBlock->GetPos().y)
 						{
 							// 位置をこのブロックの下端に設定
-							m_pos_tgt.y = CObject2D::GetSize().y + (pBlock->GetPos().y + pBlock->GetSize().y);
+							m_posTarget.y = CObject2D::GetSize().y + (pBlock->GetPos().y + pBlock->GetSize().y);
 						}
+
+						// Y軸方向の加速度をリセット
+						m_velocity.y = 0.0f;
 					}
-					else
+					else if (CObject2D::GetPos().y + CObject2D::GetSize().y > pBlock->GetPos().y - pBlock->GetSize().y &&
+						CObject2D::GetPos().y - CObject2D::GetSize().y < pBlock->GetPos().y + pBlock->GetSize().y)
 					{
 						if (CObject2D::GetPos().x < pBlock->GetPos().x)
 						{
 							// 位置をこのブロックの左端に設定
-							m_pos_tgt.x = -CObject2D::GetSize().x + (pBlock->GetPos().x - pBlock->GetSize().x);
+							m_posTarget.x = -CObject2D::GetSize().x + (pBlock->GetPos().x - pBlock->GetSize().x);
 						}
 						else if (CObject2D::GetPos().x > pBlock->GetPos().x)
 						{
 							// 位置をこのブロックの右端に設定
-							m_pos_tgt.x = CObject2D::GetSize().x + (pBlock->GetPos().x + pBlock->GetSize().x);
+							m_posTarget.x = CObject2D::GetSize().x + (pBlock->GetPos().x + pBlock->GetSize().x);
 						}
+
+						// X軸方向の加速度をリセット
+						m_velocity.x = 0.0f;
 					}
 				}
 #endif
 			}
+			//else if (pObject->GetType() == CObject::TYPE::ENEMY)
+			//{ // エネミータイプなら
+
+			//	// オブジェクトクラスをブロッククラスへダウンキャスト
+			//	CEnemy* pEnemy = dynamic_cast<CEnemy*>(pObject);
+
+			//	if (pEnemy == nullptr)
+			//	{ // ダウンキャスト失敗
+			//		assert(false);
+			//	}
+
+			//	// テスト
+			//	auto てすと = pEnemy->GetVelocity();
+
+			//	// エネミーと衝突する場合
+			//	if (m_posTarget.x + CObject2D::GetSize().x >= pEnemy->GetPos().x - pEnemy->GetSize().x &&
+			//		m_posTarget.x - CObject2D::GetSize().x <= pEnemy->GetPos().x + pEnemy->GetSize().x &&
+			//		m_posTarget.y + CObject2D::GetSize().y >= pEnemy->GetPos().y - pEnemy->GetSize().y &&
+			//		m_posTarget.y - CObject2D::GetSize().y <= pEnemy->GetPos().y + pEnemy->GetSize().y)
+			//	{
+			//		// 過去の位置がどちらかの軸方向に重なっていたかで処理分岐
+			//		if (CObject2D::GetPos().x + CObject2D::GetSize().x > pEnemy->GetPos().x - pEnemy->GetSize().x &&
+			//			CObject2D::GetPos().x - CObject2D::GetSize().x < pEnemy->GetPos().x + pEnemy->GetSize().x)
+			//		{
+			//			if (CObject2D::GetPos().y < pEnemy->GetPos().y)
+			//			{
+			//				// ジャンプ可能回数を設定
+			//				m_nLeftNumJump = 2;
+
+			//				m_posTarget.x += てすと.x;
+
+			//				// 位置をこのブロックの上端に設定
+			//				m_posTarget.y = -CObject2D::GetSize().y + (pEnemy->GetPos().y - pEnemy->GetSize().y);
+
+			//				// Y軸方向の加速度をリセット
+			//				m_velocity.y = 0.0f;
+			//			}
+			//			else if (CObject2D::GetPos().y > pEnemy->GetPos().y)
+			//			{
+			//				// 位置をこのブロックの下端に設定
+			//				m_posTarget.y = CObject2D::GetSize().y + (pEnemy->GetPos().y + pEnemy->GetSize().y);
+			//			}
+			//		}
+			//		else if (CObject2D::GetPos().y + CObject2D::GetSize().y > pEnemy->GetPos().y - pEnemy->GetSize().y &&
+			//			CObject2D::GetPos().y - CObject2D::GetSize().y < pEnemy->GetPos().y + pEnemy->GetSize().y)
+			//		{
+			//			if (CObject2D::GetPos().x < pEnemy->GetPos().x)
+			//			{
+			//				// 位置をこのブロックの左端に設定
+			//				m_posTarget.x = -CObject2D::GetSize().x + (pEnemy->GetPos().x - pEnemy->GetSize().x);
+			//			}
+			//			else if (CObject2D::GetPos().x > pEnemy->GetPos().x)
+			//			{
+			//				// 位置をこのブロックの右端に設定
+			//				m_posTarget.x = CObject2D::GetSize().x + (pEnemy->GetPos().x + pEnemy->GetSize().x);
+			//			}
+			//		}
+
+			//		int aa = 0;
+			//	}
+			//}
 			else if (pObject->GetType() == CObject::TYPE::ITEM)
 			{ // アイテムタイプなら
 
@@ -466,16 +535,16 @@ void CPlayer::Collision()
 				}
 
 				// アイテムと衝突する場合
-				if (m_pos_tgt.x + CObject2D::GetSize().x >= pItem->GetPos().x - pItem->GetSize().x &&
-					m_pos_tgt.x - CObject2D::GetSize().x <= pItem->GetPos().x + pItem->GetSize().x &&
-					m_pos_tgt.y + CObject2D::GetSize().y >= pItem->GetPos().y - pItem->GetSize().y &&
-					m_pos_tgt.y - CObject2D::GetSize().y <= pItem->GetPos().y + pItem->GetSize().y)
+				if (m_posTarget.x + CObject2D::GetSize().x >= pItem->GetPos().x - pItem->GetSize().x &&
+					m_posTarget.x - CObject2D::GetSize().x <= pItem->GetPos().x + pItem->GetSize().x &&
+					m_posTarget.y + CObject2D::GetSize().y >= pItem->GetPos().y - pItem->GetSize().y &&
+					m_posTarget.y - CObject2D::GetSize().y <= pItem->GetPos().y + pItem->GetSize().y)
 				{
 					// パーティクルを生成
 					for (int i = 0; i < 10; i++)
 					{
 						CParticle::Create(
-							m_pos_tgt,			// 中心位置
+							m_posTarget,			// 中心位置
 							pItem->GetSize(),	// サイズ
 							atan2f((float)(rand() % 314), (float)(rand() % 314)) * (rand() % 314));	// 飛ぶ角度
 					}

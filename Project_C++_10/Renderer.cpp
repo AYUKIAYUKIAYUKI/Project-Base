@@ -147,20 +147,33 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 		{ SCREEN_WIDTH * 0.75f, SCREEN_HEIGHT * 0.3f, 0.0f },	// 中心位置
 		{ 100.0f, 50.0f, 0.0f });								// サイズ
 
+	for (int i = 0; i < 5; i++)
+	{
+		// ブロックの生成 (仮)
+		CBlock::Create(
+			{ SCREEN_WIDTH * 0.95f, SCREEN_HEIGHT * 0.9f + (-70.0f * i), 0.0f },	// 中心位置
+			{ 30.0f, 30.0f, 0.0f });												// サイズ
+
+		// ブロックの生成 (仮)
+		CBlock::Create(
+			{ SCREEN_WIDTH * 0.95f + (-70.0f * i), SCREEN_HEIGHT * 0.9f, 0.0f },	// 中心位置
+			{ 30.0f, 30.0f, 0.0f });												// サイズ
+	}
+
 	// エネミーの生成 (仮)
 	CEnemy::Create(
-		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// 中心位置
+		{ SCREEN_WIDTH * 0.0f, SCREEN_HEIGHT * 0.85f, 0.0f },	// 中心位置
 		{ 50.0f, 50.0f, 0.0f });								// サイズ
+
+	// プレイヤーの生成 (仮)
+	CPlayer::Create(
+		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT, 0.0f },	// 中心位置
+		{ 40.0f, 50.0f, 0.0f });						// サイズ
 
 	// アイテムの生成 (仮)
 	CItem::Create(
 		{ SCREEN_WIDTH * 0.75f, SCREEN_HEIGHT * 0.25f, 0.0f },	// 中心位置
 		{ 80.0f, 80.0f, 0.0f });								// サイズ
-
-	// プレイヤーの生成 (仮)
-	CPlayer::Create(
-		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT, 0.0f },	// 中心位置
-		{ 40.0f, 50.0f, 0.0f });				// サイズ
 
 	// スコアの生成 (仮)
 	CScore::Create(
