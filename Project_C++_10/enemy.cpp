@@ -24,9 +24,9 @@ const float CEnemy::BRAKING_FORCE = 0.9f;	// 制動力
 //============================================================================
 CEnemy::CEnemy() : CObject2D(LAYER::BACK_MIDDLE)
 {
-	m_velocity = {};	// 加速度
-	m_posTarget = {};	// 目標位置
-	m_rotTarget = {};	// 目標向き
+	m_velocity = { 0.0f, 0.0f, 0.0f };	// 加速度
+	m_posTarget = { 0.0f, 0.0f, 0.0f };	// 目標位置
+	m_rotTarget = { 0.0f, 0.0f, 0.0f };	// 目標向き
 }
 
 //============================================================================

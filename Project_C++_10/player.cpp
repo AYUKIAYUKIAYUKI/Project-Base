@@ -31,11 +31,11 @@ const float CPlayer::BRAKING_FORCE = 0.9f;		// 制動力
 //============================================================================
 CPlayer::CPlayer() : CObject2D(FRONT_MIDDLE)
 {
-	m_nCntTexChange = 0;	// テクスチャ変更管理
-	m_nLeftNumJump = 0;		// ジャンプ可能回数
-	m_velocity = {};		// 加速度
-	m_posTarget = {};		// 目標位置
-	m_rotTarget = {};		// 目標向き
+	m_nCntTexChange = 0;					// テクスチャ変更管理
+	m_nLeftNumJump = 0;						// ジャンプ可能回数
+	m_velocity = { 0.0f, 0.0f, 0.0f };		// 加速度
+	m_posTarget = { 0.0f, 0.0f, 0.0f };		// 目標位置
+	m_rotTarget = { 0.0f, 0.0f, 0.0f };		// 目標向き
 
 	m_bAnimationLock = false;	// ( 試験的 )
 }
