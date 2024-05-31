@@ -19,7 +19,7 @@
 //============================================================================
 // コンストラクタ
 //============================================================================
-CBullet::CBullet() : CObject2D(LAYER::BACK_MIDDLE)
+CBullet::CBullet() : CObject2D(static_cast<int>(LAYER::BACK_MIDDLE))
 {
 	m_nRemain = 0;		// 使用期間
 	m_fFlyAngle = 0;	// 飛ぶ角度
@@ -141,7 +141,7 @@ void CBullet::Translation()
 //============================================================================
 bool CBullet::CollisionEnemy()
 {
-	for (int nCntPriority = 0; nCntPriority < MAX_LAYER; nCntPriority++)
+	for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::MAX); nCntPriority++)
 	{
 		for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
 		{

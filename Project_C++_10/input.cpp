@@ -267,7 +267,7 @@ void CInputPad::Update()
 //============================================================================
 bool CInputPad::GetPress(JOYKEY Key)
 {
-	return (m_aKeyState.Gamepad.wButtons & (0x01 << Key)) ? true : false;
+	return (m_aKeyState.Gamepad.wButtons & (0x01 << static_cast<int>(Key))) ? true : false;
 }
 
 //============================================================================
@@ -275,7 +275,7 @@ bool CInputPad::GetPress(JOYKEY Key)
 //============================================================================
 bool CInputPad::GetTrigger(JOYKEY Key)
 {
-	return (m_aKeyStateTrigger.Gamepad.wButtons & (0x01 << Key)) ? true : false;
+	return (m_aKeyStateTrigger.Gamepad.wButtons & (0x01 << static_cast<int>(Key))) ? true : false;
 }
 
 //============================================================================

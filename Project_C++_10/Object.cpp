@@ -14,9 +14,9 @@
 //****************************************************
 // 静的メンバの初期化
 //****************************************************
-const float CObject::GRAVITY_FORCE = 0.25f;				// 重力
-CObject* CObject::m_apObject[MAX_LAYER][MAX_OBJ] = {};	// オブジェクト管理
-int CObject::m_nNumAll = 0;								// オブジェクト総数
+const float CObject::GRAVITY_FORCE = 0.25f;									// 重力
+CObject* CObject::m_apObject[static_cast<int>(LAYER::MAX)][MAX_OBJ] = {};	// オブジェクト管理
+int CObject::m_nNumAll = 0;													// オブジェクト総数
 
 //============================================================================
 // コンストラクタ
@@ -80,7 +80,7 @@ void CObject::Draw()
 //============================================================================
 void CObject::ReleaseAll()
 {
-	for (int nCntPriority = 0; nCntPriority < MAX_LAYER; nCntPriority++)
+	for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::MAX); nCntPriority++)
 	{
 		for (int nCntObj = 0; nCntObj < MAX_OBJ; nCntObj++)
 		{
@@ -97,7 +97,7 @@ void CObject::ReleaseAll()
 //============================================================================
 void CObject::UpdateAll()
 {
-	for (int nCntPriority = 0; nCntPriority < MAX_LAYER; nCntPriority++)
+	for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::MAX); nCntPriority++)
 	{
 		for (int nCntObj = 0; nCntObj < MAX_OBJ; nCntObj++)
 		{
@@ -114,7 +114,7 @@ void CObject::UpdateAll()
 //============================================================================
 void CObject::DrawAll()
 {
-	for (int nCntPriority = 0; nCntPriority < MAX_LAYER; nCntPriority++)
+	for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::MAX); nCntPriority++)
 	{
 		for (int nCntObj = 0; nCntObj < MAX_OBJ; nCntObj++)
 		{
@@ -155,7 +155,7 @@ CObject::TYPE CObject::GetType()
 //============================================================================
 CObject* CObject::FindScoreInstance()
 {
-	for (int nCntPriority = 0; nCntPriority < MAX_LAYER; nCntPriority++)
+	for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::MAX); nCntPriority++)
 	{
 		for (int nCntObj = 0; nCntObj < MAX_OBJ; nCntObj++)
 		{
@@ -164,7 +164,7 @@ CObject* CObject::FindScoreInstance()
 				continue;
 			}
 
-			if (m_apObject[nCntPriority][nCntObj]->GetType() == CObject::TYPE::SCORE)
+			if (m_apObject[nCntPriority][nCntObj]->GetType() == TYPE::SCORE)
 			{ // スコアタイプならリターン
 				return m_apObject[nCntPriority][nCntObj];
 			}

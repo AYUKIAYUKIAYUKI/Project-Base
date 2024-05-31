@@ -15,7 +15,7 @@
 //============================================================================
 // コンストラクタ
 //============================================================================
-CExplosion::CExplosion() : CObject2D(LAYER::BACK_MIDDLE)
+CExplosion::CExplosion() : CObject2D(static_cast<int>(LAYER::BACK_MIDDLE))
 {
 	m_nCntTexChange = 0;	// テクスチャ変更管理
 }

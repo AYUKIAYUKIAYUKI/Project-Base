@@ -69,25 +69,25 @@ public:
 	//****************************************************
 	// パッドのキー識別
 	//****************************************************
-	enum JOYKEY
+	enum class JOYKEY
 	{
-		JOYKEY_UP = 0,
-		JOYKEY_DOWN,
-		JOYKEY_LEFT,
-		JOYKEY_RIGHT,
-		JOYKEY_START,
-		JOYKEY_BACK,
-		JOYKEY_L3,
-		JOYKEY_R3,
-		JOYKEY_L,
-		JOYKEY_R,
-		JOYKEY_NONE1,
-		JOYKEY_NONE2,
-		JOYKEY_A,
-		JOYKEY_B,
-		JOYKEY_X,
-		JOYKEY_Y,
-		JOYKEY_MAX,
+		UP = 0,	// 十字上
+		DOWN,	// 十字下
+		LEFT,	// 十字左
+		RIGHT,	// 十字右
+		START,	// スタートボタン
+		BACK,	// バックボタン
+		L3,		// 左スティック押し込み
+		R3,		// 右スティック押し込み
+		L,		// Lボタン
+		R,		// Rボタン
+		NONE1,
+		NONE2,
+		A,		// Aボタン
+		B,		// Bボタン
+		X,		// Xボタン
+		Y,		// Yボタン
+		MAX,
 	};
 
 	//****************************************************

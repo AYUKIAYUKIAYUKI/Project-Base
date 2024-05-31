@@ -29,7 +29,7 @@ const float CPlayer::BRAKING_FORCE = 0.9f;		// 制動力
 //============================================================================
 // コンストラクタ
 //============================================================================
-CPlayer::CPlayer() : CObject2D(FRONT_MIDDLE)
+CPlayer::CPlayer() : CObject2D(static_cast<int>(LAYER::FRONT_MIDDLE))
 {
 	m_nCntTexChange = 0;					// テクスチャ変更管理
 	m_nLeftNumJump = 0;						// ジャンプ可能回数
@@ -196,7 +196,7 @@ void CPlayer::Control()
 	}
 
 	// ジャンプ
-	if (pKeyboard->GetTrigger(DIK_SPACE) || pPad->GetTrigger(CInputPad::JOYKEY_X))
+	if (pKeyboard->GetTrigger(DIK_SPACE) || pPad->GetTrigger(CInputPad::JOYKEY::X))
 	{
 		if (m_nLeftNumJump > 0)
 		{ // ジャンプ可能回数が残っていれば
@@ -210,7 +210,7 @@ void CPlayer::Control()
 	}
 
 	// デバッグ用にサウンド再生 (キーボード、パッド取得があるのでここで)
-	if (pKeyboard->GetTrigger(DIK_RETURN) || pPad->GetTrigger(CInputPad::JOYKEY_B))
+	if (pKeyboard->GetTrigger(DIK_RETURN) || pPad->GetTrigger(CInputPad::JOYKEY::B))
 	{
 		CSound* pSound = CManager::GetSound();
 		pSound->PlaySound(CSound::SOUND_LABEL_00);
@@ -347,7 +347,7 @@ void CPlayer::Collision()
 {
 	D3DXVECTOR3 copy = m_posTarget;
 
-	for (int nCntPriority = 0; nCntPriority < MAX_LAYER; nCntPriority++)
+	for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::MAX); nCntPriority++)
 	{
 		for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
 		{

@@ -14,7 +14,7 @@
 //============================================================================
 // コンストラクタ
 //============================================================================
-CParticle::CParticle() : CObject2D(LAYER::FRONT_MIDDLE)
+CParticle::CParticle() : CObject2D(static_cast<int>(LAYER::FRONT_MIDDLE))
 {
 	m_fFlyAngle = 0.0f;	// 飛ぶ角度
 }

@@ -18,14 +18,14 @@
 //****************************************************
 // 静的メンバの初期化
 //****************************************************
-LPDIRECT3DTEXTURE9 CTexture::m_apTexTemp[TEX_TYPE::MAX];	// テクスチャ管理
+LPDIRECT3DTEXTURE9 CTexture::m_apTexTemp[static_cast<int>(TEX_TYPE::MAX)];	// テクスチャ管理
 
 //============================================================================
 // コンストラクタ
 //============================================================================
 CTexture::CTexture()
 {
-	for (int i = 0; i < TEX_TYPE::MAX; i++)
+	for (int i = 0; i < static_cast<int>(TEX_TYPE::MAX); i++)
 	{
 		m_apTexTemp[i] = nullptr;	// テクスチャ情報の初期化
 	}
@@ -55,7 +55,7 @@ HRESULT CTexture::Load()
 	// デバイスを取得
 	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
 
-	for (int i = 0; i < TEX_TYPE::MAX; i++)
+	for (int i = 0; i < static_cast<int>(TEX_TYPE::MAX); i++)
 	{
 		// テクスチャ名格納先
 		std::string filename;
@@ -85,7 +85,7 @@ HRESULT CTexture::Load()
 //============================================================================
 void CTexture::Unload()
 {
-	for (int i = 0; i < TEX_TYPE::MAX; i++)
+	for (int i = 0; i < static_cast<int>(TEX_TYPE::MAX); i++)
 	{
 		// テクスチャの破棄
 		if (m_apTexTemp[i] != nullptr)
@@ -101,10 +101,10 @@ void CTexture::Unload()
 //============================================================================
 LPDIRECT3DTEXTURE9 CTexture::GetTexture(TEX_TYPE type)
 {
-	if (m_apTexTemp[type] == nullptr)
+	if (m_apTexTemp[static_cast<int>(type)] == nullptr)
 	{ // テクスチャ取得不能
 		assert(false);
 	}
 
-	return m_apTexTemp[type];
+	return m_apTexTemp[static_cast<int>(type)];
 }

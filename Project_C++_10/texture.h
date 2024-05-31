@@ -18,7 +18,7 @@ public:
 	//****************************************************
 	// テクスチャ識別
 	//****************************************************
-	enum TEX_TYPE
+	enum class TEX_TYPE
 	{
 		BG_000 = 0,		// 背景0
 		BG_001,			// 背景1
@@ -44,7 +44,7 @@ public:
 
 private:
 
-	static LPDIRECT3DTEXTURE9 m_apTexTemp[TEX_TYPE::MAX];	// テクスチャ管理
+	static LPDIRECT3DTEXTURE9 m_apTexTemp[static_cast<int>(TEX_TYPE::MAX)];	// テクスチャ管理
 };
 
 #endif // _ENEMY_H_

@@ -16,7 +16,7 @@
 //============================================================================
 // コンストラクタ
 //============================================================================
-CItem::CItem() : CObject2D(BACK_MIDDLE)
+CItem::CItem() : CObject2D(static_cast<int>(LAYER::BACK_MIDDLE))
 {
 	m_velocity = { 0.0f, 0.0f, 0.0f };	// 加速度
 	m_pos_tgt = { 0.0f, 0.0f, 0.0f };	// 目標位置
@@ -182,7 +182,7 @@ void CItem::AdjustPos()
 //============================================================================
 void CItem::Collision()
 {
-	for (int nCntPriority = 0; nCntPriority < MAX_LAYER; nCntPriority++)
+	for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::MAX); nCntPriority++)
 	{
 		for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
 		{

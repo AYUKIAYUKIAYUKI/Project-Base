@@ -21,7 +21,7 @@ public:
 	//****************************************************
 	// オブジェクトの種類識別
 	//****************************************************
-	enum TYPE
+	enum class TYPE
 	{
 		NONE = 0,	// 無し
 		PLAYER,		// プレイヤー
@@ -29,23 +29,24 @@ public:
 		BLOCK,		// ブロック
 		ITEM,		// アイテム
 		SCORE,		// スコア
-		MAX_TYPE,
+		MAX,
 	};
 
 	//****************************************************
 	// オブジェクトのレイヤー識別
 	//****************************************************
-	enum LAYER
+	enum class LAYER
 	{
-		BACK = 0,		// 背景
+		NONE = 0,		// 無し
+		BACK,			// 背景
 		BACK_MIDDLE,	// 後ろ側
 		FRONT_MIDDLE,	// 前川
 		FRONT,			// 前景
-		MAX_LAYER,
+		MAX,
 	};
 
-	CObject(int nPriority = MAX_LAYER - 1);	// コンストラクタ
-	virtual ~CObject() = 0;					// デストラクタ
+	CObject(int nPriority = static_cast<int>(LAYER::MAX) - 1);	// コンストラクタ
+	virtual ~CObject() = 0;										// デストラクタ
 
 	virtual HRESULT Init() = 0;	// 初期設定
 	virtual void Uninit() = 0;	// 終了処理
@@ -70,8 +71,8 @@ protected:
 
 private:
 
-	static CObject* m_apObject[MAX_LAYER][MAX_OBJ];	// オブジェクト管理
-	static int m_nNumAll;							// オブジェクト総数
+	static CObject* m_apObject[static_cast<int>(LAYER::MAX)][MAX_OBJ];	// オブジェクト管理
+	static int m_nNumAll;												// オブジェクト総数
 
 	int m_nPriority;	// 描画優先度
 	int m_nID;			// 自分自身のID
