@@ -190,8 +190,8 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 
 	// スコアの生成 (仮)
 	CScore::Create(
-		{ 680.0f, 145.0f, 0.0f },	// 中心位置
-		25.0f);						// 数列の配置間隔
+		{ 25.0f, 30.0f, 0.0f },	// 中心位置
+		25.0f);					// 数列の配置間隔
 
 	return S_OK;
 }

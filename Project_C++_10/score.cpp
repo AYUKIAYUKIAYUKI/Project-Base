@@ -57,9 +57,10 @@ void CScore::Uninit()
 //============================================================================
 void CScore::Update()
 {
+	// デバッグ用
 	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
 	{
-		m_nScore += 114514;
+		m_nScore += 123456;
 	}
 
 	// 変動制限

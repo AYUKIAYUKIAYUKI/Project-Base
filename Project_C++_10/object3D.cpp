@@ -117,16 +117,14 @@ void CObject3D::Update()
 	}
 
 	// 必要な数値を計算
-	m_fAngle = atan2f(m_size.x, m_size.y);
-	m_fLength = sqrtf(m_size.x * m_size.x + m_size.y * m_size.y);
+	m_fAngle = atan2f(m_size.x, m_size.z);
+	m_fLength = sqrtf(m_size.x * m_size.x + m_size.z * m_size.z);
 
 	// 頂点情報へのポインタ
 	VERTEX_3D* pVtx;
 
 	// 頂点バッファをロック
 	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
-
-#if 0
 
 	// 位置の設定
 	pVtx[0].pos = {
@@ -152,35 +150,6 @@ void CObject3D::Update()
 		0.0f,
 		-cosf(m_rot.z + m_fAngle) * m_fLength
 	};
-
-#else
-
-	// 位置の設定
-	pVtx[0].pos = {
-		-100.0f,
-		0.0f,
-		100.0f
-	};
-
-	pVtx[1].pos = {
-		100.0f,
-		0.0f,
-		100.0f
-	};
-
-	pVtx[2].pos = {
-		-100.0f,
-		0.0f,
-		-100.0f
-	};
-
-	pVtx[3].pos = {
-		100.0f,
-		0.0f,
-		-100.0f
-	};
-
-#endif
 
 	// 頂点バッファをアンロックする
 	m_pVtxBuff->Unlock();

@@ -23,8 +23,12 @@ public:
 
 private:
 
-	void Create();		// 生成
-	void SetLight();	// ライトセット
+	void SetTempDirection();	// 向きのテンプレをセット
+	void Create();				// 生成
+	void ChangeID();			// 操作番号変更
+	void Control();				// 操作
+	void Reset();				// リセット
+	void SetLight();			// ライトセット
 
 	static const int MAX_LIGHT = 3;	// ライトの数
 
