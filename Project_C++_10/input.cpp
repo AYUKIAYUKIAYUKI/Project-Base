@@ -39,7 +39,7 @@ HRESULT CInput::Init(HINSTANCE hInstance, HWND hWnd)
 	if (m_Input == nullptr)
 	{
 		// DirectInputオブジェクトの生成
-		if (FAILED(DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_Input, NULL)))
+		if (FAILED(DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_Input, nullptr)))
 		{
 			return E_FAIL;
 		}
@@ -110,7 +110,7 @@ HRESULT CInputKeyboard::Init(HINSTANCE hInstance, HWND hWnd)
 	// 入力デバイス(キーボード)の生成
 	if (m_pDevice == nullptr)
 	{
-		if (FAILED(m_Input->CreateDevice(GUID_SysKeyboard, &m_pDevice, NULL)))
+		if (FAILED(m_Input->CreateDevice(GUID_SysKeyboard, &m_pDevice, nullptr)))
 		{
 			return E_FAIL;
 		}

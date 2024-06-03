@@ -77,7 +77,6 @@ void CExplosion::Draw()
 //============================================================================
 CExplosion* CExplosion::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
-	// ”š”­‚ð¶¬
 	CExplosion* pExplosion = new CExplosion;
 
 	// ¶¬o—ˆ‚Ä‚¢‚½‚ç‰ŠúÝ’è

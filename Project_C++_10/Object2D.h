@@ -20,7 +20,7 @@ class CObject2D : public CObject
 {
 public:
 	
-	CObject2D(int nPriority = static_cast<int>(LAYER::MAX) - 1);	// コンストラクタ
+	CObject2D(int nPriority = static_cast<int>(LAYER::UI) - 1);	// コンストラクタ
 	~CObject2D() override;											// デストラクタ
 
 	HRESULT Init() override;	// 初期設定
@@ -67,28 +67,5 @@ private:
 	int m_nNowPatternU;	// 現在の横テクスチャ種類
 	int m_nNowPatternV;	// 現在の縦テクスチャ種類
 };
-
-////****************************************************
-//// 2Dアニメーションオブジェクトクラス
-////****************************************************
-//class CAnimationObject2D : public CObject2D
-//{
-//public:
-//
-//	CAnimationObject2D();			// コンストラクタ
-//	~CAnimationObject2D() override;	// デストラクタ
-//
-//	HRESULT Init() override;	// 初期設定
-//	void Uninit() override;		// 終了処理
-//	void Update() override;		// 更新処理
-//	void Draw() override;		// 描画処理
-//
-//	static CAnimationObject2D* Create();	// 生成
-//
-//private:
-//
-//	float m_nNowPatternU;		// 現在のテクスチャU座標
-//	float m_nNowPatternV;		// 現在のテクスチャV座標
-//};
 
 #endif // _OBJECT2D_H_
