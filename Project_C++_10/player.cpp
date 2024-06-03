@@ -505,8 +505,8 @@ void CPlayer::Collision()
 			//				m_posTarget.y = CObject2D::GetSize().y + (pEnemy->GetPos().y + pEnemy->GetSize().y);
 			//			}
 			//		}
-			//		else if (CObject2D::GetPos().y + CObject2D::GetSize().y > pEnemy->GetPos().y - pEnemy->GetSize().y &&
-			//			CObject2D::GetPos().y - CObject2D::GetSize().y < pEnemy->GetPos().y + pEnemy->GetSize().y)
+			//		else if (CObject2D::GetPos().y + CObject2D::GetSize().y > pEnemy->GetPos().y - pEnemy->GetSize().y - ‚Ä‚·‚Æ.y &&
+			//			CObject2D::GetPos().y - CObject2D::GetSize().y < pEnemy->GetPos().y + pEnemy->GetSize().y - ‚Ä‚·‚Æ.y)
 			//		{
 			//			if (CObject2D::GetPos().x < pEnemy->GetPos().x)
 			//			{

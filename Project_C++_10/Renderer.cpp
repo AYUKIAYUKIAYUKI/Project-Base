@@ -162,7 +162,7 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 
 	// エネミーの生成 (仮)
 	CEnemy::Create(
-		{ SCREEN_WIDTH * 0.0f, SCREEN_HEIGHT * 0.85f, 0.0f },	// 中心位置
+		{ SCREEN_WIDTH * 0.0f, SCREEN_HEIGHT * 1.0f, 0.0f },	// 中心位置
 		{ 50.0f, 50.0f, 0.0f });								// サイズ
 
 	// プレイヤーの生成 (仮)
