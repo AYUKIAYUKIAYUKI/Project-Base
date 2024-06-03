@@ -9,12 +9,14 @@
 // インクルードファイル
 //****************************************************
 #include "renderer.h"
+#include "manager.h"
 #include "object.h"
 
 // 仮
 #include "bg.h"
 #include "block.h"
 #include "enemy.h"
+#include "field.h"
 #include "item.h"
 #include "player.h"
 #include "score.h"
@@ -127,6 +129,8 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 	// テクスチャ読み込み
 	m_pTexture->Load();
 
+#if 0
+
 	// 背景の生成 (仮)
 	CBg::Create(
 		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// 中心位置
@@ -174,6 +178,15 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 	CItem::Create(
 		{ SCREEN_WIDTH * 0.75f, SCREEN_HEIGHT * 0.25f, 0.0f },	// 中心位置
 		{ 80.0f, 80.0f, 0.0f });								// サイズ
+
+#else
+
+	// 地面の生成 (仮)
+	CField::Create(
+		{ 0.0f, 0.0f, 0.0f },		// 中心位置
+		{ 100.0f, 0.0f, 100.0f });	// サイズ
+
+#endif
 
 	// スコアの生成 (仮)
 	CScore::Create(
@@ -234,6 +247,9 @@ void CRenderer::Draw()
 	// 描画開始
 	if (SUCCEEDED(m_pD3DDevice->BeginScene()))
 	{
+		// カメラをセット
+		CManager::GetCamera()->SetCamera();
+
 		// 全オブジェクト描画処理
 		CObject::DrawAll();
 

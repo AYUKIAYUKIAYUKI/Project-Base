@@ -14,6 +14,8 @@
 // 静的メンバの初期化
 //****************************************************
 CRenderer* CManager::m_pRenderer = nullptr;			// レンダラー管理
+CCamera* CManager::m_pCamera = nullptr;				// カメラ管理
+CLight* CManager::m_pLight = nullptr;				// ライト管理
 CInputKeyboard* CManager::m_pKeyboard = nullptr;	// キーボード管理
 CInputPad* CManager::m_pPad = nullptr;				// パッド管理
 CSound* CManager::m_pSound = nullptr;				// サウンド管理
@@ -24,6 +26,8 @@ CSound* CManager::m_pSound = nullptr;				// サウンド管理
 CManager::CManager()
 {
 	m_pRenderer = nullptr;
+	m_pCamera = nullptr;
+	m_pLight = nullptr;
 	m_pKeyboard = nullptr;
 	m_pPad = nullptr;
 	m_pSound = nullptr;
@@ -52,6 +56,28 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	// レンダラーの初期化
 	m_pRenderer->Init(hWnd, bWindow);
+
+	// カメラの生成
+	m_pCamera = new CCamera;
+
+	if (m_pCamera == nullptr)
+	{ // 生成失敗
+		return E_FAIL;
+	}
+
+	// カメラの初期化
+	m_pCamera->Init();
+
+	// ライトの生成
+	m_pLight = new CLight;
+
+	if (m_pLight == nullptr)
+	{ // 生成失敗
+		return E_FAIL;
+	}
+
+	// ライトの初期化
+	m_pLight->Init();
 
 	// キーボードの生成
 	m_pKeyboard = new CInputKeyboard;
@@ -102,6 +128,20 @@ void CManager::Uninit()
 		m_pRenderer = nullptr;	// ポインタを初期化
 	}
 
+	// カメラの破棄
+	if (m_pCamera != nullptr)
+	{
+		delete m_pCamera;		// メモリを解放
+		m_pCamera = nullptr;	// ポインタを初期化
+	}
+
+	// ライトの破棄
+	if (m_pLight != nullptr)
+	{
+		delete m_pLight;		// メモリを解放
+		m_pLight = nullptr;		// ポインタを初期化
+	}
+
 	// キーボードの破棄
 	if (m_pKeyboard != nullptr)
 	{
@@ -135,6 +175,12 @@ void CManager::Update()
 	// レンダラーの更新
 	m_pRenderer->Update();
 
+	// カメラの更新
+	m_pCamera->Update();
+
+	// ライトの更新
+	m_pLight->Update();
+
 	// キーボードの更新
 	m_pKeyboard->Update();
 
@@ -157,6 +203,22 @@ void CManager::Draw()
 CRenderer* CManager::GetRenderer()
 { 
 	return m_pRenderer;
+}
+
+//============================================================================
+// カメラ取得
+//============================================================================
+CCamera* CManager::GetCamera()
+{
+	return m_pCamera;
+}
+
+//============================================================================
+// ライト取得
+//============================================================================
+CLight* CManager::GetLight()
+{
+	return m_pLight;
 }
 
 //============================================================================

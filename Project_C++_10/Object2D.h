@@ -91,5 +91,4 @@ private:
 //	float m_nNowPatternV;		// 現在のテクスチャV座標
 //};
 
-
 #endif // _OBJECT2D_H_

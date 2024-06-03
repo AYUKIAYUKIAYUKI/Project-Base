@@ -92,7 +92,6 @@ void CItem::Draw()
 //============================================================================
 CItem* CItem::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
-	// プレイヤーを生成
 	CItem* pItem = new CItem;
 
 	// 生成出来ていたら初期設定

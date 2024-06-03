@@ -42,6 +42,7 @@ public:
 		BACK_MIDDLE,	// å„ÇÎë§
 		FRONT_MIDDLE,	// ëOêÏ
 		FRONT,			// ëOåi
+		UI,				// UI
 		MAX,
 	};
 

@@ -57,6 +57,11 @@ void CScore::Uninit()
 //============================================================================
 void CScore::Update()
 {
+	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
+	{
+		m_nScore += 114514;
+	}
+
 	// •Ï“®§ŒÀ
 	Adjust();
 	
