@@ -12,6 +12,7 @@
 // インクルードファイル
 //****************************************************
 #include "texture.h"
+#include "model.h"
 
 //****************************************************
 // レンダラークラス
@@ -30,12 +31,14 @@ public:
 
 	LPDIRECT3DDEVICE9 GetDeviece();	// デバイスの取得
 	CTexture* GetTextureInstane();	// テクスチャ管理の取得
+	CModel* GetModelInstane();		// モデル管理の取得
 
 private:
 
 	LPDIRECT3D9 m_pD3D;				// Direct3D
 	LPDIRECT3DDEVICE9 m_pD3DDevice;	// デバイス
 	CTexture* m_pTexture;			// テクスチャ管理
+	CModel* m_pModel;				// モデル管理
 };
 
 #endif // _RENDERER_H_

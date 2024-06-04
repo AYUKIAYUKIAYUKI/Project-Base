@@ -62,6 +62,11 @@ void CScore::Update()
 	{
 		m_nScore += 123456;
 	}
+	else if (CManager::GetKeyboard()->GetTrigger(DIK_BACK))
+	{
+		m_nScore -= 123456;
+	}
+
 
 	// •Ï“®§ŒÀ
 	Adjust();

@@ -19,14 +19,16 @@
 #include "field.h"
 #include "item.h"
 #include "player.h"
+#include "player3D.h"
 #include "score.h"
 
 //============================================================================
 // コンストラクタ
 //============================================================================
-CRenderer::CRenderer() : m_pD3D(nullptr), m_pD3DDevice(nullptr), m_pTexture(nullptr)
+CRenderer::CRenderer() : m_pD3D(nullptr), m_pD3DDevice(nullptr)
 {
-
+	m_pTexture = nullptr;	// テクスチャ管理
+	m_pModel = nullptr;		// モデル管理
 }
 
 //============================================================================
@@ -116,10 +118,7 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 	//m_pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 
 	// テクスチャインスタンスを生成
-	if (m_pTexture == nullptr)
-	{
-		m_pTexture = new CTexture;
-	}
+	m_pTexture = new CTexture;
 
 	if (m_pTexture == nullptr)
 	{ //  テクスチャインスタンス生成失敗
@@ -128,6 +127,17 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 
 	// テクスチャ読み込み
 	m_pTexture->Load();
+
+	// モデルインスタンスを生成
+	m_pModel = new CModel;
+
+	if (m_pModel == nullptr)
+	{ //  モデルインスタンス生成失敗
+		return E_FAIL;
+	}
+
+	// モデル読み込み
+	m_pModel->Load();
 
 #if 0
 
@@ -181,6 +191,10 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 
 #else
 
+	// プレイヤー3Dの生成 (仮)
+	CPlayer3D::Create(
+		{ 0.0f, 0.0f, 0.0f });	// 中心位置
+		
 	// 地面の生成 (仮)
 	CField::Create(
 		{ 0.0f, 0.0f, 0.0f },		// 中心位置
@@ -203,11 +217,21 @@ void CRenderer::Uninit()
 {
 	// 全オブジェクト解放処理
 	CObject::ReleaseAll();
+	
+	// モデル破棄
+	if (m_pTexture != nullptr)
+	{
+		m_pModel->Unload();
+		delete m_pModel;
+		m_pModel = nullptr;
+	}
 
 	//  テクスチャ破棄
 	if (m_pTexture != nullptr)
 	{
 		m_pTexture->Unload();
+		delete m_pTexture;
+		m_pTexture = nullptr;
 	}
 
 	// Direct3Dデバイスの破棄
@@ -275,4 +299,12 @@ LPDIRECT3DDEVICE9 CRenderer::GetDeviece()
 CTexture* CRenderer::GetTextureInstane()
 {
 	return m_pTexture;
+}
+
+//============================================================================
+// モデル管理の取得
+//============================================================================
+CModel* CRenderer::GetModelInstane()
+{
+	return m_pModel;
 }

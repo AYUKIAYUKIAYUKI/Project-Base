@@ -24,7 +24,6 @@ const int CPlayer::TEXTURE_DIVIDE_V = 1;		// テクスチャのV方向分割数
 const float CPlayer::MAX_VELOCITY = 3.0f;		// 加速度上限
 const float CPlayer::JUMP_FORCE = -10.;			// ジャンプ力
 const float CPlayer::BRAKING_FORCE = 0.9f;		// 制動力
-//const float CPlayer::GRAVITY_FORCE = 0.25f;	// 重力
 
 //============================================================================
 // コンストラクタ
