@@ -85,7 +85,7 @@ void CObjectX::Draw()
 		pDev->SetMaterial(&pMat[nCntMat].MatD3D);
 
 		// テクスチャの設定
-		pDev->SetTexture(0, m_pModel->pTex);
+		pDev->SetTexture(0, m_pModel->ppTex[nCntMat]);
 
 		// オブジェクトパーツの描画
 		m_pModel->pMesh->DrawSubset(nCntMat);

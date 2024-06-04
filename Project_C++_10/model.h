@@ -39,6 +39,8 @@ public:
 
 private:
 
+	bool LoadCheck();	// 読み込みテチェック
+
 	static MODEL m_aModelTemp[static_cast<int>(MODEL_TYPE::MAX)];	// モデル管理
 };
 

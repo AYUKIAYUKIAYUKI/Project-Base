@@ -124,7 +124,7 @@ void CObject3D::Update()
 	VERTEX_3D* pVtx;
 
 	// 頂点バッファをロック
-	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+	m_pVtxBuff->Lock(0, 0, reinterpret_cast<void**>(&pVtx), 0);
 
 	// 位置の設定
 	pVtx[0].pos = {

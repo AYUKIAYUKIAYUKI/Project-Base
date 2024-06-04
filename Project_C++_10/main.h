@@ -35,10 +35,10 @@ struct VERTEX_3D
 //****************************************************
 struct MODEL
 {
-	LPD3DXMESH pMesh;			// メッシュ情報のポインタ
-	LPD3DXBUFFER pBuffMat;		// マテリアル情報のポインタ
+	LPD3DXMESH pMesh;			// メッシュ情報
+	LPD3DXBUFFER pBuffMat;		// マテリアル情報
 	DWORD dwNumMat;				// マテリアルの数
-	LPDIRECT3DTEXTURE9 pTex;	// テクスチャのポインタ
+	LPDIRECT3DTEXTURE9* ppTex;	// テクスチャ情報
 };
 
 #endif // _MAIN_H_

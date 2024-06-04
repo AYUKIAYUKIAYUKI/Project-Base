@@ -67,7 +67,6 @@ void CScore::Update()
 		m_nScore -= 123456;
 	}
 
-
 	// •Ï“®§ŒÀ
 	Adjust();
 	

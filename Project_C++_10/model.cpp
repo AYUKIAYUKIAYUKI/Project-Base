@@ -11,10 +11,6 @@
 #include "model.h"
 #include "manager.h"
 
-// ファイル読み取り用
-#include <fstream>
-#include <string>
-
 //****************************************************
 // 静的メンバの初期化
 //****************************************************
@@ -31,7 +27,7 @@ CModel::CModel()
 		m_aModelTemp[i].pMesh = nullptr;
 		m_aModelTemp[i].pBuffMat = nullptr;
 		m_aModelTemp[i].dwNumMat = 0;
-		m_aModelTemp[i].pTex = nullptr;
+		m_aModelTemp[i].ppTex = nullptr;
 	}
 }
 
@@ -44,7 +40,7 @@ CModel::~CModel()
 }
 
 //============================================================================
-// 初期設定
+// モデル読み込み
 //============================================================================
 HRESULT CModel::Load()
 {
@@ -59,7 +55,7 @@ HRESULT CModel::Load()
 	// デバイスを取得
 	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
 
-	for (int i = 0; i < static_cast<int>(MODEL_TYPE::MAX); i++)
+	for (int nCntModel = 0; nCntModel < static_cast<int>(MODEL_TYPE::MAX); nCntModel++)
 	{
 		// モデル名格納先
 		std::string filename;
@@ -72,32 +68,37 @@ HRESULT CModel::Load()
 			D3DXMESH_SYSTEMMEM,
 			pDev,
 			nullptr,
-			&m_aModelTemp[i].pBuffMat,
+			&m_aModelTemp[nCntModel].pBuffMat,
 			nullptr,
-			&m_aModelTemp[i].dwNumMat,
-			&m_aModelTemp[i].pMesh);
+			&m_aModelTemp[nCntModel].dwNumMat,
+			&m_aModelTemp[nCntModel].pMesh);
 
 		// マテリアルデータへのポインタを取得
-		D3DXMATERIAL* pMat = (D3DXMATERIAL*)m_aModelTemp[i].pBuffMat->GetBufferPointer();
+		D3DXMATERIAL* pMat = (D3DXMATERIAL*)m_aModelTemp[nCntModel].pBuffMat->GetBufferPointer();
+
+		// マテリアルの数分のテクスチャポインタを確保
+		m_aModelTemp[nCntModel].ppTex = new LPDIRECT3DTEXTURE9 [static_cast<int>(m_aModelTemp[nCntModel].dwNumMat)];
 
 		// マテリアル分テクスチャの有無を確認
-		for (int nCntMat = 0; nCntMat < static_cast<int>(m_aModelTemp[i].dwNumMat); nCntMat++)
+		for (int nCntMat = 0; nCntMat < static_cast<int>(m_aModelTemp[nCntModel].dwNumMat); nCntMat++)
 		{
-			// テクスチャを読み取れたら生成
 			if (pMat[nCntMat].pTextureFilename != nullptr)
 			{
+				// テクスチャを読み取れたら生成
 				D3DXCreateTextureFromFileA(pDev,
 					pMat[nCntMat].pTextureFilename,
-					&m_aModelTemp[i].pTex);
+					&m_aModelTemp[nCntModel].ppTex[nCntMat]);
 			}
 			else
-			{  
-				m_aModelTemp[i].pTex = nullptr;
+			{
+				// 読み取れなければ初期化
+				m_aModelTemp[nCntModel].ppTex[nCntMat] = nullptr;
 			}
 		}
 
-		if (&m_aModelTemp[i].pMesh == nullptr)
-		{ // モデルファイル取得失敗
+		// モデル情報をすべて取得できたかチェック
+		if (!LoadCheck())
+		{ // 取得失敗
 			file.close();	// ファイルを閉じる
 			assert(false);
 		}
@@ -109,17 +110,27 @@ HRESULT CModel::Load()
 }
 
 //============================================================================
-// 終了処理
+// モデル破棄
 //============================================================================
 void CModel::Unload()
 {
 	for (int i = 0; i < static_cast<int>(MODEL_TYPE::MAX); i++)
 	{
-		// テクスチャの破棄
-		if (m_aModelTemp[i].pTex != nullptr)
+		// テクスチャポインタの破棄
+		if (m_aModelTemp[i].ppTex != nullptr)
 		{
-			m_aModelTemp[i].pTex->Release();
-			m_aModelTemp[i].pTex = nullptr;
+			// テクスチャの破棄
+			for (int nCntMat = 0; nCntMat < static_cast<int>(m_aModelTemp[i].dwNumMat); nCntMat++)
+			{
+				if (m_aModelTemp[i].ppTex[nCntMat] != nullptr)
+				{
+					m_aModelTemp[i].ppTex[nCntMat]->Release();
+					m_aModelTemp[i].ppTex[nCntMat] = nullptr;
+				}
+			}
+
+			delete[] m_aModelTemp[i].ppTex;
+			m_aModelTemp[i].ppTex = nullptr;
 		}
 
 		// メッシュの破棄
@@ -149,4 +160,14 @@ MODEL* CModel::GetModel(MODEL_TYPE type)
 	}
 
 	return &m_aModelTemp[static_cast<int>(type)];
+}
+
+//============================================================================
+// 読み込みチェック
+//============================================================================
+bool CModel::LoadCheck()
+{
+	/*---*/
+
+	return true;
 }

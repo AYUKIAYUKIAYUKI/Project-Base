@@ -64,7 +64,7 @@ HRESULT CObject2D::Init()
 	VERTEX_2D* pVtx;
 
 	// 頂点バッファをロック
-	m_pVtxBuff->Lock(0, 0, (void**)&pVtx, 0);
+	m_pVtxBuff->Lock(0, 0, reinterpret_cast<void**>(&pVtx), 0);
 
 	// 位置の設定
 	pVtx[0].pos = { 0.0f, 0.0f, 0.0f };
