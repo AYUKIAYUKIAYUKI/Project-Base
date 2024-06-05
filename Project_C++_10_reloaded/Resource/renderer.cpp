@@ -128,17 +128,6 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 	// テクスチャ読み込み
 	m_pTexture->Load();
 
-	// モデルインスタンスを生成
-	m_pModel = new CModel;
-
-	if (m_pModel == nullptr)
-	{ //  モデルインスタンス生成失敗
-		return E_FAIL;
-	}
-
-	// モデル読み込み
-	m_pModel->Load();
-
 #if 0
 
 	// 背景の生成 (仮)
@@ -191,6 +180,17 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 
 #else
 
+	// モデルインスタンスを生成
+	m_pModel = new CModel;
+
+	if (m_pModel == nullptr)
+	{ //  モデルインスタンス生成失敗
+		return E_FAIL;
+	}
+
+	// モデル読み込み
+	m_pModel->Load();
+
 	// プレイヤー3Dの生成 (仮)
 	CPlayer3D::Create(
 		{ 0.0f, 0.0f, 0.0f });	// 中心位置
@@ -218,20 +218,20 @@ void CRenderer::Uninit()
 	// 全オブジェクト解放処理
 	CObject::ReleaseAll();
 	
-	// モデル破棄
-	if (m_pModel != nullptr)
-	{
-		m_pModel->Unload();
-		delete m_pModel;
-		m_pModel = nullptr;
-	}
-
 	//  テクスチャ破棄
 	if (m_pTexture != nullptr)
 	{
 		m_pTexture->Unload();
 		delete m_pTexture;
 		m_pTexture = nullptr;
+	}
+
+	// モデル破棄
+	if (m_pModel != nullptr)
+	{
+		m_pModel->Unload();
+		delete m_pModel;
+		m_pModel = nullptr;
 	}
 
 	// Direct3Dデバイスの破棄
