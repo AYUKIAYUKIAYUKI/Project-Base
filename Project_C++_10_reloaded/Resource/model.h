@@ -25,7 +25,8 @@ public:
 	//****************************************************
 	enum class MODEL_TYPE
 	{
-		MODEL_000 = 0,	// テスト
+		MODEL_LEGI = 0,	// テスト
+		MODEL_BLOCK,	// ブロック
 		MAX,
 	};
 

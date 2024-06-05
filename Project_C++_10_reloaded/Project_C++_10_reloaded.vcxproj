@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="resource\bg.cpp" />
     <ClCompile Include="resource\block.cpp" />
+    <ClCompile Include="Resource\block3D.cpp" />
     <ClCompile Include="resource\bullet.cpp" />
     <ClCompile Include="resource\camera.cpp" />
     <ClCompile Include="resource\effect.cpp" />
@@ -53,6 +54,7 @@
   <ItemGroup>
     <ClInclude Include="resource\bg.h" />
     <ClInclude Include="resource\block.h" />
+    <ClInclude Include="Resource\block3D.h" />
     <ClInclude Include="resource\bullet.h" />
     <ClInclude Include="resource\camera.h" />
     <ClInclude Include="resource\effect.h" />

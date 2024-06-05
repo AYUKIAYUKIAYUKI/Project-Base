@@ -15,6 +15,7 @@
 // 仮
 #include "bg.h"
 #include "block.h"
+#include "block3D.h"
 #include "enemy.h"
 #include "field.h"
 #include "item.h"
@@ -191,7 +192,7 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 	// モデル読み込み
 	m_pModel->Load();
 
-	// プレイヤー3Dの生成 (仮)
+	// 3Dプレイヤーの生成 (仮)
 	CPlayer3D::Create(
 		{ 0.0f, 0.0f, 0.0f });	// 中心位置
 
@@ -199,6 +200,25 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 	CField::Create(
 		{ 0.0f, 0.0f, 0.0f },		// 中心位置
 		{ 100.0f, 0.0f, 100.0f });	// サイズ
+
+	for (int i = 0; i < 5; i++)
+	{
+		// 3Dブロックの生成 (仮)
+		CBlock3D::Create(
+			{ 100.0f, 0.0f, 100.0f + (-25.0f * i) });	// 中心位置
+
+		// 3Dブロックの生成 (仮)
+		CBlock3D::Create(
+			{ 100.0f + (-25.0f * i), 0.0f, 100.0f });	// 中心位置
+
+		// 3Dブロックの生成 (仮)
+		CBlock3D::Create(
+			{ -100.0f, 0.0f, -100.0f + (25.0f * i) });	// 中心位置
+
+		// 3Dブロックの生成 (仮)
+		CBlock3D::Create(
+			{ -100.0f + (25.0f * i), 0.0f, -100.0f });	// 中心位置
+	}
 
 #endif
 

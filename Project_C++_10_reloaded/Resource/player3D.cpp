@@ -1,6 +1,6 @@
 //============================================================================
 // 
-// プレイヤー3D [player3D.cpp]
+// 3Dプレイヤー [player3D.cpp]
 // Author : 福田歩希
 // 
 //============================================================================
@@ -15,12 +15,12 @@
 // 静的メンバ変数の初期化
 //****************************************************
 const float CPlayer3D::MAX_VELOCITY = 0.5f;		// 加速度上限
-const float CPlayer3D::BRAKING_FORCE = 0.95f;	// 制動力
+const float CPlayer3D::BRAKING_FORCE = 0.9f;	// 制動力
 
 //============================================================================
 // コンストラクタ
 //============================================================================
-CPlayer3D::CPlayer3D() : CObjectX(static_cast<int>(LAYER::FRONT))
+CPlayer3D::CPlayer3D() : CObjectX(static_cast<int>(LAYER::FRONT_MIDDLE))
 {
 	m_velocity = { 0.0f, 0.0f, 0.0f };		// 加速度
 	m_posTarget = { 0.0f, 0.0f, 0.0f };		// 目標位置
@@ -107,7 +107,7 @@ CPlayer3D* CPlayer3D::Create(D3DXVECTOR3 pos)
 	pPlayer3D->SetPos(pos);		// 中心位置の設定
 
 	// モデルを設定
-	pPlayer3D->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel::MODEL_TYPE::MODEL_000));
+	pPlayer3D->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel::MODEL_TYPE::MODEL_BLOCK));
 
 	return pPlayer3D;
 }
@@ -167,9 +167,14 @@ void CPlayer3D::Control()
 	if (bMove)
 	{
 		// 移動量と目標回転量を設定
-		m_velocity.x += sinf(atan2f(X, Z));
-		m_velocity.z += cosf(atan2f(X, Z));
-		m_rotTarget.y = atan2f(-X, -Z);
+		m_velocity.x += sinf(atan2f(X, Z) + CManager::GetCamera()->GetRot().y)* 0.1f;
+		//m_velocity.x += -sinf(m_rotTarget.y);
+		//float f = atan2f(X, Z);
+		//float roty = CManager::GetCamera()->GetRot().y;
+		//float iofjioeaf = sinf(atan2f(X, Z) + CManager::GetCamera()->GetRot().y);
+		m_velocity.z += cosf(atan2f(X, Z) + CManager::GetCamera()->GetRot().y) * 0.1f;
+		//m_velocity.z += -cosf(m_rotTarget.y);
+		m_rotTarget.y = atan2f(-X, -Z) + CManager::GetCamera()->GetRot().y;
 	}
 }
 
@@ -182,7 +187,7 @@ void CPlayer3D::Rotation()
 	D3DXVECTOR3 rot = CObjectX::GetRot();
 
 	// ブレーキ力
-	float fStopEnergy = 0.05f;
+	float fStopEnergy = 0.1f;
 
 	// 回転反映と回転量の減衰
 	if (m_rotTarget.y - rot.y > D3DX_PI)
@@ -208,23 +213,23 @@ void CPlayer3D::Rotation()
 void CPlayer3D::Braking()
 {
 	// 加速度上限に到達で速度固定
-	if (m_velocity.x > CPlayer3D::MAX_VELOCITY)
-	{
-		m_velocity.x = CPlayer3D::MAX_VELOCITY;
-	}
-	else if (m_velocity.x < -CPlayer3D::MAX_VELOCITY)
-	{
-		m_velocity.x = -CPlayer3D::MAX_VELOCITY;
-	}
+	//if (m_velocity.x > CPlayer3D::MAX_VELOCITY)
+	//{
+	//	m_velocity.x = CPlayer3D::MAX_VELOCITY;
+	//}
+	//else if (m_velocity.x < -CPlayer3D::MAX_VELOCITY)
+	//{
+	//	m_velocity.x = -CPlayer3D::MAX_VELOCITY;
+	//}
 
-	if (m_velocity.z > CPlayer3D::MAX_VELOCITY)
-	{
-		m_velocity.z = CPlayer3D::MAX_VELOCITY;
-	}
-	else if (m_velocity.z < -CPlayer3D::MAX_VELOCITY)
-	{
-		m_velocity.z = -CPlayer3D::MAX_VELOCITY;
-	}
+	//if (m_velocity.z > CPlayer3D::MAX_VELOCITY)
+	//{
+	//	m_velocity.z = CPlayer3D::MAX_VELOCITY;
+	//}
+	//else if (m_velocity.z < -CPlayer3D::MAX_VELOCITY)
+	//{
+	//	m_velocity.z = -CPlayer3D::MAX_VELOCITY;
+	//}
 
 	// 少しずつ加速度を失う
 	m_velocity = m_velocity * CPlayer3D::BRAKING_FORCE;

@@ -12,6 +12,8 @@
 #include "main.h"
 #include "manager.h"
 
+#include "player3D.h"
+
 //============================================================================
 // コンストラクタ
 //============================================================================
@@ -52,6 +54,34 @@ HRESULT CCamera::Init()
 //============================================================================
 void CCamera::Update()
 {
+	for (int nCntPriority = 0; nCntPriority < static_cast<int>(CObject::LAYER::MAX); nCntPriority++)
+	{
+		for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+		{
+			// オブジェクト情報を取得
+			CObject* pObject = CObject::GetObject(nCntPriority, nCntObj);
+
+			if (pObject == nullptr)
+			{ // 情報がなければコンティニュー
+				continue;
+			}
+
+			if (pObject->GetType() == CObject::TYPE::PLAYER)
+			{ // 3Dプレイヤータイプなら
+
+				// 3Dプレイヤークラスのポインタ
+				CPlayer3D* pPlayer = dynamic_cast<CPlayer3D*>(pObject);
+
+				if (pPlayer == nullptr)
+				{ // ダウンキャスト失敗
+					assert(false);
+				}
+
+				m_pos = pPlayer->GetPos();
+			}
+		}
+	}
+
 	// カメラ操作
 	Control();
 
@@ -95,6 +125,14 @@ void CCamera::SetCamera()
 }
 
 //============================================================================
+// 向きを取得
+//============================================================================
+D3DXVECTOR3 CCamera::GetRot()
+{
+	return m_rot;
+}
+
+//============================================================================
 // カメラ操作
 //============================================================================
 void CCamera::Control()
@@ -117,21 +155,21 @@ void CCamera::Control()
 	// 左右
 	if (CManager::GetKeyboard()->GetPress(DIK_RIGHT))
 	{
-		m_rotTarget.y += 0.025f;
+		m_rotTarget.y += 0.02f;
 	}
 	else if (CManager::GetKeyboard()->GetPress(DIK_LEFT))
 	{
-		m_rotTarget.y -= 0.025f;
+		m_rotTarget.y -= 0.02f;
 	}
 
 	// 上下
 	if (CManager::GetKeyboard()->GetPress(DIK_UP))
 	{
-		m_rotTarget.x += 0.025f;
+		m_rotTarget.x += 0.02f;
 	}
 	else if (CManager::GetKeyboard()->GetPress(DIK_DOWN))
 	{
-		m_rotTarget.x -= 0.025f;
+		m_rotTarget.x -= 0.02f;
 	}
 }
 

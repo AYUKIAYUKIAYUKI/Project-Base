@@ -21,6 +21,8 @@ public:
 	HRESULT Init();		// 初期設定
 	void Update();		// 更新処理
 	void SetCamera();	// カメラをセット
+	
+	D3DXVECTOR3 GetRot();	// 向きを取得
 
 private:
 
@@ -34,7 +36,7 @@ private:
 	void CalcMtxProjection();	// プロジェクション行列計算
 	void CalcMtxView();			// ビュー行列計算
 
-	D3DXVECTOR3 m_pos;			// 中心位置
+	D3DXVECTOR3 m_pos;		// 中心位置
 	D3DXVECTOR3 m_posTarget;	// 目標中心位置
 	D3DXVECTOR3 m_posV;			// 視点位置
 	D3DXVECTOR3 m_posTargetV;	// 目標視点位置
