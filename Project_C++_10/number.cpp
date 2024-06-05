@@ -73,31 +73,25 @@ void CNumber::Draw()
 //============================================================================
 CNumber* CNumber::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
+	// インスタンスを生成
 	CNumber* pNumber = new CNumber;
 
-	// 生成出来ていたら初期設定
-	if (pNumber != nullptr)
-	{
-		pNumber->SetType(TYPE::NONE);	// タイプを設定
-
-		pNumber->Init();		// 基底クラスの初期設定
-		pNumber->SetPos(pos);	// 中心位置の設定
-		pNumber->SetSize(size);	// サイズの設定
-
-		pNumber->SetTexWidth(0.1f);		// 横テクスチャ分割幅
-		pNumber->SetTexHeight(1.0f);	// 縦テクスチャ分縦幅
-	}
-
-	// テクスチャを取得
-	LPDIRECT3DTEXTURE9 pTex = CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::NUMBER_000);
-
-	if (pTex == nullptr)
-	{ // 取得失敗
+	if (pNumber == nullptr)
+	{ // 生成失敗
 		assert(false);
 	}
 
+	pNumber->SetType(TYPE::NONE);	// タイプを設定
+
+	pNumber->Init();		// 基底クラスの初期設定
+	pNumber->SetPos(pos);	// 中心位置の設定
+	pNumber->SetSize(size);	// サイズの設定
+
+	pNumber->SetTexWidth(0.1f);		// 横テクスチャ分割幅
+	pNumber->SetTexHeight(1.0f);	// 縦テクスチャ分縦幅
+
 	// テクスチャを設定
-	pNumber->BindTex(pTex);
+	pNumber->BindTex(CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::NUMBER_000));
 
 	return pNumber;
 }

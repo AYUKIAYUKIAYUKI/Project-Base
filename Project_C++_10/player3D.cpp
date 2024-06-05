@@ -93,17 +93,18 @@ void CPlayer3D::Draw()
 //============================================================================
 CPlayer3D* CPlayer3D::Create(D3DXVECTOR3 pos)
 {
-	// プレイヤーを生成
+	// インスタンスを生成
 	CPlayer3D* pPlayer3D = new CPlayer3D;
 
-	// 生成出来ていたら初期設定
-	if (pPlayer3D != nullptr)
-	{
-		pPlayer3D->SetType(TYPE::PLAYER);	// タイプを設定
-
-		pPlayer3D->Init();			// 基底クラスの初期設定
-		pPlayer3D->SetPos(pos);		// 中心位置の設定
+	if (pPlayer3D == nullptr)
+	{ // 生成失敗
+		assert(false);
 	}
+
+	pPlayer3D->SetType(TYPE::PLAYER);	// タイプを設定
+
+	pPlayer3D->Init();			// 基底クラスの初期設定
+	pPlayer3D->SetPos(pos);		// 中心位置の設定
 
 	// モデルを設定
 	pPlayer3D->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel::MODEL_TYPE::MODEL_000));

@@ -92,28 +92,22 @@ void CItem::Draw()
 //============================================================================
 CItem* CItem::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
+	// インスタンスを生成
 	CItem* pItem = new CItem;
 
-	// 生成出来ていたら初期設定
-	if (pItem != nullptr)
-	{
-		pItem->SetType(TYPE::ITEM);	// タイプを設定
-
-		pItem->Init();			// 基底クラスの初期設定
-		pItem->SetPos(pos);		// 中心位置の設定
-		pItem->SetSize(size);	// サイズの設定
-	}
-
-	// テクスチャを取得
-	LPDIRECT3DTEXTURE9 pTex = CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::ITEM_000);
-
-	if (pTex == nullptr)
-	{ // 取得失敗
+	if (pItem == nullptr)
+	{ // 生成失敗
 		assert(false);
 	}
 
+	pItem->SetType(TYPE::ITEM);	// タイプを設定
+
+	pItem->Init();			// 基底クラスの初期設定
+	pItem->SetPos(pos);		// 中心位置の設定
+	pItem->SetSize(size);	// サイズの設定
+
 	// テクスチャを設定
-	pItem->BindTex(pTex);
+	pItem->BindTex(CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::ITEM_000));
 
 	return pItem;
 }

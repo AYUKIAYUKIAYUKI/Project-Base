@@ -89,28 +89,22 @@ void CEffect::Draw()
 //============================================================================
 CEffect* CEffect::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
+	// インスタンスを生成
 	CEffect* pEffect = new CEffect;
 
-	// 生成出来ていたら初期設定
-	if (pEffect != nullptr)
-	{
-		pEffect->SetType(TYPE::NONE);	// タイプを設定
-
-		pEffect->Init();		// 基底クラスの初期設定
-		pEffect->SetPos(pos);	// 中心位置の設定
-		pEffect->SetSize(size);	// サイズの設定
-	}
-
-	// テクスチャを取得
-	LPDIRECT3DTEXTURE9 pTex = CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::EFFECT_000);
-
-	if (pTex == nullptr)
-	{ // 取得失敗
+	if (pEffect == nullptr)
+	{ // 生成失敗
 		assert(false);
 	}
 
+	pEffect->SetType(TYPE::NONE);	// タイプを設定
+
+	pEffect->Init();		// 基底クラスの初期設定
+	pEffect->SetPos(pos);	// 中心位置の設定
+	pEffect->SetSize(size);	// サイズの設定
+
 	// テクスチャを設定
-	pEffect->BindTex(pTex);
+	pEffect->BindTex(CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::EFFECT_000));
 
 	return pEffect;
 }

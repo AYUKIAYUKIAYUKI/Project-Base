@@ -99,28 +99,22 @@ void CEnemy::Draw()
 //============================================================================
 CEnemy* CEnemy::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
+	// インスタンスを生成
 	CEnemy* pEnemy = new CEnemy;
 
-	// 生成出来ていたら初期設定
-	if (pEnemy != nullptr)
-	{
-		pEnemy->SetType(TYPE::ENEMY);	// タイプを設定
-
-		pEnemy->Init();			// 基底クラスの初期設定
-		pEnemy->SetPos(pos);	// 中心位置の設定
-		pEnemy->SetSize(size);	// サイズの設定
-	}
-
-	// テクスチャを取得
-	LPDIRECT3DTEXTURE9 pTex = CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::ENEMY_000);
-
-	if (pTex == nullptr)
-	{ // 取得失敗
+	if (pEnemy == nullptr)
+	{ // 生成失敗
 		assert(false);
 	}
 
+	pEnemy->SetType(TYPE::ENEMY);	// タイプを設定
+
+	pEnemy->Init();			// 基底クラスの初期設定
+	pEnemy->SetPos(pos);	// 中心位置の設定
+	pEnemy->SetSize(size);	// サイズの設定
+
 	// テクスチャを設定
-	pEnemy->BindTex(pTex);
+	pEnemy->BindTex(CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::ENEMY_000));
 
 	return pEnemy;
 }

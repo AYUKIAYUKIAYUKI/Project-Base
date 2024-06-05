@@ -71,28 +71,22 @@ void CField::Draw()
 //============================================================================
 CField* CField::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
+	// インスタンスを生成
 	CField* pField = new CField;
 
-	// 生成出来ていたら初期設定
-	if (pField != nullptr)
-	{
-		pField->SetType(TYPE::BLOCK);	// タイプを設定
-
-		pField->Init();			// 基底クラスの初期設定
-		pField->SetPos(pos);	// 中心位置の設定
-		pField->SetSize(size);	// サイズの設定
-	}
-
-	// テクスチャを取得
-	LPDIRECT3DTEXTURE9 pTex = CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BG_000);
-
-	if (pTex == nullptr)
-	{ // 取得失敗
+	if (pField == nullptr)
+	{ // 生成失敗
 		assert(false);
 	}
 
+	pField->SetType(TYPE::BLOCK);	// タイプを設定
+
+	pField->Init();			// 基底クラスの初期設定
+	pField->SetPos(pos);	// 中心位置の設定
+	pField->SetSize(size);	// サイズの設定
+
 	// テクスチャを設定
-	pField->BindTex(pTex);
+	pField->BindTex(CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BG_000));
 
 	return pField;
 }

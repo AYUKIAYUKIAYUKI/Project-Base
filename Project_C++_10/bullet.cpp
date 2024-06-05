@@ -91,31 +91,25 @@ void CBullet::Draw()
 //============================================================================
 CBullet* CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nRemain, float fFlyAngle)
 {
+	// インスタンスを生成
 	CBullet* pBullet = new CBullet;
 
-	// 生成出来ていたら初期設定
-	if (pBullet != nullptr)
-	{
-		pBullet->SetType(TYPE::NONE);	// タイプを設定
-
-		pBullet->Init();		// 基底クラスの初期設定
-		pBullet->SetPos(pos);	// 中心位置の設定
-		pBullet->SetSize(size);	// サイズの設定
-
-		pBullet->m_nRemain = nRemain;		// 使用期間の設定
-		pBullet->m_fFlyAngle = fFlyAngle;	// 飛ぶ角度の設定
-	}
-
-	// テクスチャを取得
-	LPDIRECT3DTEXTURE9 pTex = CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BULLET_000);
-
-	if (pTex == nullptr)
-	{ // 取得失敗
+	if (pBullet == nullptr)
+	{ // 生成失敗
 		assert(false);
 	}
 
+	pBullet->SetType(TYPE::NONE);	// タイプを設定
+
+	pBullet->Init();		// 基底クラスの初期設定
+	pBullet->SetPos(pos);	// 中心位置の設定
+	pBullet->SetSize(size);	// サイズの設定
+
+	pBullet->m_nRemain = nRemain;		// 使用期間の設定
+	pBullet->m_fFlyAngle = fFlyAngle;	// 飛ぶ角度の設定
+
 	// テクスチャを設定
-	pBullet->BindTex(pTex);
+	pBullet->BindTex(CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BULLET_000));
 
 	return pBullet;
 }

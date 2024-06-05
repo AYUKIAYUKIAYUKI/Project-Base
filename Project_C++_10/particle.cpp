@@ -92,30 +92,24 @@ void CParticle::Draw()
 //============================================================================
 CParticle* CParticle::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, float fFlyAngle)
 {
+	// インスタンスを生成
 	CParticle* pParticle = new CParticle;
 
-	// 生成出来ていたら初期設定
-	if (pParticle != nullptr)
-	{
-		pParticle->SetType(TYPE::NONE);	// タイプを設定
-
-		pParticle->Init();			// 基底クラスの初期設定
-		pParticle->SetPos(pos);		// 中心位置の設定
-		pParticle->SetSize(size);	// サイズの設定
-
-		pParticle->m_fFlyAngle = fFlyAngle;	// 飛ぶ角度の設定
-	}
-
-	// テクスチャを取得
-	LPDIRECT3DTEXTURE9 pTex = CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::EFFECT_000);
-
-	if (pTex == nullptr)
-	{ // 取得失敗
+	if (pParticle == nullptr)
+	{ // 生成失敗
 		assert(false);
 	}
 
+	pParticle->SetType(TYPE::NONE);	// タイプを設定
+
+	pParticle->Init();			// 基底クラスの初期設定
+	pParticle->SetPos(pos);		// 中心位置の設定
+	pParticle->SetSize(size);	// サイズの設定
+
+	pParticle->m_fFlyAngle = fFlyAngle;	// 飛ぶ角度の設定
+
 	// テクスチャを設定
-	pParticle->BindTex(pTex);
+	pParticle->BindTex(CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::EFFECT_000));
 
 	return pParticle;
 }

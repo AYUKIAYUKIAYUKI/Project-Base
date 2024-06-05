@@ -1,1 +1,1 @@
-data\\MODEL\\test.x
+data\\MODEL\\legi.x

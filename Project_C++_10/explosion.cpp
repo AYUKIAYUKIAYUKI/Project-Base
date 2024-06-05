@@ -77,31 +77,25 @@ void CExplosion::Draw()
 //============================================================================
 CExplosion* CExplosion::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
+	// インスタンスを生成
 	CExplosion* pExplosion = new CExplosion;
 
-	// 生成出来ていたら初期設定
-	if (pExplosion != nullptr)
-	{
-		pExplosion->SetType(TYPE::NONE);	// タイプを設定
-
-		pExplosion->Init();			// 基底クラスの初期設定
-		pExplosion->SetPos(pos);	// 中心位置の設定
-		pExplosion->SetSize(size);	// サイズの設定
-
-		pExplosion->SetTexWidth(1.0f / 8.0f);	// 横テクスチャ分割幅
-		pExplosion->SetTexHeight(1.0f);			// 縦テクスチャ分縦幅
-	}
-
-	// テクスチャを取得
-	LPDIRECT3DTEXTURE9 pTex = CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::EXPLOSION_000);
-
-	if (pTex == nullptr)
-	{ // 取得失敗
+	if (pExplosion == nullptr)
+	{ // 生成失敗
 		assert(false);
 	}
 
+	pExplosion->SetType(TYPE::NONE);	// タイプを設定
+
+	pExplosion->Init();			// 基底クラスの初期設定
+	pExplosion->SetPos(pos);	// 中心位置の設定
+	pExplosion->SetSize(size);	// サイズの設定
+
+	pExplosion->SetTexWidth(1.0f / 8.0f);	// 横テクスチャ分割幅
+	pExplosion->SetTexHeight(1.0f);			// 縦テクスチャ分縦幅
+
 	// テクスチャを設定
-	pExplosion->BindTex(pTex);
+	pExplosion->BindTex(CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::EXPLOSION_000));
 
 	return pExplosion;
 }

@@ -60,11 +60,11 @@ void CScore::Update()
 	// デバッグ用
 	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
 	{
-		m_nScore += 123456;
+		m_nScore += 123;
 	}
 	else if (CManager::GetKeyboard()->GetTrigger(DIK_BACK))
 	{
-		m_nScore -= 123456;
+		m_nScore -= 123;
 	}
 
 	// 変動制限
@@ -128,17 +128,19 @@ void CScore::SetScore(int nScore)
 //============================================================================
 CScore* CScore::Create(D3DXVECTOR3 pos, float fSpan)
 {
+	// インスタンスを生成
 	CScore* pScore = new CScore;
 
-	// 生成出来ていたら初期設定
-	if (pScore != nullptr)
-	{
-		pScore->SetType(TYPE::SCORE);	// タイプを設定
-
-		pScore->Init();				// 初期設定
-		pScore->m_pos = pos;		// 数列の先頭位置
-		pScore->m_fSpan = fSpan;	// 数列の配置間隔
+	if (pScore == nullptr)
+	{ // 生成失敗
+		assert(false);
 	}
+
+	pScore->SetType(TYPE::SCORE);	// タイプを設定
+
+	pScore->Init();				// 初期設定
+	pScore->m_pos = pos;		// 数列の先頭位置
+	pScore->m_fSpan = fSpan;	// 数列の配置間隔
 
 	// 必要な数分数字を用意する
 	for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)

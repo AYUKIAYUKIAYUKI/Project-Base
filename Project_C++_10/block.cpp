@@ -78,28 +78,22 @@ void CBlock::Draw()
 //============================================================================
 CBlock* CBlock::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
+	// インスタンスを生成
 	CBlock* pBlock = new CBlock;
 
-	// 生成出来ていたら初期設定
-	if (pBlock != nullptr)
-	{
-		pBlock->SetType(TYPE::BLOCK);	// タイプを設定
-
-		pBlock->Init();			// 基底クラスの初期設定
-		pBlock->SetPos(pos);	// 中心位置の設定
-		pBlock->SetSize(size);	// サイズの設定
+	if (pBlock == nullptr)
+	{ // 生成失敗
+		assert(false); 
 	}
 
-	// テクスチャを取得
-	LPDIRECT3DTEXTURE9 pTex = CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BLOCK_000);
+	pBlock->SetType(TYPE::BLOCK);	// タイプを設定
 
-	if (pTex == nullptr)
-	{ // 取得失敗
-		assert(false);
-	}
+	pBlock->Init();			// 基底クラスの初期設定
+	pBlock->SetPos(pos);	// 中心位置の設定
+	pBlock->SetSize(size);	// サイズの設定
 
 	// テクスチャを設定
-	pBlock->BindTex(pTex);
+	pBlock->BindTex(CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BLOCK_000));
 
 	return pBlock;
 }

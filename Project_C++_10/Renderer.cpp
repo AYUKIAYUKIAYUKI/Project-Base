@@ -194,7 +194,7 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 	// プレイヤー3Dの生成 (仮)
 	CPlayer3D::Create(
 		{ 0.0f, 0.0f, 0.0f });	// 中心位置
-		
+
 	// 地面の生成 (仮)
 	CField::Create(
 		{ 0.0f, 0.0f, 0.0f },		// 中心位置

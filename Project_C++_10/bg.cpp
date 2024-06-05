@@ -74,23 +74,22 @@ void CBg::Draw()
 //============================================================================
 CBg* CBg::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
+	// インスタンスを生成
 	CBg* pBg = new CBg;
 
-	// 生成出来ていたら初期設定
-	if (pBg != nullptr)
-	{
-		pBg->SetType(TYPE::NONE);	// タイプを設定
-
-		pBg->Init();		// 基底クラスの初期設定
-		pBg->SetPos(pos);	// 中心位置の設定
-		pBg->SetSize(size);	// サイズの設定
+	if (pBg == nullptr)
+	{ // 生成失敗
+		assert(false);
 	}
 
-	// テクスチャを取得
-	LPDIRECT3DTEXTURE9 pTex = CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BG_000);
+	pBg->SetType(TYPE::NONE);	// タイプを設定
+
+	pBg->Init();		// 基底クラスの初期設定
+	pBg->SetPos(pos);	// 中心位置の設定
+	pBg->SetSize(size);	// サイズの設定
 
 	// テクスチャを設定
-	pBg->BindTex(pTex);
+	pBg->BindTex(CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BG_000));
 
 	return pBg;
 }

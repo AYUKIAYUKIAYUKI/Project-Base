@@ -108,32 +108,25 @@ void CPlayer::Draw()
 //============================================================================
 CPlayer* CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
-	// プレイヤーを生成
+	// インスタンスを生成
 	CPlayer* pPlayer = new CPlayer;
 
-	// 生成出来ていたら初期設定
-	if (pPlayer != nullptr)
-	{
-		pPlayer->SetType(TYPE::PLAYER);	// タイプを設定
-
-		pPlayer->Init();		// 基底クラスの初期設定
-		pPlayer->SetPos(pos);	// 中心位置の設定
-		pPlayer->SetSize(size);	// サイズの設定
-
-		pPlayer->SetTexWidth(1.0f / (float)CPlayer::TEXTURE_DIVIDE_U);	// 横テクスチャ分割幅
-		pPlayer->SetTexHeight(1.0f / (float)CPlayer::TEXTURE_DIVIDE_V);	// 縦テクスチャ分縦幅
-	}
-
-	// テクスチャを取得
-	LPDIRECT3DTEXTURE9 pTex = CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::PLAYER_000);
-
-	if (pTex == nullptr)
-	{ // 取得失敗
+	if (pPlayer == nullptr)
+	{ // 生成失敗
 		assert(false);
 	}
 
+	pPlayer->SetType(TYPE::PLAYER);	// タイプを設定
+
+	pPlayer->Init();		// 基底クラスの初期設定
+	pPlayer->SetPos(pos);	// 中心位置の設定
+	pPlayer->SetSize(size);	// サイズの設定
+
+	pPlayer->SetTexWidth(1.0f / (float)CPlayer::TEXTURE_DIVIDE_U);	// 横テクスチャ分割幅
+	pPlayer->SetTexHeight(1.0f / (float)CPlayer::TEXTURE_DIVIDE_V);	// 縦テクスチャ分縦幅
+
 	// テクスチャを設定
-	pPlayer->BindTex(pTex);
+	pPlayer->BindTex(CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::PLAYER_000));
 
 	return pPlayer;
 }
