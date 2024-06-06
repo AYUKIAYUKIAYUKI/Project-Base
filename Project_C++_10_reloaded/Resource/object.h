@@ -15,7 +15,7 @@ class CObject
 {
 public:
 
-	static const int MAX_OBJ = 256;		// オブジェクト最大数
+	static const int MAX_OBJ = 1;		// オブジェクト最大数
 	static const float GRAVITY_FORCE;	// 重力
 
 	//****************************************************

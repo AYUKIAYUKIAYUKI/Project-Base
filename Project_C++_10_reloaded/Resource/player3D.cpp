@@ -11,6 +11,7 @@
 #include "player3D.h"
 #include "manager.h"
 #include "block3D.h"
+#include "explosion3D.h"
 
 //****************************************************
 // 静的メンバ変数の初期化
@@ -168,9 +169,14 @@ void CPlayer3D::Control()
 	if (bMove)
 	{
 		// 移動量と目標回転量を設定
-		m_velocity.x += sinf(atan2f(X, Z) + CManager::GetCamera()->GetRot().y)* 0.1f;
+		m_velocity.x += sinf(atan2f(X, Z) + CManager::GetCamera()->GetRot().y) * 0.1f;
 		m_velocity.z += cosf(atan2f(X, Z) + CManager::GetCamera()->GetRot().y) * 0.1f;
 		m_rotTarget.y = atan2f(-X, -Z) + CManager::GetCamera()->GetRot().y;
+
+		// 爆発を生成
+		CExplosion3D::Create(
+			m_posTarget,				// 位置
+			{ 10.0f, 0.0f, 10.0f });	// サイズ
 	}
 }
 

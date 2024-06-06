@@ -27,6 +27,7 @@
     <ClCompile Include="resource\effect.cpp" />
     <ClCompile Include="resource\enemy.cpp" />
     <ClCompile Include="resource\explosion.cpp" />
+    <ClCompile Include="Resource\explosion3D.cpp" />
     <ClCompile Include="resource\field.cpp" />
     <ClCompile Include="resource\input.cpp" />
     <ClCompile Include="resource\item.cpp" />
@@ -38,6 +39,7 @@
     <ClCompile Include="resource\object.cpp" />
     <ClCompile Include="resource\object2D.cpp" />
     <ClCompile Include="resource\object3D.cpp" />
+    <ClCompile Include="Resource\objectBillboard.cpp" />
     <ClCompile Include="resource\objectX.cpp" />
     <ClCompile Include="resource\particle.cpp" />
     <ClCompile Include="resource\pch.cpp">
@@ -60,6 +62,7 @@
     <ClInclude Include="resource\effect.h" />
     <ClInclude Include="resource\enemy.h" />
     <ClInclude Include="resource\explosion.h" />
+    <ClInclude Include="Resource\explosion3D.h" />
     <ClInclude Include="resource\field.h" />
     <ClInclude Include="resource\input.h" />
     <ClInclude Include="resource\item.h" />
@@ -71,6 +74,7 @@
     <ClInclude Include="resource\object.h" />
     <ClInclude Include="resource\object2D.h" />
     <ClInclude Include="resource\object3D.h" />
+    <ClInclude Include="Resource\objectBillboard.h" />
     <ClInclude Include="resource\objectX.h" />
     <ClInclude Include="resource\particle.h" />
     <ClInclude Include="resource\pch.h" />
