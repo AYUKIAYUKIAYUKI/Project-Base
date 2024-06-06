@@ -10,6 +10,7 @@
 //****************************************************
 #include "player3D.h"
 #include "manager.h"
+#include "block3D.h"
 
 //****************************************************
 // 静的メンバ変数の初期化
@@ -168,12 +169,7 @@ void CPlayer3D::Control()
 	{
 		// 移動量と目標回転量を設定
 		m_velocity.x += sinf(atan2f(X, Z) + CManager::GetCamera()->GetRot().y)* 0.1f;
-		//m_velocity.x += -sinf(m_rotTarget.y);
-		//float f = atan2f(X, Z);
-		//float roty = CManager::GetCamera()->GetRot().y;
-		//float iofjioeaf = sinf(atan2f(X, Z) + CManager::GetCamera()->GetRot().y);
 		m_velocity.z += cosf(atan2f(X, Z) + CManager::GetCamera()->GetRot().y) * 0.1f;
-		//m_velocity.z += -cosf(m_rotTarget.y);
 		m_rotTarget.y = atan2f(-X, -Z) + CManager::GetCamera()->GetRot().y;
 	}
 }
@@ -212,7 +208,8 @@ void CPlayer3D::Rotation()
 //============================================================================
 void CPlayer3D::Braking()
 {
-	// 加速度上限に到達で速度固定
+	// 解放で移動角度に異常
+	//// 加速度上限に到達で速度固定
 	//if (m_velocity.x > CPlayer3D::MAX_VELOCITY)
 	//{
 	//	m_velocity.x = CPlayer3D::MAX_VELOCITY;
@@ -243,6 +240,87 @@ void CPlayer3D::AdjustPos()
 	// 加速度分位置を変動
 	m_posTarget += m_velocity;
 
+	// 当たり判定
+	Collision();
+
 	// 中心位置情報を設定
 	CObjectX::SetPos(m_posTarget);
+}
+
+//============================================================================
+// 当たり判定
+//============================================================================
+void CPlayer3D::Collision()
+{
+	D3DXVECTOR3 copy = m_posTarget;
+	float fHalfSizeBlock = 10.0f;
+
+	for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::MAX); nCntPriority++)
+	{
+		for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+		{
+			// オブジェクト情報を取得
+			CObject* pObject = CObject::GetObject(nCntPriority, nCntObj);
+
+			if (pObject == nullptr)
+			{ // 情報がなければコンティニュー
+				continue;
+			}
+
+			if (pObject->GetType() == CObject::TYPE::BLOCK)
+			{ // ブロックタイプなら
+
+				// オブジェクトクラスを3Dブロッククラスへダウンキャスト
+				CBlock3D* pBlock3D = dynamic_cast<CBlock3D*>(pObject);
+
+				if (pBlock3D == nullptr)
+				{ // ダウンキャスト失敗
+					assert(false);
+				}
+
+				// ブロックと衝突する場合
+				if (copy.x + fHalfSizeBlock >= pBlock3D->GetPos().x - fHalfSizeBlock &&
+					copy.x - fHalfSizeBlock <= pBlock3D->GetPos().x + fHalfSizeBlock &&
+					copy.z + fHalfSizeBlock >= pBlock3D->GetPos().z - fHalfSizeBlock &&
+					copy.z - fHalfSizeBlock <= pBlock3D->GetPos().z + fHalfSizeBlock)
+				{
+					// 過去の位置がどちらかの軸方向に重なっていたかで処理分岐
+					if (CObjectX::GetPos().x + fHalfSizeBlock > pBlock3D->GetPos().x - fHalfSizeBlock &&
+						CObjectX::GetPos().x - fHalfSizeBlock < pBlock3D->GetPos().x + fHalfSizeBlock)
+					{
+						if (CObjectX::GetPos().z < pBlock3D->GetPos().z)
+						{
+							// 位置をこのブロックの下端に設定
+							m_posTarget.z = -fHalfSizeBlock + (pBlock3D->GetPos().z - fHalfSizeBlock);
+						}
+						else if (CObjectX::GetPos().z > pBlock3D->GetPos().z)
+						{
+							// 位置をこのブロックの上端に設定
+							m_posTarget.z = fHalfSizeBlock + (pBlock3D->GetPos().z + fHalfSizeBlock);
+						}
+
+						// Z軸方向の加速度をリセット
+						m_velocity.z = 0.0f;
+					}
+					else if (CObjectX::GetPos().z + fHalfSizeBlock > pBlock3D->GetPos().z - fHalfSizeBlock &&
+						CObjectX::GetPos().z - fHalfSizeBlock < pBlock3D->GetPos().z + fHalfSizeBlock)
+					{
+						if (CObjectX::GetPos().x < pBlock3D->GetPos().x)
+						{
+							// 位置をこのブロックの右端に設定
+							m_posTarget.x = -fHalfSizeBlock + (pBlock3D->GetPos().x - fHalfSizeBlock);
+						}
+						else if (CObjectX::GetPos().x > pBlock3D->GetPos().x)
+						{
+							// 位置をこのブロックの左端に設定
+							m_posTarget.x = fHalfSizeBlock + (pBlock3D->GetPos().x + fHalfSizeBlock);
+						}
+
+						// X軸方向の加速度をリセット
+						m_velocity.x = 0.0f;
+					}
+				}
+			}
+		}
+	}
 }

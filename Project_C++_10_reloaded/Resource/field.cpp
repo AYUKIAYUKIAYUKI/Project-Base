@@ -79,7 +79,7 @@ CField* CField::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 		assert(false);
 	}
 
-	pField->SetType(TYPE::BLOCK);	// タイプを設定
+	pField->SetType(TYPE::NONE);	// タイプを設定
 
 	pField->Init();			// 基底クラスの初期設定
 	pField->SetPos(pos);	// 中心位置の設定

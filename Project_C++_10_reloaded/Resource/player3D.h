@@ -35,10 +35,11 @@ private:
 	static const float MAX_VELOCITY;	// 加速度上限
 	static const float BRAKING_FORCE;	// 制動力
 
-	void Control();			// 操作
-	void Rotation();		// 回転
-	void Braking();			// 制動調整
-	void AdjustPos();		// 位置を調整
+	void Control();		// 操作
+	void Rotation();	// 回転
+	void Braking();		// 制動調整
+	void AdjustPos();	// 位置を調整
+	void Collision();	// 当たり判定
 
 	D3DXVECTOR3 m_velocity;		// 加速度
 	D3DXVECTOR3 m_posTarget;	// 目標位置
