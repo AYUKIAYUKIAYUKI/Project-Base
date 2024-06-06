@@ -44,6 +44,8 @@ private:
 	D3DXVECTOR3 m_velocity;		// 加速度
 	D3DXVECTOR3 m_posTarget;	// 目標位置
 	D3DXVECTOR3 m_rotTarget;	// 目標向き
+
+	int m_nTestExplosionCnt;	// これはテスト用です
 };
 
 #endif // _PALYER3D_H_

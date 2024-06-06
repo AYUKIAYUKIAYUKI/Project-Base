@@ -27,6 +27,8 @@ CPlayer3D::CPlayer3D() : CObjectX(static_cast<int>(LAYER::FRONT_MIDDLE))
 	m_velocity = { 0.0f, 0.0f, 0.0f };		// 加速度
 	m_posTarget = { 0.0f, 0.0f, 0.0f };		// 目標位置
 	m_rotTarget = { 0.0f, 0.0f, 0.0f };		// 目標向き
+
+	m_nTestExplosionCnt = 0;	// これはテスト用です
 }
 
 //============================================================================
@@ -165,6 +167,10 @@ void CPlayer3D::Control()
 	{
 		bMove = true;
 	}
+	else
+	{ // テスト用
+		m_nTestExplosionCnt = 19;
+	}
 
 	if (bMove)
 	{
@@ -173,10 +179,8 @@ void CPlayer3D::Control()
 		m_velocity.z += cosf(atan2f(X, Z) + CManager::GetCamera()->GetRot().y) * 0.1f;
 		m_rotTarget.y = atan2f(-X, -Z) + CManager::GetCamera()->GetRot().y;
 
-		// 爆発を生成
-		CExplosion3D::Create(
-			m_posTarget,				// 位置
-			{ 10.0f, 0.0f, 10.0f });	// サイズ
+		// テスト用
+		m_nTestExplosionCnt > 20 ? m_nTestExplosionCnt = 0, (int)CExplosion3D::Create({ this->GetPos().x, 5.0f, this->GetPos().z }, { 7.5f, 0.0f, 7.5f }) : m_nTestExplosionCnt++;
 	}
 }
 
