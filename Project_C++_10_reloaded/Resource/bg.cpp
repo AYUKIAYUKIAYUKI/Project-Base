@@ -75,7 +75,7 @@ void CBg::Draw()
 CBg* CBg::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	// インスタンスを生成
-	CBg* pBg = new CBg;
+	CBg* pBg = DBG_NEW CBg;
 
 	if (pBg == nullptr)
 	{ // 生成失敗

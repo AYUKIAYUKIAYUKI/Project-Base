@@ -20,7 +20,7 @@ LPDIRECTINPUT8 CInput::m_Input = nullptr;	// // DirectInputオブジェクト
 //============================================================================
 CInput::CInput()
 {
-
+	m_pDevice = nullptr;	// 入力デバイス情報
 }
 
 //============================================================================
@@ -39,7 +39,7 @@ HRESULT CInput::Init(HINSTANCE hInstance, HWND hWnd)
 	if (m_Input == nullptr)
 	{
 		// DirectInputオブジェクトの生成
-		if (FAILED(DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&m_Input, nullptr)))
+		if (FAILED(DirectInput8Create(hInstance, DIRECTINPUT_VERSION, IID_IDirectInput8, reinterpret_cast<void**>(&m_Input), nullptr)))
 		{
 			return E_FAIL;
 		}
@@ -74,7 +74,7 @@ void CInput::Uninit()
 //============================================================================
 // コンストラクタ
 //============================================================================
-CInputKeyboard::CInputKeyboard()
+CInputKeyboard::CInputKeyboard() : m_aKeyState(), m_aKeyStateTrigger()
 {
 
 }
@@ -92,12 +92,6 @@ CInputKeyboard::~CInputKeyboard()
 //============================================================================
 HRESULT CInputKeyboard::Init(HINSTANCE hInstance, HWND hWnd)
 {
-	// プレス情報をクリア
-	memset(&m_aKeyState, 0, sizeof(BYTE));
-
-	// トリガー情報をクリア
-	memset(&m_aKeyStateTrigger, 0, sizeof(BYTE));
-
 	if (m_Input == nullptr)
 	{
 		// DirectInputオブジェクトの生成

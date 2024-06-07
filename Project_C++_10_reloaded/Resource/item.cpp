@@ -93,7 +93,7 @@ void CItem::Draw()
 CItem* CItem::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	// インスタンスを生成
-	CItem* pItem = new CItem;
+	CItem* pItem = DBG_NEW CItem;
 
 	if (pItem == nullptr)
 	{ // 生成失敗

@@ -38,7 +38,7 @@ CManager::CManager()
 //============================================================================
 CManager::~CManager()
 {
-
+	
 }
 
 //============================================================================
@@ -47,7 +47,7 @@ CManager::~CManager()
 HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {
 	// レンダラーの生成
-	m_pRenderer = new CRenderer;
+	m_pRenderer = DBG_NEW CRenderer;
 
 	if (m_pRenderer == nullptr)
 	{ // 生成失敗
@@ -58,7 +58,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	m_pRenderer->Init(hWnd, bWindow);
 
 	// カメラの生成
-	m_pCamera = new CCamera;
+	m_pCamera = DBG_NEW CCamera;
 
 	if (m_pCamera == nullptr)
 	{ // 生成失敗
@@ -69,7 +69,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	m_pCamera->Init();
 
 	// ライトの生成
-	m_pLight = new CLight;
+	m_pLight = DBG_NEW CLight;
 
 	if (m_pLight == nullptr)
 	{ // 生成失敗
@@ -80,7 +80,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	m_pLight->Init();
 
 	// キーボードの生成
-	m_pKeyboard = new CInputKeyboard;
+	m_pKeyboard = DBG_NEW CInputKeyboard;
 
 	if (m_pKeyboard == nullptr)
 	{ // 生成失敗
@@ -91,7 +91,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	m_pKeyboard->Init(hInstance, hWnd);
 
 	// パッドの生成
-	m_pPad = new CInputPad;
+	m_pPad = DBG_NEW CInputPad;
 
 	if (m_pPad == nullptr)
 	{ // 生成失敗
@@ -102,7 +102,7 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	m_pPad->Init();
 
 	// サウンドの生成
-	m_pSound = new CSound;
+	m_pSound = DBG_NEW CSound;
 
 	if (m_pSound == nullptr)
 	{ // 生成失敗

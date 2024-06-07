@@ -304,7 +304,7 @@ void CObject2D::SetNowPatternV(int nNowPatternV)
 //============================================================================
 CObject2D* CObject2D::Create()
 {
-	CObject2D* pObject2D = new CObject2D;
+	CObject2D* pObject2D = DBG_NEW CObject2D;
 
 	// ¶¬o—ˆ‚Ä‚¢‚½‚ç‰Šúİ’è
 	if (pObject2D != nullptr)

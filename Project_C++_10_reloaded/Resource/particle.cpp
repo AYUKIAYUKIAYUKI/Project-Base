@@ -93,7 +93,7 @@ void CParticle::Draw()
 CParticle* CParticle::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, float fFlyAngle)
 {
 	// インスタンスを生成
-	CParticle* pParticle = new CParticle;
+	CParticle* pParticle = DBG_NEW CParticle;
 
 	if (pParticle == nullptr)
 	{ // 生成失敗

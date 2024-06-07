@@ -74,7 +74,7 @@ void CNumber::Draw()
 CNumber* CNumber::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	// インスタンスを生成
-	CNumber* pNumber = new CNumber;
+	CNumber* pNumber = DBG_NEW CNumber;
 
 	if (pNumber == nullptr)
 	{ // 生成失敗

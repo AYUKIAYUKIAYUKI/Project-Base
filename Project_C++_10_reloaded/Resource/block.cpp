@@ -79,7 +79,7 @@ void CBlock::Draw()
 CBlock* CBlock::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	// インスタンスを生成
-	CBlock* pBlock = new CBlock;
+	CBlock* pBlock = DBG_NEW CBlock;
 
 	if (pBlock == nullptr)
 	{ // 生成失敗

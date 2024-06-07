@@ -11,11 +11,18 @@
 #include "main.h"
 #include "manager.h"
 
+// メモリリーク検出用
+#include <crtdbg.h>
+#include <stdlib.h>
+
 //****************************************************
 // マクロ定義
 //****************************************************
 #define CLASS_NAME	"WindowClass"			// ウインドウクラスの名前
 #define WINDOW_NAME	"ウインドウテンプレ"	// ウインドウの名前
+
+// メモリリーク検出用
+#define _CRTDBG_MAP_ALLOC
 
 //****************************************************
 // グローバル宣言
@@ -32,6 +39,11 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 //****************************************************************************
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
+
+	// CRTメモリリーク検出用
+	//_CrtSetDbgFlag(_CrtSetDbgFlag(_CRTDBG_REPORT_FLAG) | _CRTDBG_LEAK_CHECK_DF);
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
 	WNDCLASSEX wcex =
 	{
 		sizeof(WNDCLASSEX),				// WNDCLASSEXのメモリサイズ
@@ -79,7 +91,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 	UpdateWindow(hWnd);				// クライアント領域を更新
 
 	// マネージャーの生成
-	g_pManager = new CManager;
+	g_pManager = DBG_NEW CManager;
 
 	if (g_pManager == nullptr)
 	{ // 生成失敗
@@ -129,6 +141,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 
 	// ウインドウクラスの登録を解除
 	UnregisterClass(CLASS_NAME, wcex.hInstance);
+
+	// CRTメモリリーク箇所検出
+	//_CrtSetBreakAlloc();
 
 	return (int)msg.wParam;
 }

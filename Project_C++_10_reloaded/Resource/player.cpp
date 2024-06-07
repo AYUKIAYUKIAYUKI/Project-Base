@@ -73,7 +73,7 @@ void CPlayer::Uninit()
 void CPlayer::Update()
 {
 	// 現在位置を取得、以降このコピーを目標位置として変更を加えていく
-	m_posTarget = CObject2D::GetPos();
+	m_posTarget = GetPos();
 
 	// 操作
 	Control();
@@ -109,7 +109,7 @@ void CPlayer::Draw()
 CPlayer* CPlayer::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	// インスタンスを生成
-	CPlayer* pPlayer = new CPlayer;
+	CPlayer* pPlayer = DBG_NEW CPlayer;
 
 	if (pPlayer == nullptr)
 	{ // 生成失敗

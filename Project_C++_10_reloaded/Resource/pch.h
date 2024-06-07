@@ -12,8 +12,9 @@
 #include <stdio.h>
 #include <assert.h>
 #include <windows.h>	// Windowsアプリケーション動作用
-#include <d3dx9.h>		// DirectX9動作用
 
+// DirectX9
+#include <d3dx9.h>					// DirectX9動作用
 #define DIRECTINPUT_VERSION	0x0800	// DirectInputのバージョン
 #include <dinput.h>					// DirectInput動作用
 #include <xinput.h>					// コントローラー動作用
@@ -36,6 +37,17 @@
 //****************************************************
 // マクロ定義
 //****************************************************
+
+// メモリリーク検出用
+#define _CRTDBG_MAP_ALLOC
+
+#ifdef _DEBUG
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
+// allocations to be of _CLIENT_BLOCK type
+#else
+#define DBG_NEW new
+#endif
 
 // 頂点フォーマット
 #define FVF_VERTEX_2D	(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_TEX1)

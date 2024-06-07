@@ -92,7 +92,7 @@ void CBullet::Draw()
 CBullet* CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nRemain, float fFlyAngle)
 {
 	// インスタンスを生成
-	CBullet* pBullet = new CBullet;
+	CBullet* pBullet = DBG_NEW CBullet;
 
 	if (pBullet == nullptr)
 	{ // 生成失敗

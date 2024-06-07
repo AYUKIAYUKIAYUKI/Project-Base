@@ -119,7 +119,7 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 	//m_pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 
 	// テクスチャインスタンスを生成
-	m_pTexture = new CTexture;
+	m_pTexture = DBG_NEW CTexture;
 
 	if (m_pTexture == nullptr)
 	{ //  テクスチャインスタンス生成失敗
@@ -182,7 +182,7 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 #else
 
 	// モデルインスタンスを生成
-	m_pModel = new CModel;
+	m_pModel = DBG_NEW CModel;
 
 	if (m_pModel == nullptr)
 	{ //  モデルインスタンス生成失敗

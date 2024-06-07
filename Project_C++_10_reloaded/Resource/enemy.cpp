@@ -100,7 +100,7 @@ void CEnemy::Draw()
 CEnemy* CEnemy::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	// インスタンスを生成
-	CEnemy* pEnemy = new CEnemy;
+	CEnemy* pEnemy = DBG_NEW CEnemy;
 
 	if (pEnemy == nullptr)
 	{ // 生成失敗

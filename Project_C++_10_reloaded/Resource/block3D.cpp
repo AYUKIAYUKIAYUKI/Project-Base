@@ -71,7 +71,7 @@ void CBlock3D::Draw()
 CBlock3D* CBlock3D::Create(D3DXVECTOR3 pos)
 {
 	// インスタンスを生成
-	CBlock3D* pBlock3D = new CBlock3D;
+	CBlock3D* pBlock3D = DBG_NEW CBlock3D;
 
 	if (pBlock3D == nullptr)
 	{ // 生成失敗

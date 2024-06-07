@@ -98,7 +98,7 @@ void CPlayer3D::Draw()
 CPlayer3D* CPlayer3D::Create(D3DXVECTOR3 pos)
 {
 	// インスタンスを生成
-	CPlayer3D* pPlayer3D = new CPlayer3D;
+	CPlayer3D* pPlayer3D = DBG_NEW CPlayer3D;
 
 	if (pPlayer3D == nullptr)
 	{ // 生成失敗

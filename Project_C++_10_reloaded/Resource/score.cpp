@@ -129,7 +129,7 @@ void CScore::SetScore(int nScore)
 CScore* CScore::Create(D3DXVECTOR3 pos, float fSpan)
 {
 	// インスタンスを生成
-	CScore* pScore = new CScore;
+	CScore* pScore = DBG_NEW CScore;
 
 	if (pScore == nullptr)
 	{ // 生成失敗

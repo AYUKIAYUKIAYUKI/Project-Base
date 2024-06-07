@@ -72,13 +72,13 @@ void CField::Draw()
 CField* CField::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	// インスタンスを生成
-	CField* pField = new CField;
+	CField* pField = DBG_NEW CField;
 
 	if (pField == nullptr)
 	{ // 生成失敗
 		assert(false);
 	}
-
+	
 	pField->SetType(TYPE::NONE);	// タイプを設定
 
 	pField->Init();			// 基底クラスの初期設定

@@ -145,7 +145,7 @@ void CObjectX::SetRot(D3DXVECTOR3 rot)
 //============================================================================
 CObjectX* CObjectX::Create()
 {
-	CObjectX* pObjectX = new CObjectX;
+	CObjectX* pObjectX = DBG_NEW CObjectX;
 
 	// ¶¬o—ˆ‚Ä‚¢‚½‚ç‰Šúİ’è
 	if (pObjectX != nullptr)

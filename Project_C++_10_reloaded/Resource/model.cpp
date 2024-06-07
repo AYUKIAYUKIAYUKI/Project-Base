@@ -77,7 +77,7 @@ HRESULT CModel::Load()
 		D3DXMATERIAL* pMat = (D3DXMATERIAL*)m_aModelTemp[nCntModel].pBuffMat->GetBufferPointer();
 
 		// マテリアルの数分のテクスチャポインタを確保
-		m_aModelTemp[nCntModel].ppTex = new LPDIRECT3DTEXTURE9 [static_cast<int>(m_aModelTemp[nCntModel].dwNumMat)];
+		m_aModelTemp[nCntModel].ppTex = DBG_NEW LPDIRECT3DTEXTURE9 [static_cast<int>(m_aModelTemp[nCntModel].dwNumMat)];
 
 		// マテリアル分テクスチャの有無を確認
 		for (int nCntMat = 0; nCntMat < static_cast<int>(m_aModelTemp[nCntModel].dwNumMat); nCntMat++)

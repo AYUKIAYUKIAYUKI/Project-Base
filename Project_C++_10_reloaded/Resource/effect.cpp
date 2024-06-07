@@ -90,7 +90,7 @@ void CEffect::Draw()
 CEffect* CEffect::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	// インスタンスを生成
-	CEffect* pEffect = new CEffect;
+	CEffect* pEffect = DBG_NEW CEffect;
 
 	if (pEffect == nullptr)
 	{ // 生成失敗

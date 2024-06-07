@@ -253,7 +253,7 @@ float CObject3D::GetLength()
 //============================================================================
 CObject3D* CObject3D::Create()
 {
-	CObject3D* pObject3D = new CObject3D;
+	CObject3D* pObject3D = DBG_NEW CObject3D;
 
 	// ¶¬o—ˆ‚Ä‚¢‚½‚ç‰Šúİ’è
 	if (pObject3D != nullptr)

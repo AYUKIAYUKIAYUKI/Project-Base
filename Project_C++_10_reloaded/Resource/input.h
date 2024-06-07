@@ -33,7 +33,7 @@ public:
 protected:
 
 	static LPDIRECTINPUT8 m_Input;	// DirectInputオブジェクト
-	LPDIRECTINPUTDEVICE8 m_pDevice;	// 入力デバイス
+	LPDIRECTINPUTDEVICE8 m_pDevice;	// 入力デバイス情報
 };
 
 //****************************************************

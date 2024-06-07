@@ -78,7 +78,7 @@ void CExplosion::Draw()
 CExplosion* CExplosion::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	// インスタンスを生成
-	CExplosion* pExplosion = new CExplosion;
+	CExplosion* pExplosion = DBG_NEW CExplosion;
 
 	if (pExplosion == nullptr)
 	{ // 生成失敗

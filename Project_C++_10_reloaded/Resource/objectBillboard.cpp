@@ -337,7 +337,7 @@ void CObjectBillboard::SetNowPatternV(int nNowPatternV)
 //============================================================================
 CObjectBillboard* CObjectBillboard::Create()
 {
-	CObjectBillboard* pObject3D = new CObjectBillboard;
+	CObjectBillboard* pObject3D = DBG_NEW CObjectBillboard;
 
 	// ¶¬o—ˆ‚Ä‚¢‚½‚ç‰Šúİ’è
 	if (pObject3D != nullptr)

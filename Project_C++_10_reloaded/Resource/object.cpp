@@ -33,6 +33,9 @@ CObject::CObject(int nPriority) : m_nPriority(nPriority), m_nID(0), m_type(TYPE:
 			break;
 		}
 	}
+
+	// オブジェクト上限に到達し、新規生成に失敗
+	//assert(false);
 }
 
 //============================================================================
