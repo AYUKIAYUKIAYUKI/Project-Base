@@ -30,12 +30,12 @@ CObject::CObject(int nPriority) : m_nPriority(nPriority), m_nID(0), m_type(TYPE:
 			m_apObject[m_nPriority][nCntObj] = this;	// 自分自身のポインタを代入
 			m_nID = nCntObj;							// 自分自身のIDを代入
 			m_nNumAll++;								// 総数をカウントアップ
-			break;
+			return;										// 終了
 		}
 	}
 
 	// オブジェクト上限に到達し、新規生成に失敗
-	//assert(false);
+	assert(false);
 }
 
 //============================================================================
