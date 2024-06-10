@@ -268,11 +268,21 @@ void CCamera::CalcMtxProjection()
 	D3DXMatrixIdentity(&m_mtxProjection);
 
 	// プロジェクション行列を生成
+#if 1
+	// 透視投影
 	D3DXMatrixPerspectiveFovLH(&m_mtxProjection,
 		D3DXToRadian(45.0f),
 		(float)SCREEN_WIDTH / (float)SCREEN_HEIGHT,
 		10.0f,
 		5000.0f);
+#else
+	// 平行投影
+	D3DXMatrixOrthoLH(&m_mtxProjection,
+		(float)SCREEN_WIDTH * 0.25f,
+		(float)SCREEN_HEIGHT * 0.25f,
+		10.0f,
+		5000.0f);
+#endif
 
 	// プロジェクション行列の設定
 	pDev->SetTransform(D3DTS_PROJECTION,
