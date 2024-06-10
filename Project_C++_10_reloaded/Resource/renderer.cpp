@@ -194,7 +194,7 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 
 	// 3Dプレイヤーの生成 (仮)
 	CPlayer3D::Create(
-		{ 0.0f, 0.0f, 0.0f });	// 中心位置
+		{ 0.0f, 00.0f, 0.0f });	// 中心位置
 
 	// 地面の生成 (仮)
 	CField::Create(
@@ -218,7 +218,31 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 		// 3Dブロックの生成 (仮)
 		CBlock3D::Create(
 			{ -100.0f + (25.0f * i), 0.0f, -100.0f });	// 中心位置
+
+		// 3Dブロックの生成 (仮)
+		CBlock3D::Create(
+			{ 0.0f , 0.0f + (25.0f * i), -100.0f });	// 中心位置
 	}
+
+	// 3Dブロックの生成 (仮)
+	CBlock3D::Create(
+		{ -40.0f, 0.0f, 150.0f });	// 中心位置
+
+	// 3Dブロックの生成 (仮)
+	CBlock3D::Create(
+		{ -20.0f, 20.0f, 150.0f });	// 中心位置
+
+	// 3Dブロックの生成 (仮)
+	CBlock3D::Create(
+		{ 0.0f, 40.0f, 150.0f });	// 中心位置
+
+		// 3Dブロックの生成 (仮)
+	CBlock3D::Create(
+		{ 20.0f, 60.0f, 150.0f });	// 中心位置
+
+		// 3Dブロックの生成 (仮)
+	CBlock3D::Create(
+		{ 40.0f, 80.0f, 150.0f });	// 中心位置
 
 #endif
 

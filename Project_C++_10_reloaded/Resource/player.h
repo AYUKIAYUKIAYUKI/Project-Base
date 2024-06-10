@@ -39,9 +39,6 @@ private:
 	static const float BRAKING_FORCE;	// §“®—Í
 
 	void Control();			// ‘€ì
-	//void Scaling();		// Šgk
-	//void Rotation();		// ‰ñ“]
-	//void Translation();	// ˆÚ“®
 	void Braking();			// §“®’²®
 	void GravityFall();		// d—Í‰Á‘¬
 	void AdjustPos();		// ˆÊ’u‚ğ’²®

@@ -17,6 +17,7 @@
 // 静的メンバ変数の初期化
 //****************************************************
 const float CPlayer3D::MAX_VELOCITY = 0.5f;		// 加速度上限
+const float CPlayer3D::JUMP_FORCE = 5.0f;			// ジャンプ力
 const float CPlayer3D::BRAKING_FORCE = 0.9f;	// 制動力
 
 //============================================================================
@@ -24,6 +25,7 @@ const float CPlayer3D::BRAKING_FORCE = 0.9f;	// 制動力
 //============================================================================
 CPlayer3D::CPlayer3D() : CObjectX(static_cast<int>(LAYER::FRONT_MIDDLE))
 {
+	m_nLeftNumJump = 0;						// ジャンプ可能回数
 	m_velocity = { 0.0f, 0.0f, 0.0f };		// 加速度
 	m_posTarget = { 0.0f, 0.0f, 0.0f };		// 目標位置
 	m_rotTarget = { 0.0f, 0.0f, 0.0f };		// 目標向き
@@ -75,6 +77,9 @@ void CPlayer3D::Update()
 
 	// 制動調整
 	Braking();
+
+	// 重力加速
+	GravityFall();
 
 	// 位置を調整、この処理の終わりに目標位置を反映させる
 	AdjustPos();
@@ -182,6 +187,20 @@ void CPlayer3D::Control()
 		// テスト用
 		m_nTestExplosionCnt > 20 ? m_nTestExplosionCnt = 0, (int)CExplosion3D::Create({ this->GetPos().x, 5.0f, this->GetPos().z }, { 7.5f, 0.0f, 7.5f }) : m_nTestExplosionCnt++;
 	}
+
+	// ジャンプ
+	if (pKeyboard->GetTrigger(DIK_SPACE))
+	{
+		if (m_nLeftNumJump > 0)
+		{ // ジャンプ可能回数が残っていれば
+
+			// Y軸方向の加速度を上方向へ固定
+			m_velocity.y = JUMP_FORCE;
+
+			// ジャンプ可能回数を減少
+			m_nLeftNumJump--;
+		}
+	}
 }
 
 //============================================================================
@@ -243,6 +262,15 @@ void CPlayer3D::Braking()
 }
 
 //============================================================================
+// 重力落下
+//============================================================================
+void CPlayer3D::GravityFall()
+{
+	// 重力分、下方向への加速度増加
+	m_velocity.y = m_velocity.y - GRAVITY_FORCE;
+}
+
+//============================================================================
 // 位置調整
 //============================================================================
 void CPlayer3D::AdjustPos()
@@ -253,6 +281,19 @@ void CPlayer3D::AdjustPos()
 	// 当たり判定
 	Collision();
 
+	// 画面の下端に到達で下降制限
+	if (m_posTarget.y < 0.0f)
+	{
+		// ジャンプ可能回数を設定
+		m_nLeftNumJump = 2;
+
+		// 位置を下端に設定
+		m_posTarget.y = 0.0f;
+
+		// Y軸方向の加速度をリセット
+		m_velocity.y = 0.0f;
+	}
+
 	// 位置を設定
 	SetPos(m_posTarget);
 }
@@ -262,6 +303,7 @@ void CPlayer3D::AdjustPos()
 //============================================================================
 void CPlayer3D::Collision()
 {
+	// ブロックサイズ
 	float fHalfSizeBlock = 10.0f;
 
 	for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::MAX); nCntPriority++)
@@ -287,46 +329,75 @@ void CPlayer3D::Collision()
 					assert(false);
 				}
 
-				// ブロックと衝突する場合
+				// ブロックと水平方向で衝突する場合
 				if (m_posTarget.x + fHalfSizeBlock >= pBlock3D->GetPos().x - fHalfSizeBlock &&
 					m_posTarget.x - fHalfSizeBlock <= pBlock3D->GetPos().x + fHalfSizeBlock &&
 					m_posTarget.z + fHalfSizeBlock >= pBlock3D->GetPos().z - fHalfSizeBlock &&
 					m_posTarget.z - fHalfSizeBlock <= pBlock3D->GetPos().z + fHalfSizeBlock)
 				{
-					// 過去の位置がどちらかの軸方向に重なっていたかで処理分岐
-					if (GetPos().x + fHalfSizeBlock > pBlock3D->GetPos().x - fHalfSizeBlock &&
-						GetPos().x - fHalfSizeBlock < pBlock3D->GetPos().x + fHalfSizeBlock)
+					// ブロックの垂直幅に衝突するか判定
+					if (m_posTarget.y + fHalfSizeBlock >= pBlock3D->GetPos().y - fHalfSizeBlock &&
+						m_posTarget.y - fHalfSizeBlock <= pBlock3D->GetPos().y + fHalfSizeBlock)
 					{
-						if (GetPos().z < pBlock3D->GetPos().z)
+						// 過去の位置でも垂直幅に衝突していたのか判定
+						if (GetPos().y + fHalfSizeBlock > pBlock3D->GetPos().y - fHalfSizeBlock &&
+							GetPos().y - fHalfSizeBlock < pBlock3D->GetPos().y + fHalfSizeBlock)
 						{
-							// 位置をこのブロックの下端に設定
-							m_posTarget.z = -fHalfSizeBlock + (pBlock3D->GetPos().z - fHalfSizeBlock);
-						}
-						else if (GetPos().z > pBlock3D->GetPos().z)
-						{
-							// 位置をこのブロックの上端に設定
-							m_posTarget.z = fHalfSizeBlock + (pBlock3D->GetPos().z + fHalfSizeBlock);
-						}
+							// 過去の位置がどちらかの軸方向に重なっていたかで処理分岐
+							if (GetPos().x + fHalfSizeBlock > pBlock3D->GetPos().x - fHalfSizeBlock &&
+								GetPos().x - fHalfSizeBlock < pBlock3D->GetPos().x + fHalfSizeBlock)
+							{
+								if (GetPos().z < pBlock3D->GetPos().z)
+								{
+									// 位置をこのブロックの後端に設定
+									m_posTarget.z = -fHalfSizeBlock + (pBlock3D->GetPos().z - fHalfSizeBlock);
+								}
+								else if (GetPos().z > pBlock3D->GetPos().z)
+								{
+									// 位置をこのブロックの前端に設定
+									m_posTarget.z = fHalfSizeBlock + (pBlock3D->GetPos().z + fHalfSizeBlock);
+								}
 
-						// Z軸方向の加速度をリセット
-						m_velocity.z = 0.0f;
-					}
-					else if (GetPos().z + fHalfSizeBlock > pBlock3D->GetPos().z - fHalfSizeBlock &&
-						GetPos().z - fHalfSizeBlock < pBlock3D->GetPos().z + fHalfSizeBlock)
-					{
-						if (GetPos().x < pBlock3D->GetPos().x)
-						{
-							// 位置をこのブロックの右端に設定
-							m_posTarget.x = -fHalfSizeBlock + (pBlock3D->GetPos().x - fHalfSizeBlock);
-						}
-						else if (GetPos().x > pBlock3D->GetPos().x)
-						{
-							// 位置をこのブロックの左端に設定
-							m_posTarget.x = fHalfSizeBlock + (pBlock3D->GetPos().x + fHalfSizeBlock);
-						}
+								// Z軸方向の加速度をリセット
+								m_velocity.z = 0.0f;
+							}
+							else if (GetPos().z + fHalfSizeBlock > pBlock3D->GetPos().z - fHalfSizeBlock &&
+								GetPos().z - fHalfSizeBlock < pBlock3D->GetPos().z + fHalfSizeBlock)
+							{
+								if (GetPos().x < pBlock3D->GetPos().x)
+								{
+									// 位置をこのブロックの左端に設定
+									m_posTarget.x = -fHalfSizeBlock + (pBlock3D->GetPos().x - fHalfSizeBlock);
+								}
+								else if (GetPos().x > pBlock3D->GetPos().x)
+								{
+									// 位置をこのブロックの右端に設定
+									m_posTarget.x = fHalfSizeBlock + (pBlock3D->GetPos().x + fHalfSizeBlock);
+								}
 
-						// X軸方向の加速度をリセット
-						m_velocity.x = 0.0f;
+								// X軸方向の加速度をリセット
+								m_velocity.x = 0.0f;
+							}
+						}
+						else
+						{
+							if (GetPos().y < pBlock3D->GetPos().y)
+							{
+								// 位置をこのブロックの下端に設定
+								m_posTarget.y = -fHalfSizeBlock + (pBlock3D->GetPos().y - fHalfSizeBlock);
+							}
+							else if (GetPos().y > pBlock3D->GetPos().y)
+							{
+								// 位置をこのブロックの上端に設定
+								m_posTarget.y = fHalfSizeBlock + (pBlock3D->GetPos().y + fHalfSizeBlock);
+
+								// ジャンプ可能回数を設定
+								m_nLeftNumJump = 2;
+							}
+
+							// Y軸方向の加速度をリセット
+							m_velocity.y = 0.0f;
+						}
 					}
 				}
 			}
