@@ -190,7 +190,7 @@ void CPlayer3D::Control()
 void CPlayer3D::Rotation()
 {
 	// 向き情報取得
-	D3DXVECTOR3 rot = CObjectX::GetRot();
+	D3DXVECTOR3 rot = GetRot();
 
 	// ブレーキ力
 	float fStopEnergy = 0.1f;
@@ -210,7 +210,7 @@ void CPlayer3D::Rotation()
 	}
 
 	// 向き情報設定
-	CObjectX::SetRot(rot);
+	SetRot(rot);
 }
 
 //============================================================================
@@ -218,7 +218,7 @@ void CPlayer3D::Rotation()
 //============================================================================
 void CPlayer3D::Braking()
 {
-	// 解放で移動角度に異常
+	// 
 	//// 加速度上限に到達で速度固定
 	//if (m_velocity.x > CPlayer3D::MAX_VELOCITY)
 	//{
@@ -253,8 +253,8 @@ void CPlayer3D::AdjustPos()
 	// 当たり判定
 	Collision();
 
-	// 中心位置情報を設定
-	CObjectX::SetPos(m_posTarget);
+	// 位置を設定
+	SetPos(m_posTarget);
 }
 
 //============================================================================
@@ -262,7 +262,6 @@ void CPlayer3D::AdjustPos()
 //============================================================================
 void CPlayer3D::Collision()
 {
-	D3DXVECTOR3 copy = m_posTarget;
 	float fHalfSizeBlock = 10.0f;
 
 	for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::MAX); nCntPriority++)
@@ -289,21 +288,21 @@ void CPlayer3D::Collision()
 				}
 
 				// ブロックと衝突する場合
-				if (copy.x + fHalfSizeBlock >= pBlock3D->GetPos().x - fHalfSizeBlock &&
-					copy.x - fHalfSizeBlock <= pBlock3D->GetPos().x + fHalfSizeBlock &&
-					copy.z + fHalfSizeBlock >= pBlock3D->GetPos().z - fHalfSizeBlock &&
-					copy.z - fHalfSizeBlock <= pBlock3D->GetPos().z + fHalfSizeBlock)
+				if (m_posTarget.x + fHalfSizeBlock >= pBlock3D->GetPos().x - fHalfSizeBlock &&
+					m_posTarget.x - fHalfSizeBlock <= pBlock3D->GetPos().x + fHalfSizeBlock &&
+					m_posTarget.z + fHalfSizeBlock >= pBlock3D->GetPos().z - fHalfSizeBlock &&
+					m_posTarget.z - fHalfSizeBlock <= pBlock3D->GetPos().z + fHalfSizeBlock)
 				{
 					// 過去の位置がどちらかの軸方向に重なっていたかで処理分岐
-					if (CObjectX::GetPos().x + fHalfSizeBlock > pBlock3D->GetPos().x - fHalfSizeBlock &&
-						CObjectX::GetPos().x - fHalfSizeBlock < pBlock3D->GetPos().x + fHalfSizeBlock)
+					if (GetPos().x + fHalfSizeBlock > pBlock3D->GetPos().x - fHalfSizeBlock &&
+						GetPos().x - fHalfSizeBlock < pBlock3D->GetPos().x + fHalfSizeBlock)
 					{
-						if (CObjectX::GetPos().z < pBlock3D->GetPos().z)
+						if (GetPos().z < pBlock3D->GetPos().z)
 						{
 							// 位置をこのブロックの下端に設定
 							m_posTarget.z = -fHalfSizeBlock + (pBlock3D->GetPos().z - fHalfSizeBlock);
 						}
-						else if (CObjectX::GetPos().z > pBlock3D->GetPos().z)
+						else if (GetPos().z > pBlock3D->GetPos().z)
 						{
 							// 位置をこのブロックの上端に設定
 							m_posTarget.z = fHalfSizeBlock + (pBlock3D->GetPos().z + fHalfSizeBlock);
@@ -312,15 +311,15 @@ void CPlayer3D::Collision()
 						// Z軸方向の加速度をリセット
 						m_velocity.z = 0.0f;
 					}
-					else if (CObjectX::GetPos().z + fHalfSizeBlock > pBlock3D->GetPos().z - fHalfSizeBlock &&
-						CObjectX::GetPos().z - fHalfSizeBlock < pBlock3D->GetPos().z + fHalfSizeBlock)
+					else if (GetPos().z + fHalfSizeBlock > pBlock3D->GetPos().z - fHalfSizeBlock &&
+						GetPos().z - fHalfSizeBlock < pBlock3D->GetPos().z + fHalfSizeBlock)
 					{
-						if (CObjectX::GetPos().x < pBlock3D->GetPos().x)
+						if (GetPos().x < pBlock3D->GetPos().x)
 						{
 							// 位置をこのブロックの右端に設定
 							m_posTarget.x = -fHalfSizeBlock + (pBlock3D->GetPos().x - fHalfSizeBlock);
 						}
-						else if (CObjectX::GetPos().x > pBlock3D->GetPos().x)
+						else if (GetPos().x > pBlock3D->GetPos().x)
 						{
 							// 位置をこのブロックの左端に設定
 							m_posTarget.x = fHalfSizeBlock + (pBlock3D->GetPos().x + fHalfSizeBlock);

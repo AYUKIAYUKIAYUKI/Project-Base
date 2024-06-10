@@ -31,8 +31,8 @@ CItem::~CItem()
 	for (int i = 0; i < 10; i++)
 	{
 		CParticle::Create(
-			CObject2D::GetPos(),	// 中心位置
-			CObject2D::GetSize(),	// サイズ
+			GetPos(),	// 中心位置
+			GetSize(),	// サイズ
 			atan2f((float)(rand() % 314), (float)(rand() % 314)) * (rand() % 314));	// 飛ぶ角度
 	}
 }
@@ -63,7 +63,7 @@ void CItem::Uninit()
 void CItem::Update()
 {
 	// 現在位置を取得、以降このコピーを目標位置として変更を加えていく
-	m_pos_tgt = CObject2D::GetPos();
+	m_pos_tgt = GetPos();
 
 	// 移動
 	Translation();
@@ -127,7 +127,7 @@ void CItem::Translation()
 void CItem::GravityFall()
 {
 	// 重力分、下方向への加速度増加
-	m_velocity.y = m_velocity.y + CObject::GRAVITY_FORCE;
+	m_velocity.y = m_velocity.y + GRAVITY_FORCE;
 }
 
 //============================================================================
@@ -142,7 +142,7 @@ void CItem::AdjustPos()
 	Collision();
 
 	// サイズを取得
-	D3DXVECTOR3 fSize = CObject2D::GetSize();
+	D3DXVECTOR3 fSize = GetSize();
 
 	// 画面の左右端に到達でそれぞれループ
 	if (m_pos_tgt.x - fSize.x > SCREEN_WIDTH)
@@ -166,8 +166,8 @@ void CItem::AdjustPos()
 		m_velocity.y = 0.0f;
 	}
 
-	// 中心位置情報を設定
-	CObject2D::SetPos(m_pos_tgt);
+	// 位置を設定
+	SetPos(m_pos_tgt);
 }
 
 //============================================================================
@@ -201,40 +201,40 @@ void CItem::Collision()
 			}
 
 			// ブロックと衝突する場合
-			if (m_pos_tgt.x + CObject2D::GetSize().x >= pBlock->GetPos().x - pBlock->GetSize().x &&
-				m_pos_tgt.x - CObject2D::GetSize().x <= pBlock->GetPos().x + pBlock->GetSize().x &&
-				m_pos_tgt.y + CObject2D::GetSize().y >= pBlock->GetPos().y - pBlock->GetSize().y &&
-				m_pos_tgt.y - CObject2D::GetSize().y <= pBlock->GetPos().y + pBlock->GetSize().y)
+			if (m_pos_tgt.x + GetSize().x >= pBlock->GetPos().x - pBlock->GetSize().x &&
+				m_pos_tgt.x - GetSize().x <= pBlock->GetPos().x + pBlock->GetSize().x &&
+				m_pos_tgt.y + GetSize().y >= pBlock->GetPos().y - pBlock->GetSize().y &&
+				m_pos_tgt.y - GetSize().y <= pBlock->GetPos().y + pBlock->GetSize().y)
 			{
 				// 過去の位置がどちらかの軸方向に重なっていたかで処理分岐
-				if (CObject2D::GetPos().x + CObject2D::GetSize().x > pBlock->GetPos().x - pBlock->GetSize().x &&
-					CObject2D::GetPos().x - CObject2D::GetSize().x < pBlock->GetPos().x + pBlock->GetSize().x)
+				if (GetPos().x + GetSize().x > pBlock->GetPos().x - pBlock->GetSize().x &&
+					GetPos().x - GetSize().x < pBlock->GetPos().x + pBlock->GetSize().x)
 				{
-					if (CObject2D::GetPos().y < pBlock->GetPos().y)
+					if (GetPos().y < pBlock->GetPos().y)
 					{
 						// 位置をこのブロックの上端に設定
-						m_pos_tgt.y = -CObject2D::GetSize().y + (pBlock->GetPos().y - pBlock->GetSize().y);
+						m_pos_tgt.y = -GetSize().y + (pBlock->GetPos().y - pBlock->GetSize().y);
 
 						// Y軸方向の加速度をリセット
 						m_velocity.y = 0.0f;
 					}
-					else if (CObject2D::GetPos().y > pBlock->GetPos().y)
+					else if (GetPos().y > pBlock->GetPos().y)
 					{
 						// 位置をこのブロックの下端に設定
-						m_pos_tgt.y = CObject2D::GetSize().y + (pBlock->GetPos().y + pBlock->GetSize().y);
+						m_pos_tgt.y = GetSize().y + (pBlock->GetPos().y + pBlock->GetSize().y);
 					}
 				}
 				else
 				{
-					if (CObject2D::GetPos().x < pBlock->GetPos().x)
+					if (GetPos().x < pBlock->GetPos().x)
 					{
 						// 位置をこのブロックの左端に設定
-						m_pos_tgt.x = -CObject2D::GetSize().x + (pBlock->GetPos().x - pBlock->GetSize().x);
+						m_pos_tgt.x = -GetSize().x + (pBlock->GetPos().x - pBlock->GetSize().x);
 					}
-					else if (CObject2D::GetPos().x > pBlock->GetPos().x)
+					else if (GetPos().x > pBlock->GetPos().x)
 					{
 						// 位置をこのブロックの右端に設定
-						m_pos_tgt.x = CObject2D::GetSize().x + (pBlock->GetPos().x + pBlock->GetSize().x);
+						m_pos_tgt.x = GetSize().x + (pBlock->GetPos().x + pBlock->GetSize().x);
 					}
 				}
 			}

@@ -216,68 +216,23 @@ void CPlayer::Control()
 	}
 }
 
-////============================================================================
-//// 拡縮
-////============================================================================
-//void CPlayer::Scaling()
-//{
-//
-//}
-//
-////============================================================================
-//// 回転
-////============================================================================
-//void CPlayer::Rotation()
-//{
-//	//// 向き情報取得
-//	//D3DXVECTOR3 rot = CObject2D::GetRot();
-//
-//	//// ブレーキ力
-//	//float fStopEnergy = 0.1f;
-//
-//	//// 回転反映と回転量の減衰
-//	//if (m_rotTarget.z - rot.z > D3DX_PI)
-//	//{
-//	//	rot.z += ((m_rotTarget.z - rot.z) * fStopEnergy + (D3DX_PI * 1.8f));
-//	//}
-//	//else if (m_rotTarget.z - rot.z < -D3DX_PI)
-//	//{
-//	//	rot.z += ((m_rotTarget.z - rot.z) * fStopEnergy + (D3DX_PI * -1.8f));
-//	//}
-//	//else
-//	//{
-//	//	rot.z += ((m_rotTarget.z - rot.z) * fStopEnergy);
-//	//}
-//
-//	//// 向き情報設定
-//	//CObject2D::SetRot(rot);
-//}
-//
-////============================================================================
-//// 移動
-////============================================================================
-//void CPlayer::Translation()
-//{
-//
-//}
-
 //============================================================================
 // 制動調整
 //============================================================================
 void CPlayer::Braking()
 {
 	// 加速度上限に到達で速度固定
-	if (m_velocity.x > CPlayer::MAX_VELOCITY)
+	if (m_velocity.x > MAX_VELOCITY)
 	{
-		m_velocity.x = CPlayer::MAX_VELOCITY;
+		m_velocity.x = MAX_VELOCITY;
 	}
-	else if (m_velocity.x < -CPlayer::MAX_VELOCITY)
+	else if (m_velocity.x < -MAX_VELOCITY)
 	{
-		m_velocity.x = -CPlayer::MAX_VELOCITY;
+		m_velocity.x = -MAX_VELOCITY;
 	}
 
 	// 少しずつX軸方向への加速度を失う
-	m_velocity.x = m_velocity.x * CPlayer::BRAKING_FORCE;
+	m_velocity.x = m_velocity.x * BRAKING_FORCE;
 }
 
 //============================================================================
@@ -286,7 +241,7 @@ void CPlayer::Braking()
 void CPlayer::GravityFall()
 {
 	// 重力分、下方向への加速度増加
-	m_velocity.y = m_velocity.y + CObject::GRAVITY_FORCE;
+	m_velocity.y = m_velocity.y + GRAVITY_FORCE;
 }
 
 //============================================================================
@@ -301,7 +256,7 @@ void CPlayer::AdjustPos()
 	Collision();
 
 	// サイズを取得
-	D3DXVECTOR3 fSize = CObject2D::GetSize();
+	D3DXVECTOR3 fSize = GetSize();
 
 	// 画面の左右端に到達でそれぞれループ
 	if (m_posTarget.x - fSize.x > SCREEN_WIDTH)
@@ -328,8 +283,8 @@ void CPlayer::AdjustPos()
 		m_velocity.y = 0.0f;
 	}
 
-	// 中心位置情報を設定
-	CObject2D::SetPos(m_posTarget);
+	// 位置を設定
+	SetPos(m_posTarget);
 }
 
 //============================================================================
@@ -337,8 +292,6 @@ void CPlayer::AdjustPos()
 //============================================================================
 void CPlayer::Collision()
 {
-	D3DXVECTOR3 copy = m_posTarget;
-
 	for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::MAX); nCntPriority++)
 	{
 		for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
@@ -362,97 +315,51 @@ void CPlayer::Collision()
 					assert(false);
 				}
 
-#if 0
 				// ブロックと衝突する場合
-				if (m_posTarget.x + CObject2D::GetSize().x >= pBlock->GetPos().x - pBlock->GetSize().x &&
-					m_posTarget.x - CObject2D::GetSize().x <= pBlock->GetPos().x + pBlock->GetSize().x &&
-					m_posTarget.y + CObject2D::GetSize().y >= pBlock->GetPos().y - pBlock->GetSize().y &&
-					m_posTarget.y - CObject2D::GetSize().y <= pBlock->GetPos().y + pBlock->GetSize().y)
-				{
-					// お互いの距離を算出
-					D3DXVECTOR3 dist = pBlock->GetPos() - CObject2D::GetPos();
-
-					// 衝突前からその軸方向にいる場合
-					if (dist.x * dist.x > dist.y * dist.y)
-					{
-						if (CObject2D::GetPos().x < pBlock->GetPos().x)
-						{
-							// 位置をこのブロックの左端に設定
-							m_posTarget.x = -CObject2D::GetSize().x + (pBlock->GetPos().x - pBlock->GetSize().x);
-						}
-						else if (CObject2D::GetPos().x > pBlock->GetPos().x)
-						{
-							// 位置をこのブロックの右端に設定
-							m_posTarget.x = CObject2D::GetSize().x + (pBlock->GetPos().x + pBlock->GetSize().x);
-						}
-					}
-					else
-					{
-						if (CObject2D::GetPos().y < pBlock->GetPos().y)
-						{
-							// ジャンプ可能回数を設定
-							m_nLeftNumJump = 2;
-
-							// 位置をこのブロックの上端に設定
-							m_posTarget.y = -CObject2D::GetSize().y + (pBlock->GetPos().y - pBlock->GetSize().y);
-
-							// Y軸方向の加速度をリセット
-							m_velocity.y = 0.0f;
-						}
-						else if (CObject2D::GetPos().y > pBlock->GetPos().y)
-						{
-							// 位置をこのブロックの下端に設定
-							m_posTarget.y = CObject2D::GetSize().y + (pBlock->GetPos().y + pBlock->GetSize().y);
-						}
-					}
-				}
-#else
-				// ブロックと衝突する場合
-				if (copy.x + CObject2D::GetSize().x >= pBlock->GetPos().x - pBlock->GetSize().x &&
-					copy.x - CObject2D::GetSize().x <= pBlock->GetPos().x + pBlock->GetSize().x &&
-					copy.y + CObject2D::GetSize().y >= pBlock->GetPos().y - pBlock->GetSize().y &&
-					copy.y - CObject2D::GetSize().y <= pBlock->GetPos().y + pBlock->GetSize().y)
+				if (m_posTarget.x + GetSize().x >= pBlock->GetPos().x - pBlock->GetSize().x &&
+					m_posTarget.x - GetSize().x <= pBlock->GetPos().x + pBlock->GetSize().x &&
+					m_posTarget.y + GetSize().y >= pBlock->GetPos().y - pBlock->GetSize().y &&
+					m_posTarget.y - GetSize().y <= pBlock->GetPos().y + pBlock->GetSize().y)
 				{
 					// 過去の位置がどちらかの軸方向に重なっていたかで処理分岐
-					if (CObject2D::GetPos().x + CObject2D::GetSize().x > pBlock->GetPos().x - pBlock->GetSize().x &&
-						CObject2D::GetPos().x - CObject2D::GetSize().x < pBlock->GetPos().x + pBlock->GetSize().x)
+					if (GetPos().x + GetSize().x > pBlock->GetPos().x - pBlock->GetSize().x &&
+						GetPos().x - GetSize().x < pBlock->GetPos().x + pBlock->GetSize().x)
 					{
-						if (CObject2D::GetPos().y < pBlock->GetPos().y)
+						if (GetPos().y < pBlock->GetPos().y)
 						{
 							// ジャンプ可能回数を設定
 							m_nLeftNumJump = 2;
 
 							// 位置をこのブロックの上端に設定
-							m_posTarget.y = -CObject2D::GetSize().y + (pBlock->GetPos().y - pBlock->GetSize().y);
+							m_posTarget.y = -GetSize().y + (pBlock->GetPos().y - pBlock->GetSize().y);
 						}
-						else if (CObject2D::GetPos().y > pBlock->GetPos().y)
+						else if (GetPos().y > pBlock->GetPos().y)
 						{
 							// 位置をこのブロックの下端に設定
-							m_posTarget.y = CObject2D::GetSize().y + (pBlock->GetPos().y + pBlock->GetSize().y);
+							m_posTarget.y = GetSize().y + (pBlock->GetPos().y + pBlock->GetSize().y);
 						}
 
 						// Y軸方向の加速度をリセット
 						m_velocity.y = 0.0f;
 					}
-					else if (CObject2D::GetPos().y + CObject2D::GetSize().y > pBlock->GetPos().y - pBlock->GetSize().y &&
-						CObject2D::GetPos().y - CObject2D::GetSize().y < pBlock->GetPos().y + pBlock->GetSize().y)
+					else if (GetPos().y + GetSize().y > pBlock->GetPos().y - pBlock->GetSize().y &&
+						GetPos().y - GetSize().y < pBlock->GetPos().y + pBlock->GetSize().y)
 					{
-						if (CObject2D::GetPos().x < pBlock->GetPos().x)
+						if (GetPos().x < pBlock->GetPos().x)
 						{
 							// 位置をこのブロックの左端に設定
-							m_posTarget.x = -CObject2D::GetSize().x + (pBlock->GetPos().x - pBlock->GetSize().x);
+							m_posTarget.x = -GetSize().x + (pBlock->GetPos().x - pBlock->GetSize().x);
 						}
-						else if (CObject2D::GetPos().x > pBlock->GetPos().x)
+						else if (GetPos().x > pBlock->GetPos().x)
 						{
 							// 位置をこのブロックの右端に設定
-							m_posTarget.x = CObject2D::GetSize().x + (pBlock->GetPos().x + pBlock->GetSize().x);
+							m_posTarget.x = GetSize().x + (pBlock->GetPos().x + pBlock->GetSize().x);
 						}
 
 						// X軸方向の加速度をリセット
 						m_velocity.x = 0.0f;
 					}
 				}
-#endif
 			}
 			//else if (pObject->GetType() == CObject::TYPE::ENEMY)
 			//{ // エネミータイプなら
@@ -527,10 +434,10 @@ void CPlayer::Collision()
 				}
 
 				// アイテムと衝突する場合
-				if (m_posTarget.x + CObject2D::GetSize().x >= pItem->GetPos().x - pItem->GetSize().x &&
-					m_posTarget.x - CObject2D::GetSize().x <= pItem->GetPos().x + pItem->GetSize().x &&
-					m_posTarget.y + CObject2D::GetSize().y >= pItem->GetPos().y - pItem->GetSize().y &&
-					m_posTarget.y - CObject2D::GetSize().y <= pItem->GetPos().y + pItem->GetSize().y)
+				if (m_posTarget.x + GetSize().x >= pItem->GetPos().x - pItem->GetSize().x &&
+					m_posTarget.x - GetSize().x <= pItem->GetPos().x + pItem->GetSize().x &&
+					m_posTarget.y + GetSize().y >= pItem->GetPos().y - pItem->GetSize().y &&
+					m_posTarget.y - GetSize().y <= pItem->GetPos().y + pItem->GetSize().y)
 				{
 					// パーティクルを生成
 					for (int i = 0; i < 10; i++)
@@ -541,16 +448,8 @@ void CPlayer::Collision()
 							atan2f((float)(rand() % 314), (float)(rand() % 314)) * (rand() % 314));	// 飛ぶ角度
 					}
 
-					// 試験的にテクスチャを変更
-					LPDIRECT3DTEXTURE9 pTex = CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::PLAYER_001);
-
-					if (pTex == nullptr)
-					{ // 取得失敗
-						assert(false);
-					}
-
 					// テクスチャを設定
-					CObject2D::BindTex(pTex);
+					BindTex(CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::PLAYER_001));
 
 					// アニメーションをロック
 					m_bAnimationLock = true;

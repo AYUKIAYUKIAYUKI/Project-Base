@@ -38,8 +38,8 @@ CEnemy::~CEnemy()
 	for (int i = 0; i < 10; i++)
 	{
 		CParticle::Create(
-			CObject2D::GetPos(),	// 中心位置
-			CObject2D::GetSize(),	// サイズ
+			GetPos(),	//位置
+			GetSize(),	// サイズ
 			atan2f((float)(rand() % 314), (float)(rand() % 314)) * (rand() % 314));	// 飛ぶ角度
 	}
 }
@@ -70,7 +70,7 @@ void CEnemy::Uninit()
 void CEnemy::Update()
 {
 	// 現在位置を取得、以降このコピーを目標位置として変更を加えていく
-	m_posTarget = CObject2D::GetPos();
+	m_posTarget = GetPos();
 
 	// 移動
 	Translation();
@@ -135,26 +135,26 @@ void CEnemy::Translation()
 void CEnemy::Braking()
 {
 	// 加速度上限に到達で速度固定
-	if (m_velocity.x > CEnemy::MAX_VELOCITY)
+	if (m_velocity.x > MAX_VELOCITY)
 	{
-		m_velocity.x = CEnemy::MAX_VELOCITY;
+		m_velocity.x = MAX_VELOCITY;
 	}
-	else if (m_velocity.x < -CEnemy::MAX_VELOCITY)
+	else if (m_velocity.x < -MAX_VELOCITY)
 	{
-		m_velocity.x = -CEnemy::MAX_VELOCITY;
+		m_velocity.x = -MAX_VELOCITY;
 	}
 
-	if (m_velocity.y > CEnemy::MAX_VELOCITY)
+	if (m_velocity.y > MAX_VELOCITY)
 	{
-		m_velocity.y = CEnemy::MAX_VELOCITY;
+		m_velocity.y = MAX_VELOCITY;
 	}
-	else if (m_velocity.y < -CEnemy::MAX_VELOCITY)
+	else if (m_velocity.y < -MAX_VELOCITY)
 	{
-		m_velocity.y = -CEnemy::MAX_VELOCITY;
+		m_velocity.y = -MAX_VELOCITY;
 	}
 
 	// 少しずつ加速度を失う
-	m_velocity = m_velocity * CEnemy::BRAKING_FORCE;
+	m_velocity = m_velocity * BRAKING_FORCE;
 }
 
 //============================================================================
@@ -166,7 +166,7 @@ void CEnemy::AdjustPos()
 	m_posTarget += m_velocity;
 
 	// サイズを取得
-	D3DXVECTOR3 fSize = CObject2D::GetSize();
+	D3DXVECTOR3 fSize = GetSize();
 
 	// 画面の左右端に到達でそれぞれループ
 	if (m_posTarget.x - fSize.x > SCREEN_WIDTH)
@@ -192,6 +192,6 @@ void CEnemy::AdjustPos()
 		m_posTarget.y = SCREEN_HEIGHT + fSize.y;
 	}
 
-	// 中心位置情報を設定
-	CObject2D::SetPos(m_posTarget);
+	// 位置を設定
+	SetPos(m_posTarget);
 }

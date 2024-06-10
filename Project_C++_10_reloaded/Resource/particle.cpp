@@ -120,14 +120,14 @@ CParticle* CParticle::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, float fFlyAngle)
 void CParticle::Translate()
 {
 	// 中心位置情報を取得
-	D3DXVECTOR3 pos = CObject2D::GetPos();
+	D3DXVECTOR3 pos = GetPos();
 
 	// 設定された角度に飛んでいく
 	pos.x += sinf(m_fFlyAngle) * 1.0f;
 	pos.y += cosf(m_fFlyAngle) * 1.0f;
 
 	// 中心位置を設定
-	CObject2D::SetPos(pos);
+	SetPos(pos);
 }
 
 //============================================================================
@@ -136,7 +136,7 @@ void CParticle::Translate()
 bool CParticle::Progress()
 {
 	// サイズを取得
-	D3DXVECTOR3 size = CObject2D::GetSize();
+	D3DXVECTOR3 size = GetSize();
 
 	// 縮小
 	size.x += -0.25f;
@@ -153,7 +153,7 @@ bool CParticle::Progress()
 	}
 
 	// サイズを設定
-	CObject2D::SetSize(size);
+	SetSize(size);
 
 	return true;
 }

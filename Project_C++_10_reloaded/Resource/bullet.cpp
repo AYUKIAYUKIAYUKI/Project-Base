@@ -120,14 +120,14 @@ CBullet* CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nRemain, float f
 void CBullet::Translation()
 {
 	// 位置を取得
-	D3DXVECTOR3 pos = CObject2D::GetPos();
+	D3DXVECTOR3 pos = GetPos();
 
 	// 設定された角度に飛んでいく
 	pos.x += sinf(m_fFlyAngle) * 3.0f;
 	pos.y += cosf(m_fFlyAngle) * 3.0f;
 
 	// 位置を設定
-	CObject2D::SetPos(pos);
+	SetPos(pos);
 }
 
 //============================================================================
@@ -159,10 +159,10 @@ bool CBullet::CollisionEnemy()
 				}
 
 				// 敵と衝突したら
-				if (CObject2D::GetPos().x + CObject2D::GetSize().x >= pEnemy->GetPos().x - pEnemy->GetSize().x &&
-					CObject2D::GetPos().x - CObject2D::GetSize().x <= pEnemy->GetPos().x + pEnemy->GetSize().x &&
-					CObject2D::GetPos().y + CObject2D::GetSize().y >= pEnemy->GetPos().y - pEnemy->GetSize().y &&
-					CObject2D::GetPos().y - CObject2D::GetSize().y <= pEnemy->GetPos().y + pEnemy->GetSize().y)
+				if (GetPos().x + GetSize().x >= pEnemy->GetPos().x - pEnemy->GetSize().x &&
+					GetPos().x - GetSize().x <= pEnemy->GetPos().x + pEnemy->GetSize().x &&
+					GetPos().y + GetSize().y >= pEnemy->GetPos().y - pEnemy->GetSize().y &&
+					GetPos().y - GetSize().y <= pEnemy->GetPos().y + pEnemy->GetSize().y)
 				{
 					// スコアインスタンスを取得
 					CObject* pFindObject = FindScoreInstance();
@@ -180,7 +180,7 @@ bool CBullet::CollisionEnemy()
 
 					// 爆発を生成
 					CExplosion::Create(
-						CObject2D::GetPos(),		// 中心位置
+						GetPos(),					// 位置
 						{ 40.0f, 40.0f, 0.0f });	// サイズ
 
 					// 自身を破棄
@@ -205,10 +205,10 @@ bool CBullet::CollisionEnemy()
 				}
 
 				// ブロックと衝突したら
-				if (CObject2D::GetPos().x + CObject2D::GetSize().x >= pBlock->GetPos().x - pBlock->GetSize().x &&
-					CObject2D::GetPos().x - CObject2D::GetSize().x <= pBlock->GetPos().x + pBlock->GetSize().x &&
-					CObject2D::GetPos().y + CObject2D::GetSize().y >= pBlock->GetPos().y - pBlock->GetSize().y &&
-					CObject2D::GetPos().y - CObject2D::GetSize().y <= pBlock->GetPos().y + pBlock->GetSize().y)
+				if (GetPos().x + GetSize().x >= pBlock->GetPos().x - pBlock->GetSize().x &&
+					GetPos().x - GetSize().x <= pBlock->GetPos().x + pBlock->GetSize().x &&
+					GetPos().y + GetSize().y >= pBlock->GetPos().y - pBlock->GetSize().y &&
+					GetPos().y - GetSize().y <= pBlock->GetPos().y + pBlock->GetSize().y)
 				{
 					// スコアインスタンスを取得
 					CObject* pFindObject = FindScoreInstance();
@@ -226,7 +226,7 @@ bool CBullet::CollisionEnemy()
 
 					// 爆発を生成
 					CExplosion::Create(
-						CObject2D::GetPos(),		// 中心位置
+						GetPos(),					// 位置
 						{ 40.0f, 40.0f, 0.0f });	// サイズ
 
 					// 自身を破棄
@@ -254,8 +254,8 @@ bool CBullet::Progress()
 	m_nRemain--;
 
 	// エフェクト生成
-	CEffect::Create(CObject2D::GetPos(),	// 中心位置
-		CObject2D::GetSize());				// サイズ
+	CEffect::Create(GetPos(),	// 位置
+		GetSize());				// サイズ
 
 	// 使用期間がなくなると消滅
 	if (m_nRemain <= 0)
@@ -265,7 +265,7 @@ bool CBullet::Progress()
 
 		// 爆発を生成
 		CExplosion::Create(
-			CObject2D::GetPos(),		// 中心位置
+			GetPos(),					// 位置
 			{ 40.0f, 40.0f, 0.0f });	// サイズ
 
 		// 終了

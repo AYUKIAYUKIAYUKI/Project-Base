@@ -29,7 +29,7 @@ CBlock::~CBlock()
 	for (int i = 0; i < 10; i++)
 	{
 		CParticle::Create(
-			CObject2D::GetPos(),	// 中心位置
+			GetPos(),				// 位置
 			{ 20.0f, 20.0f, 0.0f },	// サイズ
 			atan2f((float)(rand() % 314), (float)(rand() % 314)) * (rand() % 314));	// 飛ぶ角度
 	}

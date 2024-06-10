@@ -110,11 +110,11 @@ void CNumber::SetNumber(int nNum)
 void CNumber::Animation()
 {
 	// 横テクスチャ種類情報取得
-	int nTexPatternU = CObject2D::GetNowPatternU();
+	int nTexPatternU = GetNowPatternU();
 
 	// 横テクスチャ種類を割り当て
 	nTexPatternU = m_nNum;
 
 	// 横テクスチャ種類情報設定
-	CObject2D::SetNowPatternU(nTexPatternU);
+	SetNowPatternU(nTexPatternU);
 }

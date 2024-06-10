@@ -111,7 +111,7 @@ bool CExplosion3D::Animation()
 	if (m_nCntTexChange >= 10)
 	{
 		// 横テクスチャ種類情報取得
-		int nTexPatternU = CObjectBillboard::GetNowPatternU();
+		int nTexPatternU = GetNowPatternU();
 
 		// 横テクスチャ種類変更
 		nTexPatternU++;
@@ -126,7 +126,7 @@ bool CExplosion3D::Animation()
 		}
 
 		// 横テクスチャ種類情報設定
-		CObjectBillboard::SetNowPatternU(nTexPatternU);
+		SetNowPatternU(nTexPatternU);
 
 		// 変更管理カウントをリセット
 		m_nCntTexChange = 0;
