@@ -27,7 +27,7 @@ CCamera::CCamera()
 	m_posTargetR = { 0.0f, 0.0f, 0.0f };	// 目標注視点位置
 	m_rot = { 0.0f, 0.0f, 0.0f };			// 向き
 	m_rotTarget = { 0.0f, 0.0f, 0.0f };		// 目標向き
-	m_fDistance = 150.0f;					// 視点 -> 注視点間の距離
+	m_fDistance = 175.0f;					// 視点 -> 注視点間の距離
 	m_vecU = { 0.0f, 1.0f, 0.0f };			// 上方向ベクトル
 	D3DXMatrixIdentity(&m_mtxProjection);	// プロジェクションマトリックス
 	D3DXMatrixIdentity(&m_mtxView);			// ビューマトリックス
@@ -305,7 +305,7 @@ void CCamera::CalcMtxView()
 	D3DXVECTOR3 posR = m_posR;
 
 	// カメラを俯瞰気味に
-	posV.y += 75.0f;
+	posV.y += 60.0f;
 
 	// ビューマトリックスの生成
 	D3DXMatrixLookAtLH(&m_mtxView,

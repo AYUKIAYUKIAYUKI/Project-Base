@@ -17,7 +17,7 @@
 // 静的メンバ変数の初期化
 //****************************************************
 const float CPlayer3D::MAX_VELOCITY = 0.5f;		// 加速度上限
-const float CPlayer3D::JUMP_FORCE = 7.5f;			// ジャンプ力
+const float CPlayer3D::JUMP_FORCE = 6.0f;			// ジャンプ力
 const float CPlayer3D::BRAKING_FORCE = 0.9f;	// 制動力
 
 //============================================================================
