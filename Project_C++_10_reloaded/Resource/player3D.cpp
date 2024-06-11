@@ -116,7 +116,7 @@ CPlayer3D* CPlayer3D::Create(D3DXVECTOR3 pos)
 	pPlayer3D->SetPos(pos);		// ’†SˆÊ’u‚ÌÝ’è
 
 	// ƒ‚ƒfƒ‹‚ðÝ’è
-	pPlayer3D->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel::MODEL_TYPE::MODEL_BLOCK));
+	pPlayer3D->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel::MODEL_TYPE::MODEL_PLAYER));
 
 	return pPlayer3D;
 }

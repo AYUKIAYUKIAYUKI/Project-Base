@@ -1,4 +1,4 @@
-data\\TEXTURE\\RIDAKURU.png
+data\\TEXTURE\\glassfield.png
 data\\TEXTURE\\RIDAKURU_Alt.png
 data\\TEXTURE\\Bakemon.png
 data\\TEXTURE\\bullet000.png

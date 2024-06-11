@@ -1,2 +1,2 @@
-data\\MODEL\\legi.x
-data\\MODEL\\test.x
+data\\MODEL\\sphere.x
+data\\MODEL\\block.x

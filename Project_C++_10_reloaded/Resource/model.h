@@ -25,8 +25,8 @@ public:
 	//****************************************************
 	enum class MODEL_TYPE
 	{
-		MODEL_LEGI = 0,	// テスト
-		MODEL_BLOCK,	// ブロック
+		MODEL_PLAYER = 0,	// プレイヤー
+		MODEL_BLOCK,		// ブロック
 		MAX,
 	};
 
