@@ -64,7 +64,7 @@ HRESULT CModel::Load()
 		std::getline(file, filename);
 
 		// モデルファイルの取得
-		D3DXLoadMeshFromX(filename.c_str(),
+		HRESULT hr = D3DXLoadMeshFromX(filename.c_str(),
 			D3DXMESH_SYSTEMMEM,
 			pDev,
 			nullptr,
@@ -72,6 +72,12 @@ HRESULT CModel::Load()
 			nullptr,
 			&m_aModelTemp[nCntModel].dwNumMat,
 			&m_aModelTemp[nCntModel].pMesh);
+
+		if (FAILED(hr))
+		{ // 取得失敗
+			file.close();	// ファイルを閉じる
+			assert(false);
+		}
 
 		// マテリアルデータへのポインタを取得
 		D3DXMATERIAL* pMat = (D3DXMATERIAL*)m_aModelTemp[nCntModel].pBuffMat->GetBufferPointer();
@@ -85,22 +91,20 @@ HRESULT CModel::Load()
 			if (pMat[nCntMat].pTextureFilename != nullptr)
 			{
 				// テクスチャを読み取れたら生成
-				D3DXCreateTextureFromFileA(pDev,
+				hr = D3DXCreateTextureFromFileA(pDev,
 					pMat[nCntMat].pTextureFilename,
 					&m_aModelTemp[nCntModel].ppTex[nCntMat]);
+
+				if (FAILED(hr))
+				{ // 生成失敗
+					assert(false);
+				}
 			}
 			else
 			{
 				// 読み取れなければ初期化
 				m_aModelTemp[nCntModel].ppTex[nCntMat] = nullptr;
 			}
-		}
-
-		// モデル情報をすべて取得できたかチェック
-		if (!LoadCheck())
-		{ // 取得失敗
-			file.close();	// ファイルを閉じる
-			assert(false);
 		}
 	}
 
@@ -160,14 +164,4 @@ MODEL* CModel::GetModel(MODEL_TYPE type)
 	}
 
 	return &m_aModelTemp[static_cast<int>(type)];
-}
-
-//============================================================================
-// 読み込みチェック
-//============================================================================
-bool CModel::LoadCheck()
-{
-	/*---*/
-
-	return true;
 }

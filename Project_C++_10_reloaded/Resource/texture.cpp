@@ -60,11 +60,11 @@ HRESULT CTexture::Load()
 		std::getline(file, filename);
 
 		// テクスチャの生成
-		D3DXCreateTextureFromFile(pDev,
+		HRESULT hr = D3DXCreateTextureFromFileA(pDev,
 			filename.c_str(),
 			&m_apTexTemp[i]);
 
-		if (m_apTexTemp[i] == nullptr)
+		if (FAILED(hr))
 		{ // テクスチャ生成失敗
 			file.close();	// ファイルを閉じる
 			assert(false);

@@ -118,6 +118,9 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 	// ワイヤー描画
 	//m_pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 
+	// ?
+	//ID3DXAllocateHierarchy;
+
 	// テクスチャインスタンスを生成
 	m_pTexture = DBG_NEW CTexture;
 

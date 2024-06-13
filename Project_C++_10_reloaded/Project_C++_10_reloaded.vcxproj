@@ -51,6 +51,7 @@
     <ClCompile Include="resource\renderer.cpp" />
     <ClCompile Include="resource\score.cpp" />
     <ClCompile Include="resource\sound.cpp" />
+    <ClCompile Include="Resource\stagemaker.cpp" />
     <ClCompile Include="resource\texture.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -83,6 +84,7 @@
     <ClInclude Include="resource\renderer.h" />
     <ClInclude Include="resource\score.h" />
     <ClInclude Include="resource\sound.h" />
+    <ClInclude Include="Resource\stagemaker.h" />
     <ClInclude Include="resource\texture.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
