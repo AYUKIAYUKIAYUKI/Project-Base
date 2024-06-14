@@ -35,6 +35,7 @@
     <ClCompile Include="resource\main.cpp" />
     <ClCompile Include="resource\manager.cpp" />
     <ClCompile Include="resource\model.cpp" />
+    <ClCompile Include="Resource\modelFBX.cpp" />
     <ClCompile Include="resource\number.cpp" />
     <ClCompile Include="resource\object.cpp" />
     <ClCompile Include="resource\object2D.cpp" />
@@ -71,6 +72,7 @@
     <ClInclude Include="resource\main.h" />
     <ClInclude Include="resource\manager.h" />
     <ClInclude Include="resource\model.h" />
+    <ClInclude Include="Resource\modelFBX.h" />
     <ClInclude Include="resource\number.h" />
     <ClInclude Include="resource\object.h" />
     <ClInclude Include="resource\object2D.h" />
