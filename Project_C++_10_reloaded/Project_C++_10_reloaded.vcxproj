@@ -29,13 +29,13 @@
     <ClCompile Include="resource\explosion.cpp" />
     <ClCompile Include="Resource\explosion3D.cpp" />
     <ClCompile Include="resource\field.cpp" />
+    <ClCompile Include="Resource\game.cpp" />
     <ClCompile Include="resource\input.cpp" />
     <ClCompile Include="resource\item.cpp" />
     <ClCompile Include="resource\light.cpp" />
     <ClCompile Include="resource\main.cpp" />
     <ClCompile Include="resource\manager.cpp" />
     <ClCompile Include="resource\model.cpp" />
-    <ClCompile Include="Resource\modelFBX.cpp" />
     <ClCompile Include="resource\number.cpp" />
     <ClCompile Include="resource\object.cpp" />
     <ClCompile Include="resource\object2D.cpp" />
@@ -50,10 +50,13 @@
     <ClCompile Include="resource\player.cpp" />
     <ClCompile Include="resource\player3D.cpp" />
     <ClCompile Include="resource\renderer.cpp" />
+    <ClCompile Include="Resource\result.cpp" />
+    <ClCompile Include="Resource\scene.cpp" />
     <ClCompile Include="resource\score.cpp" />
     <ClCompile Include="resource\sound.cpp" />
     <ClCompile Include="Resource\stagemaker.cpp" />
     <ClCompile Include="resource\texture.cpp" />
+    <ClCompile Include="Resource\title.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource\bg.h" />
@@ -66,13 +69,13 @@
     <ClInclude Include="resource\explosion.h" />
     <ClInclude Include="Resource\explosion3D.h" />
     <ClInclude Include="resource\field.h" />
+    <ClInclude Include="Resource\game.h" />
     <ClInclude Include="resource\input.h" />
     <ClInclude Include="resource\item.h" />
     <ClInclude Include="resource\light.h" />
     <ClInclude Include="resource\main.h" />
     <ClInclude Include="resource\manager.h" />
     <ClInclude Include="resource\model.h" />
-    <ClInclude Include="Resource\modelFBX.h" />
     <ClInclude Include="resource\number.h" />
     <ClInclude Include="resource\object.h" />
     <ClInclude Include="resource\object2D.h" />
@@ -84,10 +87,13 @@
     <ClInclude Include="resource\player.h" />
     <ClInclude Include="resource\player3D.h" />
     <ClInclude Include="resource\renderer.h" />
+    <ClInclude Include="Resource\result.h" />
+    <ClInclude Include="Resource\scene.h" />
     <ClInclude Include="resource\score.h" />
     <ClInclude Include="resource\sound.h" />
     <ClInclude Include="Resource\stagemaker.h" />
     <ClInclude Include="resource\texture.h" />
+    <ClInclude Include="Resource\title.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
