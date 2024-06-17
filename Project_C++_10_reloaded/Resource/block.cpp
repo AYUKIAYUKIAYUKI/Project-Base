@@ -84,7 +84,7 @@ CBlock* CBlock::Create(D3DXVECTOR3 pos)
 	pBlock->SetPos(pos);	// ˆÊ’u‚ÌÝ’è
 
 	// ƒ‚ƒfƒ‹‚ðÝ’è
-	pBlock->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel::MODEL_TYPE::MODEL_BLOCK));
+	pBlock->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::MODEL_BLOCK));
 
 	return pBlock;
 }

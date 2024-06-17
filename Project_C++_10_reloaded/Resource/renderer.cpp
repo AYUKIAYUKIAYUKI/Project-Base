@@ -18,7 +18,7 @@
 CRenderer::CRenderer() : m_pD3D(nullptr), m_pD3DDevice(nullptr)
 {
 	m_pTexture = nullptr;	// テクスチャ管理
-	m_pModel = nullptr;		// モデル管理
+	m_pModel_X = nullptr;	// Xモデル管理
 }
 
 //============================================================================
@@ -110,27 +110,27 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 	// ?
 	//ID3DXAllocateHierarchy;
 
-	// テクスチャインスタンスを生成
+	// テクスチャ管理インスタンスを生成
 	m_pTexture = DBG_NEW CTexture;
 
 	if (m_pTexture == nullptr)
-	{ //  テクスチャインスタンス生成失敗
+	{ // 生成失敗
 		return E_FAIL;
 	}
 
 	// テクスチャ読み込み
 	m_pTexture->Load();
 
-	// モデルインスタンスを生成
-	m_pModel = DBG_NEW CModel;
+	// Xモデル管理インスタンスを生成
+	m_pModel_X = DBG_NEW CModel_X;
 
-	if (m_pModel == nullptr)
-	{ //  モデルインスタンス生成失敗
+	if (m_pModel_X == nullptr)
+	{ // 生成失敗
 		return E_FAIL;
 	}
 
-	// モデル読み込み
-	m_pModel->Load();
+	// Xモデル読み込み
+	m_pModel_X->Load();
 
 	return S_OK;
 }
@@ -151,12 +151,12 @@ void CRenderer::Uninit()
 		m_pTexture = nullptr;
 	}
 
-	// モデル破棄
-	if (m_pModel != nullptr)
+	// Xモデル破棄
+	if (m_pModel_X != nullptr)
 	{
-		m_pModel->Unload();
-		delete m_pModel;
-		m_pModel = nullptr;
+		m_pModel_X->Unload();
+		delete m_pModel_X;
+		m_pModel_X = nullptr;
 	}
 
 	// Direct3Dデバイスの破棄
@@ -232,7 +232,7 @@ CTexture* CRenderer::GetTextureInstane()
 //============================================================================
 // モデル管理の取得
 //============================================================================
-CModel* CRenderer::GetModelInstane()
+CModel_X* CRenderer::GetModelInstane()
 {
-	return m_pModel;
+	return m_pModel_X;
 }

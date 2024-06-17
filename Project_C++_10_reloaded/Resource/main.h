@@ -30,15 +30,4 @@ struct VERTEX_3D
 	D3DXVECTOR2 tex;	// テクスチャ座標用
 };
 
-//****************************************************
-// Xモデル情報の構造体の定義
-//****************************************************
-struct MODEL
-{
-	LPD3DXMESH pMesh;			// メッシュ情報
-	LPD3DXBUFFER pBuffMat;		// マテリアル情報
-	DWORD dwNumMat;				// マテリアルの数
-	LPDIRECT3DTEXTURE9* ppTex;	// テクスチャ情報
-};
-
 #endif // _MAIN_H_
