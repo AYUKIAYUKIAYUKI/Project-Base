@@ -36,8 +36,8 @@ private:
 	void CalcMtxProjection();	// プロジェクション行列計算
 	void CalcMtxView();			// ビュー行列計算
 
-	D3DXVECTOR3 m_pos;		// 中心位置
-	D3DXVECTOR3 m_posTarget;	// 目標中心位置
+	D3DXVECTOR3 m_pos;			// 位置
+	D3DXVECTOR3 m_posTarget;	// 目標位置
 	D3DXVECTOR3 m_posV;			// 視点位置
 	D3DXVECTOR3 m_posTargetV;	// 目標視点位置
 	D3DXVECTOR3 m_posR;			// 注視点位置

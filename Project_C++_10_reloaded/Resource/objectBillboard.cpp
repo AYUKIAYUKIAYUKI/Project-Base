@@ -20,7 +20,7 @@ CObjectBillboard::CObjectBillboard(int nPriority) : CObject(nPriority)
 	m_pVtxBuff = nullptr;	// 頂点バッファのポインタを初期化
 	m_pTex = nullptr;		// テクスチャのポインタを初期化
 
-	m_pos = { 0.0f, 0.0f, 0.0f };		// 中心位置
+	m_pos = { 0.0f, 0.0f, 0.0f };		// 位置
 	m_rot = { 0.0f, 0.0f, 0.0f };		// 向き
 	m_size = { 0.0f, 0.0f, 0.0f };		// サイズ
 	m_fLength = 0.0f;					// 展開用対角線
@@ -229,7 +229,7 @@ void CObjectBillboard::BindTex(LPDIRECT3DTEXTURE9 pTex)
 }
 
 //============================================================================
-// 中心位置取得
+// 位置取得
 //============================================================================
 D3DXVECTOR3 CObjectBillboard::GetPos()
 {
@@ -237,7 +237,7 @@ D3DXVECTOR3 CObjectBillboard::GetPos()
 }
 
 //============================================================================
-// 中心位置設定
+// 位置設定
 //============================================================================
 void CObjectBillboard::SetPos(D3DXVECTOR3 pos)
 {

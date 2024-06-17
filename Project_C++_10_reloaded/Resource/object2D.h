@@ -30,8 +30,8 @@ public:
 
 	void BindTex(LPDIRECT3DTEXTURE9 pTex);	// テクスチャ割当
 
-	D3DXVECTOR3 GetPos();			// 中心位置取得
-	void SetPos(D3DXVECTOR3 pos);	// 中心位置設定
+	D3DXVECTOR3 GetPos();			// 位置取得
+	void SetPos(D3DXVECTOR3 pos);	// 位置設定
 
 	D3DXVECTOR3 GetRot();			// 向き取得
 	void SetRot(D3DXVECTOR3 rot);	// 向き設定
@@ -57,7 +57,7 @@ private:
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	// 頂点バッファのポインタ
 	LPDIRECT3DTEXTURE9 m_pTex;			// テクスチャのポインタ
 
-	D3DXVECTOR3 m_pos;	// 中心位置
+	D3DXVECTOR3 m_pos;	// 位置
 	D3DXVECTOR3 m_rot;	// 向き
 	D3DXVECTOR3 m_size;	// サイズ
 	float m_fLength;	// 展開用対角線

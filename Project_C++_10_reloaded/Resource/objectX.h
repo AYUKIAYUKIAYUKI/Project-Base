@@ -31,11 +31,14 @@ public:
 
 	void BindModel(MODEL* pModel);	// モデル割当
 
-	D3DXVECTOR3 GetPos();			// 中心位置取得
-	void SetPos(D3DXVECTOR3 pos);	// 中心位置設定
+	D3DXVECTOR3 GetPos();			// 位置取得
+	void SetPos(D3DXVECTOR3 pos);	// 位置設定
 
 	D3DXVECTOR3 GetRot();			// 向き取得
 	void SetRot(D3DXVECTOR3 rot);	// 向き設定
+
+	D3DXVECTOR3 GetSize();			// サイズ取得
+	void SetSize(D3DXVECTOR3 size);	// サイズ設定
 
 	virtual CObjectX* Create();	// 生成
 
@@ -44,8 +47,9 @@ private:
 	void SetMtxWorld();	// ワールド行列設定
 
 	MODEL* m_pModel;		// モデル情報
-	D3DXVECTOR3 m_pos;		// 中心位置
+	D3DXVECTOR3 m_pos;		// 位置
 	D3DXVECTOR3 m_rot;		// 向き
+	D3DXVECTOR3 m_size;		// サイズ
 	D3DXMATRIX m_mtxWorld;	// ワールド行列
 };
 

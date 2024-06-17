@@ -37,7 +37,7 @@ HRESULT CTitle::Init()
 {
 	// 背景の生成 (仮)
 	CBg::Create(
-		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// 中心位置
+		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// 位置
 		{ SCREEN_HEIGHT * 0.5f,  SCREEN_HEIGHT * 0.5f, 0.0f });	// サイズ
 
 	return S_OK;

@@ -31,7 +31,7 @@ CItem::~CItem()
 	for (int i = 0; i < 10; i++)
 	{
 		CParticle::Create(
-			GetPos(),	// 中心位置
+			GetPos(),	// 位置
 			GetSize(),	// サイズ
 			atan2f((float)(rand() % 314), (float)(rand() % 314)) * (rand() % 314));	// 飛ぶ角度
 	}
@@ -103,7 +103,7 @@ CItem* CItem::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	pItem->SetType(TYPE::ITEM);	// タイプを設定
 
 	pItem->Init();			// 基底クラスの初期設定
-	pItem->SetPos(pos);		// 中心位置の設定
+	pItem->SetPos(pos);		// 位置の設定
 	pItem->SetSize(size);	// サイズの設定
 
 	// テクスチャを設定

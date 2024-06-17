@@ -81,9 +81,6 @@
     <ClCompile Include="resource\player.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="resource\player3D.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="resource\renderer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -94,9 +91,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="resource\texture.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Resource\block3D.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Resource\explosion3D.cpp">
@@ -188,9 +182,6 @@
     <ClInclude Include="resource\player.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="resource\player3D.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="resource\renderer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -201,9 +192,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="resource\texture.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource\block3D.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Resource\explosion3D.h">

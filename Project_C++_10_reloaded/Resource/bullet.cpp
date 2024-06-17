@@ -102,7 +102,7 @@ CBullet* CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, int nRemain, float f
 	pBullet->SetType(TYPE::NONE);	// タイプを設定
 
 	pBullet->Init();		// 基底クラスの初期設定
-	pBullet->SetPos(pos);	// 中心位置の設定
+	pBullet->SetPos(pos);	// 位置の設定
 	pBullet->SetSize(size);	// サイズの設定
 
 	pBullet->m_nRemain = nRemain;		// 使用期間の設定

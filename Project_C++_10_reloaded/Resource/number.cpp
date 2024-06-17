@@ -84,7 +84,7 @@ CNumber* CNumber::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	pNumber->SetType(TYPE::NONE);	// タイプを設定
 
 	pNumber->Init();		// 基底クラスの初期設定
-	pNumber->SetPos(pos);	// 中心位置の設定
+	pNumber->SetPos(pos);	// 位置の設定
 	pNumber->SetSize(size);	// サイズの設定
 
 	pNumber->SetTexWidth(0.1f);		// 横テクスチャ分割幅

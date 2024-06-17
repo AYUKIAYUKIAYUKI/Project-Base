@@ -11,12 +11,12 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
-#include "object2D.h"
+#include "objectX.h"
 
 //****************************************************
 // ブロッククラス
 //****************************************************
-class CBlock : public CObject2D
+class CBlock : public CObjectX
 {
 public:
 
@@ -28,7 +28,7 @@ public:
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
 
-	static CBlock* Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);	// 生成
+	static CBlock* Create(D3DXVECTOR3 pos);	// 生成
 };
 
 #endif // _BLOCK_H_

@@ -85,7 +85,7 @@ void CScore::Update()
 			for (int i = 0; i < 20; i++)
 			{
 				CParticle::Create(
-					pos,					// 中心位置
+					pos,					// 位置
 					{ 15.0f, 15.0f, 0.0f },	// サイズ
 					atan2f((float)(rand() % 314), (float)(rand() % 314)) * (rand() % 314));	// 飛ぶ角度
 			}

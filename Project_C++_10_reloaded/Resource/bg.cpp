@@ -85,7 +85,7 @@ CBg* CBg::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	pBg->SetType(TYPE::NONE);	// タイプを設定
 
 	pBg->Init();		// 基底クラスの初期設定
-	pBg->SetPos(pos);	// 中心位置の設定
+	pBg->SetPos(pos);	// 位置の設定
 	pBg->SetSize(size);	// サイズの設定
 
 	// テクスチャを設定

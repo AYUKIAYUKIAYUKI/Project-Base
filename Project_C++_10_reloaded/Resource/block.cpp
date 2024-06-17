@@ -10,12 +10,11 @@
 //****************************************************
 #include "block.h"
 #include "manager.h"
-#include "particle.h"
 
 //============================================================================
 // コンストラクタ
 //============================================================================
-CBlock::CBlock() : CObject2D(static_cast<int>(LAYER::BACK_MIDDLE))
+CBlock::CBlock() : CObjectX(static_cast<int>(LAYER::FRONT_MIDDLE))
 {
 
 }
@@ -25,14 +24,7 @@ CBlock::CBlock() : CObject2D(static_cast<int>(LAYER::BACK_MIDDLE))
 //============================================================================
 CBlock::~CBlock()
 {
-	// パーティクルを生成
-	for (int i = 0; i < 10; i++)
-	{
-		CParticle::Create(
-			GetPos(),				// 位置
-			{ 20.0f, 20.0f, 0.0f },	// サイズ
-			atan2f((float)(rand() % 314), (float)(rand() % 314)) * (rand() % 314));	// 飛ぶ角度
-	}
+
 }
 
 //============================================================================
@@ -41,7 +33,7 @@ CBlock::~CBlock()
 HRESULT CBlock::Init()
 {
 	// 基底クラスの初期設定
-	HRESULT hr = CObject2D::Init();
+	HRESULT hr = CObjectX::Init();
 
 	return hr;
 }
@@ -52,7 +44,7 @@ HRESULT CBlock::Init()
 void CBlock::Uninit()
 {
 	// 基底クラスの終了処理
-	CObject2D::Uninit();
+	CObjectX::Uninit();
 }
 
 //============================================================================
@@ -61,7 +53,7 @@ void CBlock::Uninit()
 void CBlock::Update()
 {
 	// 基底クラスの更新
-	CObject2D::Update();
+	CObjectX::Update();
 }
 
 //============================================================================
@@ -70,30 +62,29 @@ void CBlock::Update()
 void CBlock::Draw()
 {
 	// 基底クラスの描画処理
-	CObject2D::Draw();
+	CObjectX::Draw();
 }
 
 //============================================================================
 // 生成
 //============================================================================
-CBlock* CBlock::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
+CBlock* CBlock::Create(D3DXVECTOR3 pos)
 {
 	// インスタンスを生成
 	CBlock* pBlock = DBG_NEW CBlock;
 
 	if (pBlock == nullptr)
 	{ // 生成失敗
-		assert(false); 
+		assert(false);
 	}
 
 	pBlock->SetType(TYPE::BLOCK);	// タイプを設定
 
 	pBlock->Init();			// 基底クラスの初期設定
-	pBlock->SetPos(pos);	// 中心位置の設定
-	pBlock->SetSize(size);	// サイズの設定
+	pBlock->SetPos(pos);	// 位置の設定
 
-	// テクスチャを設定
-	pBlock->BindTex(CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BLOCK_000));
+	// モデルを設定
+	pBlock->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel::MODEL_TYPE::MODEL_BLOCK));
 
 	return pBlock;
 }

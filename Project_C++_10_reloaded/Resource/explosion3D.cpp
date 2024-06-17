@@ -88,7 +88,7 @@ CExplosion3D* CExplosion3D::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	pExplosion->SetType(TYPE::NONE);	// タイプを設定
 
 	pExplosion->Init();			// 基底クラスの初期設定
-	pExplosion->SetPos(pos);	// 中心位置の設定
+	pExplosion->SetPos(pos);	// 位置の設定
 	pExplosion->SetSize(size);	// サイズの設定
 
 	pExplosion->SetTexWidth(1.0f / 8.0f);	// 横テクスチャ分割幅

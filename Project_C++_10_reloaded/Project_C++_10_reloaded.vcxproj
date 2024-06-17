@@ -21,7 +21,6 @@
   <ItemGroup>
     <ClCompile Include="resource\bg.cpp" />
     <ClCompile Include="resource\block.cpp" />
-    <ClCompile Include="Resource\block3D.cpp" />
     <ClCompile Include="resource\bullet.cpp" />
     <ClCompile Include="resource\camera.cpp" />
     <ClCompile Include="resource\effect.cpp" />
@@ -48,7 +47,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="resource\player.cpp" />
-    <ClCompile Include="resource\player3D.cpp" />
     <ClCompile Include="resource\renderer.cpp" />
     <ClCompile Include="Resource\result.cpp" />
     <ClCompile Include="Resource\scene.cpp" />
@@ -61,7 +59,6 @@
   <ItemGroup>
     <ClInclude Include="resource\bg.h" />
     <ClInclude Include="resource\block.h" />
-    <ClInclude Include="Resource\block3D.h" />
     <ClInclude Include="resource\bullet.h" />
     <ClInclude Include="resource\camera.h" />
     <ClInclude Include="resource\effect.h" />
@@ -85,7 +82,6 @@
     <ClInclude Include="resource\particle.h" />
     <ClInclude Include="resource\pch.h" />
     <ClInclude Include="resource\player.h" />
-    <ClInclude Include="resource\player3D.h" />
     <ClInclude Include="resource\renderer.h" />
     <ClInclude Include="Resource\result.h" />
     <ClInclude Include="Resource\scene.h" />

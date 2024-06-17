@@ -13,8 +13,7 @@
 #include "object.h"
 
 // オブジェクト生成用
-#include "block.h"
-#include "player.h"
+#include "item.h"
 
 //============================================================================
 // コンストラクタ
@@ -37,18 +36,10 @@ CResult::~CResult()
 //============================================================================
 HRESULT CResult::Init()
 {
-	for (int i = 0; i < 5; i++)
-	{
-		// ブロックの生成 (仮)
-		CBlock::Create(
-			{ SCREEN_WIDTH * 0.95f, SCREEN_HEIGHT * 0.9f + (-70.0f * i), 0.0f },	// 中心位置
-			{ 30.0f, 30.0f, 0.0f });												// サイズ
-
-		// ブロックの生成 (仮)
-		CBlock::Create(
-			{ SCREEN_WIDTH * 0.95f + (-70.0f * i), SCREEN_HEIGHT * 0.9f, 0.0f },	// 中心位置
-			{ 30.0f, 30.0f, 0.0f });												// サイズ
-	}
+	// アイテムの生成 (仮)
+	CItem::Create(
+		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// 位置
+		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f });	// サイズ
 
 	return S_OK;
 }

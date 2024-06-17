@@ -110,7 +110,7 @@ CEnemy* CEnemy::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	pEnemy->SetType(TYPE::ENEMY);	// タイプを設定
 
 	pEnemy->Init();			// 基底クラスの初期設定
-	pEnemy->SetPos(pos);	// 中心位置の設定
+	pEnemy->SetPos(pos);	// 位置の設定
 	pEnemy->SetSize(size);	// サイズの設定
 
 	// テクスチャを設定

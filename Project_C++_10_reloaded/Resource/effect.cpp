@@ -100,7 +100,7 @@ CEffect* CEffect::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	pEffect->SetType(TYPE::NONE);	// タイプを設定
 
 	pEffect->Init();		// 基底クラスの初期設定
-	pEffect->SetPos(pos);	// 中心位置の設定
+	pEffect->SetPos(pos);	// 位置の設定
 	pEffect->SetSize(size);	// サイズの設定
 
 	// テクスチャを設定

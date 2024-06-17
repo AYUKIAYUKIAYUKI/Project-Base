@@ -12,15 +12,16 @@
 #include "main.h"
 #include "manager.h"
 
-#include "player3D.h"
+// 追従地点参照用
+#include "player.h"
 
 //============================================================================
 // コンストラクタ
 //============================================================================
 CCamera::CCamera()
 {
-	m_pos = { 0.0f, 0.0f, 0.0f };			// 中心位置
-	m_posTarget = { 0.0f, 0.0f, 0.0f };		// 目標中心位置
+	m_pos = { 0.0f, 0.0f, 0.0f };			// 位置
+	m_posTarget = { 0.0f, 0.0f, 0.0f };		// 目標位置
 	m_posV = { 0.0f, 0.0f, 0.0f };			// 視点位置
 	m_posTargetV = { 0.0f, 0.0f, 0.0f };	// 目標視点位置
 	m_posR = { 0.0f, 0.0f, 0.0f };			// 注視点位置
@@ -67,10 +68,10 @@ void CCamera::Update()
 			}
 
 			if (pObject->GetType() == CObject::TYPE::PLAYER)
-			{ // 3Dプレイヤータイプなら
+			{ // プレイヤータイプなら
 
-				// 3Dプレイヤークラスのポインタ
-				CPlayer3D* pPlayer = dynamic_cast<CPlayer3D*>(pObject);
+				// プレイヤークラスのポインタ
+				CPlayer* pPlayer = dynamic_cast<CPlayer*>(pObject);
 
 				if (pPlayer == nullptr)
 				{ // ダウンキャスト失敗
