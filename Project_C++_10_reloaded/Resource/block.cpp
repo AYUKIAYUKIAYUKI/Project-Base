@@ -14,7 +14,7 @@
 //============================================================================
 // コンストラクタ
 //============================================================================
-CBlock::CBlock() : CObjectX(static_cast<int>(LAYER::FRONT_MIDDLE))
+CBlock::CBlock() : CObject_X(static_cast<int>(LAYER::FRONT_MIDDLE))
 {
 
 }
@@ -33,7 +33,7 @@ CBlock::~CBlock()
 HRESULT CBlock::Init()
 {
 	// 基底クラスの初期設定
-	HRESULT hr = CObjectX::Init();
+	HRESULT hr = CObject_X::Init();
 
 	return hr;
 }
@@ -44,7 +44,7 @@ HRESULT CBlock::Init()
 void CBlock::Uninit()
 {
 	// 基底クラスの終了処理
-	CObjectX::Uninit();
+	CObject_X::Uninit();
 }
 
 //============================================================================
@@ -53,7 +53,7 @@ void CBlock::Uninit()
 void CBlock::Update()
 {
 	// 基底クラスの更新
-	CObjectX::Update();
+	CObject_X::Update();
 }
 
 //============================================================================
@@ -62,7 +62,7 @@ void CBlock::Update()
 void CBlock::Draw()
 {
 	// 基底クラスの描画処理
-	CObjectX::Draw();
+	CObject_X::Draw();
 }
 
 //============================================================================

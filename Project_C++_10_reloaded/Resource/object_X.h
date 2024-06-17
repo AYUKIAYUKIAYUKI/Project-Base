@@ -1,12 +1,12 @@
 //============================================================================
 // 
-// Xオブジェクト、ヘッダファイル [objectX.h]
+// Xオブジェクト、ヘッダファイル [object_X.h]
 // Author : 福田歩希
 // 
 //============================================================================
 
-#ifndef _OBJECTX_H_
-#define _OBJECTX_H_	// 二重インクルード防止
+#ifndef _OBJECT_X_H_
+#define _OBJECT_X_H_	// 二重インクルード防止
 
 //****************************************************
 // インクルードファイル
@@ -17,17 +17,17 @@
 //****************************************************
 // Xオブジェクトクラス
 //****************************************************
-class CObjectX : public CObject
+class CObject_X : public CObject
 {
 public:
 
-	CObjectX(int nPriority = static_cast<int>(LAYER::FRONT));	// コンストラクタ
-	~CObjectX() override;										// デストラクタ
+	CObject_X(int nPriority = static_cast<int>(LAYER::FRONT));	// コンストラクタ
+	~CObject_X() override;										// デストラクタ
 
-	HRESULT Init() override;		// 初期設定
-	void Uninit() override;			// 終了処理
-	void Update() override;			// 更新処理
-	void Draw() override;			// 描画処理
+	HRESULT Init() override;	// 初期設定
+	void Uninit() override;		// 終了処理
+	void Update() override;		// 更新処理
+	void Draw() override;		// 描画処理
 
 	void BindModel(CModel_X::MODEL* pModel);	// モデル割当
 
@@ -40,7 +40,7 @@ public:
 	D3DXVECTOR3 GetSize();			// サイズ取得
 	void SetSize(D3DXVECTOR3 size);	// サイズ設定
 
-	virtual CObjectX* Create();	// 生成
+	virtual CObject_X* Create();	// 生成
 
 private:
 
@@ -53,4 +53,4 @@ private:
 	D3DXMATRIX m_mtxWorld;		// ワールド行列
 };
 
-#endif // _OBJECTX_H_
+#endif // _OBJECT_X_H_

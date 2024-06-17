@@ -23,7 +23,7 @@ const float CPlayer::BRAKING_FORCE = 0.9f;	// 制動力
 //============================================================================
 // コンストラクタ
 //============================================================================
-CPlayer::CPlayer() : CObjectX(static_cast<int>(LAYER::FRONT_MIDDLE))
+CPlayer::CPlayer() : CObject_X(static_cast<int>(LAYER::FRONT_MIDDLE))
 {
 	m_nLeftNumJump = 0;						// ジャンプ可能回数
 	m_velocity = { 0.0f, 0.0f, 0.0f };		// 加速度
@@ -47,7 +47,7 @@ CPlayer::~CPlayer()
 HRESULT CPlayer::Init()
 {
 	// 基底クラスの初期設定
-	HRESULT hr = CObjectX::Init();
+	HRESULT hr = CObject_X::Init();
 
 	return hr;
 }
@@ -58,7 +58,7 @@ HRESULT CPlayer::Init()
 void CPlayer::Uninit()
 {
 	// 基底クラスの終了処理
-	CObjectX::Uninit();
+	CObject_X::Uninit();
 }
 
 //============================================================================
@@ -67,7 +67,7 @@ void CPlayer::Uninit()
 void CPlayer::Update()
 {
 	// 現在位置を取得、以降このコピーを目標位置として変更を加えていく
-	m_posTarget = CObjectX::GetPos();
+	m_posTarget = CObject_X::GetPos();
 
 	// 操作
 	Control();
@@ -85,7 +85,7 @@ void CPlayer::Update()
 	AdjustPos();
 
 	// 基底クラスの更新
-	CObjectX::Update();
+	CObject_X::Update();
 }
 
 //============================================================================
@@ -94,7 +94,7 @@ void CPlayer::Update()
 void CPlayer::Draw()
 {
 	// 基底クラスの描画処理
-	CObjectX::Draw();
+	CObject_X::Draw();
 }
 
 //============================================================================

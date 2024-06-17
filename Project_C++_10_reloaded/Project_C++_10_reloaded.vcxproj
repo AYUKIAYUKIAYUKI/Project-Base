@@ -40,7 +40,7 @@
     <ClCompile Include="resource\object2D.cpp" />
     <ClCompile Include="resource\object3D.cpp" />
     <ClCompile Include="Resource\objectBillboard.cpp" />
-    <ClCompile Include="resource\objectX.cpp" />
+    <ClCompile Include="resource\object_X.cpp" />
     <ClCompile Include="resource\particle.cpp" />
     <ClCompile Include="resource\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -78,7 +78,7 @@
     <ClInclude Include="resource\object2D.h" />
     <ClInclude Include="resource\object3D.h" />
     <ClInclude Include="Resource\objectBillboard.h" />
-    <ClInclude Include="resource\objectX.h" />
+    <ClInclude Include="resource\object_X.h" />
     <ClInclude Include="resource\particle.h" />
     <ClInclude Include="resource\pch.h" />
     <ClInclude Include="resource\player.h" />
