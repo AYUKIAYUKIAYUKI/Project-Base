@@ -1,12 +1,12 @@
 //============================================================================
 // 
-// 3Dオブジェクト管理、ヘッダファイル [object3D.h]
+// 3Dオブジェクト管理、ヘッダファイル [object_3D.h]
 // Author : 福田歩希
 // 
 //============================================================================
 
-#ifndef _OBJECT3D_H_
-#define _OBJECT3D_H_	// 二重インクルード防止
+#ifndef _OBJECT_3D_H_
+#define _OBJECT_3D_H_	// 二重インクルード防止
 
 //****************************************************
 // インクルードファイル
@@ -16,12 +16,12 @@
 //****************************************************
 // 3Dオブジェクトクラス
 //****************************************************
-class CObject3D : public CObject
+class CObject_3D : public CObject
 {
 public:
 
-	CObject3D(int nPriority = static_cast<int>(LAYER::FRONT));	// コンストラクタ
-	~CObject3D() override;										// デストラクタ
+	CObject_3D(int nPriority = static_cast<int>(LAYER::FRONT));	// コンストラクタ
+	~CObject_3D() override;										// デストラクタ
 
 	HRESULT Init() override;	// 初期設定
 	void Uninit() override;		// 終了処理
@@ -41,7 +41,7 @@ public:
 
 	float GetLength();	// 展開用対角線取得
 
-	static CObject3D* Create();	// 生成
+	static CObject_3D* Create();	// 生成
 
 private:
 
@@ -58,4 +58,4 @@ private:
 	D3DXMATRIX m_mtxWorld;	// ワールド行列
 };
 
-#endif // _OBJECT3D_H_
+#endif // _OBJECT_3D_H_

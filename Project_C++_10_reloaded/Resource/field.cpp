@@ -15,7 +15,7 @@
 //============================================================================
 // コンストラクタ
 //============================================================================
-CField::CField() : CObject3D(static_cast<int>(LAYER::FRONT_MIDDLE))
+CField::CField() : CObject_3D(static_cast<int>(LAYER::FRONT_MIDDLE))
 {
 
 }
@@ -34,7 +34,7 @@ CField::~CField()
 HRESULT CField::Init()
 {
 	// 基底クラスの初期設定
-	HRESULT hr = CObject3D::Init();
+	HRESULT hr = CObject_3D::Init();
 
 	return hr;
 }
@@ -45,7 +45,7 @@ HRESULT CField::Init()
 void CField::Uninit()
 {
 	// 基底クラスの終了処理
-	CObject3D::Uninit();
+	CObject_3D::Uninit();
 }
 
 //============================================================================
@@ -54,7 +54,7 @@ void CField::Uninit()
 void CField::Update()
 {
 	// 基底クラスの更新
-	CObject3D::Update();
+	CObject_3D::Update();
 }
 
 //============================================================================
@@ -63,7 +63,7 @@ void CField::Update()
 void CField::Draw()
 {
 	// 基底クラスの描画処理
-	CObject3D::Draw();
+	CObject_3D::Draw();
 }
 
 //============================================================================
