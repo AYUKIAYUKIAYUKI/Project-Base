@@ -15,7 +15,7 @@
 //============================================================================
 // コンストラクタ
 //============================================================================
-CExplosion3D::CExplosion3D() : CObjectBillboard(static_cast<int>(LAYER::FRONT_MIDDLE))
+CExplosion3D::CExplosion3D() : CObject_billboard(static_cast<int>(LAYER::FRONT_MIDDLE))
 {
 	m_nCntTexChange = 0;	// テクスチャ変更管理
 }
@@ -34,7 +34,7 @@ CExplosion3D::~CExplosion3D()
 HRESULT CExplosion3D::Init()
 {
 	// 基底クラスの初期設定
-	HRESULT hr = CObjectBillboard::Init();
+	HRESULT hr = CObject_billboard::Init();
 
 	return hr;
 }
@@ -45,7 +45,7 @@ HRESULT CExplosion3D::Init()
 void CExplosion3D::Uninit()
 {
 	// 基底クラスの終了処理
-	CObjectBillboard::Uninit();
+	CObject_billboard::Uninit();
 }
 
 //============================================================================
@@ -60,7 +60,7 @@ void CExplosion3D::Update()
 	}
 
 	// 基底クラスの更新
-	CObjectBillboard::Update();
+	CObject_billboard::Update();
 }
 
 //============================================================================
@@ -69,7 +69,7 @@ void CExplosion3D::Update()
 void CExplosion3D::Draw()
 {
 	// 基底クラスの描画処理
-	CObjectBillboard::Draw();
+	CObject_billboard::Draw();
 }
 
 //============================================================================

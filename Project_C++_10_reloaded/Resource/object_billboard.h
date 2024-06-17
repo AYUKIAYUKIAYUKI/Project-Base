@@ -1,12 +1,12 @@
 //============================================================================
 // 
-// ビルボードオブジェクト管理、ヘッダファイル [objectBillboard.h]
+// ビルボードオブジェクト管理、ヘッダファイル [object_billboard.h]
 // Author : 福田歩希
 // 
 //============================================================================
 
-#ifndef _OBJECTBILLBOARD_H_
-#define _OBJECTBILLBOARD_H_	// 二重インクルード防止
+#ifndef _OBJECT_BILLBOARD_H_
+#define _OBJECT_BILLBOARD_H_	// 二重インクルード防止
 
 //****************************************************
 // インクルードファイル
@@ -16,12 +16,12 @@
 //****************************************************
 // ビルボードオブジェクトクラス
 //****************************************************
-class CObjectBillboard : public CObject
+class CObject_billboard : public CObject
 {
 public:
 
-	CObjectBillboard(int nPriority = static_cast<int>(LAYER::FRONT));	// コンストラクタ
-	~CObjectBillboard() override;										// デストラクタ
+	CObject_billboard(int nPriority = static_cast<int>(LAYER::FRONT));	// コンストラクタ
+	~CObject_billboard() override;										// デストラクタ
 
 	HRESULT Init() override;	// 初期設定
 	void Uninit() override;		// 終了処理
@@ -50,7 +50,7 @@ public:
 	int GetNowPatternV();					// 現在のテクスチャ縦分割幅取得
 	void SetNowPatternV(int nNowPatternV);	// 現在のテクスチャ縦分割幅設定
 
-	static CObjectBillboard* Create();	// 生成
+	static CObject_billboard* Create();	// 生成
 
 private:
 
@@ -71,4 +71,4 @@ private:
 	D3DXMATRIX m_mtxWorld;	// ワールド行列
 };
 
-#endif // _OBJECT3D_H_
+#endif // _OBJECT_BILLBOARD_H_

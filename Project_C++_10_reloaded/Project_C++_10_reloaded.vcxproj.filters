@@ -96,7 +96,7 @@
     <ClCompile Include="Resource\explosion3D.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Resource\objectBillboard.cpp">
+    <ClCompile Include="Resource\object_billboard.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Resource\stagemaker.cpp">
@@ -197,7 +197,7 @@
     <ClInclude Include="Resource\explosion3D.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Resource\objectBillboard.h">
+    <ClInclude Include="Resource\object_billboard.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Resource\stagemaker.h">

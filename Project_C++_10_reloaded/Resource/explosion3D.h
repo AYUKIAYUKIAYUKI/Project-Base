@@ -11,12 +11,12 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
-#include "objectBillboard.h"
+#include "object_billboard.h"
 
 //****************************************************
 // 3Dエクスプロージョンクラス
 //****************************************************
-class CExplosion3D : public CObjectBillboard
+class CExplosion3D : public CObject_billboard
 {
 public:
 

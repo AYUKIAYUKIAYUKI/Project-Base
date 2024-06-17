@@ -1,6 +1,6 @@
 //============================================================================
 // 
-// 3Dオブジェクト管理 [object3D.cpp]
+// ビルボードオブジェクト管理 [object_billboard.cpp]
 // Author : 福田歩希
 // 
 //============================================================================
@@ -8,14 +8,14 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
-#include "objectBillboard.h"
+#include "object_billboard.h"
 #include "main.h"
 #include "manager.h"
 
 //============================================================================
 // コンストラクタ
 //============================================================================
-CObjectBillboard::CObjectBillboard(int nPriority) : CObject(nPriority)
+CObject_billboard::CObject_billboard(int nPriority) : CObject(nPriority)
 {
 	m_pVtxBuff = nullptr;	// 頂点バッファのポインタを初期化
 	m_pTex = nullptr;		// テクスチャのポインタを初期化
@@ -35,7 +35,7 @@ CObjectBillboard::CObjectBillboard(int nPriority) : CObject(nPriority)
 //============================================================================
 // デストラクタ
 //============================================================================
-CObjectBillboard::~CObjectBillboard()
+CObject_billboard::~CObject_billboard()
 {
 
 }
@@ -43,7 +43,7 @@ CObjectBillboard::~CObjectBillboard()
 //============================================================================
 // 初期設定
 //============================================================================
-HRESULT CObjectBillboard::Init()
+HRESULT CObject_billboard::Init()
 {
 	// デバイスを取得
 	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
@@ -100,7 +100,7 @@ HRESULT CObjectBillboard::Init()
 //============================================================================
 // 終了処理
 //============================================================================
-void CObjectBillboard::Uninit()
+void CObject_billboard::Uninit()
 {
 	// 頂点バッファの破棄
 	if (m_pVtxBuff != nullptr)
@@ -113,7 +113,7 @@ void CObjectBillboard::Uninit()
 //============================================================================
 // 更新処理
 //============================================================================
-void CObjectBillboard::Update()
+void CObject_billboard::Update()
 {
 	if (m_pVtxBuff == nullptr)
 	{ // 頂点バッファが消失
@@ -171,7 +171,7 @@ void CObjectBillboard::Update()
 //============================================================================
 // 描画処理
 //============================================================================
-void CObjectBillboard::Draw()
+void CObject_billboard::Draw()
 {
 	// デバイスを取得
 	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
@@ -223,7 +223,7 @@ void CObjectBillboard::Draw()
 //============================================================================
 // テクスチャ割当
 //============================================================================
-void CObjectBillboard::BindTex(LPDIRECT3DTEXTURE9 pTex)
+void CObject_billboard::BindTex(LPDIRECT3DTEXTURE9 pTex)
 {
 	m_pTex = pTex;
 }
@@ -231,7 +231,7 @@ void CObjectBillboard::BindTex(LPDIRECT3DTEXTURE9 pTex)
 //============================================================================
 // 位置取得
 //============================================================================
-D3DXVECTOR3 CObjectBillboard::GetPos()
+D3DXVECTOR3 CObject_billboard::GetPos()
 {
 	return m_pos;
 }
@@ -239,7 +239,7 @@ D3DXVECTOR3 CObjectBillboard::GetPos()
 //============================================================================
 // 位置設定
 //============================================================================
-void CObjectBillboard::SetPos(D3DXVECTOR3 pos)
+void CObject_billboard::SetPos(D3DXVECTOR3 pos)
 {
 	m_pos = pos;
 }
@@ -247,7 +247,7 @@ void CObjectBillboard::SetPos(D3DXVECTOR3 pos)
 //============================================================================
 // 向き取得
 //============================================================================
-D3DXVECTOR3 CObjectBillboard::GetRot()
+D3DXVECTOR3 CObject_billboard::GetRot()
 {
 	return m_rot;
 }
@@ -255,7 +255,7 @@ D3DXVECTOR3 CObjectBillboard::GetRot()
 //============================================================================
 // 向き設定
 //============================================================================
-void CObjectBillboard::SetRot(D3DXVECTOR3 rot)
+void CObject_billboard::SetRot(D3DXVECTOR3 rot)
 {
 	m_rot = rot;
 }
@@ -263,7 +263,7 @@ void CObjectBillboard::SetRot(D3DXVECTOR3 rot)
 //============================================================================
 // サイズ取得
 //============================================================================
-D3DXVECTOR3 CObjectBillboard::GetSize()
+D3DXVECTOR3 CObject_billboard::GetSize()
 {
 	return m_size;
 }
@@ -271,7 +271,7 @@ D3DXVECTOR3 CObjectBillboard::GetSize()
 //============================================================================
 // サイズ設定
 //============================================================================
-void CObjectBillboard::SetSize(D3DXVECTOR3 size)
+void CObject_billboard::SetSize(D3DXVECTOR3 size)
 {
 	m_size = size;
 }
@@ -279,7 +279,7 @@ void CObjectBillboard::SetSize(D3DXVECTOR3 size)
 //============================================================================
 // 展開用対角線取得
 //============================================================================
-float CObjectBillboard::GetLength()
+float CObject_billboard::GetLength()
 {
 	return m_fLength;
 }
@@ -287,7 +287,7 @@ float CObjectBillboard::GetLength()
 //============================================================================
 // 横テクスチャ分割幅設定
 //============================================================================
-void CObjectBillboard::SetTexWidth(float fWidth)
+void CObject_billboard::SetTexWidth(float fWidth)
 {
 	m_fTexWidth = fWidth;
 }
@@ -295,7 +295,7 @@ void CObjectBillboard::SetTexWidth(float fWidth)
 //============================================================================
 // 縦テクスチャ分割幅設定
 //============================================================================
-void CObjectBillboard::SetTexHeight(float fHeight)
+void CObject_billboard::SetTexHeight(float fHeight)
 {
 	m_fTexHeight = fHeight;
 }
@@ -303,7 +303,7 @@ void CObjectBillboard::SetTexHeight(float fHeight)
 //============================================================================
 // 現在のテクスチャ横分割幅取得
 //============================================================================
-int CObjectBillboard::GetNowPatternU()
+int CObject_billboard::GetNowPatternU()
 {
 	return m_nNowPatternU;
 }
@@ -311,7 +311,7 @@ int CObjectBillboard::GetNowPatternU()
 //============================================================================
 // 現在のテクスチャ横分割幅設定
 //============================================================================
-void CObjectBillboard::SetNowPatternU(int nNowPatternU)
+void CObject_billboard::SetNowPatternU(int nNowPatternU)
 {
 	m_nNowPatternU = nNowPatternU;
 }
@@ -319,7 +319,7 @@ void CObjectBillboard::SetNowPatternU(int nNowPatternU)
 //============================================================================
 // 現在のテクスチャ縦分割幅取得
 //============================================================================
-int CObjectBillboard::GetNowPatternV()
+int CObject_billboard::GetNowPatternV()
 {
 	return m_nNowPatternV;
 }
@@ -327,7 +327,7 @@ int CObjectBillboard::GetNowPatternV()
 //============================================================================
 // 現在のテクスチャ縦分割幅設定
 //============================================================================
-void CObjectBillboard::SetNowPatternV(int nNowPatternV)
+void CObject_billboard::SetNowPatternV(int nNowPatternV)
 {
 	m_nNowPatternV = nNowPatternV;
 }
@@ -335,9 +335,9 @@ void CObjectBillboard::SetNowPatternV(int nNowPatternV)
 //============================================================================
 // 生成
 //============================================================================
-CObjectBillboard* CObjectBillboard::Create()
+CObject_billboard* CObject_billboard::Create()
 {
-	CObjectBillboard* pObject3D = DBG_NEW CObjectBillboard;
+	CObject_billboard* pObject3D = DBG_NEW CObject_billboard;
 
 	// 生成出来ていたら初期設定
 	if (pObject3D != nullptr)
@@ -351,7 +351,7 @@ CObjectBillboard* CObjectBillboard::Create()
 //============================================================================
 // ワールド行列設定
 //============================================================================
-void CObjectBillboard::SetMtxWorld()
+void CObject_billboard::SetMtxWorld()
 {
 	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
 
