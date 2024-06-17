@@ -19,7 +19,7 @@
 //============================================================================
 // コンストラクタ
 //============================================================================
-CBullet::CBullet() : CObject2D(static_cast<int>(LAYER::BACK_MIDDLE))
+CBullet::CBullet() : CObject_2D(static_cast<int>(LAYER::BACK_MIDDLE))
 {
 	m_nRemain = 0;		// 使用期間
 	m_fFlyAngle = 0;	// 飛ぶ角度
@@ -39,7 +39,7 @@ CBullet::~CBullet()
 HRESULT CBullet::Init()
 {
 	// 基底クラスの初期設定
-	HRESULT hr = CObject2D::Init();
+	HRESULT hr = CObject_2D::Init();
 
 	return hr;
 }
@@ -50,7 +50,7 @@ HRESULT CBullet::Init()
 void CBullet::Uninit()
 {
 	// 基底クラスの終了処理
- 	CObject2D::Uninit();
+ 	CObject_2D::Uninit();
 }
 
 //============================================================================
@@ -74,7 +74,7 @@ void CBullet::Update()
 	}
 
 	// 基底クラスの更新
-	CObject2D::Update();
+	CObject_2D::Update();
 }
 
 //============================================================================
@@ -83,7 +83,7 @@ void CBullet::Update()
 void CBullet::Draw()
 {
 	// 基底クラスの描画処理
-	CObject2D::Draw();
+	CObject_2D::Draw();
 }
 
 //============================================================================

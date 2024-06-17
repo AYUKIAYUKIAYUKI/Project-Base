@@ -63,7 +63,7 @@
     <ClCompile Include="resource\object.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="resource\object2D.cpp">
+    <ClCompile Include="resource\object_2D.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="resource\object_3D.cpp">
@@ -164,7 +164,7 @@
     <ClInclude Include="resource\object.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="resource\object2D.h">
+    <ClInclude Include="resource\object_2D.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="resource\object_3D.h">

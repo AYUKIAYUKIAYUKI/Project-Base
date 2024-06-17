@@ -1,12 +1,12 @@
 //============================================================================
 // 
-// 2Dオブジェクト管理、ヘッダファイル [object2D.h]
+// 2Dオブジェクト管理、ヘッダファイル [object_2D.h]
 // Author : 福田歩希
 // 
 //============================================================================
 
-#ifndef _OBJECT2D_H_
-#define _OBJECT2D_H_	// 二重インクルード防止
+#ifndef _OBJECT_2D_H_
+#define _OBJECT_2D_H_	// 二重インクルード防止
 
 //****************************************************
 // インクルードファイル
@@ -16,12 +16,12 @@
 //****************************************************
 // 2Dオブジェクトクラス
 //****************************************************
-class CObject2D : public CObject
+class CObject_2D : public CObject
 {
 public:
 	
-	CObject2D(int nPriority = static_cast<int>(LAYER::UI) - 1);	// コンストラクタ
-	~CObject2D() override;											// デストラクタ
+	CObject_2D(int nPriority = static_cast<int>(LAYER::UI) - 1);	// コンストラクタ
+	~CObject_2D() override;											// デストラクタ
 
 	HRESULT Init() override;	// 初期設定
 	void Uninit() override;		// 終了処理
@@ -50,7 +50,7 @@ public:
 	int GetNowPatternV();					// 現在のテクスチャ縦分割幅取得
 	void SetNowPatternV(int nNowPatternV);	// 現在のテクスチャ縦分割幅設定
 
-	static CObject2D* Create();	// 生成
+	static CObject_2D* Create();	// 生成
 
 private:
 
@@ -68,4 +68,4 @@ private:
 	int m_nNowPatternV;	// 現在の縦テクスチャ種類
 };
 
-#endif // _OBJECT2D_H_
+#endif // _OBJECT_2D_H_

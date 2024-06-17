@@ -37,7 +37,7 @@
     <ClCompile Include="Resource\model_X.cpp" />
     <ClCompile Include="resource\number.cpp" />
     <ClCompile Include="resource\object.cpp" />
-    <ClCompile Include="resource\object2D.cpp" />
+    <ClCompile Include="resource\object_2D.cpp" />
     <ClCompile Include="resource\object_3D.cpp" />
     <ClCompile Include="Resource\object_billboard.cpp" />
     <ClCompile Include="resource\object_X.cpp" />
@@ -75,7 +75,7 @@
     <ClInclude Include="resource\model_X.h" />
     <ClInclude Include="resource\number.h" />
     <ClInclude Include="resource\object.h" />
-    <ClInclude Include="resource\object2D.h" />
+    <ClInclude Include="resource\object_2D.h" />
     <ClInclude Include="resource\object_3D.h" />
     <ClInclude Include="Resource\object_billboard.h" />
     <ClInclude Include="resource\object_X.h" />

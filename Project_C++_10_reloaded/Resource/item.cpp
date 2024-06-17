@@ -16,7 +16,7 @@
 //============================================================================
 // コンストラクタ
 //============================================================================
-CItem::CItem() : CObject2D(static_cast<int>(LAYER::BACK_MIDDLE))
+CItem::CItem() : CObject_2D(static_cast<int>(LAYER::BACK_MIDDLE))
 {
 	m_velocity = { 0.0f, 0.0f, 0.0f };	// 加速度
 	m_pos_tgt = { 0.0f, 0.0f, 0.0f };	// 目標位置
@@ -43,7 +43,7 @@ CItem::~CItem()
 HRESULT CItem::Init()
 {
 	// 基底クラスの初期設定
-	HRESULT hr = CObject2D::Init();
+	HRESULT hr = CObject_2D::Init();
 
 	return hr;
 }
@@ -54,7 +54,7 @@ HRESULT CItem::Init()
 void CItem::Uninit()
 {
 	// 基底クラスの終了処理
-	CObject2D::Uninit();
+	CObject_2D::Uninit();
 }
 
 //============================================================================
@@ -75,7 +75,7 @@ void CItem::Update()
 	AdjustPos();
 
 	// 基底クラスの更新
-	CObject2D::Update();
+	CObject_2D::Update();
 }
 
 //============================================================================
@@ -84,7 +84,7 @@ void CItem::Update()
 void CItem::Draw()
 {
 	// 基底クラスの描画処理
-	CObject2D::Draw();
+	CObject_2D::Draw();
 }
 
 //============================================================================

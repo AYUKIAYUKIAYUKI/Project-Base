@@ -22,7 +22,7 @@ const float CEnemy::BRAKING_FORCE = 0.9f;	// 制動力
 //============================================================================
 // コンストラクタ
 //============================================================================
-CEnemy::CEnemy() : CObject2D(static_cast<int>(LAYER::BACK_MIDDLE))
+CEnemy::CEnemy() : CObject_2D(static_cast<int>(LAYER::BACK_MIDDLE))
 {
 	m_velocity = { 0.0f, 0.0f, 0.0f };	// 加速度
 	m_posTarget = { 0.0f, 0.0f, 0.0f };	// 目標位置
@@ -50,7 +50,7 @@ CEnemy::~CEnemy()
 HRESULT CEnemy::Init()
 {
 	// 基底クラスの初期設定
-	HRESULT hr = CObject2D::Init();
+	HRESULT hr = CObject_2D::Init();
 
 	return hr;
 }
@@ -61,7 +61,7 @@ HRESULT CEnemy::Init()
 void CEnemy::Uninit()
 {
 	// 基底クラスの終了処理
-	CObject2D::Uninit();
+	CObject_2D::Uninit();
 }
 
 //============================================================================
@@ -82,7 +82,7 @@ void CEnemy::Update()
 	AdjustPos();
 
 	// 基底クラスの更新
-	CObject2D::Update();
+	CObject_2D::Update();
 }
 
 //============================================================================
@@ -91,7 +91,7 @@ void CEnemy::Update()
 void CEnemy::Draw()
 {
 	// 基底クラスの描画処理
-	CObject2D::Draw();
+	CObject_2D::Draw();
 }
 
 //============================================================================

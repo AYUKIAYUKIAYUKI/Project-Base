@@ -14,7 +14,7 @@
 //============================================================================
 // コンストラクタ
 //============================================================================
-CBg::CBg() : CObject2D(static_cast<int>(LAYER::BACK))
+CBg::CBg() : CObject_2D(static_cast<int>(LAYER::BACK))
 {
 	m_nCntPAKU = 0;		// パクパク回数
 	m_nDelayPAKU = 0;	// パクパク遅延
@@ -34,7 +34,7 @@ CBg::~CBg()
 HRESULT CBg::Init()
 {
 	// 基底クラスの初期設定
-	HRESULT hr = CObject2D::Init();
+	HRESULT hr = CObject_2D::Init();
 
 	return hr;
 }
@@ -45,7 +45,7 @@ HRESULT CBg::Init()
 void CBg::Uninit()
 {
 	// 基底クラスの終了処理
-	CObject2D::Uninit();
+	CObject_2D::Uninit();
 }
 
 //============================================================================
@@ -57,7 +57,7 @@ void CBg::Update()
 	PAKUPAKU();
 
 	// 基底クラスの更新
-	CObject2D::Update();
+	CObject_2D::Update();
 }
 
 //============================================================================
@@ -66,7 +66,7 @@ void CBg::Update()
 void CBg::Draw()
 {
 	// 基底クラスの描画処理
-	CObject2D::Draw();
+	CObject_2D::Draw();
 }
 
 //============================================================================

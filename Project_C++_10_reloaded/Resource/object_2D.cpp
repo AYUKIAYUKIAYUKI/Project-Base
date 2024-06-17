@@ -1,6 +1,6 @@
 //============================================================================
 // 
-// 2Dオブジェクト管理 [object2D.cpp]
+// 2Dオブジェクト管理 [object_2D.cpp]
 // Author : 福田歩希
 // 
 //============================================================================
@@ -8,14 +8,14 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
-#include "object2D.h"
+#include "object_2D.h"
 #include "main.h"
 #include "manager.h"
 
 //============================================================================
 // コンストラクタ
 //============================================================================
-CObject2D::CObject2D(int nPriority) : CObject(nPriority)
+CObject_2D::CObject_2D(int nPriority) : CObject(nPriority)
 {
 	m_pVtxBuff = nullptr;	// 頂点バッファのポインタを初期化
 	m_pTex = nullptr;		// テクスチャのポインタを初期化
@@ -34,7 +34,7 @@ CObject2D::CObject2D(int nPriority) : CObject(nPriority)
 //============================================================================
 // デストラクタ
 //============================================================================
-CObject2D::~CObject2D()
+CObject_2D::~CObject_2D()
 {
 
 }
@@ -42,7 +42,7 @@ CObject2D::~CObject2D()
 //============================================================================
 // 初期設定
 //============================================================================
-HRESULT CObject2D::Init()
+HRESULT CObject_2D::Init()
 {
 	// デバイスを取得
 	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
@@ -99,7 +99,7 @@ HRESULT CObject2D::Init()
 //============================================================================
 // 終了処理
 //============================================================================
-void CObject2D::Uninit()
+void CObject_2D::Uninit()
 {
 	// 頂点バッファの破棄
 	if (m_pVtxBuff != nullptr)
@@ -112,7 +112,7 @@ void CObject2D::Uninit()
 //============================================================================
 // 更新処理
 //============================================================================
-void CObject2D::Update()
+void CObject_2D::Update()
 {
 	if (m_pVtxBuff == nullptr)
 	{ // 頂点バッファが消失
@@ -167,7 +167,7 @@ void CObject2D::Update()
 //============================================================================
 // 描画処理
 //============================================================================
-void CObject2D::Draw()
+void CObject_2D::Draw()
 {
 	// デバイスを取得
 	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
@@ -190,7 +190,7 @@ void CObject2D::Draw()
 //============================================================================
 // テクスチャ割当
 //============================================================================
-void CObject2D::BindTex(LPDIRECT3DTEXTURE9 pTex)
+void CObject_2D::BindTex(LPDIRECT3DTEXTURE9 pTex)
 {
 	m_pTex = pTex;
 }
@@ -198,7 +198,7 @@ void CObject2D::BindTex(LPDIRECT3DTEXTURE9 pTex)
 //============================================================================
 // 位置取得
 //============================================================================
-D3DXVECTOR3 CObject2D::GetPos()
+D3DXVECTOR3 CObject_2D::GetPos()
 {
 	return m_pos;
 }
@@ -206,7 +206,7 @@ D3DXVECTOR3 CObject2D::GetPos()
 //============================================================================
 // 位置設定
 //============================================================================
-void CObject2D::SetPos(D3DXVECTOR3 pos)
+void CObject_2D::SetPos(D3DXVECTOR3 pos)
 {
 	m_pos = pos;
 }
@@ -214,7 +214,7 @@ void CObject2D::SetPos(D3DXVECTOR3 pos)
 //============================================================================
 // 向き取得
 //============================================================================
-D3DXVECTOR3 CObject2D::GetRot()
+D3DXVECTOR3 CObject_2D::GetRot()
 {
 	return m_rot;
 }
@@ -222,7 +222,7 @@ D3DXVECTOR3 CObject2D::GetRot()
 //============================================================================
 // 向き設定
 //============================================================================
-void CObject2D::SetRot(D3DXVECTOR3 rot)
+void CObject_2D::SetRot(D3DXVECTOR3 rot)
 {
 	m_rot = rot;
 }
@@ -230,7 +230,7 @@ void CObject2D::SetRot(D3DXVECTOR3 rot)
 //============================================================================
 // サイズ取得
 //============================================================================
-D3DXVECTOR3 CObject2D::GetSize()
+D3DXVECTOR3 CObject_2D::GetSize()
 {
 	return m_size;
 }
@@ -238,7 +238,7 @@ D3DXVECTOR3 CObject2D::GetSize()
 //============================================================================
 // サイズ設定
 //============================================================================
-void CObject2D::SetSize(D3DXVECTOR3 size)
+void CObject_2D::SetSize(D3DXVECTOR3 size)
 {
 	m_size = size;
 }
@@ -246,7 +246,7 @@ void CObject2D::SetSize(D3DXVECTOR3 size)
 //============================================================================
 // 展開用対角線取得
 //============================================================================
-float CObject2D::GetLength()
+float CObject_2D::GetLength()
 {
 	return m_fLength;
 }
@@ -254,7 +254,7 @@ float CObject2D::GetLength()
 //============================================================================
 // 横テクスチャ分割幅設定
 //============================================================================
-void CObject2D::SetTexWidth(float fWidth)
+void CObject_2D::SetTexWidth(float fWidth)
 {
 	m_fTexWidth = fWidth;
 }
@@ -262,7 +262,7 @@ void CObject2D::SetTexWidth(float fWidth)
 //============================================================================
 // 縦テクスチャ分割幅設定
 //============================================================================
-void CObject2D::SetTexHeight(float fHeight)
+void CObject_2D::SetTexHeight(float fHeight)
 {
 	m_fTexHeight = fHeight;
 }
@@ -270,7 +270,7 @@ void CObject2D::SetTexHeight(float fHeight)
 //============================================================================
 // 現在のテクスチャ横分割幅取得
 //============================================================================
-int CObject2D::GetNowPatternU()
+int CObject_2D::GetNowPatternU()
 {
 	return m_nNowPatternU;
 }
@@ -278,7 +278,7 @@ int CObject2D::GetNowPatternU()
 //============================================================================
 // 現在のテクスチャ横分割幅設定
 //============================================================================
-void CObject2D::SetNowPatternU(int nNowPatternU)
+void CObject_2D::SetNowPatternU(int nNowPatternU)
 {
 	m_nNowPatternU = nNowPatternU;
 }
@@ -286,7 +286,7 @@ void CObject2D::SetNowPatternU(int nNowPatternU)
 //============================================================================
 // 現在のテクスチャ縦分割幅取得
 //============================================================================
-int CObject2D::GetNowPatternV()
+int CObject_2D::GetNowPatternV()
 {
 	return m_nNowPatternV;
 }
@@ -294,7 +294,7 @@ int CObject2D::GetNowPatternV()
 //============================================================================
 // 現在のテクスチャ縦分割幅設定
 //============================================================================
-void CObject2D::SetNowPatternV(int nNowPatternV)
+void CObject_2D::SetNowPatternV(int nNowPatternV)
 {
 	m_nNowPatternV = nNowPatternV;
 }
@@ -302,9 +302,9 @@ void CObject2D::SetNowPatternV(int nNowPatternV)
 //============================================================================
 // 生成
 //============================================================================
-CObject2D* CObject2D::Create()
+CObject_2D* CObject_2D::Create()
 {
-	CObject2D* pObject2D = DBG_NEW CObject2D;
+	CObject_2D* pObject2D = DBG_NEW CObject_2D;
 
 	// 生成出来ていたら初期設定
 	if (pObject2D != nullptr)

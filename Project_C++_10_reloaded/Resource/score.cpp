@@ -58,11 +58,11 @@ void CScore::Uninit()
 void CScore::Update()
 {
 	// デバッグ用
-	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
+	if (CManager::GetKeyboard()->GetTrigger(DIK_P))
 	{
 		m_nScore += 123;
 	}
-	else if (CManager::GetKeyboard()->GetTrigger(DIK_BACK))
+	else if (CManager::GetKeyboard()->GetTrigger(DIK_O))
 	{
 		m_nScore -= 123;
 	}

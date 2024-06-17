@@ -14,7 +14,7 @@
 //============================================================================
 // コンストラクタ
 //============================================================================
-CEffect::CEffect() : CObject2D(static_cast<int>(LAYER::BACK_MIDDLE))
+CEffect::CEffect() : CObject_2D(static_cast<int>(LAYER::BACK_MIDDLE))
 {
 
 }
@@ -33,7 +33,7 @@ CEffect::~CEffect()
 HRESULT CEffect::Init()
 {
 	// 基底クラスの初期設定
-	HRESULT hr = CObject2D::Init();
+	HRESULT hr = CObject_2D::Init();
 
 	return hr;
 }
@@ -44,7 +44,7 @@ HRESULT CEffect::Init()
 void CEffect::Uninit()
 {
 	// 基底クラスの終了処理
-	CObject2D::Uninit();
+	CObject_2D::Uninit();
 }
 
 //============================================================================
@@ -59,7 +59,7 @@ void CEffect::Update()
 	}
 
 	// 基底クラスの更新
-	CObject2D::Update();
+	CObject_2D::Update();
 }
 
 //============================================================================
@@ -76,7 +76,7 @@ void CEffect::Draw()
 	pDev->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_ONE);
 
 	// 基底クラスの描画処理
-	CObject2D::Draw();
+	CObject_2D::Draw();
 
 	// アルファブレンディングをの設定を戻す
 	pDev->SetRenderState(D3DRS_BLENDOP, D3DBLENDOP_ADD);

@@ -283,8 +283,5 @@ void CManager::SetScene(CScene::MODE mode)
 	}
 
 	// V‚½‚ÈƒV[ƒ“‚ğİ’è
-	if (m_pScene == nullptr)
-	{
-		m_pScene = CScene::Create(mode);
-	}
+	m_pScene = CScene::Create(mode);
 }
