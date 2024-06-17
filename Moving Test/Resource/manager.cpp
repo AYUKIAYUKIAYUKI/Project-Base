@@ -19,6 +19,7 @@ CLight* CManager::m_pLight = nullptr;				// ライト管理
 CInputKeyboard* CManager::m_pKeyboard = nullptr;	// キーボード管理
 CInputPad* CManager::m_pPad = nullptr;				// パッド管理
 CSound* CManager::m_pSound = nullptr;				// サウンド管理
+CScene* CManager::m_pScene = nullptr;				// シーン管理
 
 //============================================================================
 // コンストラクタ
@@ -31,6 +32,7 @@ CManager::CManager()
 	m_pKeyboard = nullptr;
 	m_pPad = nullptr;
 	m_pSound = nullptr;
+	m_pScene = nullptr;
 }
 
 //============================================================================
@@ -112,6 +114,9 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// サウンドの初期化
 	m_pSound->Init(hWnd);
 
+	// 最初のシーン設定
+	SetScene(CScene::MODE::TITLE);
+
 	return S_OK;
 }
 
@@ -165,6 +170,14 @@ void CManager::Uninit()
 		delete m_pSound;	// メモリを解放
 		m_pSound = nullptr;	// ポインタを初期化
 	}
+
+	// シーンの破棄
+	if (m_pScene != nullptr)
+	{
+		m_pScene->Uninit();	// 終了処理
+		delete m_pScene;	// メモリを解放
+		m_pScene = nullptr;	// ポインタを初期化
+	}
 }
 
 //============================================================================
@@ -174,6 +187,9 @@ void CManager::Update()
 {
 	// レンダラーの更新
 	m_pRenderer->Update();
+
+	// シーンの更新
+	m_pScene->Update();
 
 	// カメラの更新
 	m_pCamera->Update();
@@ -243,4 +259,32 @@ CInputPad* CManager::GetPad()
 CSound* CManager::GetSound()
 {
 	return m_pSound;
+}
+
+//============================================================================
+// シーン取得
+//============================================================================
+CScene* CManager::GetScene()
+{
+	return m_pScene;
+}
+
+//============================================================================
+// シーン設定
+//============================================================================
+void CManager::SetScene(CScene::MODE mode)
+{
+	// 現在のシーンを破棄
+	if (m_pScene != nullptr)
+	{
+		m_pScene->Uninit();
+		delete m_pScene;
+		m_pScene = nullptr;
+	}
+
+	// 新たなシーンを設定
+	if (m_pScene == nullptr)
+	{
+		m_pScene = CScene::Create(mode);
+	}
 }
