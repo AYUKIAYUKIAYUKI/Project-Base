@@ -46,6 +46,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Resource\physics.cpp" />
     <ClCompile Include="resource\player.cpp" />
     <ClCompile Include="resource\renderer.cpp" />
     <ClCompile Include="Resource\result.cpp" />
@@ -81,6 +82,7 @@
     <ClInclude Include="resource\object_X.h" />
     <ClInclude Include="resource\particle.h" />
     <ClInclude Include="resource\pch.h" />
+    <ClInclude Include="Resource\physics.h" />
     <ClInclude Include="resource\player.h" />
     <ClInclude Include="resource\renderer.h" />
     <ClInclude Include="Resource\result.h" />

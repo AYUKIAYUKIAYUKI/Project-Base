@@ -9,6 +9,7 @@
 // インクルードファイル
 //****************************************************
 #include "manager.h"
+#include "physics.h"
 
 //****************************************************
 // 静的メンバの初期化
@@ -117,6 +118,12 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// 最初のシーン設定
 	SetScene(CScene::MODE::TITLE);
 
+	// 物理演算インスタンスの生成
+	if (FAILED(CPhysics::Create()))
+	{
+		return E_FAIL;
+	}
+
 	return S_OK;
 }
 
@@ -125,6 +132,9 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 //============================================================================
 void CManager::Uninit()
 {
+	// 物理演算インスタンスの破棄
+	CPhysics::Release();
+
 	// レンダラーの破棄
 	if (m_pRenderer != nullptr)
 	{

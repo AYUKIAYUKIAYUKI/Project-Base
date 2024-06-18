@@ -15,6 +15,9 @@
 #include "explosion3D.h"
 #include "particle.h"
 
+// テスト
+#include "physics.h"
+
 //****************************************************
 // 静的メンバ変数の初期化
 //****************************************************
@@ -223,6 +226,8 @@ void CPlayer::Walking()
 				{ GetPos().x, GetPos().y, GetPos().z },	// 位置
 				{ 30.0f, 0.0f, 30.0f });				// サイズ
 		}
+
+		CPhysics::GetInstance()->Gravity();
 	}
 }
 
