@@ -1,2 +1,3 @@
 data\\MODEL\\sphere.x
+data\\MODEL\\legi.x
 data\\MODEL\\block.x

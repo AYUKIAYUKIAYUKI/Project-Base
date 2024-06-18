@@ -36,15 +36,20 @@ private:
 	static const float JUMP_FORCE;		// ジャンプ力
 	static const float BRAKING_FORCE;	// 制動力
 
-	void Control();		// 操作
-	void Rotation();	// 回転
-	void Braking();		// 制動調整
-	void GravityFall();	// 重力加速
-	void AdjustPos();	// 位置を調整
-	void Collision();	// 当たり判定
+	void Walking();			// 歩行
+	void Rotation();		// 回転
+	void Braking();			// 制動調整
+	void GravityFall();		// 重力加速
+	void Flying();			// 飛行
+	void Rolling();			// 旋回
+	void AirResistance();	// 空気抵抗
+	void AdjustPos();		// 位置を調整
+	bool Collision();		// 当たり判定
 
-	int m_nLeftNumJump;			// ジャンプ可能回数
+	bool m_bMetamorphose;		// 変身判定
+	int m_nCntMetamorphose;		// 変身期間
 	D3DXVECTOR3 m_velocity;		// 加速度
+	float m_fAngleFlying;		// 飛行方向
 	D3DXVECTOR3 m_posTarget;	// 目標位置
 	D3DXVECTOR3 m_rotTarget;	// 目標向き
 
