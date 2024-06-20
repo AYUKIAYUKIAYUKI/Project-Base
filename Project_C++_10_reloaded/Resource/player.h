@@ -20,7 +20,20 @@ class CPlayer : public CObject_X
 {
 public:
 
-	CPlayer();			// コンストラクタ
+	//****************************************************
+	// プレイヤーの状態
+	//****************************************************
+	enum class STATE
+	{
+		NONE = 0,	// 無し
+		DEFAULT,	// 通常
+		CHANGING,	// 変身開始
+		FLYING,		// 飛行
+		RETURNING,	// 変身解除
+		MAX,
+	};
+
+	CPlayer();				// コンストラクタ
 	~CPlayer() override;	// デストラクタ
 
 	HRESULT Init() override;	// 初期設定
@@ -39,13 +52,15 @@ private:
 	void Walking();			// 歩行
 	void Rotation();		// 回転
 	void Braking();			// 制動調整
-	void GravityFall();		// 重力加速
 	void Flying();			// 飛行
 	void Rolling();			// 旋回
 	void AirResistance();	// 空気抵抗
 	void AdjustPos();		// 位置を調整
 	bool Collision();		// 当たり判定
+	void FinishTransform();	// 変身解除
+	void Recoil();			// 反動
 
+	STATE m_state;				// 状態
 	bool m_bMetamorphose;		// 変身判定
 	int m_nCntMetamorphose;		// 変身期間
 	D3DXVECTOR3 m_velocity;		// 加速度

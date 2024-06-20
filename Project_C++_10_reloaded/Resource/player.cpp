@@ -30,6 +30,7 @@ const float CPlayer::BRAKING_FORCE = 0.9f;	// 制動力
 //============================================================================
 CPlayer::CPlayer() : CObject_X(static_cast<int>(LAYER::FRONT_MIDDLE))
 {
+	m_state = STATE::NONE;					// 状態
 	m_bMetamorphose = 0;					// 変身判定
 	m_nCntMetamorphose = 0;					// 変身期間
 	m_velocity = { 0.0f, 0.0f, 0.0f };		// 加速度
@@ -87,8 +88,8 @@ void CPlayer::Update()
 		// 制動調整
 		Braking();
 
-		// 重力加速
-		GravityFall();
+		// 重力落下
+		CPhysics::GetInstance()->Gravity(m_velocity);
 	}
 	else
 	{
@@ -226,8 +227,6 @@ void CPlayer::Walking()
 				{ GetPos().x, GetPos().y, GetPos().z },	// 位置
 				{ 30.0f, 0.0f, 30.0f });				// サイズ
 		}
-
-		CPhysics::GetInstance()->Gravity();
 	}
 }
 
@@ -277,15 +276,6 @@ void CPlayer::Braking()
 
 	// 少しずつ加速度を失う
 	m_velocity = m_velocity * CPlayer::BRAKING_FORCE;
-}
-
-//============================================================================
-// 重力落下
-//============================================================================
-void CPlayer::GravityFall()
-{
-	// 重力分、下方向への加速度増加
-	m_velocity.y = m_velocity.y - GRAVITY_FORCE;
 }
 
 //============================================================================
@@ -458,29 +448,8 @@ void CPlayer::AdjustPos()
 	// 当たり判定
 	if (Collision())
 	{
-		if (m_bMetamorphose)
-		{
-			// 変身判定を解除
-			m_bMetamorphose = 0;
-
-			// 加速度を初期化
-			m_velocity = { 0.0f, 0.0f, 0.0f };
-
-			// 飛行方向を初期化
-			m_fAngleFlying = 0.0f;
-
-			// Z軸回転を初期化
-			m_rotTarget.z = 0.0f;
-			SetRot({ GetRot().x, GetRot().y, 0.0f });
-
-			// 見た目を変更
-			BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::MODEL_PLAYER_000));
-
-			// 爆発を生成
-			CExplosion3D::Create(
-				{ GetPos().x, GetPos().y, GetPos().z },	// 位置
-				{ 30.0f, 0.0f, 30.0f });				// サイズ
-		}
+		// 変身解除
+		FinishTransform();
 	}
 
 	// 画面の下端に到達で下降制限
@@ -492,29 +461,8 @@ void CPlayer::AdjustPos()
 		// Y軸方向の加速度をリセット
 		m_velocity.y = 0.0f;
 
-		if (m_bMetamorphose)
-		{
-			// 変身判定を解除
-			m_bMetamorphose = 0;
-
-			// 加速度を初期化
-			m_velocity = { 0.0f, 0.0f, 0.0f };
-
-			// 飛行方向を初期化
-			m_fAngleFlying = 0.0f;
-
-			// Z軸回転を初期化
-			m_rotTarget.z = 0.0f;
-			SetRot({ GetRot().x, GetRot().y, 0.0f });
-
-			// 見た目を変更
-			BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::MODEL_PLAYER_000));
-
-			// 爆発を生成
-			CExplosion3D::Create(
-				{ GetPos().x, GetPos().y, GetPos().z },	// 位置
-				{ 30.0f, 0.0f, 30.0f });				// サイズ
-		}
+		// 変身解除
+		FinishTransform();
 	}
 
 	// 位置を設定
@@ -526,9 +474,6 @@ void CPlayer::AdjustPos()
 //============================================================================
 bool CPlayer::Collision()
 {
-	// ブロックサイズ
-	float fHalfSizeBlock = 10.0f;
-
 	// 衝突判定
 	bool bDetected = 0;
 
@@ -556,61 +501,60 @@ bool CPlayer::Collision()
 				}
 
 				// ブロックと衝突する場合
-				if (m_posTarget.x + fHalfSizeBlock >= pBlock->GetPos().x - fHalfSizeBlock &&
-					m_posTarget.x - fHalfSizeBlock <= pBlock->GetPos().x + fHalfSizeBlock &&
-					m_posTarget.y + fHalfSizeBlock >= pBlock->GetPos().y - fHalfSizeBlock &&
-					m_posTarget.y - fHalfSizeBlock <= pBlock->GetPos().y + fHalfSizeBlock &&
-					m_posTarget.z + fHalfSizeBlock >= pBlock->GetPos().z - fHalfSizeBlock &&
-					m_posTarget.z - fHalfSizeBlock <= pBlock->GetPos().z + fHalfSizeBlock)
+				if(CPhysics::GetInstance()->Cube(m_posTarget, { 10.0f, 10.0f ,10.0f }, pBlock->GetPos(), { 10.0f, 10.0f ,10.0f }))
 				{
-					// 隣接ではなく、めりこんでいる場合のみ
-					if (m_posTarget.x + fHalfSizeBlock > pBlock->GetPos().x - fHalfSizeBlock &&
-						m_posTarget.x - fHalfSizeBlock < pBlock->GetPos().x + fHalfSizeBlock &&
-						m_posTarget.y + fHalfSizeBlock > pBlock->GetPos().y - fHalfSizeBlock &&
-						m_posTarget.y - fHalfSizeBlock < pBlock->GetPos().y + fHalfSizeBlock)
-					{
-						bDetected = 1;
-					}
+					// 押し出し処理
+					CPhysics::GetInstance()->CubeResponse(m_posTarget, m_velocity, GetPos(), { 10.0f, 10.0f ,10.0f }, pBlock->GetPos(), { 10.0f, 10.0f ,10.0f });
 
-					// 過去の位置がどちらかの軸方向に重なっていたかで処理分岐
-					if (GetPos().x + fHalfSizeBlock > pBlock->GetPos().x - fHalfSizeBlock &&
-						GetPos().x - fHalfSizeBlock < pBlock->GetPos().x + fHalfSizeBlock)
-					{
-						if (GetPos().y < pBlock->GetPos().y)
-						{
-							// 位置をこのブロックの上端に設定
-							m_posTarget.y = -fHalfSizeBlock + (pBlock->GetPos().y - fHalfSizeBlock);
-						}
-						else if (GetPos().y > pBlock->GetPos().y)
-						{
-							// 位置をこのブロックの下端に設定
-							m_posTarget.y = fHalfSizeBlock + (pBlock->GetPos().y + fHalfSizeBlock);
-						}
-
-						// Y軸方向の加速度をリセット
-						m_velocity.y = 0.0f;
-					}
-					else if (GetPos().y + fHalfSizeBlock > pBlock->GetPos().y - fHalfSizeBlock &&
-						GetPos().y - fHalfSizeBlock < pBlock->GetPos().y + fHalfSizeBlock)
-					{
-						if (GetPos().x < pBlock->GetPos().x)
-						{
-							// 位置をこのブロックの左端に設定
-							m_posTarget.x = -fHalfSizeBlock + (pBlock->GetPos().x - fHalfSizeBlock);
-						}
-						else if (GetPos().x > pBlock->GetPos().x)
-						{
-							// 位置をこのブロックの右端に設定
-							m_posTarget.x = fHalfSizeBlock + (pBlock->GetPos().x + fHalfSizeBlock);
-						}
-
-						// X軸方向の加速度をリセット
-						m_velocity.x = 0.0f;
-					}
+					// 衝突判定を出す
+					bDetected = 1;
 				}
 			}
 		}
 	}
 
 	return bDetected;
+}
+
+//============================================================================
+// 変身解除
+//============================================================================
+void CPlayer::FinishTransform()
+{
+	if (m_bMetamorphose)
+	{
+		// 変身判定を解除
+		m_bMetamorphose = 0;
+
+		// 加速度を初期化
+		m_velocity = { 0.0f, 0.0f, 0.0f };
+
+		// Z軸回転を初期化
+		m_rotTarget.z = 0.0f;
+		SetRot({ GetRot().x, GetRot().y, 0.0f });
+
+		// 見た目を変更
+		BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::MODEL_PLAYER_000));
+
+		// 爆発を生成
+		CExplosion3D::Create(
+			{ GetPos().x, GetPos().y, GetPos().z },	// 位置
+			{ 30.0f, 0.0f, 30.0f });				// サイズ
+
+		// 反動を生成
+		Recoil();
+
+		// 飛行方向を初期化
+		m_fAngleFlying = 0.0f;
+	}
+}
+
+//============================================================================
+// 反動
+//============================================================================
+void CPlayer::Recoil()
+{
+	//// 飛行方向の逆に突進
+	//m_velocity.x += sinf(m_fAngleFlying + D3DX_PI) * 10.0f;
+	//m_velocity.y += cosf(m_fAngleFlying + D3DX_PI) * 10.0f;
 }

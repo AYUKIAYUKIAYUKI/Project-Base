@@ -33,12 +33,11 @@ public:
 private:
 
 	void Translation();	// 移動
-	void GravityFall();	// 重力加速
 	void AdjustPos();	// 位置を調整
 	void Collision();	// 当たり判定
 
-	D3DXVECTOR3 m_velocity;	// 加速度
-	D3DXVECTOR3 m_pos_tgt;	// 目標位置
+	D3DXVECTOR3 m_velocity;		// 加速度
+	D3DXVECTOR3 m_posTarget;	// 目標位置
 };
 
 #endif // _ITEM_H_

@@ -15,16 +15,19 @@ class CPhysics
 {
 public:
 
-	void Gravity();				// 重力落下
-	bool Collision_Sphere();	// 球体の衝突判定
-	bool Collision_Cube();		// 立方体の衝突判定
-	bool Collision_Response();	// 押し出し処理
+	void Gravity(D3DXVECTOR3& vec);	// 重力落下
 
-	static HRESULT Create();	// 生成
-	static void Release();		// 破棄
+	bool Sphere(const D3DXVECTOR3& posSelf, const float& fRadiusSelf, const D3DXVECTOR3& posTarget, const float& fRadiusTarget);	// 球体の衝突判定
+	bool Cube(const D3DXVECTOR3& posSelf, const D3DXVECTOR3& sizeSelf, const D3DXVECTOR3& posTarget, const D3DXVECTOR3& sizeTarget);	// 立方体の衝突判定
+	bool CubeResponse(D3DXVECTOR3& posDest, D3DXVECTOR3& velocity, const D3DXVECTOR3& posSelf, const D3DXVECTOR3& sizeSelf, const D3DXVECTOR3& posTarget, const D3DXVECTOR3& sizeTarget);	// 押し出し処理
+
+	static HRESULT Create();		// 生成
+	static void Release();			// 破棄
 	static CPhysics* GetInstance();	// インスタンスを取得
 
 private:
+
+	static const float GRAVITY_FORCE;	// 重力
 
 	CPhysics();		// コンストラクタ
 	~CPhysics();	// デストラクタ

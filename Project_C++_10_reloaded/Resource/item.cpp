@@ -10,6 +10,7 @@
 //****************************************************
 #include "item.h"
 #include "manager.h"
+#include "physics.h"
 #include "block.h"
 #include "particle.h"
 
@@ -19,7 +20,7 @@
 CItem::CItem() : CObject_2D(static_cast<int>(LAYER::BACK_MIDDLE))
 {
 	m_velocity = { 0.0f, 0.0f, 0.0f };	// 加速度
-	m_pos_tgt = { 0.0f, 0.0f, 0.0f };	// 目標位置
+	m_posTarget = { 0.0f, 0.0f, 0.0f };	// 目標位置
 }
 
 //============================================================================
@@ -63,13 +64,13 @@ void CItem::Uninit()
 void CItem::Update()
 {
 	// 現在位置を取得、以降このコピーを目標位置として変更を加えていく
-	m_pos_tgt = GetPos();
+	m_posTarget = GetPos();
 
 	// 移動
 	Translation();
 
-	// 重力加速
-	GravityFall();
+	// 重力落下
+	CPhysics::GetInstance()->Gravity(m_velocity);
 
 	// 位置を調整、この処理の終わりに目標位置を反映させる
 	AdjustPos();
@@ -118,16 +119,7 @@ CItem* CItem::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 void CItem::Translation()
 {
 	// 仮の移動
-	m_pos_tgt.x += -0.5f;
-}
-
-//============================================================================
-// 重力落下
-//============================================================================
-void CItem::GravityFall()
-{
-	// 重力分、下方向への加速度増加
-	m_velocity.y = m_velocity.y + GRAVITY_FORCE;
+	m_posTarget.x += -0.5f;
 }
 
 //============================================================================
@@ -136,7 +128,7 @@ void CItem::GravityFall()
 void CItem::AdjustPos()
 {
 	// 加速度分位置を変動
-	m_pos_tgt += m_velocity;
+	m_posTarget += m_velocity;
 
 	// 当たり判定
 	Collision();
@@ -145,29 +137,29 @@ void CItem::AdjustPos()
 	D3DXVECTOR3 fSize = GetSize();
 
 	// 画面の左右端に到達でそれぞれループ
-	if (m_pos_tgt.x - fSize.x > SCREEN_WIDTH)
+	if (m_posTarget.x - fSize.x > SCREEN_WIDTH)
 	{
 		// 位置を左端へ設定
-		m_pos_tgt.x = 0.0f - fSize.x;
+		m_posTarget.x = 0.0f - fSize.x;
 	}
-	else if (m_pos_tgt.x + fSize.x < 0.0f)
+	else if (m_posTarget.x + fSize.x < 0.0f)
 	{
 		// 位置を右端へ設定
-		m_pos_tgt.x = SCREEN_WIDTH + fSize.x;
+		m_posTarget.x = SCREEN_WIDTH + fSize.x;
 	}
 
 	// 画面の下端に到達で下降制限
-	if (m_pos_tgt.y + fSize.y > SCREEN_HEIGHT)
+	if (m_posTarget.y + fSize.y > SCREEN_HEIGHT)
 	{
 		// 位置を下端に設定
-		m_pos_tgt.y = SCREEN_HEIGHT - fSize.y;
+		m_posTarget.y = SCREEN_HEIGHT - fSize.y;
 
 		// Y軸方向の加速度をリセット
 		m_velocity.y = 0.0f;
 	}
 
 	// 位置を設定
-	SetPos(m_pos_tgt);
+	SetPos(m_posTarget);
 }
 
 //============================================================================
@@ -201,10 +193,10 @@ void CItem::Collision()
 			}
 
 			// ブロックと衝突する場合
-			if (m_pos_tgt.x + GetSize().x >= pBlock->GetPos().x - pBlock->GetSize().x &&
-				m_pos_tgt.x - GetSize().x <= pBlock->GetPos().x + pBlock->GetSize().x &&
-				m_pos_tgt.y + GetSize().y >= pBlock->GetPos().y - pBlock->GetSize().y &&
-				m_pos_tgt.y - GetSize().y <= pBlock->GetPos().y + pBlock->GetSize().y)
+			if (m_posTarget.x + GetSize().x >= pBlock->GetPos().x - pBlock->GetSize().x &&
+				m_posTarget.x - GetSize().x <= pBlock->GetPos().x + pBlock->GetSize().x &&
+				m_posTarget.y + GetSize().y >= pBlock->GetPos().y - pBlock->GetSize().y &&
+				m_posTarget.y - GetSize().y <= pBlock->GetPos().y + pBlock->GetSize().y)
 			{
 				// 過去の位置がどちらかの軸方向に重なっていたかで処理分岐
 				if (GetPos().x + GetSize().x > pBlock->GetPos().x - pBlock->GetSize().x &&
@@ -213,7 +205,7 @@ void CItem::Collision()
 					if (GetPos().y < pBlock->GetPos().y)
 					{
 						// 位置をこのブロックの上端に設定
-						m_pos_tgt.y = -GetSize().y + (pBlock->GetPos().y - pBlock->GetSize().y);
+						m_posTarget.y = -GetSize().y + (pBlock->GetPos().y - pBlock->GetSize().y);
 
 						// Y軸方向の加速度をリセット
 						m_velocity.y = 0.0f;
@@ -221,7 +213,7 @@ void CItem::Collision()
 					else if (GetPos().y > pBlock->GetPos().y)
 					{
 						// 位置をこのブロックの下端に設定
-						m_pos_tgt.y = GetSize().y + (pBlock->GetPos().y + pBlock->GetSize().y);
+						m_posTarget.y = GetSize().y + (pBlock->GetPos().y + pBlock->GetSize().y);
 					}
 				}
 				else
@@ -229,12 +221,12 @@ void CItem::Collision()
 					if (GetPos().x < pBlock->GetPos().x)
 					{
 						// 位置をこのブロックの左端に設定
-						m_pos_tgt.x = -GetSize().x + (pBlock->GetPos().x - pBlock->GetSize().x);
+						m_posTarget.x = -GetSize().x + (pBlock->GetPos().x - pBlock->GetSize().x);
 					}
 					else if (GetPos().x > pBlock->GetPos().x)
 					{
 						// 位置をこのブロックの右端に設定
-						m_pos_tgt.x = GetSize().x + (pBlock->GetPos().x + pBlock->GetSize().x);
+						m_posTarget.x = GetSize().x + (pBlock->GetPos().x + pBlock->GetSize().x);
 					}
 				}
 			}
