@@ -25,6 +25,10 @@ class CPlayer : public CObject_X
 {
 public:
 
+	static const float MAX_VELOCITY;	// 加速度上限
+	static const float JUMP_FORCE;		// ジャンプ力
+	static const float BRAKING_FORCE;	// 制動力
+
 	CPlayer();				// コンストラクタ
 	~CPlayer() override;	// デストラクタ
 
@@ -33,13 +37,21 @@ public:
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
 
+	D3DXVECTOR3 GetVelocity();				// 加速度を取得
+	void SetVelocity(D3DXVECTOR3 velocity);	// 加速度を設定
+
+	float GetAngleFlying();						// 飛行方向を取得
+	void SetAngleFlying(float fAngleFlying);	// 飛行方向を設定
+
+	D3DXVECTOR3 GetPosTarget();					// 目標位置を取得
+	void SetPosTarget(D3DXVECTOR3 posTarget);	// 目標位置を設定
+
+	D3DXVECTOR3 GetRotTarget();					// 目標向きを取得
+	void SetRotTarget(D3DXVECTOR3 rotTarget);	// 目標向きを設定
+
 	static CPlayer* Create(D3DXVECTOR3 pos);	// 生成
 
 private:
-
-	static const float MAX_VELOCITY;	// 加速度上限
-	static const float JUMP_FORCE;		// ジャンプ力
-	static const float BRAKING_FORCE;	// 制動力
 
 	void Walking();			// 歩行
 	void Rotation();		// 回転
@@ -88,8 +100,14 @@ public:
 	virtual ~CPlayerState();	// デストラクタ
 
 	virtual void Enter() = 0;	// 開始
-	virtual void Update() = 0;	// 更新
+	virtual void Update();		// 更新
 	virtual void Exit() = 0;	// 終了
+
+	void SetPlayerInstance(CPlayer* player);	// プレイヤー情報の設定
+
+protected:
+
+	CPlayer* m_pPlayer;	// プレイヤーインスタンスへのポインタ
 
 private:
 
