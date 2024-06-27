@@ -22,7 +22,7 @@
 const float CPlayerStateDefault::MAX_WALK_VELOCITY = 0.5f;	// 歩行時の最大加速度
 const float CPlayerStateDefault::BRAKING_WALK_SPEED = 0.9f;	// 歩行時の制動力
 const int CPlayerStateBeginning::BEGIN_CNT_MAX = 30;		// 変身必要時間
-const float CPlayerStateFlying::MAX_FLY_VELOCITY = 0.5f;	// 飛行時の最大加速度
+const float CPlayerStateFlying::MAX_FLY_VELOCITY = 1.5f;	// 飛行時の最大加速度
 const int CPlayerStateStopping::STOP_CNT_MAX = 30;			// 変身停止必要時間
 
 //============================================================================
@@ -682,7 +682,7 @@ void CPlayerStateFlying::Update()
 	}
 
 	// 回転
-	//Rotation();
+	Rotation();
 
 	// 制動調整
 	Braking();
@@ -696,7 +696,7 @@ void CPlayerStateFlying::Update()
 	if (m_pPlayer->AdjustPos())
 	{
 		// 何かに衝突で変身停止へ
-		//m_pPlayer->GetStateManager()->ChangeState(CPlayerState::STATE::STOPPING);
+		m_pPlayer->GetStateManager()->ChangeState(CPlayerState::STATE::STOPPING);
 	}
 }
 
