@@ -83,9 +83,9 @@ CStart* CStart::Create(D3DXVECTOR3 pos)
 		assert(false);
 	}
 
-	pStart->SetType(TYPE::NONE);	// タイプを設定
+	pStart->SetType(TYPE::START);	// タイプを設定
 
-	pStart->Init();		// 基底クラスの初期設定
+	pStart->Init();			// 基底クラスの初期設定
 	pStart->SetPos(pos);	// 位置の設定
 
 	// モデルを設定

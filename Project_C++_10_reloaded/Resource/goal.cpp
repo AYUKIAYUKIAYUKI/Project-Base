@@ -83,7 +83,7 @@ CGoal* CGoal::Create(D3DXVECTOR3 pos)
 		assert(false);
 	}
 
-	pGoal->SetType(TYPE::NONE);	// タイプを設定
+	pGoal->SetType(TYPE::GOAL);	// タイプを設定
 
 	pGoal->Init();		// 基底クラスの初期設定
 	pGoal->SetPos(pos);	// 位置の設定

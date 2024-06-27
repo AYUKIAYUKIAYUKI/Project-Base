@@ -199,11 +199,11 @@ void CRenderer::Draw()
 		// カメラをセット
 		CManager::GetCamera()->SetCamera();
 
-		// シーンの専用描画
-		CManager::GetScene()->Draw();
-
 		// 全オブジェクト描画処理
 		CObject::DrawAll();
+
+		// シーンの専用描画
+		CManager::GetScene()->Draw();
 
 		// 描画終了
 		m_pD3DDevice->EndScene();

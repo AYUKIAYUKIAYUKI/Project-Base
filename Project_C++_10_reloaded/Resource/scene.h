@@ -43,7 +43,7 @@ public:
 
 private:
 
-	//CFade* m_pFade;	// フェード情報
+	CFade* m_pFade;	// フェード情報
 
 	MODE m_mode;	// 現在のモード
 };

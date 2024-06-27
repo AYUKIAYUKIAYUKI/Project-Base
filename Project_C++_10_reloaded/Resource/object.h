@@ -27,6 +27,8 @@ public:
 		ENEMY,		// エネミー
 		BLOCK,		// ブロック
 		ITEM,		// アイテム
+		START,		// スタート
+		GOAL,		// ゴール
 		SCORE,		// スコア
 		MAX,
 	};

@@ -1,7 +1,7 @@
 data\\MODEL\\player1.x
 data\\MODEL\\player2.x
-data\\MODEL\\player3.x
+data\\MODEL\\player3_Y_0.x
 data\\MODEL\\player4.x
-data\\MODEL\\block.x
+data\\MODEL\\block_Y_0.x
 data\\MODEL\\start.x
 data\\MODEL\\goal.x

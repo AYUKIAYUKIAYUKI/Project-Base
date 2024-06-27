@@ -22,7 +22,7 @@
 const float CPlayerStateDefault::MAX_WALK_VELOCITY = 0.5f;	// 歩行時の最大加速度
 const float CPlayerStateDefault::BRAKING_WALK_SPEED = 0.9f;	// 歩行時の制動力
 const int CPlayerStateBeginning::BEGIN_CNT_MAX = 30;		// 変身必要時間
-const float CPlayerStateFlying::MAX_FLY_VELOCITY = 2.0f;	// 飛行時の最大加速度
+const float CPlayerStateFlying::MAX_FLY_VELOCITY = 0.5f;	// 飛行時の最大加速度
 const int CPlayerStateStopping::STOP_CNT_MAX = 30;			// 変身停止必要時間
 
 //============================================================================
@@ -52,6 +52,9 @@ HRESULT CPlayer::Init()
 {
 	// 基底クラスの初期設定
 	HRESULT hr = CObject_X::Init();
+
+	// 大きさを設定
+	SetSize({ 10.0f, 10.0f, 10.0f });
 
 	// 状態管理クラスの生成
 	if (m_pStateManager == nullptr)
@@ -233,18 +236,18 @@ bool CPlayer::AdjustPos()
 	// 当たり判定
 	bDetected = Collision();
 
-	// 画面の下端に到達で下降制限
-	if (m_posTarget.y < 0.0f)
-	{
-		// 位置を下端に設定
-		m_posTarget.y = 0.0f;
+	//// 画面の下端に到達で下降制限
+	//if (m_posTarget.y < 0.0f)
+	//{
+	//	// 位置を下端に設定
+	//	m_posTarget.y = 0.0f;
 
-		// Y軸方向の加速度をリセット
-		m_velocity.y = 0.0f;
+	//	// Y軸方向の加速度をリセット
+	//	m_velocity.y = 0.0f;
 
-		// 地面を検出
-		bDetected = true;
-	}
+	//	// 地面を検出
+	//	bDetected = true;
+	//}
 
 	// 位置を設定
 	SetPos(m_posTarget);
@@ -260,6 +263,9 @@ bool CPlayer::Collision()
 {
 	// 衝突判定
 	bool bDetected = 0;
+
+	// 仮サイズ
+	D3DXVECTOR3 BlockSize = { 10.0f, 10.0f, 10.0f };
 
 	for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::MAX); nCntPriority++)
 	{
@@ -285,10 +291,10 @@ bool CPlayer::Collision()
 				}
 
 				// ブロックと衝突する場合
-				if (CPhysics::GetInstance()->Cube(m_posTarget, { 10.0f, 10.0f ,10.0f }, pBlock->GetPos(), { 10.0f, 10.0f ,10.0f }))
+				if (CPhysics::GetInstance()->Cube(m_posTarget, GetSize(), pBlock->GetPos(), BlockSize))
 				{
 					// 押し出し処理
-					CPhysics::GetInstance()->CubeResponse(m_posTarget, m_velocity, GetPos(), { 10.0f, 10.0f ,10.0f }, pBlock->GetPos(), { 10.0f, 10.0f ,10.0f });
+					CPhysics::GetInstance()->CubeResponse(m_posTarget, m_velocity, GetPos(), GetSize(), pBlock->GetPos(), BlockSize);
 
 					// 衝突判定を出す
 					bDetected = 1;
@@ -676,7 +682,7 @@ void CPlayerStateFlying::Update()
 	}
 
 	// 回転
-	Rotation();
+	//Rotation();
 
 	// 制動調整
 	Braking();
@@ -690,7 +696,7 @@ void CPlayerStateFlying::Update()
 	if (m_pPlayer->AdjustPos())
 	{
 		// 何かに衝突で変身停止へ
-		m_pPlayer->GetStateManager()->ChangeState(CPlayerState::STATE::STOPPING);
+		//m_pPlayer->GetStateManager()->ChangeState(CPlayerState::STATE::STOPPING);
 	}
 }
 

@@ -75,12 +75,12 @@ bool CPhysics::CubeResponse(D3DXVECTOR3& posDest, D3DXVECTOR3& velocity, const D
 		if (posSelf.y < posTarget.y)
 		{
 			// 位置をこのブロックの上端に設定
-			posDest.y = -sizeSelf.x + (posTarget.y - sizeTarget.y);
+			posDest.y = -sizeSelf.y + (posTarget.y - sizeTarget.y);
 		}
 		else if (posSelf.y > posTarget.y)
 		{
 			// 位置をこのブロックの下端に設定
-			posDest.y = sizeSelf.x + (posTarget.y + sizeTarget.y);
+			posDest.y = sizeSelf.y + (posTarget.y + sizeTarget.y);
 		}
 
 		return 1;
@@ -94,12 +94,12 @@ bool CPhysics::CubeResponse(D3DXVECTOR3& posDest, D3DXVECTOR3& velocity, const D
 		if (posSelf.x < posTarget.x)
 		{
 			// 位置をこのブロックの左端に設定
-			posDest.x = -sizeSelf.y + (posTarget.x - sizeTarget.x);
+			posDest.x = -sizeSelf.x + (posTarget.x - sizeTarget.x);
 		}
 		else if (posSelf.x > posTarget.x)
 		{
 			// 位置をこのブロックの右端に設定
-			posDest.x = sizeSelf.y + (posTarget.x + sizeTarget.x);
+			posDest.x = sizeSelf.x + (posTarget.x + sizeTarget.x);
 		}
 
 		return 1;
