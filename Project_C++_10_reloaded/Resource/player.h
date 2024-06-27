@@ -49,34 +49,22 @@ public:
 	D3DXVECTOR3 GetRotTarget();					// 目標向きを取得
 	void SetRotTarget(D3DXVECTOR3 rotTarget);	// 目標向きを設定
 
+	CPlayerStateManager* GetStateManager();	// 状態管理取得
+
 	static CPlayer* Create(D3DXVECTOR3 pos);	// 生成
+
+	bool AdjustPos();	// 位置を調整
 
 private:
 
-	void Walking();			// 歩行
-	void Rotation();		// 回転
-	void Braking();			// 制動調整
-
-	void Flying();			// 飛行
-	void Rolling();			// 旋回
-	void AirResistance();	// 空気抵抗
-
-	void AdjustPos();		// 位置を調整
-	bool Collision();		// 当たり判定
-
-	void FinishTransform();	// 変身解除
-	void Recoil();			// 反動
+	bool Collision();	// 当たり判定
 
 	CPlayerStateManager* m_pStateManager;	// 状態管理
 
-	bool m_bMetamorphose;		// 変身判定
-	int m_nCntMetamorphose;		// 変身期間
 	D3DXVECTOR3 m_velocity;		// 加速度
 	float m_fAngleFlying;		// 飛行方向
 	D3DXVECTOR3 m_posTarget;	// 目標位置
 	D3DXVECTOR3 m_rotTarget;	// 目標向き
-
-	int m_nTestExplosionCnt;	// これはテスト用です
 };
 
 //****************************************************
@@ -92,14 +80,16 @@ public:
 	enum class STATE
 	{
 		DEFAULT = 0,	// 通常
+		BEGINNING,		// 変身開始
 		FLYING,			// 飛行
+		STOPPING,		// 変身停止
 		MAX,
 	};
 
 	CPlayerState();				// コンストラクタ
 	virtual ~CPlayerState();	// デストラクタ
 
-	virtual void Enter() = 0;	// 開始
+	virtual void Init();		// 初期設定
 	virtual void Update();		// 更新
 	virtual void Exit() = 0;	// 終了
 
@@ -108,12 +98,6 @@ public:
 protected:
 
 	CPlayer* m_pPlayer;	// プレイヤーインスタンスへのポインタ
-
-private:
-
-	virtual void Control() = 0;		// 操作
-	virtual void Rotation() = 0;	// 回転
-	virtual void Braking() = 0;		// 制動調整
 };
 
 //****************************************************
@@ -126,15 +110,36 @@ public:
 	CPlayerStateDefault();				// コンストラクタ
 	~CPlayerStateDefault() override;	// デストラクタ
 
-	void Enter() override;	// 開始
+	void Init() override;	// 初期設定
 	void Update() override;	// 更新
 	void Exit() override;	// 終了
 
 private:
 
-	void Control() override;	// 操作
-	void Rotation() override;	// 回転
-	void Braking() override;	// 制動調整
+	bool Walk();		// 操作
+	void Rotation();	// 回転
+	void Braking();		// 制動調整
+};
+
+//****************************************************
+// プレイヤー変身開始クラス
+//****************************************************
+class CPlayerStateBeginning : public CPlayerState
+{
+public:
+
+	CPlayerStateBeginning();			// コンストラクタ
+	~CPlayerStateBeginning() override;	// デストラクタ
+
+	void Init() override;	// 初期設定
+	void Update() override;	// 更新
+	void Exit() override;	// 終了
+
+private:
+
+	static const int END_CNT = 45;	// 変身必要時間
+
+	int m_nCntMetamorphose;	// 変身時間カウント
 };
 
 //****************************************************
@@ -147,15 +152,38 @@ public:
 	CPlayerStateFlying();			// コンストラクタ
 	~CPlayerStateFlying() override;	// デストラクタ
 
-	void Enter() override;	// 開始
+	void Init() override;	// 開始
 	void Update() override;	// 更新
 	void Exit() override;	// 終了
 
 private:
 
-	void Control() override;	// 操作
-	void Rotation() override;	// 回転
-	void Braking() override;	// 制動調整
+	bool Flying();		// 操作
+	void Rotation();	// 回転
+	void Braking();		// 制動調整
+	void Finish();		// 変身解除
+	void Recoil();		// 反動
+};
+
+//****************************************************
+// プレイヤー変身停止クラス
+//****************************************************
+class CPlayerStateStopping : public CPlayerState
+{
+public:
+
+	CPlayerStateStopping();			// コンストラクタ
+	~CPlayerStateStopping() override;	// デストラクタ
+
+	void Init() override;	// 初期設定
+	void Update() override;	// 更新
+	void Exit() override;	// 終了
+
+private:
+
+	static const int END_CNT = 45;	// 変身停止必要時間
+
+	int m_nCntStopMetamorphose;	// 変身時間カウント
 };
 
 //****************************************************
@@ -171,14 +199,18 @@ public:
 	void Init();	// 初期設定
 	void Uninit();	// 終了処理
 
+	CPlayer* GetPlayerInstance();				// プレイヤーインスタンスの取得
+	void SetPlayerInstance(CPlayer* player);	// プレイヤーインスタンスの設定
+
 	void ChangeState(CPlayerState::STATE state);	// 状態を変更
 
 	CPlayerState* GetState();	// 状態を取得
 
 private:
 	
-	CPlayerState* Create(CPlayerState::STATE state);	// 新たな状態を生成
+	void Create(CPlayerState::STATE state);	// 新たな状態を生成
 
+	CPlayer* m_pPlayer;		// プレイヤーインスタンスへのポインタ
 	CPlayerState* m_pState;	// 状態を保持
 };
 

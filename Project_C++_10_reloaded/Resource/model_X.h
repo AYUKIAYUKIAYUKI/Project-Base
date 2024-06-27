@@ -25,8 +25,10 @@ public:
 	//****************************************************
 	enum class MODEL_TYPE
 	{
-		MODEL_PLAYER_000 = 0,	// プレイヤー0
-		MODEL_PLAYER_001,		// プレイヤー1
+		MODEL_PLAYER_000 = 0,	// プレイヤー1
+		MODEL_PLAYER_001,		// プレイヤー2
+		MODEL_PLAYER_002,		// プレイヤー3
+		MODEL_PLAYER_003,		// プレイヤー4
 		MODEL_BLOCK_000,		// ブロック0
 		MAX,
 	};
