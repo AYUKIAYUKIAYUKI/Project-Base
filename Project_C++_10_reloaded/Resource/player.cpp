@@ -21,9 +21,9 @@
 //****************************************************
 const float CPlayerStateDefault::MAX_WALK_VELOCITY = 0.5f;	// 歩行時の最大加速度
 const float CPlayerStateDefault::BRAKING_WALK_SPEED = 0.9f;	// 歩行時の制動力
-const int CPlayerStateBeginning::BEGIN_CNT_MAX = 30;		// 変身必要時間
-const float CPlayerStateFlying::MAX_FLY_VELOCITY = 1.5f;	// 飛行時の最大加速度
-const int CPlayerStateStopping::STOP_CNT_MAX = 30;			// 変身停止必要時間
+const int CPlayerStateBeginning::BEGIN_CNT_MAX = 20;		// 変身必要時間
+const float CPlayerStateFlying::MAX_FLY_VELOCITY = 1.0f;	// 飛行時の最大加速度
+const int CPlayerStateStopping::STOP_CNT_MAX = 20;			// 変身停止必要時間
 
 //============================================================================
 // コンストラクタ
@@ -189,6 +189,22 @@ void CPlayer::SetRotTarget(D3DXVECTOR3 rotTarget)
 {
 	m_rotTarget = rotTarget;
 }
+
+////============================================================================
+//// 変身可能判定を取得
+////============================================================================
+//bool CPlayer::GetEnableMetamorphose()
+//{
+//	return m_bEnableMetamorphose;
+//}
+//
+////============================================================================
+//// 変身可能判定を取得
+////============================================================================
+//void CPlayer::SetEnableMetamorphose(bool judge)
+//{
+//	m_bEnableMetamorphose = judge;
+//}
 
 //============================================================================
 // 状態管理取得
@@ -488,10 +504,15 @@ bool CPlayerStateDefault::Walk()
 	// 状態変更
 	if (pKeyboard->GetTrigger(DIK_SPACE))
 	{
-		// 状態変更
-		m_pPlayer->GetStateManager()->ChangeState(CPlayerState::STATE::BEGINNING);
-
-		return false;
+		// Y方向への加速度が無ければ変身
+		if (m_pPlayer->GetVelocity().y == 0.0f)
+		{
+			// 見た目を変更する
+			m_pPlayer->GetStateManager()->ChangeState(CPlayerState::STATE::BEGINNING);
+			
+			// 以降の更新処理を行わない
+			return false;
+		}
 	}
 
 	return true;
@@ -596,7 +617,7 @@ void CPlayerStateBeginning::Update()
 
 		// 変身期間中は強制上昇
 		D3DXVECTOR3 posTarget = m_pPlayer->GetPosTarget();
-		posTarget.y += 1.0f;
+		posTarget.y += 0.75f;
 		m_pPlayer->SetPosTarget(posTarget);
 
 		// Y軸を高速回転し、Z軸回転を初期化
@@ -958,8 +979,8 @@ void CPlayerStateStopping::Recoil()
 	D3DXVECTOR3 velocity = m_pPlayer->GetVelocity();
 
 	// 飛行方向に突進
-	velocity.x += -sinf(m_pPlayer->GetAngleFlying()) * 0.04f;
-	velocity.y += -cosf(m_pPlayer->GetAngleFlying()) * 0.04f;
+	velocity.x += -sinf(m_pPlayer->GetAngleFlying()) * 0.075f;
+	velocity.y += -cosf(m_pPlayer->GetAngleFlying()) * 0.075f;
 
 	m_pPlayer->SetVelocity(velocity);
 }
