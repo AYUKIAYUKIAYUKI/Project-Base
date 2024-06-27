@@ -25,10 +25,6 @@ class CPlayer : public CObject_X
 {
 public:
 
-	static const float MAX_VELOCITY;	// 加速度上限
-	static const float JUMP_FORCE;		// ジャンプ力
-	static const float BRAKING_FORCE;	// 制動力
-
 	CPlayer();				// コンストラクタ
 	~CPlayer() override;	// デストラクタ
 
@@ -116,6 +112,9 @@ public:
 
 private:
 
+	static const float MAX_WALK_VELOCITY;	// 歩行時の最大加速度
+	static const float BRAKING_WALK_SPEED;	// 歩行時の制動力
+
 	bool Walk();		// 操作
 	void Rotation();	// 回転
 	void Braking();		// 制動調整
@@ -137,7 +136,7 @@ public:
 
 private:
 
-	static const int END_CNT = 45;	// 変身必要時間
+	static const int BEGIN_CNT_MAX;	// 変身必要時間
 
 	int m_nCntMetamorphose;	// 変身時間カウント
 };
@@ -158,11 +157,11 @@ public:
 
 private:
 
+	static const float MAX_FLY_VELOCITY;	// 飛行時の最大加速度
+
 	bool Flying();		// 操作
 	void Rotation();	// 回転
 	void Braking();		// 制動調整
-	void Finish();		// 変身解除
-	void Recoil();		// 反動
 };
 
 //****************************************************
@@ -172,7 +171,7 @@ class CPlayerStateStopping : public CPlayerState
 {
 public:
 
-	CPlayerStateStopping();			// コンストラクタ
+	CPlayerStateStopping();				// コンストラクタ
 	~CPlayerStateStopping() override;	// デストラクタ
 
 	void Init() override;	// 初期設定
@@ -181,7 +180,10 @@ public:
 
 private:
 
-	static const int END_CNT = 45;	// 変身停止必要時間
+	void Rolling();	// 回転
+	void Recoil();	// 反動
+
+	static const int STOP_CNT_MAX;	// 変身停止必要時間
 
 	int m_nCntStopMetamorphose;	// 変身時間カウント
 };

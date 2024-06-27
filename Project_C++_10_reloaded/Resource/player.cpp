@@ -10,20 +10,20 @@
 //****************************************************
 #include "player.h"
 #include "manager.h"
+#include "physics.h"
 #include "block.h"
 #include "explosion.h"
 #include "explosion3D.h"
 #include "particle.h"
 
-// テスト
-#include "physics.h"
-
 //****************************************************
 // 静的メンバ変数の初期化
 //****************************************************
-const float CPlayer::MAX_VELOCITY = 0.5f;	// 加速度上限
-const float CPlayer::JUMP_FORCE = 6.0f;		// ジャンプ力
-const float CPlayer::BRAKING_FORCE = 0.9f;	// 制動力
+const float CPlayerStateDefault::MAX_WALK_VELOCITY = 0.5f;	// 歩行時の最大加速度
+const float CPlayerStateDefault::BRAKING_WALK_SPEED = 0.9f;	// 歩行時の制動力
+const int CPlayerStateBeginning::BEGIN_CNT_MAX = 30;		// 変身必要時間
+const float CPlayerStateFlying::MAX_FLY_VELOCITY = 2.0f;	// 飛行時の最大加速度
+const int CPlayerStateStopping::STOP_CNT_MAX = 30;			// 変身停止必要時間
 
 //============================================================================
 // コンストラクタ
@@ -214,7 +214,7 @@ CPlayer* CPlayer::Create(D3DXVECTOR3 pos)
 	pPlayer->SetPos(pos);	// 位置の設定
 
 	// モデルを設定
-	pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::MODEL_PLAYER_000));
+	pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_000));
 
 	return pPlayer;
 }
@@ -429,7 +429,7 @@ void CPlayerStateDefault::Exit()
 	m_pPlayer->SetRot(rot);
 
 	// 見た目を変更
-	m_pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::MODEL_PLAYER_001));
+	m_pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_001));
 
 	// 爆発を生成
 	CExplosion3D::Create(
@@ -530,17 +530,17 @@ void CPlayerStateDefault::Braking()
 	D3DXVECTOR3 velocity = m_pPlayer->GetVelocity();
 
 	// 加速度上限に到達で速度固定
-	if (velocity.x > CPlayer::MAX_VELOCITY)
+	if (velocity.x > MAX_WALK_VELOCITY)
 	{
-		velocity.x = CPlayer::MAX_VELOCITY;
+		velocity.x = MAX_WALK_VELOCITY;
 	}
-	else if (velocity.x < -CPlayer::MAX_VELOCITY)
+	else if (velocity.x < -MAX_WALK_VELOCITY)
 	{
-		velocity.x = -CPlayer::MAX_VELOCITY;
+		velocity.x = -MAX_WALK_VELOCITY;
 	}
 
 	// 少しずつ加速度を失う
-	velocity = velocity * CPlayer::BRAKING_FORCE;
+	velocity = velocity * BRAKING_WALK_SPEED;
 
 	// 加速度を設定
 	m_pPlayer->SetVelocity(velocity);
@@ -583,7 +583,7 @@ void CPlayerStateBeginning::Init()
 //============================================================================
 void CPlayerStateBeginning::Update()
 {
-	if (m_nCntMetamorphose < END_CNT)
+	if (m_nCntMetamorphose < BEGIN_CNT_MAX)
 	{
 		// 変身時間をカウントアップ
 		m_nCntMetamorphose++;
@@ -628,7 +628,7 @@ void CPlayerStateBeginning::Exit()
 	m_pPlayer->SetRot(rot);
 
 	// 見た目を変更
-	m_pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::MODEL_PLAYER_002));
+	m_pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_002));
 }
 
 
@@ -702,16 +702,13 @@ void CPlayerStateFlying::Exit()
 	// 加速度を初期化
 	m_pPlayer->SetVelocity({ 0.0f, 0.0f, 0.0f });
 
-	// 飛行方向を初期化
-	//m_pPlayer->SetAngleFlying(0.0f);
-
-	// Z軸回転を初期化
-	D3DXVECTOR3 rot = m_pPlayer->GetRot();
-	rot.z = 0.0f;
-	m_pPlayer->SetRot(rot);
+	//// Z軸回転を初期化
+	//D3DXVECTOR3 rot = m_pPlayer->GetRot();
+	//rot.z = 0.0f;
+	//m_pPlayer->SetRot(rot);
 
 	// 見た目を変更
-	m_pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::MODEL_PLAYER_003));
+	m_pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_003));
 
 	// 爆発を生成
 	CExplosion3D::Create(
@@ -815,25 +812,23 @@ void CPlayerStateFlying::Braking()
 {
 	D3DXVECTOR3 velocity = m_pPlayer->GetVelocity();
 
-	float これはテスト用 = 2.0f;
-
 	// 加速度上限に到達で速度固定
-	if (velocity.x > これはテスト用)
+	if (velocity.x > MAX_FLY_VELOCITY)
 	{
-		velocity.x = これはテスト用;
+		velocity.x = MAX_FLY_VELOCITY;
 	}
-	else if (velocity.x < -これはテスト用)
+	else if (velocity.x < -MAX_FLY_VELOCITY)
 	{
-		velocity.x = -これはテスト用;
+		velocity.x = -MAX_FLY_VELOCITY;
 	}
 
-	if (velocity.y > これはテスト用)
+	if (velocity.y > MAX_FLY_VELOCITY)
 	{
-		velocity.y = これはテスト用;
+		velocity.y = MAX_FLY_VELOCITY;
 	}
-	else if (velocity.y < -これはテスト用)
+	else if (velocity.y < -MAX_FLY_VELOCITY)
 	{
-		velocity.y = -これはテスト用;
+		velocity.y = -MAX_FLY_VELOCITY;
 	}
 
 	m_pPlayer->SetVelocity(velocity);
@@ -877,10 +872,24 @@ void CPlayerStateStopping::Init()
 //============================================================================
 void CPlayerStateStopping::Update()
 {
-	if (m_nCntStopMetamorphose < END_CNT)
+	if (m_nCntStopMetamorphose < STOP_CNT_MAX)
 	{
 		// 変身停止期間をカウントアップ
 		m_nCntStopMetamorphose++;
+
+		// 回転
+		Rolling();
+
+		// 反動
+		Recoil();
+
+		// 加速度を位置に加算
+		D3DXVECTOR3 posTarget = m_pPlayer->GetPosTarget();
+		posTarget += m_pPlayer->GetVelocity();
+		m_pPlayer->SetPosTarget(posTarget);
+
+		// 位置調整
+		m_pPlayer->AdjustPos();
 	}
 	else
 	{
@@ -894,8 +903,59 @@ void CPlayerStateStopping::Update()
 //============================================================================
 void CPlayerStateStopping::Exit()
 {
+	// X, Z軸回転を初期化
+	D3DXVECTOR3 rot = m_pPlayer->GetRot();
+	rot.x = 0.0f;
+	rot.z = 0.0f;
+	m_pPlayer->SetRot(rot);
+
 	// 見た目を変更
-	m_pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::MODEL_PLAYER_000));
+	m_pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_000));
+}
+
+//============================================================================
+// 回転
+//============================================================================
+void CPlayerStateStopping::Rolling()
+{
+	// 向き情報取得
+	D3DXVECTOR3 rot = m_pPlayer->GetRot();
+	D3DXVECTOR3 rotTarget = m_pPlayer->GetRotTarget();
+	m_pPlayer->SetRotTarget(rotTarget);
+
+	// ブレーキ力
+	float fStopEnergy = 0.1f;
+
+	// 回転反映と回転量の減衰
+	if (rotTarget.x - rot.x > D3DX_PI)
+	{
+		rot.x += ((rotTarget.x - rot.x) * fStopEnergy + (D3DX_PI * 1.8f));
+	}
+	else if (rotTarget.x - rot.x < -D3DX_PI)
+	{
+		rot.x += ((rotTarget.x - rot.x) * fStopEnergy + (D3DX_PI * -1.8f));
+	}
+	else
+	{
+		rot.x += ((rotTarget.x - rot.x) * fStopEnergy);
+	}
+
+	// 向き情報設定
+	m_pPlayer->SetRot(rot);
+}
+
+//============================================================================
+// 反動
+//============================================================================
+void CPlayerStateStopping::Recoil()
+{
+	D3DXVECTOR3 velocity = m_pPlayer->GetVelocity();
+
+	// 飛行方向に突進
+	velocity.x += -sinf(m_pPlayer->GetAngleFlying()) * 0.04f;
+	velocity.y += -cosf(m_pPlayer->GetAngleFlying()) * 0.04f;
+
+	m_pPlayer->SetVelocity(velocity);
 }
 
 

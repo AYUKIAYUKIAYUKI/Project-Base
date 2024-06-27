@@ -17,9 +17,11 @@
 #include "block.h"
 #include "enemy.h"
 #include "field.h"
+#include "goal.h"
 #include "item.h"
 #include "player.h"
 #include "score.h"
+#include "start.h"
 
 //============================================================================
 // コンストラクタ
@@ -50,6 +52,14 @@ HRESULT CGame::Init()
 	CField::Create(
 		{ 0.0f, 0.0f, 0.0f },		// 位置
 		{ 100.0f, 0.0f, 100.0f });	// サイズ
+
+	// ゴールの生成 (仮)
+	CGoal::Create(
+		{ 150.0f, 150.0f, 0.0f });	// 位置
+
+	// スタートの生成 (仮)
+	CStart::Create(
+		{ -150.0f, 150.0f, 0.0f });	// 位置
 
 	for (int i = 0; i < 5; i++)
 	{

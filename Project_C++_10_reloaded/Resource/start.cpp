@@ -1,6 +1,6 @@
 //============================================================================
 // 
-// ブロック [block.cpp]
+// スタート [start.cpp]
 // Author : 福田歩希
 // 
 //============================================================================
@@ -8,13 +8,13 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
-#include "block.h"
+#include "start.h"
 #include "manager.h"
 
 //============================================================================
 // コンストラクタ
 //============================================================================
-CBlock::CBlock() : CObject_X(static_cast<int>(LAYER::FRONT_MIDDLE))
+CStart::CStart()
 {
 
 }
@@ -22,7 +22,7 @@ CBlock::CBlock() : CObject_X(static_cast<int>(LAYER::FRONT_MIDDLE))
 //============================================================================
 // デストラクタ
 //============================================================================
-CBlock::~CBlock()
+CStart::~CStart()
 {
 
 }
@@ -30,7 +30,7 @@ CBlock::~CBlock()
 //============================================================================
 // 初期設定
 //============================================================================
-HRESULT CBlock::Init()
+HRESULT CStart::Init()
 {
 	// 基底クラスの初期設定
 	HRESULT hr = CObject_X::Init();
@@ -41,7 +41,7 @@ HRESULT CBlock::Init()
 //============================================================================
 // 終了処理
 //============================================================================
-void CBlock::Uninit()
+void CStart::Uninit()
 {
 	// 基底クラスの終了処理
 	CObject_X::Uninit();
@@ -50,8 +50,13 @@ void CBlock::Uninit()
 //============================================================================
 // 更新処理
 //============================================================================
-void CBlock::Update()
+void CStart::Update()
 {
+	// 回転
+	D3DXVECTOR3 rot = GetRot();
+	rot.x += 0.025f;
+	SetRot(rot);
+
 	// 基底クラスの更新
 	CObject_X::Update();
 }
@@ -59,32 +64,32 @@ void CBlock::Update()
 //============================================================================
 // 描画処理
 //============================================================================
-void CBlock::Draw()
+void CStart::Draw()
 {
-	// 基底クラスの描画処理
+	// 基底クラスの描画
 	CObject_X::Draw();
 }
 
 //============================================================================
 // 生成
 //============================================================================
-CBlock* CBlock::Create(D3DXVECTOR3 pos)
+CStart* CStart::Create(D3DXVECTOR3 pos)
 {
 	// インスタンスを生成
-	CBlock* pBlock = DBG_NEW CBlock;
+	CStart* pStart = DBG_NEW CStart;
 
-	if (pBlock == nullptr)
+	if (pStart == nullptr)
 	{ // 生成失敗
 		assert(false);
 	}
 
-	pBlock->SetType(TYPE::BLOCK);	// タイプを設定
+	pStart->SetType(TYPE::NONE);	// タイプを設定
 
-	pBlock->Init();			// 基底クラスの初期設定
-	pBlock->SetPos(pos);	// 位置の設定
+	pStart->Init();		// 基底クラスの初期設定
+	pStart->SetPos(pos);	// 位置の設定
 
 	// モデルを設定
-	pBlock->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::BLOCK_000));
+	pStart->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::START));
 
-	return pBlock;
+	return pStart;
 }
