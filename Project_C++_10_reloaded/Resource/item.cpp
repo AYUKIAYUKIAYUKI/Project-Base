@@ -69,8 +69,8 @@ void CItem::Update()
 	// 移動
 	Translation();
 
-	// 重力落下
-	CPhysics::GetInstance()->Gravity(m_velocity);
+	//// 重力落下
+	//CPhysics::GetInstance()->Gravity(m_velocity);
 
 	// 位置を調整、この処理の終わりに目標位置を反映させる
 	AdjustPos();

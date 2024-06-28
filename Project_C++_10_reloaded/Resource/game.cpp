@@ -12,6 +12,8 @@
 #include "manager.h"
 #include "object.h"
 
+#include "stagemaker.h"
+
 // オブジェクト生成用
 #include "bg.h"
 #include "block.h"
@@ -28,7 +30,7 @@
 //============================================================================
 CGame::CGame()
 {
-
+	m_bStageMaking = false;	// ステージ作成スイッチ
 }
 
 //============================================================================
@@ -44,6 +46,12 @@ CGame::~CGame()
 //============================================================================
 HRESULT CGame::Init()
 {
+	// ステージ作成クラスのインスタンス生成
+	if (FAILED(CStageMaker::Create()))
+	{
+		return E_FAIL;
+	}
+
 	// スタートの生成 (仮)
 	CStart::Create(
 		{ -150.0f, 150.0f, 0.0f });	// 位置
@@ -88,6 +96,9 @@ HRESULT CGame::Init()
 //============================================================================
 void CGame::Uninit()
 {
+	// ステージ作成クラスのインスタンス破棄
+	CStageMaker::Release();
+
 	// 基底クラスの終了処理
 	CScene::Uninit();
 }
@@ -97,6 +108,18 @@ void CGame::Uninit()
 //============================================================================
 void CGame::Update()
 {
+	// ステージ作成スイッチ
+	if (CManager::GetKeyboard()->GetTrigger(DIK_F1))
+	{
+		m_bStageMaking = !m_bStageMaking;
+	}
+
+	// ステージ作成の更新
+	if (m_bStageMaking)
+	{
+		CStageMaker::GetInstance()->Update();
+	}
+
 	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
 	{
 		CManager::GetFade()->SetFade(MODE::RESULT);
@@ -109,4 +132,12 @@ void CGame::Update()
 void CGame::Draw()
 {
 
+}
+
+//============================================================================
+// ステージ作成状態を取得
+//============================================================================
+bool CGame::GetStageMaking()
+{
+	return m_bStageMaking;
 }

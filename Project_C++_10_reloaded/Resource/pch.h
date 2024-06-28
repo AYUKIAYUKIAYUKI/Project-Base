@@ -21,6 +21,7 @@
 #include <xaudio2.h>				// サウンド動作用
 
 // 標準ライブラリ
+#include <iostream>
 #include <fstream>
 #include <string>
 #include <vector>

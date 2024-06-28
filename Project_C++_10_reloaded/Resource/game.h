@@ -27,6 +27,12 @@ public:
 	void Uninit() override;		// 終了処理
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
+
+	bool GetStageMaking();	// ステージ作成状態を取得
+
+private:
+
+	bool m_bStageMaking;	// ステージ作成スイッチ
 };
 
 #endif // _GAME_H_

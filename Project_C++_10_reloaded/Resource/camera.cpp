@@ -13,7 +13,9 @@
 #include "manager.h"
 
 // 追従地点参照用
+#include "game.h"
 #include "player.h"
+#include "stagemaker.h"
 
 //============================================================================
 // コンストラクタ
@@ -55,36 +57,85 @@ HRESULT CCamera::Init()
 //============================================================================
 void CCamera::Update()
 {
-	for (int nCntPriority = 0; nCntPriority < static_cast<int>(CObject::LAYER::MAX); nCntPriority++)
+	// シーンを取得
+	CScene* pScene = CManager::GetScene();
+
+	// シーンクラスをゲームクラスへダウンキャスト
+	CGame* pGame = dynamic_cast<CGame*>(pScene);
+
+	// ダウンキャストに成功した場合のみ
+	if (pGame != nullptr)
 	{
-		for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+		// ステージ作成モードなら
+		if (pGame->GetStageMaking())
 		{
-			// オブジェクト情報を取得
-			CObject* pObject = CObject::GetObject(nCntPriority, nCntObj);
+			// カメラの位置を変更
+			m_pos = CStageMaker::GetInstance()->GetPos();
+		}
+		else
+		{
+			for (int nCntPriority = 0; nCntPriority < static_cast<int>(CObject::LAYER::MAX); nCntPriority++)
+			{
+				for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+				{
+					// オブジェクト情報を取得
+					CObject* pObject = CObject::GetObject(nCntPriority, nCntObj);
 
-			if (pObject == nullptr)
-			{ // 情報がなければコンティニュー
-				continue;
+					if (pObject == nullptr)
+					{ // 情報がなければコンティニュー
+						continue;
+					}
+
+					if (pObject->GetType() == CObject::TYPE::PLAYER)
+					{ // プレイヤータイプなら
+
+						// プレイヤークラスのポインタ
+						CPlayer* pPlayer = dynamic_cast<CPlayer*>(pObject);
+
+						if (pPlayer == nullptr)
+						{ // ダウンキャスト失敗
+							assert(false);
+						}
+
+						m_pos = pPlayer->GetPos();
+					}
+				}
 			}
+		}
+	}
+	else
+	{
+		for (int nCntPriority = 0; nCntPriority < static_cast<int>(CObject::LAYER::MAX); nCntPriority++)
+		{
+			for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+			{
+				// オブジェクト情報を取得
+				CObject* pObject = CObject::GetObject(nCntPriority, nCntObj);
 
-			if (pObject->GetType() == CObject::TYPE::PLAYER)
-			{ // プレイヤータイプなら
-
-				// プレイヤークラスのポインタ
-				CPlayer* pPlayer = dynamic_cast<CPlayer*>(pObject);
-
-				if (pPlayer == nullptr)
-				{ // ダウンキャスト失敗
-					assert(false);
+				if (pObject == nullptr)
+				{ // 情報がなければコンティニュー
+					continue;
 				}
 
-				m_pos = pPlayer->GetPos();
+				if (pObject->GetType() == CObject::TYPE::PLAYER)
+				{ // プレイヤータイプなら
+
+					// プレイヤークラスのポインタ
+					CPlayer* pPlayer = dynamic_cast<CPlayer*>(pObject);
+
+					if (pPlayer == nullptr)
+					{ // ダウンキャスト失敗
+						assert(false);
+					}
+
+					m_pos = pPlayer->GetPos();
+				}
 			}
 		}
 	}
 
 	// カメラ操作
-	Control();
+	//Control();
 
 	// 回転
 	Rotation();
