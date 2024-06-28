@@ -14,7 +14,9 @@
 #include "block.h"
 #include "explosion.h"
 #include "explosion3D.h"
+#include "goal.h"
 #include "particle.h"
+#include "start.h"
 
 //****************************************************
 // 静的メンバ変数の初期化
@@ -989,6 +991,115 @@ void CPlayerStateStopping::Recoil()
 
 //============================================================================
 // 
+// プレイヤー失敗状態クラス
+// 
+//============================================================================
+
+//============================================================================
+// コンストラクタ
+//============================================================================
+CPlayerStateMistook::CPlayerStateMistook()
+{
+	m_pPosPtr = nullptr;
+}
+
+//============================================================================
+// デストラクタ
+//============================================================================
+CPlayerStateMistook::~CPlayerStateMistook()
+{
+
+}
+
+//============================================================================
+// 開始
+//============================================================================
+void CPlayerStateMistook::Init()
+{
+	// 基底クラスの初期設定
+	CPlayerState::Init();
+
+	// スタートオブジェクトの位置情報を取得
+	m_pPosPtr = FindStartObject();
+}
+
+//============================================================================
+// 更新
+//============================================================================
+void CPlayerStateMistook::Update()
+{
+	// リスポーン
+	Respawn();
+}
+
+//============================================================================
+// 終了
+//============================================================================
+void CPlayerStateMistook::Exit()
+{
+
+}
+
+//============================================================================
+// スタートオブジェクトの位置を検索
+//============================================================================
+D3DXVECTOR3* CPlayerStateMistook::FindStartObject()
+{
+	for (int nCntPriority = 0; nCntPriority < static_cast<int>(CObject::LAYER::MAX); nCntPriority++)
+	{
+		for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+		{
+			// オブジェクト情報を取得
+			CObject* pObject = CObject::GetObject(nCntPriority, nCntObj);
+
+			if (pObject == nullptr)
+			{ // 情報がなければコンティニュー
+				continue;
+			}
+
+			if (pObject->GetType() == CObject::TYPE::START)
+			{ // スタートオブジェクトなら
+				
+				// スタートクラスへダウンキャスト
+				CStart* pStart = dynamic_cast<CStart*>(pObject);
+
+				if (pStart == nullptr)
+				{ // ダウンキャスト失敗
+					assert(false);
+				}
+
+				// 位置情報を返す
+				return pStart->GetPos();
+			}
+		}
+	}
+
+	// 発見できなければエラー
+	assert(false);
+
+	return nullptr;
+}
+
+//============================================================================
+// リスポーン
+//============================================================================
+void CPlayerStateMistook::Respawn()
+{
+	// プレイヤーの位置がスタートオブジェクトの位置と異なれば
+	if (m_pPlayer->GetPosTarget() != *m_pPosPtr)
+	{
+		// 位置を同期する
+		m_pPlayer->SetPosTarget(*m_pPosPtr);
+
+		// 通常状態に変更
+		m_pPlayer->GetStateManager()->ChangeState(CPlayerState::STATE::DEFAULT);
+	}
+}
+
+
+
+//============================================================================
+// 
 // プレイヤー状態管理クラス
 // 
 //============================================================================
@@ -1104,6 +1215,10 @@ void CPlayerStateManager::Create(CPlayerState::STATE state)
 
 	case CPlayerState::STATE::STOPPING:
 		m_pState = DBG_NEW CPlayerStateStopping;
+		break;
+
+	case CPlayerState::STATE::MISS:
+		m_pState = DBG_NEW CPlayerStateMistook;
 		break;
 
 	default:

@@ -75,10 +75,11 @@ public:
 	//****************************************************
 	enum class STATE
 	{
-		DEFAULT = 0,	// 通常
+		DEFAULT = 0,	// 通常状態
 		BEGINNING,		// 変身開始
-		FLYING,			// 飛行
+		FLYING,			// 飛行状態
 		STOPPING,		// 変身停止
+		MISS,			// 失敗状態
 		MAX,
 	};
 
@@ -186,6 +187,28 @@ private:
 	static const int STOP_CNT_MAX;	// 変身停止必要時間
 
 	int m_nCntStopMetamorphose;	// 変身時間カウント
+};
+
+//****************************************************
+// プレイヤー失敗状態クラス
+//****************************************************
+class CPlayerStateMistook : public CPlayerState
+{
+public:
+
+	CPlayerStateMistook();				// コンストラクタ
+	~CPlayerStateMistook() override;	// デストラクタ
+
+	void Init() override;	// 初期設定
+	void Update() override;	// 更新
+	void Exit() override;	// 終了
+
+private:
+
+	D3DXVECTOR3* FindStartObject();	// スタートオブジェクトの位置を検索
+	void Respawn();					// リスポーン
+
+	D3DXVECTOR3* m_pPosPtr;	// スタートオブジェクトの位置へのポインタ
 };
 
 //****************************************************
