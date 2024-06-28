@@ -205,10 +205,12 @@ public:
 
 private:
 
-	D3DXVECTOR3* FindStartObject();	// スタートオブジェクトの位置を検索
-	void Respawn();					// リスポーン
+	static const float MAX_WARP_SPEED;	// 強制移動速度の上限
 
-	D3DXVECTOR3* m_pPosPtr;	// スタートオブジェクトの位置へのポインタ
+	void FindStartObject();	// スタートオブジェクトの位置を検索
+	void Respawn();			// リスポーン
+
+	D3DXVECTOR3 m_posStartObject;	// スタートオブジェクトの位置
 };
 
 //****************************************************

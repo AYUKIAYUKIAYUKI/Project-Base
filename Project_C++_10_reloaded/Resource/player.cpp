@@ -26,6 +26,7 @@ const float CPlayerStateDefault::BRAKING_WALK_SPEED = 0.9f;	// 歩行時の制動力
 const int CPlayerStateBeginning::BEGIN_CNT_MAX = 20;		// 変身必要時間
 const float CPlayerStateFlying::MAX_FLY_VELOCITY = 1.0f;	// 飛行時の最大加速度
 const int CPlayerStateStopping::STOP_CNT_MAX = 20;			// 変身停止必要時間
+const float CPlayerStateMistook::MAX_WARP_SPEED = 2.0f;		// 強制移動速度の上限
 
 //============================================================================
 // コンストラクタ
@@ -1000,7 +1001,7 @@ void CPlayerStateStopping::Recoil()
 //============================================================================
 CPlayerStateMistook::CPlayerStateMistook()
 {
-	m_pPosPtr = nullptr;
+	m_posStartObject = { 0.0f, 0.0f, 0.0f };
 }
 
 //============================================================================
@@ -1020,7 +1021,7 @@ void CPlayerStateMistook::Init()
 	CPlayerState::Init();
 
 	// スタートオブジェクトの位置情報を取得
-	m_pPosPtr = FindStartObject();
+	FindStartObject();
 }
 
 //============================================================================
@@ -1043,7 +1044,7 @@ void CPlayerStateMistook::Exit()
 //============================================================================
 // スタートオブジェクトの位置を検索
 //============================================================================
-D3DXVECTOR3* CPlayerStateMistook::FindStartObject()
+void CPlayerStateMistook::FindStartObject()
 {
 	for (int nCntPriority = 0; nCntPriority < static_cast<int>(CObject::LAYER::MAX); nCntPriority++)
 	{
@@ -1068,16 +1069,17 @@ D3DXVECTOR3* CPlayerStateMistook::FindStartObject()
 					assert(false);
 				}
 
-				// 位置情報を返す
-				return pStart->GetPos();
+				// スタートオブジェクトの位置を取得
+				m_posStartObject = pStart->GetPos();
+
+				// 終了
+				return;
 			}
 		}
 	}
 
 	// 発見できなければエラー
 	assert(false);
-
-	return nullptr;
 }
 
 //============================================================================
@@ -1085,12 +1087,42 @@ D3DXVECTOR3* CPlayerStateMistook::FindStartObject()
 //============================================================================
 void CPlayerStateMistook::Respawn()
 {
-	// プレイヤーの位置がスタートオブジェクトの位置と異なれば
-	if (m_pPlayer->GetPosTarget() != *m_pPosPtr)
-	{
-		// 位置を同期する
-		m_pPlayer->SetPosTarget(*m_pPosPtr);
+	// 目標位置取得
+	D3DXVECTOR3 posTarget = m_pPlayer->GetPosTarget();
 
+	// プレイヤーの位置がスタートオブジェクトの位置と異なれば
+	if (posTarget != m_posStartObject)
+	{
+		// プレイヤー位置とスタート位置の差を割り出す
+		D3DXVECTOR3 distance = m_posStartObject - posTarget;
+
+		// 差が一定以上あれば制限を付ける
+		if (distance.x > MAX_WARP_SPEED)
+		{
+			distance.x = MAX_WARP_SPEED;
+		}
+		else if (distance.x < -MAX_WARP_SPEED)
+		{
+			distance.x = -MAX_WARP_SPEED;
+		}
+
+		if (distance.y > MAX_WARP_SPEED)
+		{
+			distance.y = MAX_WARP_SPEED;
+		}
+		else if (distance.y < -MAX_WARP_SPEED)
+		{
+			distance.y = -MAX_WARP_SPEED;
+		}
+
+		// 差を縮めて位置を補正していく
+		posTarget += distance;
+
+		// 目標位置を設定する
+		m_pPlayer->SetPosTarget(posTarget);
+	}
+	else
+	{
 		// 通常状態に変更
 		m_pPlayer->GetStateManager()->ChangeState(CPlayerState::STATE::DEFAULT);
 	}
@@ -1126,7 +1158,7 @@ CPlayerStateManager::~CPlayerStateManager()
 void CPlayerStateManager::Init()
 {
 	// 初期状態を設定しておく
-	ChangeState(CPlayerState::STATE::DEFAULT);
+	ChangeState(CPlayerState::STATE::MISS);
 }
 
 //============================================================================

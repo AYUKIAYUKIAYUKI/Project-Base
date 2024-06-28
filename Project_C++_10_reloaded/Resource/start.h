@@ -16,7 +16,7 @@
 //****************************************************
 // スタートクラス
 //****************************************************
-class CStart : CObject_X
+class CStart : public CObject_X
 {
 public:
 
@@ -28,13 +28,9 @@ public:
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
 
-	D3DXVECTOR3* GetPos();	// 位置情報を取得
+	D3DXVECTOR3 GetPos();	// 位置を取得
 
 	static CStart* Create(D3DXVECTOR3 pos);	// 生成
-
-private:
-
-	D3DXVECTOR3 m_pos;	// 自身の位置を保持
 };
 
 #endif // _START_H_
