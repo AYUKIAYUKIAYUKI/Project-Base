@@ -60,7 +60,7 @@ void CResult::Update()
 {
 	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
 	{
-		CManager::SetScene(MODE::TITLE);
+		CManager::GetFade()->SetFade(MODE::TITLE);
 	}
 }
 

@@ -21,6 +21,7 @@ CInputKeyboard* CManager::m_pKeyboard = nullptr;	// キーボード管理
 CInputPad* CManager::m_pPad = nullptr;				// パッド管理
 CSound* CManager::m_pSound = nullptr;				// サウンド管理
 CScene* CManager::m_pScene = nullptr;				// シーン管理
+CFade* CManager::m_pFade = nullptr;					// フェード管理
 
 //============================================================================
 // コンストラクタ
@@ -34,6 +35,7 @@ CManager::CManager()
 	m_pPad = nullptr;
 	m_pSound = nullptr;
 	m_pScene = nullptr;
+	m_pFade = nullptr;
 }
 
 //============================================================================
@@ -115,6 +117,17 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// サウンドの初期化
 	m_pSound->Init(hWnd);
 
+	// フェードの生成
+	m_pFade = DBG_NEW CFade;
+
+	if (m_pFade == nullptr)
+	{ // 生成失敗
+		return E_FAIL;
+	}
+
+	// フェードの初期設定
+	m_pFade->Init();
+
 	// 最初のシーン設定
 	SetScene(CScene::MODE::TITLE);
 
@@ -134,6 +147,14 @@ void CManager::Uninit()
 {
 	// 物理演算インスタンスの破棄
 	CPhysics::Release();
+
+	// フェードのの破棄
+	if (m_pFade != nullptr)
+	{
+		m_pFade->Uninit();	// 終了処理
+		delete m_pFade;		// メモリを解放
+		m_pFade = nullptr;	// ポインタを初期化
+	}
 
 	// レンダラーの破棄
 	if (m_pRenderer != nullptr)
@@ -195,6 +216,9 @@ void CManager::Uninit()
 //============================================================================
 void CManager::Update()
 {
+	// フェードの更新
+	m_pFade->Update();
+
 	// レンダラーの更新
 	m_pRenderer->Update();
 
@@ -277,6 +301,14 @@ CSound* CManager::GetSound()
 CScene* CManager::GetScene()
 {
 	return m_pScene;
+}
+
+//============================================================================
+// フェード取得
+//============================================================================
+CFade* CManager::GetFade()
+{
+	return m_pFade;
 }
 
 //============================================================================

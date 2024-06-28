@@ -59,7 +59,7 @@ void CTitle::Update()
 {
 	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
 	{
-		CManager::SetScene(MODE::GAME);
+		CManager::GetFade()->SetFade(MODE::GAME);
 	}
 }
 

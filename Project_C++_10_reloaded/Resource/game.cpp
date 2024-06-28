@@ -99,7 +99,7 @@ void CGame::Update()
 {
 	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
 	{
-		CManager::SetScene(MODE::RESULT);
+		CManager::GetFade()->SetFade(MODE::RESULT);
 	}
 }
 
