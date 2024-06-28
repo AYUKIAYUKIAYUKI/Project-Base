@@ -17,8 +17,9 @@ public:
 
 	void Gravity(D3DXVECTOR3& vec);	// d—Í—‰º
 
-	bool Sphere(const D3DXVECTOR3& posSelf, const float& fRadiusSelf, const D3DXVECTOR3& posTarget, const float& fRadiusTarget);	// ‹…‘Ì‚ÌÕ“Ë”»’è
-	bool Cube(const D3DXVECTOR3& posSelf, const D3DXVECTOR3& sizeSelf, const D3DXVECTOR3& posTarget, const D3DXVECTOR3& sizeTarget);	// —§•û‘Ì‚ÌÕ“Ë”»’è
+	bool OnlySphere(const D3DXVECTOR3& posSelf, const float& fRadiusSelf, const D3DXVECTOR3& posTarget, const float& fRadiusTarget);	// ‹…‘Ì‚ÌÕ“Ë”»’è
+	bool SphereAndCube(const D3DXVECTOR3& posSph, const float& fRadius, const D3DXVECTOR3& posCube, const D3DXVECTOR3& size);	// ‹…‘Ì‚Æ—§•û‘Ì‚ÌÕ“Ë”»’è
+	bool OnlyCube(const D3DXVECTOR3& posSelf, const D3DXVECTOR3& sizeSelf, const D3DXVECTOR3& posTarget, const D3DXVECTOR3& sizeTarget);	// —§•û‘Ì‚ÌÕ“Ë”»’è
 	bool CubeResponse(D3DXVECTOR3& posDest, D3DXVECTOR3& velocity, const D3DXVECTOR3& posSelf, const D3DXVECTOR3& sizeSelf, const D3DXVECTOR3& posTarget, const D3DXVECTOR3& sizeTarget);	// ‰Ÿ‚µo‚µˆ—
 
 	static HRESULT Create();		// ¶¬

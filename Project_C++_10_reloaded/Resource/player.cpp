@@ -26,7 +26,7 @@ const float CPlayerStateDefault::BRAKING_WALK_SPEED = 0.9f;	// 歩行時の制動力
 const int CPlayerStateBeginning::BEGIN_CNT_MAX = 20;		// 変身必要時間
 const float CPlayerStateFlying::MAX_FLY_VELOCITY = 1.0f;	// 飛行時の最大加速度
 const int CPlayerStateStopping::STOP_CNT_MAX = 20;			// 変身停止必要時間
-const float CPlayerStateMistook::MAX_WARP_SPEED = 5.0f;		// 強制移動速度の上限
+const float CPlayerStateMistook::MAX_WARP_SPEED = 10.0f;	// 強制移動速度の上限
 
 //============================================================================
 // コンストラクタ
@@ -216,9 +216,6 @@ CPlayer* CPlayer::Create(D3DXVECTOR3 pos)
 	pPlayer->Init();		// 基底クラスの初期設定
 	pPlayer->SetPos(pos);	// 位置の設定
 
-	// モデルを設定
-	pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_000));
-
 	return pPlayer;
 }
 
@@ -278,13 +275,26 @@ bool CPlayer::Collision()
 				}
 
 				// ブロックと衝突する場合
-				if (CPhysics::GetInstance()->Cube(m_posTarget, GetSize(), pBlock->GetPos(), BlockSize))
+				if (CPhysics::GetInstance()->OnlyCube(m_posTarget, GetSize(), pBlock->GetPos(), BlockSize))
 				{
 					// 押し出し処理
 					CPhysics::GetInstance()->CubeResponse(m_posTarget, m_velocity, GetPos(), GetSize(), pBlock->GetPos(), BlockSize);
 
 					// 衝突判定を出す
 					bDetected = 1;
+				}
+			}
+			else if (pObject->GetType() == CObject::TYPE::GOAL)
+			{ // ゴールタイプなら
+
+				// オブジェクトクラスをゴールクラスへダウンキャスト
+				CGoal* pGoal = dynamic_cast<CGoal*>(pObject);
+
+				// ゴールと衝突する場合
+				if (CPhysics::GetInstance()->SphereAndCube(pGoal->GetPos(), 10.0f, m_posTarget, GetSize()))
+				{
+					// とりあえずゲームを終了させる
+					CManager::GetFade()->SetFade(CScene::MODE::RESULT);
 				}
 			}
 		}
@@ -693,11 +703,6 @@ void CPlayerStateFlying::Exit()
 {
 	// 加速度を初期化
 	m_pPlayer->SetVelocity({ 0.0f, 0.0f, 0.0f });
-
-	//// Z軸回転を初期化
-	//D3DXVECTOR3 rot = m_pPlayer->GetRot();
-	//rot.z = 0.0f;
-	//m_pPlayer->SetRot(rot);
 }
 
 //============================================================================
@@ -1120,7 +1125,7 @@ CPlayerStateManager::~CPlayerStateManager()
 void CPlayerStateManager::Init()
 {
 	// 初期状態を設定しておく
-	ChangeState(CPlayerState::STATE::DEFAULT);
+	ChangeState(CPlayerState::STATE::MISS);
 }
 
 //============================================================================

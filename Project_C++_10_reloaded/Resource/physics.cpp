@@ -27,7 +27,7 @@ void CPhysics::Gravity(D3DXVECTOR3& vec)
 //============================================================================
 // 球形の衝突判定
 //============================================================================
-bool CPhysics::Sphere(const D3DXVECTOR3& posSelf, const float& fRadiusSelf, const D3DXVECTOR3& posTarget, const float& fRadiusTarget)
+bool CPhysics::OnlySphere(const D3DXVECTOR3& posSelf, const float& fRadiusSelf, const D3DXVECTOR3& posTarget, const float& fRadiusTarget)
 {
 	// 目標地点へのベクトルを算出
 	D3DXVECTOR3 vec = posTarget - posSelf;
@@ -42,9 +42,28 @@ bool CPhysics::Sphere(const D3DXVECTOR3& posSelf, const float& fRadiusSelf, cons
 }
 
 //============================================================================
+// 球と立方体の当たり判定
+//============================================================================
+bool CPhysics::SphereAndCube(const D3DXVECTOR3& posSph, const float& fRadius, const D3DXVECTOR3& posCube, const D3DXVECTOR3& size)
+{
+	// 全ての軸方向からお互いにめり込んでいるとき衝突
+	if (posSph.x + fRadius > posCube.x - size.x &&
+		posSph.x - fRadius < posCube.x + size.x &&
+		posSph.y + fRadius > posCube.y - size.y &&
+		posSph.y - fRadius < posCube.y + size.y &&
+		posSph.z + fRadius > posCube.z - size.z &&
+		posSph.z - fRadius < posCube.z + size.z)
+	{
+		return 1;
+	}
+
+	return 0;
+}
+
+//============================================================================
 // 立方形の衝突判定
 //============================================================================
-bool CPhysics::Cube(const D3DXVECTOR3& posSelf, const D3DXVECTOR3& sizeSelf, const D3DXVECTOR3& posTarget, const D3DXVECTOR3& sizeTarget)
+bool CPhysics::OnlyCube(const D3DXVECTOR3& posSelf, const D3DXVECTOR3& sizeSelf, const D3DXVECTOR3& posTarget, const D3DXVECTOR3& sizeTarget)
 {
 	// 全ての軸方向からお互いにめり込んでいるとき衝突
 	if (posSelf.x + sizeSelf.x > posTarget.x - sizeTarget.x &&
