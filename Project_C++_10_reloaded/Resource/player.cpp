@@ -26,7 +26,7 @@ const float CPlayerStateDefault::BRAKING_WALK_SPEED = 0.9f;	// 歩行時の制動力
 const int CPlayerStateBeginning::BEGIN_CNT_MAX = 20;		// 変身必要時間
 const float CPlayerStateFlying::MAX_FLY_VELOCITY = 1.0f;	// 飛行時の最大加速度
 const int CPlayerStateStopping::STOP_CNT_MAX = 20;			// 変身停止必要時間
-const float CPlayerStateMistook::MAX_WARP_SPEED = 2.0f;		// 強制移動速度の上限
+const float CPlayerStateMistook::MAX_WARP_SPEED = 5.0f;		// 強制移動速度の上限
 
 //============================================================================
 // コンストラクタ
@@ -64,15 +64,15 @@ HRESULT CPlayer::Init()
 	{
 		m_pStateManager = DBG_NEW CPlayerStateManager;
 
+		// プレイヤーのインスタンス情報を状態管理クラスに渡す
+		m_pStateManager->SetPlayerInstance(this);
+
 		// 初期化
 		m_pStateManager->Init();
+
+		// プレイヤーのインスタンス情報を状態クラスに渡す
+		m_pStateManager->GetState()->SetPlayerInstance(this);
 	}
-
-	// プレイヤーのインスタンス情報を状態管理クラスに渡す
-	m_pStateManager->SetPlayerInstance(this);
-
-	// プレイヤーのインスタンス情報を状態クラスに渡す
-	m_pStateManager->GetState()->SetPlayerInstance(this);
 
 	return hr;
 }
@@ -110,11 +110,8 @@ void CPlayer::Update()
 	// 状態の更新処理
 	m_pStateManager->GetState()->Update();
 
-	// 位置を設定
+	// 位置を反映
 	SetPos(m_posTarget);
-
-	// 当たり判定や範囲制限など位置調整、この処理の終わりに目標位置を反映させる
-	//AdjustPos();
 
 	// 基底クラスの更新
 	CObject_X::Update();
@@ -193,22 +190,6 @@ void CPlayer::SetRotTarget(D3DXVECTOR3 rotTarget)
 	m_rotTarget = rotTarget;
 }
 
-////============================================================================
-//// 変身可能判定を取得
-////============================================================================
-//bool CPlayer::GetEnableMetamorphose()
-//{
-//	return m_bEnableMetamorphose;
-//}
-//
-////============================================================================
-//// 変身可能判定を取得
-////============================================================================
-//void CPlayer::SetEnableMetamorphose(bool judge)
-//{
-//	m_bEnableMetamorphose = judge;
-//}
-
 //============================================================================
 // 状態管理取得
 //============================================================================
@@ -254,19 +235,6 @@ bool CPlayer::AdjustPos()
 
 	// 当たり判定
 	bDetected = Collision();
-
-	//// 画面の下端に到達で下降制限
-	//if (m_posTarget.y < 0.0f)
-	//{
-	//	// 位置を下端に設定
-	//	m_posTarget.y = 0.0f;
-
-	//	// Y軸方向の加速度をリセット
-	//	m_velocity.y = 0.0f;
-
-	//	// 地面を検出
-	//	bDetected = true;
-	//}
 
 	// 位置を設定
 	SetPos(m_posTarget);
@@ -350,14 +318,6 @@ CPlayerState::~CPlayerState()
 }
 
 //============================================================================
-// 初期設定
-//============================================================================
-void CPlayerState::Init()
-{
-
-}
-
-//============================================================================
 // 更新
 //============================================================================
 void CPlayerState::Update()
@@ -398,12 +358,12 @@ CPlayerStateDefault::~CPlayerStateDefault()
 }
 
 //============================================================================
-// 開始
+// 変更開始
 //============================================================================
-void CPlayerStateDefault::Init()
+void CPlayerStateDefault::Enter()
 {
-	// 基底クラスの初期設定
-	CPlayerState::Init();
+	// 見た目を変更
+	m_pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_000));
 }
 
 //============================================================================
@@ -435,10 +395,17 @@ void CPlayerStateDefault::Update()
 
 	// 位置調整
 	m_pPlayer->AdjustPos();
+
+	// おかしなところに行くと一旦殺す
+	if (posTarget.y < -300.0f)
+	{
+		// 失敗状態に変更
+		m_pPlayer->GetStateManager()->ChangeState(CPlayerState::STATE::MISS);
+	}
 }
 
 //============================================================================
-// 終了
+// 変更終了
 //============================================================================
 void CPlayerStateDefault::Exit()
 {
@@ -452,14 +419,6 @@ void CPlayerStateDefault::Exit()
 	D3DXVECTOR3 rot = m_pPlayer->GetRot();
 	rot.z = 0.0f;
 	m_pPlayer->SetRot(rot);
-
-	// 見た目を変更
-	m_pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_001));
-
-	// 爆発を生成
-	CExplosion3D::Create(
-		m_pPlayer->GetPos(),		// 位置
-		{ 30.0f, 0.0f, 30.0f });	// サイズ
 }
 
 //============================================================================
@@ -577,6 +536,7 @@ void CPlayerStateDefault::Braking()
 }
 
 
+
 //============================================================================
 // 
 // プレイヤー変身開始状態クラス
@@ -600,12 +560,17 @@ CPlayerStateBeginning::~CPlayerStateBeginning()
 }
 
 //============================================================================
-// 開始
+// 変更開始
 //============================================================================
-void CPlayerStateBeginning::Init()
+void CPlayerStateBeginning::Enter()
 {
-	// 基底クラスの初期設定
-	CPlayerState::Init();
+	// 見た目を変更
+	m_pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_001));
+
+	// 爆発を生成
+	CExplosion3D::Create(
+		m_pPlayer->GetPos(),		// 位置
+		{ 30.0f, 0.0f, 30.0f });	// サイズ
 }
 
 //============================================================================
@@ -637,7 +602,7 @@ void CPlayerStateBeginning::Update()
 }
 
 //============================================================================
-// 終了
+// 変更終了
 //============================================================================
 void CPlayerStateBeginning::Exit()
 {
@@ -656,9 +621,6 @@ void CPlayerStateBeginning::Exit()
 	D3DXVECTOR3 rot = m_pPlayer->GetRot();
 	rot.y = 0.0f;
 	m_pPlayer->SetRot(rot);
-
-	// 見た目を変更
-	m_pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_002));
 }
 
 
@@ -686,12 +648,12 @@ CPlayerStateFlying::~CPlayerStateFlying()
 }
 
 //============================================================================
-// 開始
+// 変更開始
 //============================================================================
-void CPlayerStateFlying::Init()
+void CPlayerStateFlying::Enter()
 {
-	// 基底クラスの初期設定
-	CPlayerState::Init();
+	// 見た目を変更
+	m_pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_002));
 }
 
 //============================================================================
@@ -725,7 +687,7 @@ void CPlayerStateFlying::Update()
 }
 
 //============================================================================
-// 終了
+// 変更終了
 //============================================================================
 void CPlayerStateFlying::Exit()
 {
@@ -736,14 +698,6 @@ void CPlayerStateFlying::Exit()
 	//D3DXVECTOR3 rot = m_pPlayer->GetRot();
 	//rot.z = 0.0f;
 	//m_pPlayer->SetRot(rot);
-
-	// 見た目を変更
-	m_pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_003));
-
-	// 爆発を生成
-	CExplosion3D::Create(
-		m_pPlayer->GetPos(),		// 位置
-		{ 30.0f, 0.0f, 30.0f });	// サイズ
 }
 
 //============================================================================
@@ -889,12 +843,17 @@ CPlayerStateStopping::~CPlayerStateStopping()
 }
 
 //============================================================================
-// 開始
+// 変更開始
 //============================================================================
-void CPlayerStateStopping::Init()
+void CPlayerStateStopping::Enter()
 {
-	// 基底クラスの初期設定
-	CPlayerState::Init();
+	// 見た目を変更
+	m_pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_003));
+
+	// 爆発を生成
+	CExplosion3D::Create(
+		m_pPlayer->GetPos(),		// 位置
+		{ 30.0f, 0.0f, 30.0f });	// サイズ
 }
 
 //============================================================================
@@ -929,7 +888,7 @@ void CPlayerStateStopping::Update()
 }
 
 //============================================================================
-// 終了
+// 変更終了
 //============================================================================
 void CPlayerStateStopping::Exit()
 {
@@ -1013,12 +972,15 @@ CPlayerStateMistook::~CPlayerStateMistook()
 }
 
 //============================================================================
-// 開始
+// 変更開始
 //============================================================================
-void CPlayerStateMistook::Init()
+void CPlayerStateMistook::Enter()
 {
-	// 基底クラスの初期設定
-	CPlayerState::Init();
+	// 回転を初期化
+	m_pPlayer->SetRot({ 0.0f, 0.0f, 0.0f });
+
+	// 見た目を変更
+	m_pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_004));
 
 	// スタートオブジェクトの位置情報を取得
 	FindStartObject();
@@ -1034,7 +996,7 @@ void CPlayerStateMistook::Update()
 }
 
 //============================================================================
-// 終了
+// 変更終了
 //============================================================================
 void CPlayerStateMistook::Exit()
 {
@@ -1158,7 +1120,7 @@ CPlayerStateManager::~CPlayerStateManager()
 void CPlayerStateManager::Init()
 {
 	// 初期状態を設定しておく
-	ChangeState(CPlayerState::STATE::MISS);
+	ChangeState(CPlayerState::STATE::DEFAULT);
 }
 
 //============================================================================
@@ -1199,7 +1161,7 @@ void CPlayerStateManager::ChangeState(CPlayerState::STATE state)
 {
 	if (m_pState != nullptr)
 	{
-		// 終了時限定の処理
+		// 変更終了時の処理
 		m_pState->Exit();
 
 		// メモリを解放
@@ -1214,8 +1176,8 @@ void CPlayerStateManager::ChangeState(CPlayerState::STATE state)
 
 	m_pState->SetPlayerInstance(m_pPlayer);
 
-	// 状態の初期設定
-	m_pState->Init();
+	// 初回変更時の処理
+	m_pState->Enter();
 }
 
 //============================================================================

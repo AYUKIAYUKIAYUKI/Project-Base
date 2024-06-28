@@ -148,7 +148,7 @@ void CManager::Uninit()
 	// 物理演算インスタンスの破棄
 	CPhysics::Release();
 
-	// フェードのの破棄
+	// フェードの破棄
 	if (m_pFade != nullptr)
 	{
 		m_pFade->Uninit();	// 終了処理
@@ -156,42 +156,12 @@ void CManager::Uninit()
 		m_pFade = nullptr;	// ポインタを初期化
 	}
 
-	// レンダラーの破棄
-	if (m_pRenderer != nullptr)
+	// シーンの破棄
+	if (m_pScene != nullptr)
 	{
-		m_pRenderer->Uninit();	// 終了処理
-		delete m_pRenderer;		// メモリを解放
-		m_pRenderer = nullptr;	// ポインタを初期化
-	}
-
-	// カメラの破棄
-	if (m_pCamera != nullptr)
-	{
-		delete m_pCamera;		// メモリを解放
-		m_pCamera = nullptr;	// ポインタを初期化
-	}
-
-	// ライトの破棄
-	if (m_pLight != nullptr)
-	{
-		delete m_pLight;		// メモリを解放
-		m_pLight = nullptr;		// ポインタを初期化
-	}
-
-	// キーボードの破棄
-	if (m_pKeyboard != nullptr)
-	{
-		m_pKeyboard->Uninit();	// 終了処理
-		delete m_pKeyboard;		// メモリを解放
-		m_pKeyboard = nullptr;	// ポインタを初期化
-	}
-
-	// パッドの破棄
-	if (m_pPad != nullptr)
-	{
-		m_pPad->Uninit();	// 終了処理
-		delete m_pPad;		// メモリを解放
-		m_pPad = nullptr;	// ポインタを初期化
+		m_pScene->Uninit();	// 終了処理
+		delete m_pScene;	// メモリを解放
+		m_pScene = nullptr;	// ポインタを初期化
 	}
 
 	// サウンドの破棄
@@ -202,12 +172,42 @@ void CManager::Uninit()
 		m_pSound = nullptr;	// ポインタを初期化
 	}
 
-	// シーンの破棄
-	if (m_pScene != nullptr)
+	// パッドの破棄
+	if (m_pPad != nullptr)
 	{
-		m_pScene->Uninit();	// 終了処理
-		delete m_pScene;	// メモリを解放
-		m_pScene = nullptr;	// ポインタを初期化
+		m_pPad->Uninit();	// 終了処理
+		delete m_pPad;		// メモリを解放
+		m_pPad = nullptr;	// ポインタを初期化
+	}
+
+	// キーボードの破棄
+	if (m_pKeyboard != nullptr)
+	{
+		m_pKeyboard->Uninit();	// 終了処理
+		delete m_pKeyboard;		// メモリを解放
+		m_pKeyboard = nullptr;	// ポインタを初期化
+	}
+
+	// ライトの破棄
+	if (m_pLight != nullptr)
+	{
+		delete m_pLight;		// メモリを解放
+		m_pLight = nullptr;		// ポインタを初期化
+	}
+
+	// カメラの破棄
+	if (m_pCamera != nullptr)
+	{
+		delete m_pCamera;		// メモリを解放
+		m_pCamera = nullptr;	// ポインタを初期化
+	}
+
+	// レンダラーの破棄
+	if (m_pRenderer != nullptr)
+	{
+		m_pRenderer->Uninit();	// 終了処理
+		delete m_pRenderer;		// メモリを解放
+		m_pRenderer = nullptr;	// ポインタを初期化
 	}
 }
 

@@ -29,6 +29,7 @@ public:
 		PLAYER_001,		// プレイヤー2
 		PLAYER_002,		// プレイヤー3
 		PLAYER_003,		// プレイヤー4
+		PLAYER_004,		// プレイヤー5
 		BLOCK_000,		// ブロック0
 		START,			// スタート
 		GOAL,			// ゴール

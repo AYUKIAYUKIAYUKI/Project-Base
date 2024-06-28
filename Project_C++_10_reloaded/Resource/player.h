@@ -86,9 +86,9 @@ public:
 	CPlayerState();				// コンストラクタ
 	virtual ~CPlayerState();	// デストラクタ
 
-	virtual void Init();		// 初期設定
+	virtual void Enter() = 0;	// 変更開始
 	virtual void Update();		// 更新
-	virtual void Exit() = 0;	// 終了
+	virtual void Exit() = 0;	// 変更終了
 
 	void SetPlayerInstance(CPlayer* player);	// プレイヤー情報の設定
 
@@ -107,9 +107,9 @@ public:
 	CPlayerStateDefault();				// コンストラクタ
 	~CPlayerStateDefault() override;	// デストラクタ
 
-	void Init() override;	// 初期設定
+	void Enter() override;	// 変更開始
 	void Update() override;	// 更新
-	void Exit() override;	// 終了
+	void Exit() override;	// 変更終了
 
 private:
 
@@ -131,9 +131,9 @@ public:
 	CPlayerStateBeginning();			// コンストラクタ
 	~CPlayerStateBeginning() override;	// デストラクタ
 
-	void Init() override;	// 初期設定
+	void Enter() override;	// 変更開始
 	void Update() override;	// 更新
-	void Exit() override;	// 終了
+	void Exit() override;	// 変更終了
 
 private:
 
@@ -152,9 +152,9 @@ public:
 	CPlayerStateFlying();			// コンストラクタ
 	~CPlayerStateFlying() override;	// デストラクタ
 
-	void Init() override;	// 開始
+	void Enter() override;	// 変更開始
 	void Update() override;	// 更新
-	void Exit() override;	// 終了
+	void Exit() override;	// 変更終了
 
 private:
 
@@ -175,9 +175,9 @@ public:
 	CPlayerStateStopping();				// コンストラクタ
 	~CPlayerStateStopping() override;	// デストラクタ
 
-	void Init() override;	// 初期設定
+	void Enter() override;	// 変更開始
 	void Update() override;	// 更新
-	void Exit() override;	// 終了
+	void Exit() override;	// 変更終了
 
 private:
 
@@ -199,9 +199,9 @@ public:
 	CPlayerStateMistook();				// コンストラクタ
 	~CPlayerStateMistook() override;	// デストラクタ
 
-	void Init() override;	// 初期設定
+	void Enter() override;	// 初回変更
 	void Update() override;	// 更新
-	void Exit() override;	// 終了
+	void Exit() override;	// 変更終了
 
 private:
 
