@@ -50,6 +50,7 @@
     </ClCompile>
     <ClCompile Include="Resource\physics.cpp" />
     <ClCompile Include="resource\player.cpp" />
+    <ClCompile Include="Resource\player_state.cpp" />
     <ClCompile Include="resource\renderer.cpp" />
     <ClCompile Include="Resource\result.cpp" />
     <ClCompile Include="Resource\scene.cpp" />
@@ -89,6 +90,7 @@
     <ClInclude Include="resource\pch.h" />
     <ClInclude Include="Resource\physics.h" />
     <ClInclude Include="resource\player.h" />
+    <ClInclude Include="Resource\player_state.h" />
     <ClInclude Include="resource\renderer.h" />
     <ClInclude Include="Resource\result.h" />
     <ClInclude Include="Resource\scene.h" />
