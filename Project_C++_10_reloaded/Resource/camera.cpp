@@ -15,6 +15,7 @@
 // 追従地点参照用
 #include "game.h"
 #include "player.h"
+#include "dummy.h"
 #include "stagemaker.h"
 
 //============================================================================
@@ -57,54 +58,54 @@ HRESULT CCamera::Init()
 //============================================================================
 void CCamera::Update()
 {
-	// シーンを取得
-	CScene* pScene = CManager::GetScene();
+	//// シーンを取得
+	//CScene* pScene = CManager::GetScene();
 
-	// シーンクラスをゲームクラスへダウンキャスト
-	CGame* pGame = dynamic_cast<CGame*>(pScene);
+	//// シーンクラスをゲームクラスへダウンキャスト
+	//CGame* pGame = dynamic_cast<CGame*>(pScene);
 
-	// ダウンキャストに成功した場合のみ
-	if (pGame != nullptr)
-	{
-		// ステージ作成モードなら
-		if (pGame->GetStageMaking())
-		{
-			// カメラの位置を変更
-			m_pos = CStageMaker::GetInstance()->GetPos();
-		}
-		else
-		{
-			for (int nCntPriority = 0; nCntPriority < static_cast<int>(CObject::LAYER::MAX); nCntPriority++)
-			{
-				for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
-				{
-					// オブジェクト情報を取得
-					CObject* pObject = CObject::GetObject(nCntPriority, nCntObj);
+	//// ダウンキャストに成功した場合のみ
+	//if (pGame != nullptr)
+	//{
+	//	// ステージ作成モードなら
+	//	if (pGame->GetStageMaking())
+	//	{
+	//		// カメラの位置を変更
+	//		m_pos = CStageMaker::GetInstance()->GetPos();
+	//	}
+	//	else
+	//	{
+	//		for (int nCntPriority = 0; nCntPriority < static_cast<int>(CObject::LAYER::MAX); nCntPriority++)
+	//		{
+	//			for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	//			{
+	//				// オブジェクト情報を取得
+	//				CObject* pObject = CObject::GetObject(nCntPriority, nCntObj);
 
-					if (pObject == nullptr)
-					{ // 情報がなければコンティニュー
-						continue;
-					}
+	//				if (pObject == nullptr)
+	//				{ // 情報がなければコンティニュー
+	//					continue;
+	//				}
 
-					if (pObject->GetType() == CObject::TYPE::PLAYER)
-					{ // プレイヤータイプなら
+	//				if (pObject->GetType() == CObject::TYPE::PLAYER)
+	//				{ // プレイヤータイプなら
 
-						// プレイヤークラスのポインタ
-						CPlayer* pPlayer = dynamic_cast<CPlayer*>(pObject);
+	//					// プレイヤークラスのポインタ
+	//					CPlayer* pPlayer = dynamic_cast<CPlayer*>(pObject);
 
-						if (pPlayer == nullptr)
-						{ // ダウンキャスト失敗
-							assert(false);
-						}
+	//					if (pPlayer == nullptr)
+	//					{ // ダウンキャスト失敗
+	//						assert(false);
+	//					}
 
-						m_pos = pPlayer->GetPos();
-					}
-				}
-			}
-		}
-	}
-	else
-	{
+	//					m_pos = pPlayer->GetPos();
+	//				}
+	//			}
+	//		}
+	//	}
+	//}
+	//else
+	//{
 		for (int nCntPriority = 0; nCntPriority < static_cast<int>(CObject::LAYER::MAX); nCntPriority++)
 		{
 			for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
@@ -130,9 +131,22 @@ void CCamera::Update()
 
 					m_pos = pPlayer->GetPos();
 				}
+				else if (pObject->GetType() == CObject::TYPE::DUMMY)
+				{ // ダミータイプなら
+
+					// ダミークラスのポインタ
+					CDummy* pDummy = dynamic_cast<CDummy*>(pObject);
+
+					if (pDummy == nullptr)
+					{ // ダウンキャスト失敗
+						assert(false);
+					}
+
+					m_pos = pDummy->GetPos();
+				}
 			}
 		}
-	}
+	//}
 
 	// カメラ操作
 	//Control();

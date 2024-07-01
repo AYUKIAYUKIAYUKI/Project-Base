@@ -1,12 +1,12 @@
 //============================================================================
 // 
-// ゲーム、ヘッダファイル [game.h]
+// ステージデバッグ、ヘッダファイル [stage_debug.h]
 // Author : 福田歩希
 // 
 //============================================================================
 
-#ifndef _GAME_H_
-#define _GAME_H_	// 二重インクルード防止
+#ifndef _STAGE_DEBUG_H_
+#define _STAGE_DEBUG_H_	// 二重インクルード防止
 
 //****************************************************
 // インクルードファイル
@@ -14,14 +14,16 @@
 #include "scene.h"
 
 //****************************************************
-// ゲームクラス
+// ステージデバッグクラス
 //****************************************************
-class CGame : public CScene
+class CStage_Debug : public CScene
 {
 public:
 
-	CGame();			// コンストラクタ
-	~CGame() override;	// デストラクタ
+	CStage_Debug();// コンストラクタ
+	~CStage_Debug();// デストラクタ
+
+private:
 
 	HRESULT Init() override;	// 初期設定
 	void Uninit() override;		// 終了処理
@@ -29,4 +31,4 @@ public:
 	void Draw() override;		// 描画処理
 };
 
-#endif // _GAME_H_
+#endif // _STAGE_DEBUG_H_

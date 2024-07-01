@@ -14,6 +14,7 @@
 // ÉVÅ[Éì
 #include "title.h"
 #include "game.h"
+#include "stage_debug.h"
 #include "result.h"
 
 //============================================================================
@@ -81,6 +82,10 @@ CScene* CScene::Create(MODE mode)
 
 	case CScene::MODE::GAME:
 		pScene = DBG_NEW CGame;
+		break;
+
+	case CScene::MODE::STAGE:
+		pScene = DBG_NEW CStage_Debug;
 		break;
 
 	case CScene::MODE::RESULT:

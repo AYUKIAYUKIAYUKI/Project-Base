@@ -105,6 +105,12 @@ void CPlayer::Update()
 	// 位置を反映
 	SetPos(m_posTarget);
 
+	// 位置をデバッグ表示
+	CManager::GetRenderer()->SetDebugString("【プレイヤー位置】");
+	std::ostringstream oss;
+	oss << std::fixed << std::setprecision(1) << "X:" << GetPos().x << "\nY:" << GetPos().y;
+	CManager::GetRenderer()->SetDebugString(oss.str().c_str());
+
 	// 基底クラスの更新
 	CObject_X::Update();
 }

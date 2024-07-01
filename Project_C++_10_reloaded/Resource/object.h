@@ -24,6 +24,7 @@ public:
 	{
 		NONE = 0,	// 無し
 		PLAYER,		// プレイヤー
+		DUMMY,		// ダミー
 		ENEMY,		// エネミー
 		BLOCK,		// ブロック
 		ITEM,		// アイテム

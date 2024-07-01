@@ -1,6 +1,6 @@
 //============================================================================
 // 
-// ゲーム [game.cpp]
+// ステージデバッグ [stage_debug.cpp]
 // Author : 福田歩希
 // 
 //============================================================================
@@ -8,27 +8,16 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
-#include "game.h"
-#include "manager.h"
-#include "object.h"
-
+#include "stage_debug.h"
 #include "stagemaker.h"
 
-// オブジェクト生成用
-#include "bg.h"
-#include "block.h"
-#include "enemy.h"
-#include "field.h"
-#include "goal.h"
-#include "item.h"
-#include "player.h"
-#include "score.h"
-#include "start.h"
+#include "manager.h"
+#include "dummy.h"
 
 //============================================================================
 // コンストラクタ
 //============================================================================
-CGame::CGame()
+CStage_Debug::CStage_Debug()
 {
 
 }
@@ -36,7 +25,7 @@ CGame::CGame()
 //============================================================================
 // デストラクタ
 //============================================================================
-CGame::~CGame()
+CStage_Debug::~CStage_Debug()
 {
 
 }
@@ -44,43 +33,16 @@ CGame::~CGame()
 //============================================================================
 // 初期設定
 //============================================================================
-HRESULT CGame::Init()
+HRESULT CStage_Debug::Init()
 {
-	// スタートの生成 (仮)
-	CStart::Create(
-		{ -150.0f, 150.0f, 0.0f });	// 位置
-
-	// ゴールの生成 (仮)
-	CGoal::Create(
-		{ 150.0f, 150.0f, 0.0f });	// 位置
-
-	// プレイヤーの生成 (仮)
-	CPlayer::Create(
-		{ 0.0f, 0.0f, 0.0f });	// 位置
-
-	for (int i = 0; i < 5; i++)
+	// ステージ作成クラスのインスタンス生成
+	if (FAILED(CStageMaker::Create()))
 	{
-		// ブロックの生成 (仮)
-		CBlock::Create(
-			{ 150.0f + (-20.0f * i), 100.0f, 0.0f });	// 位置
-
-		// ブロックの生成 (仮)
-		CBlock::Create(
-			{ 150.0f , 0.0f + (20.0f * i), 0.0f });	// 位置
-
-		// ブロックの生成 (仮)
-		CBlock::Create(
-			{ -150.0f + (20.0f * i), -100.0f, 0.0f });	// 位置
-
-		// ブロックの生成 (仮)
-		CBlock::Create(
-			{ -150.0f , -100.0f + (20.0f * i), 0.0f });	// 位置
+		return E_FAIL;
 	}
 
-	// スコアの生成 (仮)
-	CScore::Create(
-		{ 25.0f, 30.0f, 0.0f },	// 位置
-		25.0f);					// 数列の配置間隔
+	// ダミーの生成
+	CDummy::Create({ 0.0f, 0.0f, 0.0f });
 
 	return S_OK;
 }
@@ -88,8 +50,11 @@ HRESULT CGame::Init()
 //============================================================================
 // 終了処理
 //============================================================================
-void CGame::Uninit()
+void CStage_Debug::Uninit()
 {
+	// ステージ作成クラスのインスタンス破棄
+	CStageMaker::Release();
+
 	// 基底クラスの終了処理
 	CScene::Uninit();
 }
@@ -97,22 +62,21 @@ void CGame::Uninit()
 //============================================================================
 // 更新処理
 //============================================================================
-void CGame::Update()
+void CStage_Debug::Update()
 {
 	if (CManager::GetKeyboard()->GetTrigger(DIK_F1))
 	{
-		CManager::GetFade()->SetFade(MODE::STAGE);
+		CManager::GetFade()->SetFade(MODE::GAME);
 	}
-	else if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
-	{
-		CManager::GetFade()->SetFade(MODE::RESULT);
-	}
+
+	// ステージ作成の更新
+	CStageMaker::GetInstance()->Update();
 }
 
 //============================================================================
 // 描画処理
 //============================================================================
-void CGame::Draw()
+void CStage_Debug::Draw()
 {
 
 }

@@ -17,6 +17,8 @@
 //============================================================================
 CRenderer::CRenderer() : m_pD3D(nullptr), m_pD3DDevice(nullptr)
 {
+	m_pFont = nullptr;		// フォント
+	m_debugString = {};		// デバッグ用文字列
 	m_pTexture = nullptr;	// テクスチャ管理
 	m_pModel_X = nullptr;	// Xモデル管理
 }
@@ -110,6 +112,12 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 	// ?
 	//ID3DXAllocateHierarchy;
 
+	// フォントを生成
+	D3DXCreateFont(m_pD3DDevice, 22, 0, FW_HEAVY, 1,
+		FALSE, SHIFTJIS_CHARSET,
+		OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH,
+		"Terminal", &m_pFont);
+
 	// テクスチャ管理インスタンスを生成
 	m_pTexture = DBG_NEW CTexture;
 
@@ -159,6 +167,13 @@ void CRenderer::Uninit()
 		m_pModel_X = nullptr;
 	}
 
+	// フォントの破棄
+	if (m_pFont != nullptr)
+	{
+		m_pFont->Release();
+		m_pFont = nullptr;
+	}
+
 	// Direct3Dデバイスの破棄
 	if (m_pD3DDevice != nullptr)
 	{
@@ -179,6 +194,9 @@ void CRenderer::Uninit()
 //============================================================================
 void CRenderer::Update()
 {
+	// 文字列クリア
+	m_debugString = {};
+
 	// 全オブジェクト更新処理
 	CObject::UpdateAll();
 }
@@ -208,12 +226,35 @@ void CRenderer::Draw()
 		// フェードの描画処理
 		CManager::GetFade()->Draw();
 
+		// デバッグ表示
+		PrintDebug();
+
 		// 描画終了
 		m_pD3DDevice->EndScene();
 	}
 
 	// バックバッファとフロントバッファの入れ替え
 	m_pD3DDevice->Present(nullptr, nullptr, nullptr, nullptr);
+}
+
+//============================================================================
+// デバッグ表示
+//============================================================================
+void CRenderer::PrintDebug()
+{
+	// 表示位置
+	RECT rect = { 0, 50, SCREEN_WIDTH, SCREEN_HEIGHT };
+
+	//テキストの描画
+	m_pFont->DrawText(NULL, m_debugString.c_str(), -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+}
+
+//============================================================================
+// デバッグ用文字列に追加
+//============================================================================
+void CRenderer::SetDebugString(std::string str)
+{
+	m_debugString += str + "\n";
 }
 
 //============================================================================

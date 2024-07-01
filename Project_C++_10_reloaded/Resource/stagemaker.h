@@ -40,9 +40,6 @@ private:
 	void Export();	// ステージ書き出し
 
 	static CStageMaker* m_pStageMaker;	// 自身のインスタンス
-
-	CBlock* m_pVirtualBlock;	// 仮想ブロック情報
-	D3DXVECTOR3 m_pos;			// 位置
 };
 
 #endif // _SATEGEMAKER_H_

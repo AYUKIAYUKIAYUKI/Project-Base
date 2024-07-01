@@ -23,6 +23,7 @@
     <ClCompile Include="resource\block.cpp" />
     <ClCompile Include="resource\bullet.cpp" />
     <ClCompile Include="resource\camera.cpp" />
+    <ClCompile Include="Resource\dummy.cpp" />
     <ClCompile Include="resource\effect.cpp" />
     <ClCompile Include="resource\enemy.cpp" />
     <ClCompile Include="resource\explosion.cpp" />
@@ -57,6 +58,7 @@
     <ClCompile Include="resource\score.cpp" />
     <ClCompile Include="resource\sound.cpp" />
     <ClCompile Include="Resource\stagemaker.cpp" />
+    <ClCompile Include="Resource\stage_debug.cpp" />
     <ClCompile Include="Resource\start.cpp" />
     <ClCompile Include="resource\texture.cpp" />
     <ClCompile Include="Resource\title.cpp" />
@@ -66,6 +68,7 @@
     <ClInclude Include="resource\block.h" />
     <ClInclude Include="resource\bullet.h" />
     <ClInclude Include="resource\camera.h" />
+    <ClInclude Include="Resource\dummy.h" />
     <ClInclude Include="resource\effect.h" />
     <ClInclude Include="resource\enemy.h" />
     <ClInclude Include="resource\explosion.h" />
@@ -97,6 +100,7 @@
     <ClInclude Include="resource\score.h" />
     <ClInclude Include="resource\sound.h" />
     <ClInclude Include="Resource\stagemaker.h" />
+    <ClInclude Include="Resource\stage_debug.h" />
     <ClInclude Include="Resource\start.h" />
     <ClInclude Include="resource\texture.h" />
     <ClInclude Include="Resource\title.h" />

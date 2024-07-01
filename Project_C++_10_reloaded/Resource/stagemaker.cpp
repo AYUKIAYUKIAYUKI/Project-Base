@@ -18,16 +18,12 @@
 //****************************************************
 CStageMaker* CStageMaker::m_pStageMaker = nullptr;	// 自身のインスタンス
 
-
 //============================================================================
 // コンストラクタ
 //============================================================================
 CStageMaker::CStageMaker()
 {
 	m_pStageMaker = nullptr;	// 自身のインスタンス
-
-	m_pVirtualBlock = nullptr;		// 仮想ブロック情報
-	m_pos = { 0.0f, 0.0f, 0.0f };	// 位置
 }
 
 //============================================================================
@@ -78,14 +74,6 @@ void CStageMaker::Import()
 }
 
 //============================================================================
-// 位置を取得
-//============================================================================
-D3DXVECTOR3 CStageMaker::GetPos()
-{
-	return m_pos;
-}
-
-//============================================================================
 // 生成
 //============================================================================
 HRESULT CStageMaker::Create()
@@ -133,24 +121,6 @@ CStageMaker* CStageMaker::GetInstance()
 //============================================================================
 void CStageMaker::Control()
 {
-	if (CManager::GetKeyboard()->GetTrigger(DIK_W))
-	{
-		m_pos.y += 5.0f;
-	}
-	else if (CManager::GetKeyboard()->GetTrigger(DIK_S))
-	{
-		m_pos.y += -5.0f;
-	}
-
-	if (CManager::GetKeyboard()->GetTrigger(DIK_A))
-	{
-		m_pos.x += -5.0f;
-	}
-	else if (CManager::GetKeyboard()->GetTrigger(DIK_D))
-	{
-		m_pos.x += 5.0f;
-	}
-
 	if (CManager::GetKeyboard()->GetTrigger(DIK_F2))
 	{
 		// ステージ書き出し
