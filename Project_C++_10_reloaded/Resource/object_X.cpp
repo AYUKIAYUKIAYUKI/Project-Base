@@ -12,6 +12,11 @@
 #include "main.h"
 #include "manager.h"
 
+//****************************************************
+// 静的メンバ変数の初期化
+//****************************************************
+const float CObject_X::DEFAULT_ALPHA_VALUE = 1.0f;	// デフォルトアルファ値
+
 //============================================================================
 // コンストラクタ
 //============================================================================
@@ -21,6 +26,7 @@ CObject_X::CObject_X(int nPriority) : CObject(nPriority)
 	m_pos = { 0.0f, 0.0f, 0.0f };		// 位置
 	m_rot = { 0.0f, 0.0f, 0.0f };		// 向き
 	m_size = { 0.0f, 0.0f, 0.0f };		// サイズ
+	m_fAlpha = DEFAULT_ALPHA_VALUE;		// アルファ値
 	D3DXMatrixIdentity(&m_mtxWorld);	// ワールド行列
 }
 
@@ -82,6 +88,9 @@ void CObject_X::Draw()
 
 	for (int nCntMat = 0; nCntMat < static_cast<int>(m_pModel->dwNumMat); nCntMat++)
 	{
+		// アルファ値の設定
+		pMat[nCntMat].MatD3D.Diffuse.a = m_fAlpha;
+
 		// マテリアルの設定
 		pDev->SetMaterial(&pMat[nCntMat].MatD3D);
 
@@ -157,6 +166,21 @@ void CObject_X::SetSize(D3DXVECTOR3 size)
 	m_size = size;
 }
 
+//============================================================================
+// アルファ値取得
+//============================================================================
+float CObject_X::GetAlpha()
+{
+	return m_fAlpha;
+}
+
+//============================================================================
+// アルファ値設定
+//============================================================================
+void CObject_X::SetAlpha(float fAlpha)
+{
+	m_fAlpha = fAlpha;
+}
 
 //============================================================================
 // 生成

@@ -100,6 +100,7 @@ CDummy* CDummy::Create(D3DXVECTOR3 pos)
 
 	pDummy->Init();			// 基底クラスの初期設定
 	pDummy->SetPos(pos);	// 位置の設定
+	pDummy->SetAlpha(0.5f);	// アルファ値の設定
 
 	pDummy->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::BLOCK_000));
 
