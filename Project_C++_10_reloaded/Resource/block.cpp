@@ -86,5 +86,8 @@ CBlock* CBlock::Create(D3DXVECTOR3 pos)
 	// モデルを設定
 	pBlock->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::BLOCK_000));
 
+	// 描画される前に一度更新しておく
+	pBlock->Update();
+
 	return pBlock;
 }

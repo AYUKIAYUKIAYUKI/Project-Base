@@ -12,6 +12,7 @@
 #include "manager.h"
 
 #include "block.h"
+#include "dummy.h"
 
 //****************************************************
 // 静的メンバ変数の初期化
@@ -126,6 +127,47 @@ void CStageMaker::Control()
 		// ステージ書き出し
 		Export();
 	}
+
+	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
+	{
+		// 設置
+		Regist();
+	}
+}
+
+//============================================================================
+// 設置
+//============================================================================
+void CStageMaker::Regist()
+{
+	for (int nCntPriority = 0; nCntPriority < static_cast<int>(CObject::LAYER::MAX); nCntPriority++)
+	{
+		for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+		{
+			// オブジェクト情報を取得
+			CObject* pObject = CObject::GetObject(nCntPriority, nCntObj);
+
+			if (pObject == nullptr)
+			{ // 情報がなければコンティニュー
+				continue;
+			}
+
+			if (pObject->GetType() == CObject::TYPE::DUMMY)
+			{ // ダミータイプなら
+
+				// オブジェクトクラスをダミークラスへダウンキャスト
+				CDummy* pDummy = dynamic_cast<CDummy*>(pObject);
+
+				if (pDummy == nullptr)
+				{ // ダウンキャスト失敗
+					assert(false);
+				}
+
+				// ダミーの位置にブロックを生成
+				CBlock::Create(pDummy->GetPos());
+			}
+		}
+	}
 }
 
 //============================================================================
@@ -160,7 +202,7 @@ void CStageMaker::Export()
 				}
 
 				// 座標を書き出す
-				Export << "え：" << pBlock->GetPos().x << " / " << "わ：" << pBlock->GetPos().y << " / " << "ぜ：" << pBlock->GetPos().z << std::endl;
+				Export << "X：" << pBlock->GetPos().x << " / " << "Y：" << pBlock->GetPos().y << " / " << "Z：" << pBlock->GetPos().z << std::endl;
 			}
 		}
 	}

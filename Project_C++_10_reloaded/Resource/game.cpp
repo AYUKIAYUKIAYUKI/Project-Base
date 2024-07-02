@@ -101,10 +101,12 @@ void CGame::Update()
 {
 	if (CManager::GetKeyboard()->GetTrigger(DIK_F1))
 	{
+		// ステージデバッグ画面へ
 		CManager::GetFade()->SetFade(MODE::STAGE);
 	}
 	else if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
 	{
+		// リザルト画面へ
 		CManager::GetFade()->SetFade(MODE::RESULT);
 	}
 }

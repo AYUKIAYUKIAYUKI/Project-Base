@@ -37,6 +37,7 @@ public:
 private:
 
 	void Control();	// 操作
+	void Regist();	// 設置
 	void Export();	// ステージ書き出し
 
 	static CStageMaker* m_pStageMaker;	// 自身のインスタンス

@@ -64,6 +64,7 @@ void CStage_Debug::Uninit()
 //============================================================================
 void CStage_Debug::Update()
 {
+	// ƒQ[ƒ€ƒ‚[ƒh‚Ö–ß‚é
 	if (CManager::GetKeyboard()->GetTrigger(DIK_F1))
 	{
 		CManager::GetFade()->SetFade(MODE::GAME);

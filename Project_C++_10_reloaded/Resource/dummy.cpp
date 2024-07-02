@@ -76,14 +76,6 @@ void CDummy::Draw()
 }
 
 //============================================================================
-// 位置を取得
-//============================================================================
-D3DXVECTOR3 CDummy::GetPos()
-{
-	return CObject_X::GetPos();
-}
-
-//============================================================================
 // 生成
 //============================================================================
 CDummy* CDummy::Create(D3DXVECTOR3 pos)
@@ -102,6 +94,7 @@ CDummy* CDummy::Create(D3DXVECTOR3 pos)
 	pDummy->SetPos(pos);	// 位置の設定
 	pDummy->SetAlpha(0.5f);	// アルファ値の設定
 
+	// 一旦ブロックモデルを設定
 	pDummy->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::BLOCK_000));
 
 	return pDummy;
@@ -113,7 +106,7 @@ CDummy* CDummy::Create(D3DXVECTOR3 pos)
 void CDummy::Control()
 {
 	// 位置を取得
-	auto pos = GetPos();
+	D3DXVECTOR3 pos = GetPos();
 
 	// Y軸方向にグリッド移動
 	if (CManager::GetKeyboard()->GetTrigger(DIK_W))
