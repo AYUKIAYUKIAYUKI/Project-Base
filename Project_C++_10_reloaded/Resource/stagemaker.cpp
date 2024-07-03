@@ -13,7 +13,6 @@
 
 #include "block.h"
 #include "dummy.h"
-#include "line.h"
 
 //****************************************************
 // 静的メンバ変数の初期化
@@ -43,9 +42,6 @@ CStageMaker::~CStageMaker()
 //============================================================================
 HRESULT CStageMaker::Init()
 {
-	// グリッドライン生成
-	CLine::CreateGrid();
-
 	return S_OK;
 }
 

@@ -24,9 +24,9 @@ const int CPlayerStateBeginning::BEGIN_CNT_MAX = 20;		// 変身必要時間
 const float CPlayerStateBeginning::BEGIN_FLOATING = 1.25f;	// 変身時上昇量
 const float CPlayerStateBeginning::BEGIN_SPINNING = 0.5f;	// 変身時回転量
 const float CPlayerStateFlying::MAX_FLY_VELOCITY = 2.0f;	// 飛行時の最大加速度
-const float CPlayerStateFlying::FLY_SPEED = 0.25f;			// 飛行速度
-const int CPlayerStateStopping::STOP_CNT_MAX = 20;			// 変身停止必要時間
-const float CPlayerStateStopping::RECOIL_SPEED = 1.0f;		// 反動移動速度
+const float CPlayerStateFlying::FLY_SPEED = 2.0f;			// 飛行速度
+const int CPlayerStateStopping::STOP_CNT_MAX = 10;			// 変身停止必要時間
+const float CPlayerStateStopping::RECOIL_SPEED = 2.0f;		// 反動移動速度
 const float CPlayerStateMistook::MAX_WARP_SPEED = 15.0f;	// 強制移動速度の上限
 
 //============================================================================
@@ -370,7 +370,7 @@ void CPlayerStateBeginning::Exit()
 //============================================================================
 CPlayerStateFlying::CPlayerStateFlying()
 {
-
+	m_velocityTarget = {};	// 目標加速度
 }
 
 //============================================================================
@@ -479,10 +479,17 @@ bool CPlayerStateFlying::Flying()
 		m_pPlayer->SetAngleFlying(atan2f(X, Y));
 	}
 
-	// 飛行方向に突進
+	// 元の加速度を取得
 	D3DXVECTOR3 velocity = m_pPlayer->GetVelocity();
-	velocity.x += sinf(m_pPlayer->GetAngleFlying()) * FLY_SPEED;
-	velocity.y += cosf(m_pPlayer->GetAngleFlying()) * FLY_SPEED;
+
+	// 目標加速度を設定
+	m_velocityTarget.x = sinf(m_pPlayer->GetAngleFlying()) * FLY_SPEED;
+	m_velocityTarget.y = cosf(m_pPlayer->GetAngleFlying()) * FLY_SPEED;
+
+	// 目標加速度へと補正していく
+	velocity += (m_velocityTarget - (velocity * 0.5f)) * 0.1f;
+	
+	// 変更した加速度を反映
 	m_pPlayer->SetVelocity(velocity);
 
 	return true;

@@ -116,6 +116,8 @@ private:
 	bool Flying();		// ‘€ì
 	void Rotation();	// ‰ñ“]
 	void Braking();		// §“®’²®
+
+	D3DXVECTOR3 m_velocityTarget;	// –Ú•W‰Á‘¬“x
 };
 
 //****************************************************

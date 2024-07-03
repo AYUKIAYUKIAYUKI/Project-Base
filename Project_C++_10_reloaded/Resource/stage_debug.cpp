@@ -13,6 +13,7 @@
 
 #include "manager.h"
 #include "dummy.h"
+#include "line.h"
 
 //============================================================================
 // コンストラクタ
@@ -43,6 +44,9 @@ HRESULT CStage_Debug::Init()
 
 	// ステージ作成クラスの初期設定
 	CStageMaker::GetInstance()->Init();
+
+	// グリッドライン生成
+	CLine::CreateGrid();
 
 	// ダミーの生成
 	CDummy::Create({ 0.0f, 0.0f, 0.0f });
