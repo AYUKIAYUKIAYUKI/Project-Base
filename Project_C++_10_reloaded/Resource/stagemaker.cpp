@@ -98,17 +98,17 @@ void CStageMaker::Import()
 		D3DXVECTOR3 pos = {};
 
 		// 数値となる文字格納先
-		std::string strf;
+		std::string strf[3];
 
 		// 数値を抽出する
-		strf = str.substr(str.find("X") + 2, str.find(" / "));
-
-		int i = 0;
+		strf[0] = str.substr(str.find("X") + 2, str.find(","));
+		strf[1] = str.substr(str.find("Y") + 2, str.find(","));
+		strf[2] = str.substr(str.find("Z") + 2, str.find(","));
 
 		// 抽出した数値を座標に変換
-		pos.x = std::stof(strf);
-		pos.y = 0.0f;
-		pos.z = 0.0f;
+		pos.x = std::stof(strf[0]);
+		pos.y = std::stof(strf[1]);
+		pos.z = std::stof(strf[2]);
 
 		// ブロックを生成
 		CBlock::Create(pos);
@@ -251,7 +251,7 @@ void CStageMaker::Export()
 				}
 
 				// 座標を書き出す
-				Export << std::fixed << std::setprecision(1) << "X:" << pBlock->GetPos().x << " / " << "Y:" << pBlock->GetPos().y << " / " << "Z:" << pBlock->GetPos().z << std::endl;
+				Export << std::fixed << std::setprecision(1) << "X:" << pBlock->GetPos().x << "," << "Y:" << pBlock->GetPos().y << "," << "Z:" << pBlock->GetPos().z << "," << std::endl;
 
 				// デバッグ表示の期間を設定
 				m_nCntMessage = 180;

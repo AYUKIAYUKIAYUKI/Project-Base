@@ -87,7 +87,9 @@ public:
 
 private:
 
-	static const int BEGIN_CNT_MAX;	// 変身必要時間
+	static const int BEGIN_CNT_MAX;		// 変身必要時間
+	static const float BEGIN_FLOATING;	// 変身時上昇量
+	static const float BEGIN_SPINNING;	// 変身時回転量
 
 	int m_nCntMetamorphose;	// 変身時間カウント
 };
@@ -109,6 +111,7 @@ public:
 private:
 
 	static const float MAX_FLY_VELOCITY;	// 飛行時の最大加速度
+	static const float FLY_SPEED;			// 飛行速度
 
 	bool Flying();		// 操作
 	void Rotation();	// 回転
@@ -131,10 +134,11 @@ public:
 
 private:
 
+	static const int STOP_CNT_MAX;		// 変身停止必要時間
+	static const float RECOIL_SPEED;	// 反動移動速度
+
 	void Rolling();	// 回転
 	void Recoil();	// 反動
-
-	static const int STOP_CNT_MAX;	// 変身停止必要時間
 
 	int m_nCntStopMetamorphose;	// 変身時間カウント
 };

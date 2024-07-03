@@ -46,6 +46,18 @@ CGame::~CGame()
 //============================================================================
 HRESULT CGame::Init()
 {
+	// ステージ作成クラスのインスタンス生成
+	if (FAILED(CStageMaker::Create()))
+	{
+		return E_FAIL;
+	}
+
+	// ステージ作成クラスの初期設定
+	CStageMaker::GetInstance()->Init();
+
+	// ステージの読み込み
+	CStageMaker::GetInstance()->Import();
+
 	// スタートの生成 (仮)
 	CStart::Create(
 		{ -150.0f, 150.0f, 0.0f });	// 位置
@@ -57,25 +69,6 @@ HRESULT CGame::Init()
 	// プレイヤーの生成 (仮)
 	CPlayer::Create(
 		{ 0.0f, 0.0f, 0.0f });	// 位置
-
-	for (int i = 0; i < 5; i++)
-	{
-		// ブロックの生成 (仮)
-		CBlock::Create(
-			{ 150.0f + (-20.0f * i), 100.0f, 0.0f });	// 位置
-
-		// ブロックの生成 (仮)
-		CBlock::Create(
-			{ 150.0f , 0.0f + (20.0f * i), 0.0f });	// 位置
-
-		// ブロックの生成 (仮)
-		CBlock::Create(
-			{ -150.0f + (20.0f * i), -100.0f, 0.0f });	// 位置
-
-		// ブロックの生成 (仮)
-		CBlock::Create(
-			{ -150.0f , -100.0f + (20.0f * i), 0.0f });	// 位置
-	}
 
 	// スコアの生成 (仮)
 	CScore::Create(
@@ -90,6 +83,9 @@ HRESULT CGame::Init()
 //============================================================================
 void CGame::Uninit()
 {
+	// ステージ作成クラスのインスタンス破棄
+	CStageMaker::Release();
+
 	// 基底クラスの終了処理
 	CScene::Uninit();
 }
