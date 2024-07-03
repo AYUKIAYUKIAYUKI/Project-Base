@@ -102,6 +102,16 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 		return -1;
 	}
 
+	// 分解能を設定
+	timeBeginPeriod(1);
+
+	// FPS計測用
+	int nCountFPS = 0;						// 現在のFPS
+	DWORD dwCurrentTime = 0;				// 現在時刻用
+	DWORD dwFrameCount = 0;					// 最後に処理した時間
+	DWORD dwExecLastTime = timeGetTime();	// フレームカウント格納
+	DWORD dwFPSLastTime = timeGetTime();	// 最後にFPSを計測した時刻格納
+
 	// メッセージループ
 	while (1)
 	{
@@ -122,13 +132,44 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 		}
 		else
 		{
-			// 更新処理
-			g_pManager->Update();
+			// 現在時刻を取得
+			dwCurrentTime = timeGetTime();
 
-			// 描画処理
-			g_pManager->Draw();
+			if ((dwCurrentTime - dwFPSLastTime) >= 500)
+			{
+				// FPSを計測
+				nCountFPS = (dwFrameCount * 1000) / (dwCurrentTime - dwFPSLastTime);
+
+				// FPSを計測した時間を保存
+				dwFPSLastTime = dwCurrentTime;
+
+				// フレームカウントをクリア
+				dwFrameCount = 0;
+			}
+
+			if ((dwCurrentTime - dwExecLastTime) >= (1000 / 60))
+			{
+				// 現在時刻を保存
+				dwExecLastTime = dwCurrentTime;
+
+				// 更新処理
+				g_pManager->Update();
+
+				// FPSを表示
+				//std::string string = std::to_string(nCountFPS);
+				CManager::GetRenderer()->SetDebugString(std::to_string(nCountFPS));
+
+				// 描画処理
+				g_pManager->Draw();
+
+				// フレームカウントを加算
+				dwFrameCount++;
+			}
 		}
 	}
+
+	// 分解能を戻す
+	timeEndPeriod(1);
 
 	// マネージャーの破棄
 	if (g_pManager != nullptr)

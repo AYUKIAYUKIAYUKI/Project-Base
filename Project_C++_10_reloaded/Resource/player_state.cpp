@@ -18,12 +18,12 @@
 //****************************************************
 // 静的メンバ変数の初期化
 //****************************************************
-const float CPlayerStateDefault::MAX_WALK_VELOCITY = 0.5f;	// 歩行時の最大加速度
-const float CPlayerStateDefault::BRAKING_WALK_SPEED = 0.9f;	// 歩行時の制動力
+const float CPlayerStateDefault::MAX_WALK_VELOCITY = 0.75f;	// 歩行時の最大加速度
+const float CPlayerStateDefault::BRAKING_WALK_SPEED = 0.8f;	// 歩行時の制動力
 const int CPlayerStateBeginning::BEGIN_CNT_MAX = 20;		// 変身必要時間
-const float CPlayerStateFlying::MAX_FLY_VELOCITY = 1.0f;	// 飛行時の最大加速度
+const float CPlayerStateFlying::MAX_FLY_VELOCITY = 2.0f;	// 飛行時の最大加速度
 const int CPlayerStateStopping::STOP_CNT_MAX = 20;			// 変身停止必要時間
-const float CPlayerStateMistook::MAX_WARP_SPEED = 10.0f;	// 強制移動速度の上限
+const float CPlayerStateMistook::MAX_WARP_SPEED = 15.0f;	// 強制移動速度の上限
 
 //============================================================================
 // 
@@ -259,7 +259,7 @@ void CPlayerStateDefault::Braking()
 	}
 
 	// 少しずつ加速度を失う
-	velocity = velocity * BRAKING_WALK_SPEED;
+	velocity.x = velocity.x * BRAKING_WALK_SPEED;
 
 	// 加速度を設定
 	m_pPlayer->SetVelocity(velocity);
@@ -315,12 +315,12 @@ void CPlayerStateBeginning::Update()
 
 		// 変身期間中は強制上昇
 		D3DXVECTOR3 posTarget = m_pPlayer->GetPosTarget();
-		posTarget.y += 0.75f;
+		posTarget.y += 1.0f;
 		m_pPlayer->SetPosTarget(posTarget);
 
 		// Y軸を高速回転し、Z軸回転を初期化
 		D3DXVECTOR3 rot = m_pPlayer->GetRot();
-		rot.y = posTarget.y * 0.25f;
+		rot.y = posTarget.y * 0.5f;
 		rot.z = 0.0f;
 		m_pPlayer->SetRot(rot);
 	}
@@ -477,8 +477,8 @@ bool CPlayerStateFlying::Flying()
 
 	// 飛行方向に突進
 	D3DXVECTOR3 velocity = m_pPlayer->GetVelocity();
-	velocity.x += sinf(m_pPlayer->GetAngleFlying()) * 0.1f;
-	velocity.y += cosf(m_pPlayer->GetAngleFlying()) * 0.1f;
+	velocity.x += sinf(m_pPlayer->GetAngleFlying()) * 0.25f;
+	velocity.y += cosf(m_pPlayer->GetAngleFlying()) * 0.25f;
 	m_pPlayer->SetVelocity(velocity);
 
 	return true;
@@ -579,6 +579,9 @@ void CPlayerStateStopping::Enter()
 	CExplosion3D::Create(
 		m_pPlayer->GetPos(),		// 位置
 		{ 30.0f, 0.0f, 30.0f });	// サイズ
+
+	// 反動
+	Recoil();
 }
 
 //============================================================================
@@ -594,8 +597,10 @@ void CPlayerStateStopping::Update()
 		// 回転
 		Rolling();
 
-		// 反動
-		Recoil();
+		// 重力加速
+		D3DXVECTOR3 velocity = m_pPlayer->GetVelocity();
+		CPhysics::GetInstance()->Gravity(velocity);
+		m_pPlayer->SetVelocity(velocity);
 
 		// 加速度を位置に加算
 		D3DXVECTOR3 posTarget = m_pPlayer->GetPosTarget();
@@ -666,8 +671,8 @@ void CPlayerStateStopping::Recoil()
 	D3DXVECTOR3 velocity = m_pPlayer->GetVelocity();
 
 	// 飛行方向に突進
-	velocity.x += -sinf(m_pPlayer->GetAngleFlying()) * 0.075f;
-	velocity.y += -cosf(m_pPlayer->GetAngleFlying()) * 0.075f;
+	velocity.x += -sinf(m_pPlayer->GetAngleFlying()) * 0.5f;
+	velocity.y += -cosf(m_pPlayer->GetAngleFlying()) * 0.5f;
 
 	m_pPlayer->SetVelocity(velocity);
 }

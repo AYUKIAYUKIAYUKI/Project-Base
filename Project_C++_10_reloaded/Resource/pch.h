@@ -32,6 +32,7 @@
 //****************************************************
 // ライブラリのリンク
 //****************************************************
+#pragma comment(lib, "winmm.lib")
 #pragma	comment(lib,"d3d9.lib")		// 描画処理用
 #pragma	comment(lib,"d3dx9.lib")	// [d3d9.lib]の拡張ライブラリ
 #pragma	comment(lib,"dxguid.lib")	// DirectXのコーポネント使用のため

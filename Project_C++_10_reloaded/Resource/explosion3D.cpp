@@ -108,7 +108,7 @@ bool CExplosion3D::Animation()
 	// テクスチャ変更管理カウントアップ
 	m_nCntTexChange++;
 
-	if (m_nCntTexChange >= 10)
+	if (m_nCntTexChange >= 5)
 	{
 		// 横テクスチャ種類情報取得
 		int nTexPatternU = GetNowPatternU();
