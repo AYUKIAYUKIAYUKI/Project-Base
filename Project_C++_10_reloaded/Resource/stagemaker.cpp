@@ -13,6 +13,7 @@
 
 #include "block.h"
 #include "dummy.h"
+#include "line.h"
 
 //****************************************************
 // 静的メンバ変数の初期化
@@ -25,6 +26,8 @@ CStageMaker* CStageMaker::m_pStageMaker = nullptr;	// 自身のインスタンス
 CStageMaker::CStageMaker()
 {
 	m_pStageMaker = nullptr;	// 自身のインスタンス
+
+	m_nCntMessage = 0;	// メッセージ表示期間
 }
 
 //============================================================================
@@ -40,6 +43,9 @@ CStageMaker::~CStageMaker()
 //============================================================================
 HRESULT CStageMaker::Init()
 {
+	// グリッドライン生成
+	CLine::CreateGrid();
+
 	return S_OK;
 }
 
@@ -58,6 +64,15 @@ void CStageMaker::Update()
 {
 	// 操作
 	Control();
+
+	// デバッグ表示 (ステージ書き出し)
+	if (m_nCntMessage > 0)
+	{
+		m_nCntMessage--;
+
+		// デバッグ表示
+		CManager::GetRenderer()->SetDebugString("【ステージを書き出しました】");
+	}
 }
 
 //============================================================================
@@ -72,6 +87,34 @@ void CStageMaker::Import()
 	{ // 展開に失敗
 		assert(false);
 	}
+
+	// 文章格納先
+	std::string str;
+
+	// テキストを読み取る
+	while (std::getline(Import, str))
+	{
+		// 座標格納先
+		D3DXVECTOR3 pos = {};
+
+		// 数値となる文字格納先
+		std::string strf;
+
+		// 数値を抽出する
+		strf = str.substr(str.find("X") + 2, str.find(" / "));
+
+		int i = 0;
+
+		// 抽出した数値を座標に変換
+		pos.x = std::stof(strf);
+		pos.y = 0.0f;
+		pos.z = 0.0f;
+
+		// ブロックを生成
+		CBlock::Create(pos);
+	}
+
+	Import.close();	// ファイルを閉じる
 }
 
 //============================================================================
@@ -126,6 +169,12 @@ void CStageMaker::Control()
 	{
 		// ステージ書き出し
 		Export();
+	}
+
+	if (CManager::GetKeyboard()->GetTrigger(DIK_F3))
+	{
+		// ステージ読み込み
+		Import();
 	}
 
 	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
@@ -202,7 +251,10 @@ void CStageMaker::Export()
 				}
 
 				// 座標を書き出す
-				Export << "X：" << pBlock->GetPos().x << " / " << "Y：" << pBlock->GetPos().y << " / " << "Z：" << pBlock->GetPos().z << std::endl;
+				Export << std::fixed << std::setprecision(1) << "X:" << pBlock->GetPos().x << " / " << "Y:" << pBlock->GetPos().y << " / " << "Z:" << pBlock->GetPos().z << std::endl;
+
+				// デバッグ表示の期間を設定
+				m_nCntMessage = 180;
 			}
 		}
 	}

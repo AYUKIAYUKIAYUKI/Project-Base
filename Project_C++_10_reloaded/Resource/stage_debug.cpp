@@ -41,6 +41,9 @@ HRESULT CStage_Debug::Init()
 		return E_FAIL;
 	}
 
+	// ステージ作成クラスの初期設定
+	CStageMaker::GetInstance()->Init();
+
 	// ダミーの生成
 	CDummy::Create({ 0.0f, 0.0f, 0.0f });
 

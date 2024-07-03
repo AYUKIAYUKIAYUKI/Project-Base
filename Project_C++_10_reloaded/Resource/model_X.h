@@ -33,6 +33,8 @@ public:
 		BLOCK_000,		// ブロック0
 		START,			// スタート
 		GOAL,			// ゴール
+		LINE_X,			// X軸
+		LINE_Y,			// Y軸
 		MAX,
 	};
 

@@ -35,6 +35,7 @@
     <ClCompile Include="resource\input.cpp" />
     <ClCompile Include="resource\item.cpp" />
     <ClCompile Include="resource\light.cpp" />
+    <ClCompile Include="Resource\line.cpp" />
     <ClCompile Include="resource\main.cpp" />
     <ClCompile Include="resource\manager.cpp" />
     <ClCompile Include="Resource\model_X.cpp" />
@@ -80,6 +81,7 @@
     <ClInclude Include="resource\input.h" />
     <ClInclude Include="resource\item.h" />
     <ClInclude Include="resource\light.h" />
+    <ClInclude Include="Resource\line.h" />
     <ClInclude Include="resource\main.h" />
     <ClInclude Include="resource\manager.h" />
     <ClInclude Include="resource\model_X.h" />
@@ -183,7 +185,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <ForcedIncludeFiles>pch.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
-      <AdditionalIncludeDirectories>$(SolutionDir)resource;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Resource;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

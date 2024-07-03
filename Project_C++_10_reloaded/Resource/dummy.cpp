@@ -108,24 +108,49 @@ void CDummy::Control()
 	// 位置を取得
 	D3DXVECTOR3 pos = GetPos();
 
-	// Y軸方向にグリッド移動
-	if (CManager::GetKeyboard()->GetTrigger(DIK_W))
+	if (CManager::GetKeyboard()->GetPress(DIK_RSHIFT))
 	{
-		pos.y += 5.0f;
-	}
-	else if (CManager::GetKeyboard()->GetTrigger(DIK_S))
-	{
-		pos.y += -5.0f;
-	}
+		// Y軸方向に移動
+		if (CManager::GetKeyboard()->GetPress(DIK_W))
+		{
+			pos.y += 5.0f;
+		}
+		else if (CManager::GetKeyboard()->GetPress(DIK_S))
+		{
+			pos.y += -5.0f;
+		}
 
-	// X方向にグリッド移動
-	if (CManager::GetKeyboard()->GetTrigger(DIK_A))
-	{
-		pos.x += -5.0f;
+		// X方向に移動
+		if (CManager::GetKeyboard()->GetPress(DIK_A))
+		{
+			pos.x += -5.0f;
+		}
+		else if (CManager::GetKeyboard()->GetPress(DIK_D))
+		{
+			pos.x += 5.0f;
+		}
 	}
-	else if (CManager::GetKeyboard()->GetTrigger(DIK_D))
+	else
 	{
-		pos.x += 5.0f;
+		// Y軸方向にグリッド移動
+		if (CManager::GetKeyboard()->GetTrigger(DIK_W))
+		{
+			pos.y += 5.0f;
+		}
+		else if (CManager::GetKeyboard()->GetTrigger(DIK_S))
+		{
+			pos.y += -5.0f;
+		}
+
+		// X方向にグリッド移動
+		if (CManager::GetKeyboard()->GetTrigger(DIK_A))
+		{
+			pos.x += -5.0f;
+		}
+		else if (CManager::GetKeyboard()->GetTrigger(DIK_D))
+		{
+			pos.x += 5.0f;
+		}
 	}
 
 	// 最終的な位置を反映

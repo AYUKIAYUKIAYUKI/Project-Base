@@ -28,8 +28,6 @@ public:
 	void Update();	// 更新処理
 	void Import();	// ステージ読み込み
 
-	D3DXVECTOR3 GetPos();	// 位置を取得
-
 	static HRESULT Create();			// 生成
 	static void Release();				// 破棄
 	static CStageMaker* GetInstance();	// ステージ作成クラス取得
@@ -41,6 +39,8 @@ private:
 	void Export();	// ステージ書き出し
 
 	static CStageMaker* m_pStageMaker;	// 自身のインスタンス
+
+	int m_nCntMessage;	// メッセージ表示期間
 };
 
 #endif // _SATEGEMAKER_H_

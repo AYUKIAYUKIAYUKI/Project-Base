@@ -35,6 +35,7 @@ CCamera::CCamera()
 	m_vecU = { 0.0f, 1.0f, 0.0f };			// 上方向ベクトル
 	D3DXMatrixIdentity(&m_mtxProjection);	// プロジェクションマトリックス
 	D3DXMatrixIdentity(&m_mtxView);			// ビューマトリックス
+	m_fAdjust = 0.0f;						// 俯瞰度合
 }
 
 //============================================================================
@@ -130,6 +131,7 @@ void CCamera::Update()
 					}
 
 					m_pos = pPlayer->GetPos();
+					m_fAdjust = 50.0f;
 				}
 				else if (pObject->GetType() == CObject::TYPE::DUMMY)
 				{ // ダミータイプなら
@@ -143,13 +145,14 @@ void CCamera::Update()
 					}
 
 					m_pos = pDummy->GetPos();
+					m_fAdjust = 0.0f;
 				}
 			}
 		}
 	//}
 
 	// カメラ操作
-	//Control();
+	Control();
 
 	// 回転
 	Rotation();
@@ -371,7 +374,7 @@ void CCamera::CalcMtxView()
 	D3DXVECTOR3 posR = m_posR;
 
 	// カメラを俯瞰気味に
-	posV.y += 50.0f;
+	posV.y += m_fAdjust;
 
 	// ビューマトリックスの生成
 	D3DXMatrixLookAtLH(&m_mtxView,

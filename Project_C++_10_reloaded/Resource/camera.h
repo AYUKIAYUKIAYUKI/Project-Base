@@ -48,6 +48,7 @@ private:
 	D3DXVECTOR3 m_vecU;			// 上方向ベクトル
 	D3DXMATRIX m_mtxProjection;	// プロジェクションマトリックス
 	D3DXMATRIX m_mtxView;		// ビューマトリックス
+	float m_fAdjust;			// 俯瞰度合
 };
 
 #endif // _CAMERA_H_
