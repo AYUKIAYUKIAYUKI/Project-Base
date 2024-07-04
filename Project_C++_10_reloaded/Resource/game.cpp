@@ -11,7 +11,6 @@
 #include "game.h"
 #include "manager.h"
 #include "object.h"
-
 #include "stagemaker.h"
 
 // オブジェクト生成用

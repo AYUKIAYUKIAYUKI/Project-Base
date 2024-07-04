@@ -13,6 +13,8 @@
 
 #include "block.h"
 #include "dummy.h"
+#include "start.h"
+#include "goal.h"
 
 //****************************************************
 // 静的メンバ変数の初期化
@@ -94,20 +96,45 @@ void CStageMaker::Import()
 		D3DXVECTOR3 pos = {};
 
 		// 数値となる文字格納先
-		std::string strf[3];
+		std::string str_pos[3];
 
-		// 数値を抽出する
-		strf[0] = str.substr(str.find("X") + 2, str.find(","));
-		strf[1] = str.substr(str.find("Y") + 2, str.find(","));
-		strf[2] = str.substr(str.find("Z") + 2, str.find(","));
+		for (int i = 0; i < 3; i++)
+		{
+			// 数値部分のみ抽出する
+			str_pos[i] = str.substr(str.find(":") + 1, str.find(",") - (str.find(":") + 1));
+
+			// 不必要になった部分を削除する
+			str.erase(0, str.find(",") + 1);
+		}
 
 		// 抽出した数値を座標に変換
-		pos.x = std::stof(strf[0]);
-		pos.y = std::stof(strf[1]);
-		pos.z = std::stof(strf[2]);
+		pos.x = std::stof(str_pos[0]);
+		pos.y = std::stof(str_pos[1]);
+		pos.z = std::stof(str_pos[2]);
 
-		// ブロックを生成
-		CBlock::Create(pos);
+		// 種類を識別する文字格納先
+		std::string str_type;
+
+		// 種類を抽出する
+		str_type = str.substr(str.find(":") + 1, str.find(",") - (str.find(":") + 1));
+
+		// 種類に応じて生成する
+		if (str_type == "block")
+		{ // ブロック
+			CBlock::Create(pos);
+		}
+		else if (str_type == "start")
+		{ // スタート
+			CStart::Create(pos);
+		}
+		else if (str_type == "goal")
+		{ // ゴール
+			CGoal::Create(pos);
+		}
+		else
+		{ // 不明
+			assert(false);
+		}
 	}
 
 	Import.close();	// ファイルを閉じる
@@ -247,7 +274,12 @@ void CStageMaker::Export()
 				}
 
 				// 座標を書き出す
-				Export << std::fixed << std::setprecision(1) << "X:" << pBlock->GetPos().x << "," << "Y:" << pBlock->GetPos().y << "," << "Z:" << pBlock->GetPos().z << "," << std::endl;
+				Export << std::fixed << std::setprecision(1) << "X:" << pBlock->GetPos().x << ",";
+				Export << std::fixed << std::setprecision(1) << "Y:" << pBlock->GetPos().y << ",";
+				Export << std::fixed << std::setprecision(1) << "Z:" << pBlock->GetPos().z << ",";
+
+				// 種類を書き出す
+				Export << "type:" << "block" << "," << std::endl;
 
 				// デバッグ表示の期間を設定
 				m_nCntMessage = 180;
