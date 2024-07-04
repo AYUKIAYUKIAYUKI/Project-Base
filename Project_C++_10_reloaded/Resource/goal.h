@@ -28,7 +28,8 @@ public:
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
 
-	static CGoal* Create(D3DXVECTOR3 pos);	// 生成
+	static CGoal* Create(D3DXVECTOR3 pos);		// 生成
+	static CGoal* DownCast(CObject* pObject);	// ダウンキャスト
 };
 
 #endif // _GOAL_H_

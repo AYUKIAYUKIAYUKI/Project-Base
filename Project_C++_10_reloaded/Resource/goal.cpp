@@ -93,3 +93,18 @@ CGoal* CGoal::Create(D3DXVECTOR3 pos)
 
 	return pGoal;
 }
+
+//============================================================================
+// ダウンキャスト
+//============================================================================
+CGoal* CGoal::DownCast(CObject* pObject)
+{
+	CGoal* pGoal = dynamic_cast<CGoal*>(pObject);
+
+	if (pGoal == nullptr)
+	{ // ダウンキャスト失敗
+		assert(false);
+	}
+
+	return pGoal;
+}

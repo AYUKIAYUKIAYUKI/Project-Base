@@ -145,7 +145,7 @@ int CObject::GetNumAll()
 }
 
 //============================================================================
-// タイプ取得
+// オブジェクトのタイプを取得
 //============================================================================
 CObject::TYPE CObject::GetType()
 {
@@ -153,9 +153,9 @@ CObject::TYPE CObject::GetType()
 }
 
 //============================================================================
-// スコアインスタンスを探す
+// 特定タイプのオブジェクトを探す
 //============================================================================
-CObject* CObject::FindScoreInstance()
+CObject* CObject::FindObject(TYPE type)
 {
 	for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::MAX); nCntPriority++)
 	{
@@ -166,15 +166,39 @@ CObject* CObject::FindScoreInstance()
 				continue;
 			}
 
-			if (m_apObject[nCntPriority][nCntObj]->GetType() == TYPE::SCORE)
-			{ // スコアタイプならリターン
+			if (m_apObject[nCntPriority][nCntObj]->GetType() == type)
+			{ // タイプ一致なら返す
 				return m_apObject[nCntPriority][nCntObj];
 			}
 		}
 	}
 
-	// 発見できなければエラー
+	// 検索に失敗
 	assert(false);
+
+	return nullptr;
+}
+
+//============================================================================
+// 特定タイプのオブジェクトをすべて探す
+//============================================================================
+CObject* CObject::FindAllObject(TYPE type)
+{
+	for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::MAX); nCntPriority++)
+	{
+		for (int nCntObj = 0; nCntObj < MAX_OBJ; nCntObj++)
+		{
+			if (m_apObject[nCntPriority][nCntObj] == nullptr)
+			{ // 情報がなければコンティニュー
+				continue;
+			}
+
+			if (m_apObject[nCntPriority][nCntObj]->GetType() == type)
+			{ // タイプ一致なら返す
+				return m_apObject[nCntPriority][nCntObj];
+			}
+		}
+	}
 
 	return nullptr;
 }

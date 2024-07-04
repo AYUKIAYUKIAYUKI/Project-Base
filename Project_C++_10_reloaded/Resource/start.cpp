@@ -102,3 +102,18 @@ CStart* CStart::Create(D3DXVECTOR3 pos)
 
 	return pStart;
 }
+
+//============================================================================
+// ダウンキャスト
+//============================================================================
+CStart* CStart::DownCast(CObject* pObject)
+{
+	CStart* pStart = dynamic_cast<CStart*>(pObject);
+
+	if (pStart == nullptr)
+	{ // ダウンキャスト失敗
+		assert(false);
+	}
+
+	return pStart;
+}

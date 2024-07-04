@@ -57,14 +57,6 @@ HRESULT CGame::Init()
 	// ステージの読み込み
 	CStageMaker::GetInstance()->Import();
 
-	// スタートの生成 (仮)
-	CStart::Create(
-		{ -150.0f, 150.0f, 0.0f });	// 位置
-
-	// ゴールの生成 (仮)
-	CGoal::Create(
-		{ 150.0f, 150.0f, 0.0f });	// 位置
-
 	// プレイヤーの生成 (仮)
 	CPlayer::Create(
 		{ 0.0f, 0.0f, 0.0f });	// 位置

@@ -165,18 +165,18 @@ bool CBullet::CollisionEnemy()
 					GetPos().y - GetSize().y <= pEnemy->GetPos().y + pEnemy->GetSize().y)
 				{
 					// スコアインスタンスを取得
-					CObject* pFindObject = FindScoreInstance();
+					//CObject* pFindObject = FindScoreInstance();
 
 					// オブジェクトクラスをスコアクラスへダウンキャスト
-					CScore* pScore = dynamic_cast<CScore*>(pFindObject);
+					//CScore* pScore = dynamic_cast<CScore*>(pFindObject);
 
-					if (pScore == nullptr)
-					{ // ダウンキャスト失敗
-						assert(false);
-					}
+					//if (pScore == nullptr)
+					//{ // ダウンキャスト失敗
+					//	assert(false);
+					//}
 
 					// スコアを加算
-					pScore->SetScore(pScore->GetScore() + 123456);
+					//pScore->SetScore(pScore->GetScore() + 123456);
 
 					// 爆発を生成
 					CExplosion::Create(
@@ -211,18 +211,18 @@ bool CBullet::CollisionEnemy()
 					GetPos().y - GetSize().y <= pBlock->GetPos().y + pBlock->GetSize().y)
 				{
 					// スコアインスタンスを取得
-					CObject* pFindObject = FindScoreInstance();
+					//CObject* pFindObject = FindScoreInstance();
 
-					// オブジェクトクラスをスコアクラスへダウンキャスト
-					CScore* pScore = dynamic_cast<CScore*>(pFindObject);
+					//// オブジェクトクラスをスコアクラスへダウンキャスト
+					//CScore* pScore = dynamic_cast<CScore*>(pFindObject);
 
-					if (pScore == nullptr)
-					{ // ダウンキャスト失敗
-						assert(false);
-					}
+					//if (pScore == nullptr)
+					//{ // ダウンキャスト失敗
+					//	assert(false);
+					//}
 
-					// スコアを加算
-					pScore->SetScore(pScore->GetScore() + 62);
+					//// スコアを加算
+					//pScore->SetScore(pScore->GetScore() + 62);
 
 					// 爆発を生成
 					CExplosion::Create(

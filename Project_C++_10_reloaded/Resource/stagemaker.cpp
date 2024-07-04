@@ -133,7 +133,8 @@ void CStageMaker::Import()
 		}
 		else
 		{ // 不明
-			assert(false);
+			//assert(false);
+			CBlock::Create(pos);
 		}
 	}
 
@@ -248,7 +249,34 @@ void CStageMaker::Regist()
 void CStageMaker::Export()
 {
 	// ステージ配置情報を書き出し展開
-	std::ofstream Export("Data\\TXT\\stage.txt");
+	std::ofstream Export("Data\\TXT\\stage_dummy.txt");
+
+	// スタートオブジェクトを取得
+	CStart* pStart = CStart::DownCast(CObject::FindObject(CObject::TYPE::START));
+
+	// 座標を書き出す
+	Export << std::fixed << std::setprecision(1) << "X:" << pStart->GetPos().x << ",";
+	Export << std::fixed << std::setprecision(1) << "Y:" << pStart->GetPos().y << ",";
+	Export << std::fixed << std::setprecision(1) << "Z:" << pStart->GetPos().z << ",";
+
+	// 種類を書き出す
+	Export << "type:" << "start" << "," << std::endl;
+
+	// ゴールオブジェクトを取得
+	CGoal* pGoal = CGoal::DownCast(CObject::FindObject(CObject::TYPE::GOAL));
+
+	if (pGoal == nullptr)
+	{ // ダウンキャスト失敗
+		assert(false);
+	}
+
+	// 座標を書き出す
+	Export << std::fixed << std::setprecision(1) << "X:" << pGoal->GetPos().x << ",";
+	Export << std::fixed << std::setprecision(1) << "Y:" << pGoal->GetPos().y << ",";
+	Export << std::fixed << std::setprecision(1) << "Z:" << pGoal->GetPos().z << ",";
+
+	// 種類を書き出す
+	Export << "type:" << "goal" << "," << std::endl;
 
 	for (int nCntPriority = 0; nCntPriority < static_cast<int>(CObject::LAYER::MAX); nCntPriority++)
 	{
@@ -265,13 +293,8 @@ void CStageMaker::Export()
 			if (pObject->GetType() == CObject::TYPE::BLOCK)
 			{ // ブロックタイプなら
 
-				// オブジェクトクラスをブロッククラスへダウンキャスト
-				CBlock* pBlock = dynamic_cast<CBlock*>(pObject);
-
-				if (pBlock == nullptr)
-				{ // ダウンキャスト失敗
-					assert(false);
-				}
+				// ブロッククラスへダウンキャスト
+				CBlock* pBlock = CBlock::DownCast(pObject);
 
 				// 座標を書き出す
 				Export << std::fixed << std::setprecision(1) << "X:" << pBlock->GetPos().x << ",";
@@ -280,12 +303,12 @@ void CStageMaker::Export()
 
 				// 種類を書き出す
 				Export << "type:" << "block" << "," << std::endl;
-
-				// デバッグ表示の期間を設定
-				m_nCntMessage = 180;
 			}
 		}
 	}
 
 	Export.close();	// ファイルを閉じる
+
+	// デバッグ表示の期間を設定
+	m_nCntMessage = 180;
 }

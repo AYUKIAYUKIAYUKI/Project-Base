@@ -14,6 +14,8 @@
 #include "manager.h"
 #include "dummy.h"
 #include "line.h"
+#include "start.h"
+#include "goal.h"
 
 //============================================================================
 // コンストラクタ

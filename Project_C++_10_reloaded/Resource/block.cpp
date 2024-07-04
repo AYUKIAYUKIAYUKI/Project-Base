@@ -91,3 +91,18 @@ CBlock* CBlock::Create(D3DXVECTOR3 pos)
 
 	return pBlock;
 }
+
+//============================================================================
+// ダウンキャスト
+//============================================================================
+CBlock* CBlock::DownCast(CObject* pObject)
+{
+	CBlock* pBlock = dynamic_cast<CBlock*>(pObject);
+
+	if (pBlock == nullptr)
+	{ // ダウンキャスト失敗
+		assert(false);
+	}
+
+	return pBlock;
+}
