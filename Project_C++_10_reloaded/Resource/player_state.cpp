@@ -749,40 +749,15 @@ void CPlayerStateMistook::Exit()
 //============================================================================
 void CPlayerStateMistook::FindStartObject()
 {
-	for (int nCntPriority = 0; nCntPriority < static_cast<int>(CObject::LAYER::MAX); nCntPriority++)
-	{
-		for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
-		{
-			// オブジェクト情報を取得
-			CObject* pObject = CObject::GetObject(nCntPriority, nCntObj);
+	CStart* pStart = CStart::DownCast(CObject::FindObject(CObject::TYPE::START));
 
-			if (pObject == nullptr)
-			{ // 情報がなければコンティニュー
-				continue;
-			}
-
-			if (pObject->GetType() == CObject::TYPE::START)
-			{ // スタートオブジェクトなら
-
-				// スタートクラスへダウンキャスト
-				CStart* pStart = dynamic_cast<CStart*>(pObject);
-
-				if (pStart == nullptr)
-				{ // ダウンキャスト失敗
-					assert(false);
-				}
-
-				// スタートオブジェクトの位置を取得
-				m_posStartObject = pStart->GetPos();
-
-				// 終了
-				return;
-			}
-		}
+	if (pStart == nullptr)
+	{ // 発見失敗
+		assert(false);
 	}
 
-	// 発見できなければエラー
-	assert(false);
+	// スタートオブジェクトの位置を取得
+	m_posStartObject = pStart->GetPos();
 }
 
 //============================================================================

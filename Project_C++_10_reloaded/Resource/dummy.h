@@ -28,7 +28,8 @@ public:
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
 
-	static CDummy* Create(D3DXVECTOR3 pos);	// 生成
+	static CDummy* Create(D3DXVECTOR3 pos);		// 生成
+	static CDummy* DownCast(CObject* pObject);	// ダウンキャスト
 
 private:
 

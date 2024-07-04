@@ -264,13 +264,8 @@ bool CPlayer::Collision()
 			if (pObject->GetType() == CObject::TYPE::BLOCK)
 			{ // ブロックタイプなら
 
-				// オブジェクトクラスをブロッククラスへダウンキャスト
-				CBlock* pBlock = dynamic_cast<CBlock*>(pObject);
-
-				if (pBlock == nullptr)
-				{ // ダウンキャスト失敗
-					assert(false);
-				}
+				// ブロッククラスへダウンキャスト
+				CBlock* pBlock = CBlock::DownCast(pObject);
 
 				// ブロックと衝突する場合
 				if (CPhysics::GetInstance()->OnlyCube(m_posTarget, GetSize(), pBlock->GetPos(), BlockSize))
@@ -285,8 +280,8 @@ bool CPlayer::Collision()
 			else if (pObject->GetType() == CObject::TYPE::GOAL)
 			{ // ゴールタイプなら
 
-				// オブジェクトクラスをゴールクラスへダウンキャスト
-				CGoal* pGoal = dynamic_cast<CGoal*>(pObject);
+				// ゴールクラスへダウンキャスト
+				CGoal* pGoal = CGoal::DownCast(pObject);
 
 				// ゴールと衝突する場合
 				if (CPhysics::GetInstance()->SphereAndCube(pGoal->GetPos(), 10.0f, m_posTarget, GetSize()))

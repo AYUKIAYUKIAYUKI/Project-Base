@@ -68,7 +68,7 @@ public:
 	TYPE GetType();					// オブジェクトのタイプを取得
 
 	static CObject* FindObject(TYPE type);		// 特定タイプのオブジェクト探す
-	static CObject* FindAllObject(TYPE type);	// 特定タイプのオブジェクトをすべて探す
+	static CObject** FindAllObject(TYPE type);	// 特定タイプのオブジェクトをすべて探す
 
 protected:
 
@@ -77,6 +77,7 @@ protected:
 private:
 
 	static CObject* m_apObject[static_cast<int>(LAYER::MAX)][MAX_OBJ];	// オブジェクト管理
+	static CObject* m_apFindObject[MAX_OBJ];							// 検索されたオブジェクト保持用
 	static int m_nNumAll;												// オブジェクト総数
 
 	int m_nPriority;	// 描画優先度

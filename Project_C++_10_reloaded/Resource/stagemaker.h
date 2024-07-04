@@ -37,6 +37,7 @@ private:
 	void Control();	// 操作
 	void Regist();	// 設置
 	void Export();	// ステージ書き出し
+	void Output(std::ofstream& file, D3DXVECTOR3 pos, std::string str);	// 情報書き出し
 
 	static CStageMaker* m_pStageMaker;	// 自身のインスタンス
 

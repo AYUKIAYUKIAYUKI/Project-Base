@@ -213,34 +213,11 @@ void CStageMaker::Control()
 //============================================================================
 void CStageMaker::Regist()
 {
-	for (int nCntPriority = 0; nCntPriority < static_cast<int>(CObject::LAYER::MAX); nCntPriority++)
-	{
-		for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
-		{
-			// オブジェクト情報を取得
-			CObject* pObject = CObject::GetObject(nCntPriority, nCntObj);
+	//ダミーを取得
+	CDummy* pDummy = CDummy::DownCast(CObject::FindObject(CObject::TYPE::DUMMY));
 
-			if (pObject == nullptr)
-			{ // 情報がなければコンティニュー
-				continue;
-			}
-
-			if (pObject->GetType() == CObject::TYPE::DUMMY)
-			{ // ダミータイプなら
-
-				// オブジェクトクラスをダミークラスへダウンキャスト
-				CDummy* pDummy = dynamic_cast<CDummy*>(pObject);
-
-				if (pDummy == nullptr)
-				{ // ダウンキャスト失敗
-					assert(false);
-				}
-
-				// ダミーの位置にブロックを生成
-				CBlock::Create(pDummy->GetPos());
-			}
-		}
-	}
+	// ダミーの位置にブロックを生成
+	CBlock::Create(pDummy->GetPos());
 }
 
 //============================================================================
@@ -254,61 +231,49 @@ void CStageMaker::Export()
 	// スタートオブジェクトを取得
 	CStart* pStart = CStart::DownCast(CObject::FindObject(CObject::TYPE::START));
 
-	// 座標を書き出す
-	Export << std::fixed << std::setprecision(1) << "X:" << pStart->GetPos().x << ",";
-	Export << std::fixed << std::setprecision(1) << "Y:" << pStart->GetPos().y << ",";
-	Export << std::fixed << std::setprecision(1) << "Z:" << pStart->GetPos().z << ",";
-
-	// 種類を書き出す
-	Export << "type:" << "start" << "," << std::endl;
+	// 情報を書き出す
+	Output(Export, pStart->GetPos(), "start");
 
 	// ゴールオブジェクトを取得
 	CGoal* pGoal = CGoal::DownCast(CObject::FindObject(CObject::TYPE::GOAL));
 
-	if (pGoal == nullptr)
-	{ // ダウンキャスト失敗
-		assert(false);
-	}
+	// 情報を書き出す
+	Output(Export, pGoal->GetPos(), "goal");
 
-	// 座標を書き出す
-	Export << std::fixed << std::setprecision(1) << "X:" << pGoal->GetPos().x << ",";
-	Export << std::fixed << std::setprecision(1) << "Y:" << pGoal->GetPos().y << ",";
-	Export << std::fixed << std::setprecision(1) << "Z:" << pGoal->GetPos().z << ",";
+	// ブロックタイプのオブジェクトをすべて取得
+	CObject** pObject = CObject::FindAllObject(CObject::TYPE::BLOCK);
 
-	// 種類を書き出す
-	Export << "type:" << "goal" << "," << std::endl;
-
-	for (int nCntPriority = 0; nCntPriority < static_cast<int>(CObject::LAYER::MAX); nCntPriority++)
+	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
 	{
-		for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+		// オブジェクトの情報が無くなったら終了
+		if (pObject[nCntObj] == nullptr)
 		{
-			// オブジェクト情報を取得
-			CObject* pObject = CObject::GetObject(nCntPriority, nCntObj);
-
-			if (pObject == nullptr)
-			{ // 情報がなければコンティニュー
-				continue;
-			}
-
-			if (pObject->GetType() == CObject::TYPE::BLOCK)
-			{ // ブロックタイプなら
-
-				// ブロッククラスへダウンキャスト
-				CBlock* pBlock = CBlock::DownCast(pObject);
-
-				// 座標を書き出す
-				Export << std::fixed << std::setprecision(1) << "X:" << pBlock->GetPos().x << ",";
-				Export << std::fixed << std::setprecision(1) << "Y:" << pBlock->GetPos().y << ",";
-				Export << std::fixed << std::setprecision(1) << "Z:" << pBlock->GetPos().z << ",";
-
-				// 種類を書き出す
-				Export << "type:" << "block" << "," << std::endl;
-			}
+			break;
 		}
+
+		// ブロッククラスへダウンキャスト
+		CBlock* pBlock = CBlock::DownCast(pObject[nCntObj]);
+
+		// 情報を書き出す
+		Output(Export, pBlock->GetPos(), "block");
 	}
 
 	Export.close();	// ファイルを閉じる
 
 	// デバッグ表示の期間を設定
 	m_nCntMessage = 180;
+}
+
+//============================================================================
+// 情報書き出し
+//============================================================================
+void CStageMaker::Output(std::ofstream& file, D3DXVECTOR3 pos, std::string str)
+{
+	// 座標を書き出す
+	file << std::fixed << std::setprecision(1) << "X:" << pos.x << ",";
+	file << std::fixed << std::setprecision(1) << "Y:" << pos.y << ",";
+	file << std::fixed << std::setprecision(1) << "Z:" << pos.z << ",";
+
+	// 種類を書き出す
+	file << "type:" << str << "," << std::endl;
 }

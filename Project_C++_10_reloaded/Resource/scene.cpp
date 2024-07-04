@@ -11,7 +11,7 @@
 #include "scene.h"
 #include "object.h"
 
-// シーン
+// シーン用
 #include "title.h"
 #include "game.h"
 #include "stage_debug.h"
