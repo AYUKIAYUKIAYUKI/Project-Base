@@ -30,7 +30,8 @@ public:
 	void Draw();							// 描画処理
 	void PrintDebug();						// デバッグ表示
 
-	void SetDebugString(std::string str);	// デバッグ用文字列に追加
+	void SetDebugString(std::string str);		// デバッグ用文字列に追加
+	void SetTEST(std::string str, int nCnt);	// テスト
 
 	LPDIRECT3DDEVICE9 GetDeviece();		// デバイスの取得
 	CTexture* GetTextureInstane();		// テクスチャ管理の取得
@@ -38,12 +39,13 @@ public:
 
 private:
 
-	LPDIRECT3D9 m_pD3D;				// Direct3D
-	LPDIRECT3DDEVICE9 m_pD3DDevice;	// デバイス
-	LPD3DXFONT m_pFont;				// フォント
-	std::string m_debugString;		// デバッグ用文字列
-	CTexture* m_pTexture;			// テクスチャ管理
-	CModel_X* m_pModel_X;			// Xモデル管理
+	LPDIRECT3D9 m_pD3D;					// Direct3D
+	LPDIRECT3DDEVICE9 m_pD3DDevice;		// デバイス
+	LPD3DXFONT m_pFont;					// フォント
+	std::string m_debugString;			// デバッグ用文字列
+	std::pair<std::string, int> m_TEST;	// これはテスト用です
+	CTexture* m_pTexture;				// テクスチャ管理
+	CModel_X* m_pModel_X;				// Xモデル管理
 };
 
 #endif // _RENDERER_H_

@@ -245,6 +245,20 @@ void CRenderer::PrintDebug()
 	// 表示位置
 	RECT rect = { 0, 50, SCREEN_WIDTH, SCREEN_HEIGHT };
 
+	if (m_TEST.second > 0)
+	{
+		// 表示時間をカウントダウン
+		m_TEST.second--;
+
+		// 文章をつなげる
+		m_debugString += m_TEST.first + "\n";
+	}
+	else
+	{
+		// 文章をリセット
+		m_TEST.first = "";
+	}
+
 	//テキストの描画
 	m_pFont->DrawText(NULL, m_debugString.c_str(), -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
 }
@@ -255,6 +269,15 @@ void CRenderer::PrintDebug()
 void CRenderer::SetDebugString(std::string str)
 {
 	m_debugString += str + "\n";
+}
+
+//============================================================================
+// テスト
+//============================================================================
+void CRenderer::SetTEST(std::string str, int nCnt)
+{
+	m_TEST.first = str;
+	m_TEST.second = nCnt;
 }
 
 //============================================================================

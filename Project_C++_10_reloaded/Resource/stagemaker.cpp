@@ -200,15 +200,14 @@ void CStageMaker::Control()
 {
 	if (CManager::GetKeyboard()->GetTrigger(DIK_F2))
 	{
-		// スタートオブジェクトを取得
-		CStart* pStart = CStart::DownCast(CObject::FindObject(CObject::TYPE::START));
+		// スタートタイプのオブジェクトを取得
+		CObject* pStart = CObject::FindObject(CObject::TYPE::START);
 
-		// ゴールオブジェクトを取得
-		CGoal* pGoal = CGoal::DownCast(CObject::FindObject(CObject::TYPE::GOAL));
+		// ゴールタイプのオブジェクトを取得
+		CObject* pGoal = CObject::FindObject(CObject::TYPE::GOAL);
 
-		// これは応急処置です
 		if (pStart == nullptr || pGoal == nullptr)
-		{ // スタート・ゴールの配置異常
+		{ // スタート・ゴールタイプのオブジェクトの発見に失敗
 			m_nCntTEST = 180;
 		}
 		else
