@@ -105,6 +105,9 @@ void CPlayer::Update()
 	// 位置を反映
 	SetPos(m_posTarget);
 
+	// カメラ位置を設定
+	//CManager::GetCamera()->SetPos(GetPos());
+
 	// 位置をデバッグ表示
 	CManager::GetRenderer()->SetDebugString("【プレイヤー位置】");
 	std::ostringstream oss;
@@ -122,6 +125,27 @@ void CPlayer::Draw()
 {
 	// 基底クラスの描画処理
 	CObject_X::Draw();
+}
+
+//============================================================================
+// 位置調整
+//============================================================================
+bool CPlayer::AdjustPos()
+{
+	// 何かへの衝突検出
+	bool bDetected = false;
+
+	// 加速度分位置を変動
+	m_posTarget += m_velocity;
+
+	// 当たり判定
+	bDetected = Collision();
+
+	// 位置を設定
+	SetPos(m_posTarget);
+
+	// 検出を返す
+	return bDetected;
 }
 
 //============================================================================
@@ -218,24 +242,18 @@ CPlayer* CPlayer::Create(D3DXVECTOR3 pos)
 }
 
 //============================================================================
-// 位置調整
+// ダウンキャスト
 //============================================================================
-bool CPlayer::AdjustPos()
+CPlayer* CPlayer::DownCast(CObject* pObject)
 {
-	// 何かへの衝突検出
-	bool bDetected = false;
+	CPlayer* pPlayer = dynamic_cast<CPlayer*>(pObject);
 
-	// 加速度分位置を変動
-	m_posTarget += m_velocity;
+	if (pPlayer == nullptr)
+	{ // ダウンキャスト失敗
+		assert(false);
+	}
 
-	// 当たり判定
-	bDetected = Collision();
-
-	// 位置を設定
-	SetPos(m_posTarget);
-
-	// 検出を返す
-	return bDetected;
+	return pPlayer;
 }
 
 //============================================================================
@@ -249,48 +267,39 @@ bool CPlayer::Collision()
 	// 仮サイズ
 	D3DXVECTOR3 BlockSize = { 10.0f, 10.0f, 10.0f };
 
-	for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::MAX); nCntPriority++)
+	// オブジェクトを取得
+	CObject** pObject = CObject::FindAllObject(CObject::TYPE::BLOCK);
+
+	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
 	{
-		for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+		// オブジェクトの情報が無くなったら終了
+		if (pObject[nCntObj] == nullptr)
 		{
-			// オブジェクト情報を取得
-			CObject* pObject = CObject::GetObject(nCntPriority, nCntObj);
-
-			if (pObject == nullptr)
-			{ // 情報がなければコンティニュー
-				continue;
-			}
-
-			if (pObject->GetType() == CObject::TYPE::BLOCK)
-			{ // ブロックタイプなら
-
-				// ブロッククラスへダウンキャスト
-				CBlock* pBlock = CBlock::DownCast(pObject);
-
-				// ブロックと衝突する場合
-				if (CPhysics::GetInstance()->OnlyCube(m_posTarget, GetSize(), pBlock->GetPos(), BlockSize))
-				{
-					// 押し出し処理
-					CPhysics::GetInstance()->CubeResponse(m_posTarget, m_velocity, GetPos(), GetSize(), pBlock->GetPos(), BlockSize);
-
-					// 衝突判定を出す
-					bDetected = 1;
-				}
-			}
-			else if (pObject->GetType() == CObject::TYPE::GOAL)
-			{ // ゴールタイプなら
-
-				// ゴールクラスへダウンキャスト
-				CGoal* pGoal = CGoal::DownCast(pObject);
-
-				// ゴールと衝突する場合
-				if (CPhysics::GetInstance()->SphereAndCube(pGoal->GetPos(), 10.0f, m_posTarget, GetSize()))
-				{
-					// とりあえずゲームを終了させる
-					CManager::GetFade()->SetFade(CScene::MODE::RESULT);
-				}
-			}
+			break;
 		}
+
+		// ブロッククラスへダウンキャスト
+		CBlock* pBlock = CBlock::DownCast(pObject[nCntObj]);
+
+		// ブロックと衝突する場合
+		if (CPhysics::GetInstance()->OnlyCube(m_posTarget, GetSize(), pBlock->GetPos(), BlockSize))
+		{
+			// 押し出し処理
+			CPhysics::GetInstance()->CubeResponse(m_posTarget, m_velocity, GetPos(), GetSize(), pBlock->GetPos(), BlockSize);
+
+			// 衝突判定を出す
+			bDetected = 1;
+		}
+	}
+
+	// ゴールオブジェクトを取得
+	CGoal* pGoal = CGoal::DownCast(CObject::FindObject(CObject::TYPE::GOAL));
+
+	// ゴールと衝突する場合
+	if (CPhysics::GetInstance()->SphereAndCube(pGoal->GetPos(), 10.0f, m_posTarget, GetSize()))
+	{
+		// とりあえずゲームを終了させる
+		CManager::GetFade()->SetFade(CScene::MODE::RESULT);
 	}
 
 	return bDetected;

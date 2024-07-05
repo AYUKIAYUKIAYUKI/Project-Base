@@ -22,6 +22,12 @@ public:
 	void Update();		// 更新処理
 	void SetCamera();	// カメラをセット
 	
+	D3DXVECTOR3 GetPos();			// 位置を取得
+	void SetPos(D3DXVECTOR3 pos);	// 位置を設定
+
+	D3DXVECTOR3 GetPosTarget();					// 目標位置を取得
+	void SetPosTarget(D3DXVECTOR3 posTarget);	// 目標位置を設定
+
 	D3DXVECTOR3 GetRot();	// 向きを取得
 
 private:

@@ -59,97 +59,55 @@ HRESULT CCamera::Init()
 //============================================================================
 void CCamera::Update()
 {
-	//// シーンを取得
-	//CScene* pScene = CManager::GetScene();
-
-	//// シーンクラスをゲームクラスへダウンキャスト
-	//CGame* pGame = dynamic_cast<CGame*>(pScene);
-
-	//// ダウンキャストに成功した場合のみ
-	//if (pGame != nullptr)
-	//{
-	//	// ステージ作成モードなら
-	//	if (pGame->GetStageMaking())
-	//	{
-	//		// カメラの位置を変更
-	//		m_pos = CStageMaker::GetInstance()->GetPos();
-	//	}
-	//	else
-	//	{
-	//		for (int nCntPriority = 0; nCntPriority < static_cast<int>(CObject::LAYER::MAX); nCntPriority++)
-	//		{
-	//			for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
-	//			{
-	//				// オブジェクト情報を取得
-	//				CObject* pObject = CObject::GetObject(nCntPriority, nCntObj);
-
-	//				if (pObject == nullptr)
-	//				{ // 情報がなければコンティニュー
-	//					continue;
-	//				}
-
-	//				if (pObject->GetType() == CObject::TYPE::PLAYER)
-	//				{ // プレイヤータイプなら
-
-	//					// プレイヤークラスのポインタ
-	//					CPlayer* pPlayer = dynamic_cast<CPlayer*>(pObject);
-
-	//					if (pPlayer == nullptr)
-	//					{ // ダウンキャスト失敗
-	//						assert(false);
-	//					}
-
-	//					m_pos = pPlayer->GetPos();
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
-	//else
-	//{
-		for (int nCntPriority = 0; nCntPriority < static_cast<int>(CObject::LAYER::MAX); nCntPriority++)
+	// 対象が存在しないシーンでの検索エラーを避けるため
+	for (int nCntPriority = 0; nCntPriority < static_cast<int>(CObject::LAYER::MAX); nCntPriority++)
+	{
+		for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
 		{
-			for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
-			{
-				// オブジェクト情報を取得
-				CObject* pObject = CObject::GetObject(nCntPriority, nCntObj);
+			// オブジェクト情報を取得
+			CObject* pObject = CObject::GetObject(nCntPriority, nCntObj);
 
-				if (pObject == nullptr)
-				{ // 情報がなければコンティニュー
-					continue;
+			if (pObject == nullptr)
+			{ // 情報がなければコンティニュー
+				continue;
+			}
+
+			if (pObject->GetType() == CObject::TYPE::PLAYER)
+			{ // プレイヤータイプなら
+
+				// プレイヤークラスのポインタ
+				CPlayer* pPlayer = dynamic_cast<CPlayer*>(pObject);
+
+				if (pPlayer == nullptr)
+				{ // ダウンキャスト失敗
+					assert(false);
 				}
 
-				if (pObject->GetType() == CObject::TYPE::PLAYER)
-				{ // プレイヤータイプなら
+				m_pos = pPlayer->GetPos();
+				m_fAdjust = 50.0f;
+			}
+			else if (pObject->GetType() == CObject::TYPE::DUMMY)
+			{ // ダミータイプなら
 
-					// プレイヤークラスのポインタ
-					CPlayer* pPlayer = dynamic_cast<CPlayer*>(pObject);
+				// ダミークラスのポインタ
+				CDummy* pDummy = dynamic_cast<CDummy*>(pObject);
 
-					if (pPlayer == nullptr)
-					{ // ダウンキャスト失敗
-						assert(false);
-					}
-
-					m_pos = pPlayer->GetPos();
-					m_fAdjust = 50.0f;
+				if (pDummy == nullptr)
+				{ // ダウンキャスト失敗
+					assert(false);
 				}
-				else if (pObject->GetType() == CObject::TYPE::DUMMY)
-				{ // ダミータイプなら
 
-					// ダミークラスのポインタ
-					CDummy* pDummy = dynamic_cast<CDummy*>(pObject);
-
-					if (pDummy == nullptr)
-					{ // ダウンキャスト失敗
-						assert(false);
-					}
-
-					m_pos = pDummy->GetPos();
-					m_fAdjust = 0.0f;
-				}
+				m_pos = pDummy->GetPos();
+				m_fAdjust = 0.0f;
 			}
 		}
-	//}
+	}
+
+	// 位置をデバッグ表示
+	CManager::GetRenderer()->SetDebugString("【カメラ位置】");
+	std::ostringstream oss;
+	oss << std::fixed << std::setprecision(1) << "X:" << GetPos().x << "\nY:" << GetPos().y;
+	CManager::GetRenderer()->SetDebugString(oss.str().c_str());
 
 	// カメラ操作
 	Control();
@@ -158,7 +116,7 @@ void CCamera::Update()
 	Rotation();
 
 	// 移動
-	Translation();
+	//Translation();
 
 	// ヨー角の範囲を制限
 	RestrictYaw();
@@ -191,6 +149,38 @@ void CCamera::SetCamera()
 	
 	// ビュー行列を計算
 	CalcMtxView();
+}
+
+//============================================================================
+// 位置を取得
+//============================================================================
+D3DXVECTOR3 CCamera::GetPos()
+{
+	return m_pos;
+}
+
+//============================================================================
+// 位置を設定
+//============================================================================
+void CCamera::SetPos(D3DXVECTOR3 pos)
+{
+	m_pos = pos;
+}
+
+//============================================================================
+// 目標位置を取得
+//============================================================================
+D3DXVECTOR3 CCamera::GetPosTarget()
+{
+	return m_posTarget;
+}
+
+//============================================================================
+// 目標位置を設定
+//============================================================================
+void CCamera::SetPosTarget(D3DXVECTOR3 posTarget)
+{
+	m_posTarget = posTarget;
 }
 
 //============================================================================
@@ -259,11 +249,12 @@ void CCamera::Rotation()
 //============================================================================
 void CCamera::Translation()
 {
-	// 移動量減衰
-	m_posTarget *= 0.8f;
+	// 追従度合
+	float fTracking = 0.25f;
 
 	// 移動量反映
-	m_pos += m_posTarget * 0.5f;
+	// posTargetに値を設定していない場合は数値がおかしくなります
+	m_pos += (m_posTarget - m_pos) * fTracking;
 }
 
 //============================================================================

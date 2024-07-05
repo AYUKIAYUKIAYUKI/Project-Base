@@ -32,6 +32,7 @@ public:
 	void Uninit() override;		// 終了処理
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
+	bool AdjustPos();			// 位置を調整
 
 	D3DXVECTOR3 GetVelocity();				// 加速度を取得
 	void SetVelocity(D3DXVECTOR3 velocity);	// 加速度を設定
@@ -48,8 +49,7 @@ public:
 	CPlayerStateManager* GetStateManager();	// 状態管理取得
 
 	static CPlayer* Create(D3DXVECTOR3 pos);	// 生成
-
-	bool AdjustPos();	// 位置を調整
+	static CPlayer* DownCast(CObject* pObject);	// ダウンキャスト
 
 private:
 

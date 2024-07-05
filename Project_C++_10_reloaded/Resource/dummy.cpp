@@ -62,6 +62,9 @@ void CDummy::Update()
 	oss << std::fixed << std::setprecision(1) << "X:" << GetPos().x << "\nY:" << GetPos().y;
 	CManager::GetRenderer()->SetDebugString(oss.str().c_str());
 
+	// カメラ位置を設定
+	//CManager::GetCamera()->SetPos(GetPos());
+
 	// 基底クラスの更新
 	CObject_X::Update();
 }
