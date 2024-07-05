@@ -174,9 +174,6 @@ CObject* CObject::FindObject(TYPE type)
 		}
 	}
 
-	// ŒŸõ‚É¸”s
-	assert(false);
-
 	return nullptr;
 }
 

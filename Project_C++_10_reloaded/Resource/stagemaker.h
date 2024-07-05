@@ -42,6 +42,7 @@ private:
 	static CStageMaker* m_pStageMaker;	// 自身のインスタンス
 
 	int m_nCntMessage;	// メッセージ表示期間
+	int m_nCntTEST;		// おためし
 };
 
 #endif // _SATEGEMAKER_H_

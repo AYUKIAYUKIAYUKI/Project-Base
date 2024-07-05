@@ -104,10 +104,10 @@ void CCamera::Update()
 	}
 
 	// 位置をデバッグ表示
-	CManager::GetRenderer()->SetDebugString("【カメラ位置】");
-	std::ostringstream oss;
-	oss << std::fixed << std::setprecision(1) << "X:" << GetPos().x << "\nY:" << GetPos().y;
-	CManager::GetRenderer()->SetDebugString(oss.str().c_str());
+	//CManager::GetRenderer()->SetDebugString("【カメラ位置】");
+	//std::ostringstream oss;
+	//oss << std::fixed << std::setprecision(1) << "X:" << GetPos().x << "\nY:" << GetPos().y;
+	//CManager::GetRenderer()->SetDebugString(oss.str().c_str());
 
 	// カメラ操作
 	Control();

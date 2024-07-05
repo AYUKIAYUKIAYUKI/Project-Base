@@ -29,6 +29,7 @@ CStageMaker::CStageMaker()
 	m_pStageMaker = nullptr;	// 自身のインスタンス
 
 	m_nCntMessage = 0;	// メッセージ表示期間
+	m_nCntTEST = 0;		// お試し
 }
 
 //============================================================================
@@ -70,6 +71,14 @@ void CStageMaker::Update()
 
 		// デバッグ表示
 		CManager::GetRenderer()->SetDebugString("【ステージを書き出しました】");
+	}
+
+	if (m_nCntTEST > 0)
+	{
+		m_nCntTEST--;
+
+		// デバッグ表示
+		CManager::GetRenderer()->SetDebugString("【スタート・ゴールの配置情報が異常です！】");
 	}
 }
 
@@ -191,8 +200,22 @@ void CStageMaker::Control()
 {
 	if (CManager::GetKeyboard()->GetTrigger(DIK_F2))
 	{
-		// ステージ書き出し
-		Export();
+		// スタートオブジェクトを取得
+		CStart* pStart = CStart::DownCast(CObject::FindObject(CObject::TYPE::START));
+
+		// ゴールオブジェクトを取得
+		CGoal* pGoal = CGoal::DownCast(CObject::FindObject(CObject::TYPE::GOAL));
+
+		// これは応急処置です
+		if (pStart == nullptr || pGoal == nullptr)
+		{ // スタート・ゴールの配置異常
+			m_nCntTEST = 180;
+		}
+		else
+		{
+			// ステージ書き出し
+			Export();
+		}
 	}
 
 	if (CManager::GetKeyboard()->GetTrigger(DIK_F3))
@@ -226,7 +249,7 @@ void CStageMaker::Regist()
 void CStageMaker::Export()
 {
 	// ステージ配置情報を書き出し展開
-	std::ofstream Export("Data\\TXT\\stage_dummy.txt");
+	std::ofstream Export("Data\\TXT\\stage.txt");
 
 	// スタートオブジェクトを取得
 	CStart* pStart = CStart::DownCast(CObject::FindObject(CObject::TYPE::START));
