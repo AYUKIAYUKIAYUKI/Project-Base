@@ -1,6 +1,6 @@
 //============================================================================
 // 
-// ゲーム [game.cpp]
+// ゲームマネージャー [game_manager.cpp]
 // Author : 福田歩希
 // 
 //============================================================================
@@ -8,35 +8,25 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
-#include "game.h"
 #include "game_manager.h"
-#include "manager.h"
-#include "object.h"
-#include "stagemaker.h"
 
-// オブジェクト生成用
-#include "bg.h"
-#include "block.h"
-#include "enemy.h"
-#include "field.h"
-#include "goal.h"
-#include "item.h"
-#include "player.h"
-#include "score.h"
-#include "start.h"
+//****************************************************
+// 静的メンバ変数の初期化
+//****************************************************
+CGameManager* CGameManager::m_pGameManager = nullptr;	// 自クラス情報
 
 //============================================================================
 // コンストラクタ
 //============================================================================
-CGame::CGame()
+CGameManager::CGameManager()
 {
-
+	m_pGameManager = nullptr;	// 自クラス情報の初期化
 }
 
 //============================================================================
 // デストラクタ
 //============================================================================
-CGame::~CGame()
+CGameManager::~CGameManager()
 {
 
 }
@@ -44,71 +34,72 @@ CGame::~CGame()
 //============================================================================
 // 初期設定
 //============================================================================
-HRESULT CGame::Init()
+void CGameManager::Init()
 {
-	// ステージ作成クラスのインスタンス生成
-	if (FAILED(CStageMaker::Create()))
-	{
-		return E_FAIL;
-	}
-
-	// ステージ作成クラスの初期設定
-	CStageMaker::GetInstance()->Init();
-
-	// ステージの読み込み
-	CStageMaker::GetInstance()->Import();
-
-	// プレイヤーの生成 (仮)
-	CPlayer::Create(
-		{ 0.0f, 0.0f, 0.0f });	// 位置
-
-	// スコアの生成 (仮)
-	CScore::Create(
-		{ 25.0f, 30.0f, 0.0f },	// 位置
-		25.0f);					// 数列の配置間隔
-
-	return S_OK;
+	
 }
 
 //============================================================================
 // 終了処理
 //============================================================================
-void CGame::Uninit()
+void CGameManager::Uninit()
 {
-	// ゲームマネージャーの解放
-	CGameManager::GetInstance()->Release();
 
-	// ステージ作成クラスの解放
-	CStageMaker::Release();
-
-	// 基底クラスの終了処理
-	CScene::Uninit();
 }
 
 //============================================================================
 // 更新処理
 //============================================================================
-void CGame::Update()
+void CGameManager::Update()
 {
-	// ゲームマネージャーの更新処理
-	CGameManager::GetInstance()->Update();
 
-	if (CManager::GetKeyboard()->GetTrigger(DIK_F1))
-	{
-		// ステージデバッグ画面へ
-		CManager::GetFade()->SetFade(MODE::STAGE);
+}
+
+//============================================================================
+// 生成
+//============================================================================
+void CGameManager::Create()
+{
+	if (m_pGameManager != nullptr)
+	{ // 二重生成
+		assert(false);
 	}
-	else if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
+
+	// インスタンスを生成
+	m_pGameManager = DBG_NEW CGameManager;
+
+	// 初期設定
+	m_pGameManager->Init();
+}
+
+//============================================================================
+// 解放
+//============================================================================
+void CGameManager::Release()
+{
+	if (m_pGameManager != nullptr)
 	{
-		// リザルト画面へ
-		CManager::GetFade()->SetFade(MODE::RESULT);
+		// 終了処理
+		m_pGameManager->Uninit();
+
+		// メモリを解放
+		delete m_pGameManager;
+
+		// ポインタを初期化
+		m_pGameManager = nullptr;
 	}
 }
 
 //============================================================================
-// 描画処理
+// 取得
 //============================================================================
-void CGame::Draw()
+CGameManager* CGameManager::GetInstance()
 {
+	if (m_pGameManager == nullptr)
+	{
+		// 生成
+		m_pGameManager->Create();
+	}
 
+	return m_pGameManager;
 }

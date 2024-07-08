@@ -425,7 +425,13 @@ void CPlayerStateFlying::Update()
 //============================================================================
 void CPlayerStateFlying::Exit()
 {
+	// 飛行方向に、最終的な加速度の方向を代入しておく
+	//m_pPlayer->SetAngleFlying(atan2f(m_pPlayer->GetVelocity().y, m_pPlayer->GetVelocity().x));
 
+	// 衝突時点での加速度と、加速度ベクトルの方向を表示
+	CManager::GetRenderer()->SetTimeString("X:" + std::to_string(m_pPlayer->GetVelocity().x), 240);
+	CManager::GetRenderer()->SetTimeString("Y:" + std::to_string(m_pPlayer->GetVelocity().y), 240);
+	CManager::GetRenderer()->SetTimeString(std::to_string(atan2f(m_pPlayer->GetVelocity().y, m_pPlayer->GetVelocity().x)), 240);
 }
 
 //============================================================================
@@ -680,7 +686,7 @@ void CPlayerStateStopping::Recoil()
 {
 	D3DXVECTOR3 velocity = m_pPlayer->GetVelocity();
 
-	// 飛行方向に突進
+	// 飛行方向
 	velocity.x += -sinf(m_pPlayer->GetAngleFlying()) * RECOIL_SPEED;
 	velocity.y += -cosf(m_pPlayer->GetAngleFlying()) * RECOIL_SPEED;
 
