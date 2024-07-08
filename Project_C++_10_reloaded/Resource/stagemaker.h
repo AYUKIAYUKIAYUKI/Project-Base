@@ -1,6 +1,6 @@
 //============================================================================
 // 
-// ステージ作成 [stagemaker.cpp]
+// ステージメーカー [stagemaker.cpp]
 // Author : 福田歩希
 // 
 //============================================================================
@@ -14,7 +14,7 @@
 #include "block.h"
 
 //****************************************************
-// ステージ作成クラス
+// ステージメーカークラス
 //****************************************************
 class CStageMaker
 {
@@ -23,14 +23,14 @@ public:
 	CStageMaker();	// コンストラクタ
 	~CStageMaker();	// デストラクタ
 
-	HRESULT Init();	// 初期設定
+	void Init();	// 初期設定
 	void Uninit();	// 終了処理
 	void Update();	// 更新処理
+	void Create();	// 生成
+	void Release();	// 解放
 	void Import();	// ステージ読み込み
 
-	static HRESULT Create();			// 生成
-	static void Release();				// 破棄
-	static CStageMaker* GetInstance();	// ステージ作成クラス取得
+	static CStageMaker* GetInstance();	// 取得
 
 private:
 
@@ -39,7 +39,7 @@ private:
 	void Export();	// ステージ書き出し
 	void Output(std::ofstream& file, D3DXVECTOR3 pos, std::string str);	// 情報書き出し
 
-	static CStageMaker* m_pStageMaker;	// 自身のインスタンス
+	static CStageMaker* m_pStageMaker;	// 自クラス情報
 };
 
 #endif // _SATEGEMAKER_H_

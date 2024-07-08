@@ -46,15 +46,6 @@ CGame::~CGame()
 //============================================================================
 HRESULT CGame::Init()
 {
-	// ステージ作成クラスのインスタンス生成
-	if (FAILED(CStageMaker::Create()))
-	{
-		return E_FAIL;
-	}
-
-	// ステージ作成クラスの初期設定
-	CStageMaker::GetInstance()->Init();
-
 	// ステージの読み込み
 	CStageMaker::GetInstance()->Import();
 
@@ -78,8 +69,8 @@ void CGame::Uninit()
 	// ゲームマネージャーの解放
 	CGameManager::GetInstance()->Release();
 
-	// ステージ作成クラスの解放
-	CStageMaker::Release();
+	// ステージメーカーの解放
+	CStageMaker::GetInstance()->Release();
 
 	// 基底クラスの終了処理
 	CScene::Uninit();

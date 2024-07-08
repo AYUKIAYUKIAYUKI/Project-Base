@@ -61,7 +61,7 @@ void CGameManager::Update()
 void CGameManager::Create()
 {
 	if (m_pGameManager != nullptr)
-	{ // “ñd¶¬
+	{ // “ñd¶¬‹Ö~
 		assert(false);
 	}
 

@@ -38,15 +38,6 @@ CStage_Debug::~CStage_Debug()
 //============================================================================
 HRESULT CStage_Debug::Init()
 {
-	// ステージ作成クラスのインスタンス生成
-	if (FAILED(CStageMaker::Create()))
-	{
-		return E_FAIL;
-	}
-
-	// ステージ作成クラスの初期設定
-	CStageMaker::GetInstance()->Init();
-
 	// グリッドライン生成
 	CLine::CreateGrid();
 
@@ -61,8 +52,8 @@ HRESULT CStage_Debug::Init()
 //============================================================================
 void CStage_Debug::Uninit()
 {
-	// ステージ作成クラスのインスタンス破棄
-	CStageMaker::Release();
+	// ステージメーカーの解放
+	CStageMaker::GetInstance()->Release();
 
 	// 基底クラスの終了処理
 	CScene::Uninit();
@@ -73,14 +64,14 @@ void CStage_Debug::Uninit()
 //============================================================================
 void CStage_Debug::Update()
 {
+	// ステージメーカーの更新
+	CStageMaker::GetInstance()->Update();
+
 	// ゲームモードへ戻る
 	if (CManager::GetKeyboard()->GetTrigger(DIK_F1))
 	{
 		CManager::GetFade()->SetFade(MODE::GAME);
 	}
-
-	// ステージ作成の更新
-	CStageMaker::GetInstance()->Update();
 }
 
 //============================================================================
