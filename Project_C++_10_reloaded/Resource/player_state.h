@@ -30,6 +30,7 @@ public:
 		FLYING,			// 飛行状態
 		STOPPING,		// 変身停止
 		MISS,			// 失敗状態
+		GOAL,			// ゴール後
 		MAX,
 	};
 
@@ -167,6 +168,21 @@ private:
 	void Respawn();			// リスポーン
 
 	D3DXVECTOR3 m_posStartObject;	// スタートオブジェクトの位置
+};
+
+//****************************************************
+// プレイヤーゴール後クラス
+//****************************************************
+class CPlayerStateGoal : public CPlayerState
+{
+public:
+
+	CPlayerStateGoal();				// コンストラクタ
+	~CPlayerStateGoal() override;	// デストラクタ
+
+	void Enter() override;	// 初回変更
+	void Update() override;	// 更新
+	void Exit() override;	// 変更終了
 };
 
 //****************************************************

@@ -203,7 +203,7 @@ bool CPlayerStateDefault::Walk()
 		// Y方向への加速度が無ければ変身
 		if (m_pPlayer->GetVelocity().y == 0.0f)
 		{
-			// 見た目を変更する
+			// 飛行状態へ
 			m_pPlayer->GetStateManager()->ChangeState(CPlayerState::STATE::BEGINNING);
 
 			// 以降の更新処理を行わない
@@ -810,6 +810,67 @@ void CPlayerStateMistook::Respawn()
 
 //============================================================================
 // 
+// プレイヤーゴール後クラス
+// 
+//============================================================================
+
+//============================================================================
+// コンストラクタ
+//============================================================================
+CPlayerStateGoal::CPlayerStateGoal()
+{
+
+}
+
+//============================================================================
+// デストラクタ
+//============================================================================
+CPlayerStateGoal::~CPlayerStateGoal()
+{
+
+}
+
+//============================================================================
+// 変更開始
+//============================================================================
+void CPlayerStateGoal::Enter()
+{
+	// 見た目を変更
+	m_pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_005));
+}
+
+//============================================================================
+// 更新
+//============================================================================
+void CPlayerStateGoal::Update()
+{
+	// 変身期間中は強制上昇
+	D3DXVECTOR3 posTarget = m_pPlayer->GetPosTarget();
+	posTarget.y += 1.0f;
+	m_pPlayer->SetPosTarget(posTarget);
+
+	// Y軸を高速回転し、Z軸回転を初期化
+	D3DXVECTOR3 rot = m_pPlayer->GetRot();
+	rot.y = posTarget.y * 0.1f;
+	rot.z = 0.0f;
+	m_pPlayer->SetRot(rot);
+
+	// 位置調整
+	m_pPlayer->AdjustPos();
+}
+
+//============================================================================
+// 変更終了
+//============================================================================
+void CPlayerStateGoal::Exit()
+{
+
+}
+
+
+
+//============================================================================
+// 
 // プレイヤー状態管理クラス
 // 
 //============================================================================
@@ -929,6 +990,10 @@ void CPlayerStateManager::Create(CPlayerState::STATE state)
 
 	case CPlayerState::STATE::MISS:
 		m_pState = DBG_NEW CPlayerStateMistook;
+		break;
+
+	case CPlayerState::STATE::GOAL:
+		m_pState = DBG_NEW CPlayerStateGoal;
 		break;
 
 	default:

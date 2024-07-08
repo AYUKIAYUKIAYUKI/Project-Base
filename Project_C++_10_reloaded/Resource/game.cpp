@@ -96,11 +96,6 @@ void CGame::Update()
 		// リザルト画面へ
 		CManager::GetFade()->SetFade(MODE::RESULT);
 	}
-	else if (CManager::GetKeyboard()->GetTrigger(DIK_BACK))
-	{
-		// デバッグ表示
-		CManager::GetRenderer()->SetTimeString("テストテストテストテストテストテストテスト", 60);
-	}
 }
 
 //============================================================================

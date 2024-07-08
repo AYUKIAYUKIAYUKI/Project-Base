@@ -155,8 +155,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 				// 更新処理
 				g_pManager->Update();
 
-				// FPSを表示
-				//std::string string = std::to_string(nCountFPS);
+				// FPS表示
 				CManager::GetRenderer()->SetDebugString("FPS:" + std::to_string(nCountFPS));
 
 				// 描画処理

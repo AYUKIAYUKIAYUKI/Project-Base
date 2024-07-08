@@ -3,6 +3,7 @@ data\\MODEL\\player2_Y_0.x
 data\\MODEL\\player3_Y_0.x
 data\\MODEL\\player4_Y_0.x
 data\\MODEL\\player5_Y_0.x
+data\\MODEL\\player_goal_Y_0.x
 data\\MODEL\\block_Y_0.x
 data\\MODEL\\start.x
 data\\MODEL\\goal.x

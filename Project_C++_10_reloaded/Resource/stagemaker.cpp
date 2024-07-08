@@ -27,9 +27,6 @@ CStageMaker* CStageMaker::m_pStageMaker = nullptr;	// 自身のインスタンス
 CStageMaker::CStageMaker()
 {
 	m_pStageMaker = nullptr;	// 自身のインスタンス
-
-	m_nCntMessage = 0;	// メッセージ表示期間
-	m_nCntTEST = 0;		// お試し
 }
 
 //============================================================================
@@ -63,23 +60,6 @@ void CStageMaker::Update()
 {
 	// 操作
 	Control();
-
-	// デバッグ表示 (ステージ書き出し)
-	if (m_nCntMessage > 0)
-	{
-		m_nCntMessage--;
-
-		// デバッグ表示
-		CManager::GetRenderer()->SetDebugString("【ステージを書き出しました】");
-	}
-
-	if (m_nCntTEST > 0)
-	{
-		m_nCntTEST--;
-
-		// デバッグ表示
-		CManager::GetRenderer()->SetDebugString("【スタート・ゴールの配置情報が異常です！】");
-	}
 }
 
 //============================================================================
@@ -208,7 +188,7 @@ void CStageMaker::Control()
 
 		if (pStart == nullptr || pGoal == nullptr)
 		{ // スタート・ゴールタイプのオブジェクトの発見に失敗
-			m_nCntTEST = 180;
+			CManager::GetRenderer()->SetTimeString("【スタート・ゴールの配置情報が異常です！】", 180);
 		}
 		else
 		{
@@ -283,7 +263,7 @@ void CStageMaker::Export()
 	Export.close();	// ファイルを閉じる
 
 	// デバッグ表示の期間を設定
-	m_nCntMessage = 180;
+	CManager::GetRenderer()->SetTimeString("【ステージを書き出しました】", 180);
 }
 
 //============================================================================

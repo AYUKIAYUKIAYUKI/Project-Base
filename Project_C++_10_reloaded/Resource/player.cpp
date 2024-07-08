@@ -298,6 +298,9 @@ bool CPlayer::Collision()
 	// ƒS[ƒ‹‚ÆÕ“Ë‚·‚éê‡
 	if (CPhysics::GetInstance()->SphereAndCube(pGoal->GetPos(), 10.0f, m_posTarget, GetSize()))
 	{
+		// ƒS[ƒ‹Œãó‘Ô‚Ö
+		m_pStateManager->ChangeState(CPlayerState::STATE::GOAL);
+
 		// ‚Æ‚è‚ ‚¦‚¸ƒQ[ƒ€‚ðI—¹‚³‚¹‚é
 		CManager::GetFade()->SetFade(CScene::MODE::RESULT);
 	}
