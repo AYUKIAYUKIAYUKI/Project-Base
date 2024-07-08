@@ -99,7 +99,7 @@ void CGame::Update()
 	else if (CManager::GetKeyboard()->GetTrigger(DIK_BACK))
 	{
 		// デバッグ表示
-		CManager::GetRenderer()->SetTEST("テストテストテストテストテストテストテスト", 60);
+		CManager::GetRenderer()->SetTimeString("テストテストテストテストテストテストテスト", 60);
 	}
 }
 

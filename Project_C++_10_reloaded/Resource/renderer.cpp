@@ -18,7 +18,6 @@
 CRenderer::CRenderer() : m_pD3D(nullptr), m_pD3DDevice(nullptr)
 {
 	m_pFont = nullptr;		// フォント
-	m_debugString = {};		// デバッグ用文字列
 	m_pTexture = nullptr;	// テクスチャ管理
 	m_pModel_X = nullptr;	// Xモデル管理
 }
@@ -195,7 +194,7 @@ void CRenderer::Uninit()
 void CRenderer::Update()
 {
 	// 文字列クリア
-	m_debugString = {};
+	m_debugStr = {};
 
 	// 全オブジェクト更新処理
 	CObject::UpdateAll();
@@ -245,22 +244,25 @@ void CRenderer::PrintDebug()
 	// 表示位置
 	RECT rect = { 0, 50, SCREEN_WIDTH, SCREEN_HEIGHT };
 
-	if (m_TEST.second > 0)
+	for (int i = 0; i < m_timeStr.size(); i++)
 	{
-		// 表示時間をカウントダウン
-		m_TEST.second--;
+		if (m_timeStr[i].second > 0)
+		{
+			// 表示時間をカウントダウン
+			m_timeStr[i].second--;
 
-		// 文章をつなげる
-		m_debugString += m_TEST.first + "\n";
-	}
-	else
-	{
-		// 文章をリセット
-		m_TEST.first = "";
-	}
+			// 文章をつなげる
+			m_debugStr += m_timeStr[i].first + "\n";
+		}
+		else
+		{
+			// 文章を消去
+			m_timeStr.erase(m_timeStr.begin() + i);
+		}
+}
 
 	//テキストの描画
-	m_pFont->DrawText(NULL, m_debugString.c_str(), -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
+	m_pFont->DrawText(NULL, m_debugStr.c_str(), -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
 }
 
 //============================================================================
@@ -268,16 +270,15 @@ void CRenderer::PrintDebug()
 //============================================================================
 void CRenderer::SetDebugString(std::string str)
 {
-	m_debugString += str + "\n";
+	m_debugStr += str + "\n";
 }
 
 //============================================================================
-// テスト
+// 時限式デバッグ文字列に追加
 //============================================================================
-void CRenderer::SetTEST(std::string str, int nCnt)
+void CRenderer::SetTimeString(std::string str, int nCnt)
 {
-	m_TEST.first = str;
-	m_TEST.second = nCnt;
+	m_timeStr.push_back({ str, nCnt });
 }
 
 //============================================================================
