@@ -100,6 +100,9 @@ CStart* CStart::Create(D3DXVECTOR3 pos)
 	// モデルを設定
 	pStart->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::START));
 
+	// 描画される前に一度更新しておく
+	pStart->Update();
+
 	return pStart;
 }
 

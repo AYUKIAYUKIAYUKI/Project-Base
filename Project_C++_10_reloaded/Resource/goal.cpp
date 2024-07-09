@@ -91,6 +91,9 @@ CGoal* CGoal::Create(D3DXVECTOR3 pos)
 	// モデルを設定
 	pGoal->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::GOAL));
 
+	// 描画される前に一度更新しておく
+	pGoal->Update();
+
 	return pGoal;
 }
 

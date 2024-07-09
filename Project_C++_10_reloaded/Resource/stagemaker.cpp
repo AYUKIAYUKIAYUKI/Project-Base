@@ -100,10 +100,10 @@ void CStageMaker::Release()
 //============================================================================
 // ステージ読み込み
 //============================================================================
-void CStageMaker::Import()
+void CStageMaker::Import(std::string path)
 {
 	// ステージ保存情報を展開
-	std::ifstream Import("Data\\TXT\\stage.txt");
+	std::ifstream Import(path);
 
 	if (!Import)
 	{ // 展開に失敗
@@ -157,8 +157,8 @@ void CStageMaker::Import()
 		}
 		else
 		{ // 不明
-			//assert(false);
-			CBlock::Create(pos);
+			assert(false);
+			//CBlock::Create(pos);
 		}
 	}
 
@@ -206,7 +206,7 @@ void CStageMaker::Control()
 	if (CManager::GetKeyboard()->GetTrigger(DIK_F3))
 	{
 		// ステージ読み込み
-		Import();
+		Import("Data\\TXT\\stage.txt");
 	}
 
 	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))

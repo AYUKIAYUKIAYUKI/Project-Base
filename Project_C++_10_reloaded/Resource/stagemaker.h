@@ -28,7 +28,7 @@ public:
 	void Update();	// 更新処理
 	void Create();	// 生成
 	void Release();	// 解放
-	void Import();	// ステージ読み込み
+	void Import(std::string path);	// ステージ読み込み
 
 	static CStageMaker* GetInstance();	// 取得
 

@@ -15,7 +15,7 @@
 // 静的メンバの初期化
 //****************************************************
 CObject* CObject::m_apObject[static_cast<int>(LAYER::MAX)][MAX_OBJ] = {};	// オブジェクト管理
-CObject* CObject::m_apFindObject[MAX_OBJ] = {};							// 検索されたオブジェクト保持用
+CObject* CObject::m_apFind[MAX_OBJ] = {};									// 検索されたオブジェクト保持用
 int CObject::m_nNumAll = 0;													// オブジェクト総数
 
 //============================================================================
@@ -182,6 +182,12 @@ CObject* CObject::FindObject(TYPE type)
 //============================================================================
 CObject** CObject::FindAllObject(TYPE type)
 {
+	// 検索の前に、保持していた情報を初期化
+	for (int i = 0; i < MAX_OBJ; i++)
+	{
+		m_apFind[i] = nullptr;
+	}
+
 	// 検索した順番
 	int nCntFind = 0;
 
@@ -196,7 +202,7 @@ CObject** CObject::FindAllObject(TYPE type)
 
 			if (m_apObject[nCntPriority][nCntObj]->GetType() == type)
 			{ // タイプ一致なら保持
-				m_apFindObject[nCntFind] = m_apObject[nCntPriority][nCntObj];
+				m_apFind[nCntFind] = m_apObject[nCntPriority][nCntObj];
 
 				// 検索の順番をカウントアップ
 				nCntFind++;
@@ -204,7 +210,7 @@ CObject** CObject::FindAllObject(TYPE type)
 		}
 	}
 
-	return m_apFindObject;
+	return m_apFind;
 }
 
 //============================================================================

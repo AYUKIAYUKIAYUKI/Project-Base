@@ -9,6 +9,11 @@
 // インクルードファイル
 //****************************************************
 #include "game_manager.h"
+#include "stagemaker.h"
+
+// オブジェクト生成用
+#include "player.h"
+#include "score.h"
 
 //****************************************************
 // 静的メンバ変数の初期化
@@ -20,6 +25,8 @@ CGameManager* CGameManager::m_pGameManager = nullptr;	// 自クラス情報
 //============================================================================
 CGameManager::CGameManager()
 {
+	m_phase = PHASE::NONE;	// フェーズ識別
+
 	m_pGameManager = nullptr;	// 自クラス情報の初期化
 }
 
@@ -36,7 +43,16 @@ CGameManager::~CGameManager()
 //============================================================================
 void CGameManager::Init()
 {
-	
+	// 開始フェーズへ
+	m_phase = PHASE::BEGIN;
+
+	// レベルを読み込む
+	ImportLevel();
+
+	// スコアの生成
+	CScore::Create(
+		{ 25.0f, 30.0f, 0.0f },	// 位置
+		25.0f);					// 数列の配置間隔
 }
 
 //============================================================================
@@ -52,7 +68,54 @@ void CGameManager::Uninit()
 //============================================================================
 void CGameManager::Update()
 {
+	// プレイヤータイプのオブジェクト用ぽインタ
+	CObject* pPlayerObject = nullptr;
 
+	switch (m_phase)
+	{
+	case PHASE::NONE:
+
+		// ここデバッグ
+
+		break;
+
+	case PHASE::BEGIN:
+
+		// ステージを読み込む
+		CStageMaker::GetInstance()->Import(m_stagePath[0]);
+
+		// プレイヤーの生成
+		CPlayer::Create({ 0.0f, 0.0f, 0.0f });	// 位置
+
+		// プレイフェーズへ
+		m_phase = PHASE::PLAY;
+
+		break;
+
+	case PHASE::PLAY:
+
+		break;
+
+	case PHASE::END:
+	
+		// プレイヤーの破棄(なんで)
+		pPlayerObject = CObject::FindObject(CObject::TYPE::PLAYER);
+
+		// プレイヤーオブジェクトを削除
+		pPlayerObject->Release();
+
+		// 一旦すべてを停止
+		m_phase = PHASE::NONE;
+
+		break;
+
+	default:
+
+		// フェーズエラー
+		assert(false);
+		
+		break;
+	}
 }
 
 //============================================================================
@@ -91,6 +154,14 @@ void CGameManager::Release()
 }
 
 //============================================================================
+// フェーズを設定
+//============================================================================
+void CGameManager::SetPhase(PHASE phase)
+{
+	m_phase = phase;
+}
+
+//============================================================================
 // 取得
 //============================================================================
 CGameManager* CGameManager::GetInstance()
@@ -102,4 +173,36 @@ CGameManager* CGameManager::GetInstance()
 	}
 
 	return m_pGameManager;
+}
+
+//============================================================================
+// レベル読み込み
+//============================================================================
+void CGameManager::ImportLevel()
+{
+	std::ifstream Import("Data\\TXT\\level.txt");
+
+	if (!Import)
+	{ // 展開失敗
+		assert(false);
+	}
+
+	// 文章格納先
+	std::string str;
+
+	// ステージカウント
+	int nCntStage = 0;
+
+	// テキストを読み取る
+	while (std::getline(Import, str))
+	{
+		// ステージのパスを保持
+		m_stagePath.push_back(str);
+
+		// ステージ数をカウントアップ
+		nCntStage++;
+	}
+
+	// ステージ数を保持
+	m_nMaxStage = nCntStage;
 }

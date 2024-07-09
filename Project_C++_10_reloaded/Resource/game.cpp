@@ -10,20 +10,9 @@
 //****************************************************
 #include "game.h"
 #include "game_manager.h"
+#include "stagemaker.h"
 #include "manager.h"
 #include "object.h"
-#include "stagemaker.h"
-
-// オブジェクト生成用
-#include "bg.h"
-#include "block.h"
-#include "enemy.h"
-#include "field.h"
-#include "goal.h"
-#include "item.h"
-#include "player.h"
-#include "score.h"
-#include "start.h"
 
 //============================================================================
 // コンストラクタ
@@ -46,17 +35,8 @@ CGame::~CGame()
 //============================================================================
 HRESULT CGame::Init()
 {
-	// ステージの読み込み
-	CStageMaker::GetInstance()->Import();
-
-	// プレイヤーの生成 (仮)
-	CPlayer::Create(
-		{ 0.0f, 0.0f, 0.0f });	// 位置
-
-	// スコアの生成 (仮)
-	CScore::Create(
-		{ 25.0f, 30.0f, 0.0f },	// 位置
-		25.0f);					// 数列の配置間隔
+	// ゲームマネージャーの初期設定
+	CGameManager::GetInstance()->Init();
 
 	return S_OK;
 }
@@ -66,11 +46,11 @@ HRESULT CGame::Init()
 //============================================================================
 void CGame::Uninit()
 {
-	// ゲームマネージャーの解放
-	CGameManager::GetInstance()->Release();
-
 	// ステージメーカーの解放
 	CStageMaker::GetInstance()->Release();
+
+	// ゲームマネージャーの解放
+	CGameManager::GetInstance()->Release();
 
 	// 基底クラスの終了処理
 	CScene::Uninit();

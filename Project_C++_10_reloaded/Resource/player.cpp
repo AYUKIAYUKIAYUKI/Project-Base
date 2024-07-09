@@ -12,6 +12,7 @@
 #include "player_state.h"
 
 #include "manager.h"
+#include "game_manager.h"
 #include "physics.h"
 #include "block.h"
 #include "explosion.h"
@@ -301,8 +302,11 @@ bool CPlayer::Collision()
 		// ゴール後状態へ
 		m_pStateManager->ChangeState(CPlayerState::STATE::GOAL);
 
-		// とりあえずゲームを終了させる
-		CManager::GetFade()->SetFade(CScene::MODE::RESULT);
+		// 終了フェーズへ
+		CGameManager::GetInstance()->SetPhase(CGameManager::PHASE::END);
+
+		//// とりあえずゲームを終了させる
+		//CManager::GetFade()->SetFade(CScene::MODE::RESULT);
 	}
 
 	return bDetected;
