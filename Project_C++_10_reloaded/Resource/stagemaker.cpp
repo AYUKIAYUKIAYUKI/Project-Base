@@ -74,9 +74,6 @@ void CStageMaker::Create()
 
 	// インスタンスを生成
 	m_pStageMaker = DBG_NEW CStageMaker;
-
-	// 初期設定
-	m_pStageMaker->Init();
 }
 
 //============================================================================

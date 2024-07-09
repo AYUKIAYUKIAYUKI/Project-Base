@@ -84,6 +84,9 @@ void CGameManager::Update()
 		// ステージを読み込む
 		CStageMaker::GetInstance()->Import(m_stagePath[0]);
 
+		// 先頭要素を削除する
+		m_stagePath.erase(m_stagePath.begin());
+
 		// プレイヤーの生成
 		CPlayer::Create({ 0.0f, 0.0f, 0.0f });	// 位置
 
@@ -98,14 +101,11 @@ void CGameManager::Update()
 
 	case PHASE::END:
 	
-		// プレイヤーの破棄(なんで)
-		pPlayerObject = CObject::FindObject(CObject::TYPE::PLAYER);
-
-		// プレイヤーオブジェクトを削除
-		pPlayerObject->Release();
+		// 全オブジェクト解放処理
+		CObject::ReleaseAll();
 
 		// 一旦すべてを停止
-		m_phase = PHASE::NONE;
+		m_phase = PHASE::BEGIN;
 
 		break;
 
@@ -130,9 +130,6 @@ void CGameManager::Create()
 
 	// インスタンスを生成
 	m_pGameManager = DBG_NEW CGameManager;
-
-	// 初期設定
-	m_pGameManager->Init();
 }
 
 //============================================================================

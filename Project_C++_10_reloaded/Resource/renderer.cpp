@@ -259,7 +259,7 @@ void CRenderer::PrintDebug()
 			// 文章を消去
 			m_timeStr.erase(m_timeStr.begin() + i);
 		}
-}
+	}
 
 	//テキストの描画
 	m_pFont->DrawText(NULL, m_debugStr.c_str(), -1, &rect, DT_LEFT, D3DCOLOR_RGBA(255, 255, 255, 255));
