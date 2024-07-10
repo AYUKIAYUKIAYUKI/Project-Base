@@ -370,7 +370,7 @@ void CPlayerStateBeginning::Exit()
 //============================================================================
 CPlayerStateFlying::CPlayerStateFlying()
 {
-	m_velocityTarget = {};	// 目標加速度
+	m_velocityTarget = { 0.0f, 0.0f, 0.0f };	// 目標加速度
 }
 
 //============================================================================

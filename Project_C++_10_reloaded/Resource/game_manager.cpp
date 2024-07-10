@@ -26,8 +26,8 @@ CGameManager* CGameManager::m_pGameManager = nullptr;	// 自クラス情報
 //============================================================================
 CGameManager::CGameManager()
 {
-	m_phase = PHASE::NONE;	// フェーズ識別
-
+	m_phase = PHASE::NONE;		// フェーズ識別
+	m_nMaxStage = 0;			// ステージ数
 	m_pGameManager = nullptr;	// 自クラス情報の初期化
 }
 
@@ -49,11 +49,6 @@ void CGameManager::Init()
 
 	// レベルを読み込む
 	ImportLevel();
-
-	// スコアの生成
-	CScore::Create(
-		{ 25.0f, 30.0f, 0.0f },	// 位置
-		25.0f);					// 数列の配置間隔
 }
 
 //============================================================================
@@ -107,6 +102,11 @@ void CGameManager::Update()
 
 		// プレイヤーの生成
 		CPlayer::Create({ 0.0f, 0.0f, 0.0f });	// 位置
+
+		// スコアの生成
+		CScore::Create(
+			{ 25.0f, 30.0f, 0.0f },	// 位置
+			25.0f);					// 数列の配置間隔
 
 		// プレイフェーズへ
 		m_phase = PHASE::PLAY;

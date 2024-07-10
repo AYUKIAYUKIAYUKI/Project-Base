@@ -26,6 +26,11 @@
 //============================================================================
 CPlayer::CPlayer() : CObject_X(static_cast<int>(LAYER::FRONT_MIDDLE))
 {
+	D3DXVECTOR3 pos;
+	pos = { 1.0f, 1.0f, 1.0f };
+
+	int unko = 0;
+
 	m_pStateManager = nullptr;				// 状態管理
 	m_velocity = { 0.0f, 0.0f, 0.0f };		// 加速度
 	m_posTarget = { 0.0f, 0.0f, 0.0f };		// 目標位置
@@ -304,9 +309,6 @@ bool CPlayer::Collision()
 
 		// 終了フェーズへ
 		CGameManager::GetInstance()->SetPhase(CGameManager::PHASE::END);
-
-		//// とりあえずゲームを終了させる
-		//CManager::GetFade()->SetFade(CScene::MODE::RESULT);
 	}
 
 	return bDetected;

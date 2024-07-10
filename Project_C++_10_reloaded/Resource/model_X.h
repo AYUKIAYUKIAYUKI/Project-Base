@@ -61,7 +61,7 @@ public:
 
 private:
 
-	static MODEL m_aModelTemp[static_cast<int>(MODEL_TYPE::MAX)];	// ƒ‚ƒfƒ‹ŠÇ—
+	static MODEL m_apModelTemp[static_cast<int>(MODEL_TYPE::MAX)];	// ƒ‚ƒfƒ‹ŠÇ—
 };
 
 #endif // _MODEL_X_H_

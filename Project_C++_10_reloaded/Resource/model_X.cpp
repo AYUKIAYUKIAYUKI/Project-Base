@@ -14,7 +14,7 @@
 //****************************************************
 // 静的メンバの初期化
 //****************************************************
-CModel_X::MODEL CModel_X::m_aModelTemp[static_cast<int>(MODEL_TYPE::MAX)];	// モデル管理
+CModel_X::MODEL CModel_X::m_apModelTemp[static_cast<int>(MODEL_TYPE::MAX)];	// モデル管理
 
 //============================================================================
 // コンストラクタ
@@ -24,10 +24,10 @@ CModel_X::CModel_X()
 	for (int i = 0; i < static_cast<int>(MODEL_TYPE::MAX); i++)
 	{
 		// モデル情報の初期化
-		m_aModelTemp[i].pMesh = nullptr;
-		m_aModelTemp[i].pBuffMat = nullptr;
-		m_aModelTemp[i].dwNumMat = 0;
-		m_aModelTemp[i].ppTex = nullptr;
+		m_apModelTemp[i].pMesh = nullptr;
+		m_apModelTemp[i].pBuffMat = nullptr;
+		m_apModelTemp[i].dwNumMat = 0;
+		m_apModelTemp[i].ppTex = nullptr;
 	}
 }
 
@@ -68,10 +68,10 @@ HRESULT CModel_X::Load()
 			D3DXMESH_SYSTEMMEM,
 			pDev,
 			nullptr,
-			&m_aModelTemp[nCntModel].pBuffMat,
+			&m_apModelTemp[nCntModel].pBuffMat,
 			nullptr,
-			&m_aModelTemp[nCntModel].dwNumMat,
-			&m_aModelTemp[nCntModel].pMesh);
+			&m_apModelTemp[nCntModel].dwNumMat,
+			&m_apModelTemp[nCntModel].pMesh);
 
 		if (FAILED(hr))
 		{ // 取得失敗
@@ -80,20 +80,20 @@ HRESULT CModel_X::Load()
 		}
 
 		// マテリアルデータへのポインタを取得
-		D3DXMATERIAL* pMat = (D3DXMATERIAL*)m_aModelTemp[nCntModel].pBuffMat->GetBufferPointer();
+		D3DXMATERIAL* pMat = (D3DXMATERIAL*)m_apModelTemp[nCntModel].pBuffMat->GetBufferPointer();
 
 		// マテリアルの数分のテクスチャポインタを確保
-		m_aModelTemp[nCntModel].ppTex = DBG_NEW LPDIRECT3DTEXTURE9 [static_cast<int>(m_aModelTemp[nCntModel].dwNumMat)];
+		m_apModelTemp[nCntModel].ppTex = DBG_NEW LPDIRECT3DTEXTURE9 [static_cast<int>(m_apModelTemp[nCntModel].dwNumMat)];
 
 		// マテリアル分テクスチャの有無を確認
-		for (int nCntMat = 0; nCntMat < static_cast<int>(m_aModelTemp[nCntModel].dwNumMat); nCntMat++)
+		for (int nCntMat = 0; nCntMat < static_cast<int>(m_apModelTemp[nCntModel].dwNumMat); nCntMat++)
 		{
 			if (pMat[nCntMat].pTextureFilename != nullptr)
 			{
 				// テクスチャを読み取れたら生成
 				hr = D3DXCreateTextureFromFileA(pDev,
 					pMat[nCntMat].pTextureFilename,
-					&m_aModelTemp[nCntModel].ppTex[nCntMat]);
+					&m_apModelTemp[nCntModel].ppTex[nCntMat]);
 
 				if (FAILED(hr))
 				{ // 生成失敗
@@ -103,7 +103,7 @@ HRESULT CModel_X::Load()
 			else
 			{
 				// 読み取れなければ初期化
-				m_aModelTemp[nCntModel].ppTex[nCntMat] = nullptr;
+				m_apModelTemp[nCntModel].ppTex[nCntMat] = nullptr;
 			}
 		}
 	}
@@ -121,34 +121,34 @@ void CModel_X::Unload()
 	for (int i = 0; i < static_cast<int>(MODEL_TYPE::MAX); i++)
 	{
 		// テクスチャポインタの破棄
-		if (m_aModelTemp[i].ppTex != nullptr)
+		if (m_apModelTemp[i].ppTex != nullptr)
 		{
 			// テクスチャの破棄
-			for (int nCntMat = 0; nCntMat < static_cast<int>(m_aModelTemp[i].dwNumMat); nCntMat++)
+			for (int nCntMat = 0; nCntMat < static_cast<int>(m_apModelTemp[i].dwNumMat); nCntMat++)
 			{
-				if (m_aModelTemp[i].ppTex[nCntMat] != nullptr)
+				if (m_apModelTemp[i].ppTex[nCntMat] != nullptr)
 				{
-					m_aModelTemp[i].ppTex[nCntMat]->Release();
-					m_aModelTemp[i].ppTex[nCntMat] = nullptr;
+					m_apModelTemp[i].ppTex[nCntMat]->Release();
+					m_apModelTemp[i].ppTex[nCntMat] = nullptr;
 				}
 			}
 
-			delete[] m_aModelTemp[i].ppTex;
-			m_aModelTemp[i].ppTex = nullptr;
+			delete[] m_apModelTemp[i].ppTex;
+			m_apModelTemp[i].ppTex = nullptr;
 		}
 
 		// メッシュの破棄
-		if (m_aModelTemp[i].pMesh != nullptr)
+		if (m_apModelTemp[i].pMesh != nullptr)
 		{
-			m_aModelTemp[i].pMesh->Release();
-			m_aModelTemp[i].pMesh = nullptr;
+			m_apModelTemp[i].pMesh->Release();
+			m_apModelTemp[i].pMesh = nullptr;
 		}
 
 		// マテリアルの破棄
-		if (m_aModelTemp[i].pBuffMat != nullptr)
+		if (m_apModelTemp[i].pBuffMat != nullptr)
 		{
-			m_aModelTemp[i].pBuffMat->Release();
-			m_aModelTemp[i].pBuffMat = nullptr;
+			m_apModelTemp[i].pBuffMat->Release();
+			m_apModelTemp[i].pBuffMat = nullptr;
 		}
 	}
 }
@@ -158,10 +158,10 @@ void CModel_X::Unload()
 //============================================================================
 CModel_X::MODEL* CModel_X::GetModel(MODEL_TYPE type)
 {
-	if (&m_aModelTemp[static_cast<int>(type)].pMesh == nullptr)
+	if (&m_apModelTemp[static_cast<int>(type)].pMesh == nullptr)
 	{ // モデル取得不能
 		assert(false);
 	}
 
-	return &m_aModelTemp[static_cast<int>(type)];
+	return &m_apModelTemp[static_cast<int>(type)];
 }
