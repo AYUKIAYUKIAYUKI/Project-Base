@@ -65,7 +65,7 @@ public:
 
 	void Release();	// 個別解放処理 (仮)
 	
-	TYPE GetType();					// オブジェクトのタイプを取得
+	TYPE GetType();	// オブジェクトのタイプを取得
 
 	static CObject* FindObject(TYPE type);		// 特定タイプのオブジェクト探す
 	static CObject** FindAllObject(TYPE type);	// 特定タイプのオブジェクトをすべて探す

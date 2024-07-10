@@ -10,6 +10,7 @@
 //****************************************************
 #include "game_manager.h"
 #include "stagemaker.h"
+#include "manager.h"
 
 // オブジェクト生成用
 #include "player.h"
@@ -68,8 +69,9 @@ void CGameManager::Uninit()
 //============================================================================
 void CGameManager::Update()
 {
-	// プレイヤータイプのオブジェクト用ぽインタ
-	CObject* pPlayerObject = nullptr;
+	// ステージ数を表示
+	std::string str = "【現在のステージ:" + std::to_string(m_nMaxStage - m_stagePath.size()) + "/" + std::to_string(m_nMaxStage) + "】";
+	CManager::GetRenderer()->SetDebugString(str);
 
 	switch (m_phase)
 	{
@@ -80,6 +82,22 @@ void CGameManager::Update()
 		break;
 
 	case PHASE::BEGIN:
+
+		if (!m_stagePath.size())
+		{ // 読み込むステージがなくなったら
+
+			// リザルト画面へ遷移
+			CManager::GetFade()->SetFade(CScene::MODE::RESULT);
+
+			// フェーズ処理を行わない
+			m_phase = PHASE::NONE;
+
+			// 以降の処理を行わない
+			return;
+		}
+
+		// 全オブジェクト解放処理
+		CObject::ReleaseAll();
 
 		// ステージを読み込む
 		CStageMaker::GetInstance()->Import(m_stagePath[0]);
@@ -101,10 +119,7 @@ void CGameManager::Update()
 
 	case PHASE::END:
 	
-		// 全オブジェクト解放処理
-		CObject::ReleaseAll();
-
-		// 一旦すべてを停止
+		// 再開始
 		m_phase = PHASE::BEGIN;
 
 		break;

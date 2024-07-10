@@ -429,9 +429,9 @@ void CPlayerStateFlying::Exit()
 	//m_pPlayer->SetAngleFlying(atan2f(m_pPlayer->GetVelocity().y, m_pPlayer->GetVelocity().x));
 
 	// 衝突時点での加速度と、加速度ベクトルの方向を表示
-	CManager::GetRenderer()->SetTimeString("X:" + std::to_string(m_pPlayer->GetVelocity().x), 240);
-	CManager::GetRenderer()->SetTimeString("Y:" + std::to_string(m_pPlayer->GetVelocity().y), 240);
-	CManager::GetRenderer()->SetTimeString(std::to_string(atan2f(m_pPlayer->GetVelocity().y, m_pPlayer->GetVelocity().x)), 240);
+	//CManager::GetRenderer()->SetTimeString("X:" + std::to_string(m_pPlayer->GetVelocity().x), 240);
+	//CManager::GetRenderer()->SetTimeString("Y:" + std::to_string(m_pPlayer->GetVelocity().y), 240);
+	//CManager::GetRenderer()->SetTimeString(std::to_string(atan2f(m_pPlayer->GetVelocity().y, m_pPlayer->GetVelocity().x)), 240);
 }
 
 //============================================================================
