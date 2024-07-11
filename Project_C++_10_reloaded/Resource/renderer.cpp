@@ -12,6 +12,9 @@
 #include "manager.h"
 #include "object.h"
 
+// テスト用
+#include "test_polygon_2D.h"
+
 //============================================================================
 // コンストラクタ
 //============================================================================
@@ -139,6 +142,9 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 	// Xモデル読み込み
 	m_pModel_X->Load();
 
+	// テスト用ポリゴンの初期設定
+	CTestPolygon2D::GetInstance()->Init();
+
 	return S_OK;
 }
 
@@ -150,6 +156,9 @@ void CRenderer::Uninit()
 	// 全オブジェクト解放処理
 	CObject::ReleaseAll();
 	
+	// テスト用ポリゴンの破棄
+	CTestPolygon2D::GetInstance()->Release();
+
 	//  テクスチャ破棄
 	if (m_pTexture != nullptr)
 	{
@@ -198,6 +207,9 @@ void CRenderer::Update()
 
 	// 全オブジェクト更新処理
 	CObject::UpdateAll();
+
+	// テスト用ポリゴンの更新
+	CTestPolygon2D::GetInstance()->Update();
 }
 
 //============================================================================
@@ -218,6 +230,9 @@ void CRenderer::Draw()
 
 		// 全オブジェクト描画処理
 		CObject::DrawAll();
+
+		// テスト用ポリゴンの描画
+		CTestPolygon2D::GetInstance()->Draw();
 
 		// シーンの専用描画
 		CManager::GetScene()->Draw();

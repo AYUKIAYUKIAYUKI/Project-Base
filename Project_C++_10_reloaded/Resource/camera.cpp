@@ -335,6 +335,25 @@ void CCamera::CalcMtxProjection()
 		(float)SCREEN_WIDTH / (float)SCREEN_HEIGHT,
 		10.0f,
 		5000.0f);
+
+	static float eiieei = 0.0f;
+	float f = 1.0f;
+	if (CManager::GetKeyboard()->GetPress(DIK_T))
+	{
+		eiieei += -f;
+	}
+	else if(CManager::GetKeyboard()->GetPress(DIK_Y))
+	{
+		eiieei += f;
+	}
+	else if (CManager::GetKeyboard()->GetPress(DIK_U))
+	{
+		eiieei = 0.0f;
+	}
+	std::string str = std::to_string(eiieei);
+	CManager::GetRenderer()->SetDebugString(str);
+	m_mtxProjection._44 += eiieei;
+	
 #else
 	// •½s“Š‰e
 	D3DXMatrixOrthoLH(&m_mtxProjection,
