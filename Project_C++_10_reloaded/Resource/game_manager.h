@@ -23,6 +23,7 @@ public:
 		NONE = 0,	// 無し
 		BEGIN,		// 開始
 		PLAY,		// ゲーム中
+		GOAL,		// ゴール後
 		END,		// 終了
 		MAX,
 	};
@@ -36,7 +37,8 @@ public:
 	void Create();	// 生成
 	void Release();	// 解放
 
-	void SetPhase(PHASE phase);	// フェーズを設定
+	PHASE GetPhase();			// フェーズ取得
+	void SetPhase(PHASE phase);	// フェーズ設定
 
 	static CGameManager* GetInstance();	// 取得
 
@@ -46,6 +48,7 @@ private:
 
 	PHASE m_phase;		// フェーズ識別
 	int m_nMaxStage;	// ステージ数
+	int m_nCntGoal;		// ゴール後カウント
 	std::vector<std::string> m_stagePath;	// ステージパス
 
 	static CGameManager* m_pGameManager;	// 自クラス情報

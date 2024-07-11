@@ -849,6 +849,11 @@ void CPlayerStateGoal::Enter()
 //============================================================================
 void CPlayerStateGoal::Update()
 {
+	// ‰Á‘¬“x‚ðŒ¸‚ç‚µ‚Ä‚¢‚­
+	D3DXVECTOR3 velocity = m_pPlayer->GetVelocity();
+	velocity = velocity * 0.9f;
+	m_pPlayer->SetVelocity(velocity);
+
 	// •ÏgŠúŠÔ’†‚Í‹­§ã¸
 	D3DXVECTOR3 posTarget = m_pPlayer->GetPosTarget();
 	posTarget.y += 1.0f;

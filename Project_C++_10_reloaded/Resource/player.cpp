@@ -26,11 +26,6 @@
 //============================================================================
 CPlayer::CPlayer() : CObject_X(static_cast<int>(LAYER::FRONT_MIDDLE))
 {
-	D3DXVECTOR3 pos;
-	pos = { 1.0f, 1.0f, 1.0f };
-
-	int unko = 0;
-
 	m_pStateManager = nullptr;				// 状態管理
 	m_velocity = { 0.0f, 0.0f, 0.0f };		// 加速度
 	m_posTarget = { 0.0f, 0.0f, 0.0f };		// 目標位置
@@ -304,11 +299,15 @@ bool CPlayer::Collision()
 	// ゴールと衝突する場合
 	if (CPhysics::GetInstance()->SphereAndCube(pGoal->GetPos(), 10.0f, m_posTarget, GetSize()))
 	{
-		// ゴール後状態へ
+		// ゴール後状態へ (接触後もここを通ります)
 		m_pStateManager->ChangeState(CPlayerState::STATE::GOAL);
 
-		// 終了フェーズへ
-		CGameManager::GetInstance()->SetPhase(CGameManager::PHASE::END);
+		// ゴールフェーズでなければ
+		if (CGameManager::GetInstance()->GetPhase() != CGameManager::PHASE::GOAL)
+		{
+			// ゴールフェーズへ
+			CGameManager::GetInstance()->SetPhase(CGameManager::PHASE::GOAL);
+		}
 	}
 
 	return bDetected;

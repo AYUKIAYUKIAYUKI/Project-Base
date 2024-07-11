@@ -28,6 +28,7 @@ CGameManager::CGameManager()
 {
 	m_phase = PHASE::NONE;		// フェーズ識別
 	m_nMaxStage = 0;			// ステージ数
+	m_nCntGoal = 0;				// ゴール後カウント
 	m_pGameManager = nullptr;	// 自クラス情報の初期化
 }
 
@@ -78,19 +79,6 @@ void CGameManager::Update()
 
 	case PHASE::BEGIN:
 
-		if (!m_stagePath.size())
-		{ // 読み込むステージがなくなったら
-
-			// リザルト画面へ遷移
-			CManager::GetFade()->SetFade(CScene::MODE::RESULT);
-
-			// フェーズ処理を行わない
-			m_phase = PHASE::NONE;
-
-			// 以降の処理を行わない
-			return;
-		}
-
 		// 全オブジェクト解放処理
 		CObject::ReleaseAll();
 
@@ -117,9 +105,34 @@ void CGameManager::Update()
 
 		break;
 
+	case PHASE::GOAL:
+
+		m_nCntGoal++;
+
+		if (m_nCntGoal > 50)
+		{
+			m_nCntGoal = 0;
+
+			m_phase = PHASE::END;
+		}
+		
+		break;
+
 	case PHASE::END:
-	
-		// 再開始
+
+		if (!m_stagePath.size())
+		{ // 読み込むステージがなくなったら
+
+			// リザルト画面へ遷移
+			CManager::GetFade()->SetFade(CScene::MODE::RESULT);
+
+			// フェーズ処理を行わない
+			m_phase = PHASE::NONE;
+
+			// 以降の処理を行わない
+			return;
+		}
+
 		m_phase = PHASE::BEGIN;
 
 		break;
@@ -166,7 +179,15 @@ void CGameManager::Release()
 }
 
 //============================================================================
-// フェーズを設定
+// フェーズ取得
+//============================================================================
+CGameManager::PHASE CGameManager::GetPhase()
+{
+	return m_phase;
+}
+
+//============================================================================
+// フェーズ設定
 //============================================================================
 void CGameManager::SetPhase(PHASE phase)
 {
