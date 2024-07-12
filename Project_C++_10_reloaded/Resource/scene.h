@@ -36,6 +36,8 @@ public:
 	virtual void Update();	// 更新処理
 	virtual void Draw();	// 描画処理
 
+	MODE GetMode();	// 現在のモードを取得する
+
 	static CScene* Create(MODE mode);	// 生成
 
 private:

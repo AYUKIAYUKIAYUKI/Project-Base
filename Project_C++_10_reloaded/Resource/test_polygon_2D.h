@@ -25,15 +25,23 @@ public:
 	void Create();	// 生成
 	void Release();	// 解放
 
+	LPDIRECT3DTEXTURE9 GetTexture();	// テクスチャ情報を取得
+	LPDIRECT3DSURFACE9 GetSurface();	// サーフェイス情報を取得
+
 	static CTestPolygon2D* GetInstance();	// 取得
 
 private:
+
+	void Move();	// 動く
+	void SetVtx();	// 頂点情報の設定
 
 	static CTestPolygon2D* m_pInstance;	// 自クラス情報
 
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	// 頂点バッファのポインタ
 	LPDIRECT3DTEXTURE9 m_pTex;			// テクスチャ情報のポインタ
 	LPDIRECT3DSURFACE9 m_pSurface;		// サーフェイス情報のポインタ
+	D3DXVECTOR3 m_pos;					// 位置
+	D3DXVECTOR3 m_size;					// サイズ
 };
 
 #endif // _TEST_POLYGON_2D_H_
