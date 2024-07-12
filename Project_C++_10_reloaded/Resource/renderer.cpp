@@ -273,7 +273,7 @@ void CRenderer::Draw()
 	if (SUCCEEDED(m_pD3DDevice->BeginScene()))
 	{
 		// ‹^Ž—ƒXƒNƒŠ[ƒ“‚ð•`‰æ
-		CFakeScree::GetInstance()->Draw();
+		CFakeScreen::GetInstance()->Draw();
 
 		// •`‰æI—¹
 		m_pD3DDevice->EndScene();
