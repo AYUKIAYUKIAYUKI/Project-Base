@@ -141,7 +141,7 @@
     <ClCompile Include="Resource\game_manager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Resource\test_polygon_2D.cpp">
+    <ClCompile Include="Resource\fakescreen.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -272,7 +272,7 @@
     <ClInclude Include="Resource\game_manager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Resource\test_polygon_2D.h">
+    <ClInclude Include="Resource\fakescreen.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>

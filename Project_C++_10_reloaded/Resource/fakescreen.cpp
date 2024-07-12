@@ -1,6 +1,6 @@
 //============================================================================
 // 
-// テスト用ポリゴン [test_polygon_2D.cpp]
+// 疑似スクリーン [fakescreen.cpp]
 // Author : 福田歩希
 // 
 //============================================================================
@@ -8,18 +8,18 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
-#include "test_polygon_2D.h"
+#include "fakescreen.h"
 #include "manager.h"
 
 //****************************************************
 // 静的メンバ変数の初期化
 //****************************************************
-CTestPolygon2D* CTestPolygon2D::m_pInstance = nullptr;	// 自クラス情報
+CFakeScreen* CFakeScreen::m_pInstance = nullptr;	// 自クラス情報
 
 //============================================================================
 // コンストラクタ
 //============================================================================
-CTestPolygon2D::CTestPolygon2D()
+CFakeScreen::CFakeScreen()
 {
 	m_pVtxBuff = nullptr;			// 頂点バッファのポインタ
 	m_pTex = nullptr;				// テクスチャ情報のポインタ
@@ -31,14 +31,14 @@ CTestPolygon2D::CTestPolygon2D()
 	m_pos = { SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f };
 
 	// サイズを適当に設定
-	float ff = 0.4f;
+	float ff = 0.5f;
 	m_size = { SCREEN_WIDTH * ff, SCREEN_HEIGHT * ff, 0.0f };
 }
 
 //============================================================================
 // デストラクタ
 //============================================================================
-CTestPolygon2D::~CTestPolygon2D()
+CFakeScreen::~CFakeScreen()
 {
 
 }
@@ -46,7 +46,7 @@ CTestPolygon2D::~CTestPolygon2D()
 //============================================================================
 // 初期設定
 //============================================================================
-HRESULT CTestPolygon2D::Init()
+HRESULT CFakeScreen::Init()
 {
 	// デバイスを取得
 	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
@@ -124,7 +124,7 @@ HRESULT CTestPolygon2D::Init()
 //============================================================================
 // 終了処理
 //============================================================================
-void CTestPolygon2D::Uninit()
+void CFakeScreen::Uninit()
 {
 	// 頂点バッファの破棄
 	if (m_pVtxBuff != nullptr)
@@ -151,10 +151,13 @@ void CTestPolygon2D::Uninit()
 //============================================================================
 // 更新処理
 //============================================================================
-void CTestPolygon2D::Update()
+void CFakeScreen::Update()
 {
 	// 動く
-	Move();
+	//Move();
+
+	// テクスチャサイズの変更
+	m_pTex;
 
 	// 頂点情報の設定
 	SetVtx();
@@ -163,7 +166,7 @@ void CTestPolygon2D::Update()
 //============================================================================
 // 描画処理
 //============================================================================
-void CTestPolygon2D::Draw()
+void CFakeScreen::Draw()
 {
 	// デバイスを取得
 	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
@@ -186,7 +189,7 @@ void CTestPolygon2D::Draw()
 //============================================================================
 // 生成
 //============================================================================
-void CTestPolygon2D::Create()
+void CFakeScreen::Create()
 {
 	if (m_pInstance != nullptr)
 	{ // 二重生成禁止
@@ -194,13 +197,13 @@ void CTestPolygon2D::Create()
 	}
 
 	// インスタンスを生成
-	m_pInstance = DBG_NEW CTestPolygon2D;
+	m_pInstance = DBG_NEW CFakeScreen;
 }
 
 //============================================================================
 // 解放
 //============================================================================
-void CTestPolygon2D::Release()
+void CFakeScreen::Release()
 {
 	if (m_pInstance != nullptr)
 	{
@@ -218,7 +221,7 @@ void CTestPolygon2D::Release()
 //============================================================================
 // テクスチャ情報を取得
 //============================================================================
-LPDIRECT3DTEXTURE9 CTestPolygon2D::GetTexture()
+LPDIRECT3DTEXTURE9 CFakeScreen::GetTexture()
 {
 	return m_pTex;
 }
@@ -226,7 +229,7 @@ LPDIRECT3DTEXTURE9 CTestPolygon2D::GetTexture()
 //============================================================================
 // サーフェイス情報を取得
 //============================================================================
-LPDIRECT3DSURFACE9 CTestPolygon2D::GetSurface()
+LPDIRECT3DSURFACE9 CFakeScreen::GetSurface()
 {
 	return m_pSurface;
 }
@@ -234,7 +237,7 @@ LPDIRECT3DSURFACE9 CTestPolygon2D::GetSurface()
 //============================================================================
 // 取得
 //============================================================================
-CTestPolygon2D* CTestPolygon2D::GetInstance()
+CFakeScreen* CFakeScreen::GetInstance()
 {
 	if (m_pInstance == nullptr)
 	{
@@ -246,9 +249,9 @@ CTestPolygon2D* CTestPolygon2D::GetInstance()
 }
 
 //============================================================================
-// 動く
+// 移動
 //============================================================================
-void CTestPolygon2D::Move()
+void CFakeScreen::Move()
 {
 	// 移動
 	static D3DXVECTOR3 move = { 3.0f, 3.0f, 0.0f };
@@ -270,7 +273,7 @@ void CTestPolygon2D::Move()
 //============================================================================
 // 頂点情報の設定
 //============================================================================
-void CTestPolygon2D::SetVtx()
+void CFakeScreen::SetVtx()
 {
 	// 頂点情報へのポインタ
 	VERTEX_2D* pVtx;
@@ -278,11 +281,21 @@ void CTestPolygon2D::SetVtx()
 	// 頂点バッファをロック
 	m_pVtxBuff->Lock(0, 0, reinterpret_cast<void**>(&pVtx), 0);
 
-	// 色の設定
+	// 位置の設定
+	static float ずれ = 0.0f;
+	//ずれ += 1.0f;
 	pVtx[0].pos = { m_pos.x - m_size.x, m_pos.y - m_size.y, 0.0f };
 	pVtx[1].pos = { m_pos.x + m_size.x, m_pos.y - m_size.y, 0.0f };
-	pVtx[2].pos = { m_pos.x - m_size.x, m_pos.y + m_size.y, 0.0f };
-	pVtx[3].pos = { m_pos.x + m_size.x, m_pos.y + m_size.y, 0.0f };
+	pVtx[2].pos = { m_pos.x - m_size.x + ずれ, m_pos.y + m_size.y, 0.0f };
+	pVtx[3].pos = { m_pos.x + m_size.x + ずれ, m_pos.y + m_size.y, 0.0f };
+
+	// テクスチャの設定
+	static float はば = 0.0f;
+	//はば += 0.01f;
+	pVtx[0].tex = { 0.0f, 0.0f };
+	pVtx[1].tex = { 1.0f + はば, 0.0f };
+	pVtx[2].tex = { 0.0f, 1.0f + はば };
+	pVtx[3].tex = { 1.0f + はば, 1.0f + はば };
 
 	// 頂点バッファをアンロックする
 	m_pVtxBuff->Unlock();

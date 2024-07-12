@@ -11,9 +11,7 @@
 #include "renderer.h"
 #include "manager.h"
 #include "object.h"
-
-// テスト用
-#include "test_polygon_2D.h"
+#include "fakescreen.h"
 
 //============================================================================
 // コンストラクタ
@@ -142,8 +140,8 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 	// Xモデル読み込み
 	m_pModel_X->Load();
 
-	// テスト用ポリゴンの初期設定
-	CTestPolygon2D::GetInstance()->Init();
+	// 疑似スクリーンの初期設定
+	CFakeScreen::GetInstance()->Init();
 
 	return S_OK;
 }
@@ -156,8 +154,8 @@ void CRenderer::Uninit()
 	// 全オブジェクト解放処理
 	CObject::ReleaseAll();
 	
-	// テスト用ポリゴンの破棄
-	CTestPolygon2D::GetInstance()->Release();
+	// 疑似スクリーンの破棄
+	CFakeScreen::GetInstance()->Release();
 
 	//  テクスチャ破棄
 	if (m_pTexture != nullptr)
@@ -208,8 +206,8 @@ void CRenderer::Update()
 	// 全オブジェクト更新処理
 	CObject::UpdateAll();
 
-	// テスト用ポリゴンの更新
-	CTestPolygon2D::GetInstance()->Update();
+	// 疑似スクリーンの更新
+	CFakeScreen::GetInstance()->Update();
 }
 
 //============================================================================
@@ -223,8 +221,8 @@ void CRenderer::Draw()
 	// バックバッファの情報をコピー
 	m_pD3DDevice->GetRenderTarget(0, &oldRenderTarget);
 
-	// レンダリングターゲットにテクスチャを指定
-	m_pD3DDevice->SetRenderTarget(0, CTestPolygon2D::GetInstance()->GetSurface());
+	// レンダリングターゲットに疑似スクリーン用のテクスチャを指定
+	m_pD3DDevice->SetRenderTarget(0, CFakeScreen::GetInstance()->GetSurface());
 
 	//// 画面クリア
 	//m_pD3DDevice->Clear(0, nullptr,
@@ -253,7 +251,7 @@ void CRenderer::Draw()
 		m_pD3DDevice->EndScene();
 	}
 
-	// テクスチャとフロントバッファの入れ替え
+	// バックバッファとフロントバッファの入れ替え
 	//m_pD3DDevice->Present(nullptr, nullptr, nullptr, nullptr);
 
 	// レンダリングターゲットをバックバッファに戻す
@@ -274,8 +272,8 @@ void CRenderer::Draw()
 	// 描画開始
 	if (SUCCEEDED(m_pD3DDevice->BeginScene()))
 	{
-		// 2Dポリゴンを描画
-		CTestPolygon2D::GetInstance()->Draw();
+		// 疑似スクリーンを描画
+		CFakeScree::GetInstance()->Draw();
 
 		// 描画終了
 		m_pD3DDevice->EndScene();

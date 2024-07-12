@@ -1,22 +1,22 @@
 //============================================================================
 // 
-// テスト用ポリゴン、ヘッダファイル [test_polygon_2D.h]
+// 疑似スクリーン、ヘッダファイル [fakescreen.h]
 // Author : 福田歩希
 // 
 //============================================================================
 
-#ifndef _TEST_POLYGON_2D_H_
-#define _TEST_POLYGON_2D_H_	// 二重インクルード防止
+#ifndef _FAKESCREEN_H_
+#define _FAKESCREEN_H_	// 二重インクルード防止
 
 //****************************************************
-// テスト用ポリゴンクラス
+// 疑似スクリーンポリゴンクラス
 //****************************************************
-class CTestPolygon2D
+class CFakeScreen
 {
 public:
 
-	CTestPolygon2D();	// コンストラクタ
-	~CTestPolygon2D();	// デストラクタ
+	CFakeScreen();	// コンストラクタ
+	~CFakeScreen();	// デストラクタ
 
 	HRESULT Init();	// 初期設定
 	void Uninit();	// 終了処理
@@ -28,14 +28,14 @@ public:
 	LPDIRECT3DTEXTURE9 GetTexture();	// テクスチャ情報を取得
 	LPDIRECT3DSURFACE9 GetSurface();	// サーフェイス情報を取得
 
-	static CTestPolygon2D* GetInstance();	// 取得
+	static CFakeScreen* GetInstance();	// 取得
 
 private:
 
-	void Move();	// 動く
+	void Move();	// 移動
 	void SetVtx();	// 頂点情報の設定
 
-	static CTestPolygon2D* m_pInstance;	// 自クラス情報
+	static CFakeScreen* m_pInstance;	// 自クラス情報
 
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	// 頂点バッファのポインタ
 	LPDIRECT3DTEXTURE9 m_pTex;			// テクスチャ情報のポインタ
@@ -44,4 +44,4 @@ private:
 	D3DXVECTOR3 m_size;					// サイズ
 };
 
-#endif // _TEST_POLYGON_2D_H_
+#endif // _FAKESCREEN_H_

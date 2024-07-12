@@ -62,7 +62,7 @@
     <ClCompile Include="Resource\stagemaker.cpp" />
     <ClCompile Include="Resource\stage_debug.cpp" />
     <ClCompile Include="Resource\start.cpp" />
-    <ClCompile Include="Resource\test_polygon_2D.cpp" />
+    <ClCompile Include="Resource\fakescreen.cpp" />
     <ClCompile Include="resource\texture.cpp" />
     <ClCompile Include="Resource\title.cpp" />
   </ItemGroup>
@@ -107,7 +107,7 @@
     <ClInclude Include="Resource\stagemaker.h" />
     <ClInclude Include="Resource\stage_debug.h" />
     <ClInclude Include="Resource\start.h" />
-    <ClInclude Include="Resource\test_polygon_2D.h" />
+    <ClInclude Include="Resource\fakescreen.h" />
     <ClInclude Include="resource\texture.h" />
     <ClInclude Include="Resource\title.h" />
   </ItemGroup>
