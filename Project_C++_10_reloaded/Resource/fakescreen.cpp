@@ -12,6 +12,11 @@
 #include "manager.h"
 
 //****************************************************
+// マクロ定義
+//****************************************************
+#define MESH_DBG 1	// メッシュ情報のデバッグ表示切り替え
+
+//****************************************************
 // 静的メンバ変数の初期化
 //****************************************************
 CFakeScreen* CFakeScreen::m_pInstance = nullptr;	// 自クラス情報
@@ -271,8 +276,10 @@ HRESULT CFakeScreen::CreateVtxBuff()
 			m_pos.y - m_size.y + (fEachSizeY * nCntVtxY),
 			0.0f };
 
-		// 各頂点位置のデバッグ表示
-		CManager::GetRenderer()->SetTimeString(std::to_string(i + 1) + "頂点位置:" + std::to_string(pVtx[i].pos.x) + ":" + std::to_string(pVtx[i].pos.y) + ":" + std::to_string(pVtx[i].pos.z), 99999999);
+#if MESH_DBG
+		// 各頂点座標のデバッグ表示
+		CManager::GetRenderer()->SetTimeString(std::to_string(i + 1) + "頂点:" + std::to_string(pVtx[i].pos.x) + ":" + std::to_string(pVtx[i].pos.y) + ":" + std::to_string(pVtx[i].pos.z), 30);
+#endif
 
 		// 除算数の設定
 		pVtx[i].rhw = 1.0f;
@@ -285,8 +292,10 @@ HRESULT CFakeScreen::CreateVtxBuff()
 			(fEachSizeX * nCntVtxX) / (m_size.x * 2.0f),
 			(fEachSizeY * nCntVtxY) / (m_size.y * 2.0f) };
 
-		// 各頂点位置のデバッグ表示
-		CManager::GetRenderer()->SetTimeString(std::to_string(i + 1) + "UV座標:" + std::to_string(pVtx[i].tex.x) + " : " + std::to_string(pVtx[i].tex.y), 99999999);
+#if MESH_DBG
+		// 各UV座標のデバッグ表示
+		CManager::GetRenderer()->SetTimeString(std::to_string(i + 1) + "UV:" + std::to_string(pVtx[i].tex.x) + " : " + std::to_string(pVtx[i].tex.y), 30);
+#endif
 
 		// X方向頂点数のカウントを行う
 		if (nCntVtxX >= SPLIT_ALONG_X_AXIS)
