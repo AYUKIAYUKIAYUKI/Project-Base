@@ -106,9 +106,6 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 	m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG1, D3DTA_TEXTURE);
 	m_pD3DDevice->SetTextureStageState(0, D3DTSS_ALPHAARG2, D3DTA_CURRENT);
 
-	// ワイヤー描画
-	//m_pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
-
 	// ?
 	//ID3DXAllocateHierarchy;
 
@@ -244,9 +241,6 @@ void CRenderer::Draw()
 		// フェードの描画処理
 		CManager::GetFade()->Draw();
 
-		// デバッグ表示
-		PrintDebug();
-
 		// 描画終了
 		m_pD3DDevice->EndScene();
 	}
@@ -272,8 +266,14 @@ void CRenderer::Draw()
 	// 描画開始
 	if (SUCCEEDED(m_pD3DDevice->BeginScene()))
 	{
+		// ワイヤー描画
+		//m_pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+
 		// 疑似スクリーンを描画
 		CFakeScreen::GetInstance()->Draw();
+
+		// デバッグ表示
+		PrintDebug();
 
 		// 描画終了
 		m_pD3DDevice->EndScene();

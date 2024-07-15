@@ -9,7 +9,7 @@
 #define _FAKESCREEN_H_	// 二重インクルード防止
 
 //****************************************************
-// 疑似スクリーンポリゴンクラス
+// 疑似スクリーンクラス
 //****************************************************
 class CFakeScreen
 {
@@ -32,14 +32,26 @@ public:
 
 private:
 
-	void Move();	// 移動
-	void SetVtx();	// 頂点情報の設定
+	static const int SPLIT_ALONG_X_AXIS;	// X軸方向の分割数
+	static const int SPLIT_ALONG_Y_AXIS;	// Y軸方向の分割数
+
+	void CalcMesh();			// メッシュ情報の計算
+	HRESULT CreateVtxBuff();	// 頂点バッファの生成
+	HRESULT CreateIdxBuff();	// インデックスバッファの生成
+	HRESULT CreateTex();		// テクスチャの生成
+	void Move();				// 移動
+	void SetVtx();				// 頂点情報の設定
 
 	static CFakeScreen* m_pInstance;	// 自クラス情報
 
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	// 頂点バッファのポインタ
+	LPDIRECT3DINDEXBUFFER9 m_pIdxBuff;	// インデックスバッファのポインタ
 	LPDIRECT3DTEXTURE9 m_pTex;			// テクスチャ情報のポインタ
 	LPDIRECT3DSURFACE9 m_pSurface;		// サーフェイス情報のポインタ
+	int m_nNumVtx;						// 頂点数
+	int m_nNumPolygon;					// ポリゴン数
+	int m_nNumDegenerated;				// 縮退ポリゴン数
+	int m_nNumIndex;					// インデックス数宇
 	D3DXVECTOR3 m_pos;					// 位置
 	D3DXVECTOR3 m_size;					// サイズ
 };
