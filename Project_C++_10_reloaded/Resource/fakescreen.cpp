@@ -14,14 +14,14 @@
 //****************************************************
 // マクロ定義
 //****************************************************
-#define MESH_DBG 1	// メッシュ情報のデバッグ表示切り替え
+#define MESH_DBG 0	// メッシュ情報のデバッグ表示切り替え
 
 //****************************************************
 // 静的メンバ変数の初期化
 //****************************************************
 CFakeScreen* CFakeScreen::m_pInstance = nullptr;	// 自クラス情報
-const int CFakeScreen::SPLIT_ALONG_X_AXIS = 1;		// X軸方向の分割数
-const int CFakeScreen::SPLIT_ALONG_Y_AXIS = 1;		// Y軸方向の分割数
+const int CFakeScreen::SPLIT_ALONG_X_AXIS = 50;		// X軸方向の分割数
+const int CFakeScreen::SPLIT_ALONG_Y_AXIS = 50;		// Y軸方向の分割数
 
 //============================================================================
 // コンストラクタ
@@ -123,11 +123,14 @@ void CFakeScreen::Uninit()
 //============================================================================
 void CFakeScreen::Update()
 {
-	// 動く
+	// 移動
 	//Move();
 	 
+	// 波打ち
+	Wave();
+
 	// 頂点情報の設定
-	SetVtx();
+	//SetVtx();
 }
 
 //============================================================================
@@ -277,9 +280,11 @@ HRESULT CFakeScreen::CreateVtxBuff()
 			0.0f };
 
 #if MESH_DBG
+
 		// 各頂点座標のデバッグ表示
 		CManager::GetRenderer()->SetTimeString(std::to_string(i + 1) + "頂点:" + std::to_string(pVtx[i].pos.x) + ":" + std::to_string(pVtx[i].pos.y) + ":" + std::to_string(pVtx[i].pos.z), 30);
-#endif
+
+#endif	// MESH_DBG
 
 		// 除算数の設定
 		pVtx[i].rhw = 1.0f;
@@ -293,9 +298,11 @@ HRESULT CFakeScreen::CreateVtxBuff()
 			(fEachSizeY * nCntVtxY) / (m_size.y * 2.0f) };
 
 #if MESH_DBG
+
 		// 各UV座標のデバッグ表示
 		CManager::GetRenderer()->SetTimeString(std::to_string(i + 1) + "UV:" + std::to_string(pVtx[i].tex.x) + " : " + std::to_string(pVtx[i].tex.y), 30);
-#endif
+
+#endif	// MESH_DBG
 
 		// X方向頂点数のカウントを行う
 		if (nCntVtxX >= SPLIT_ALONG_X_AXIS)
@@ -458,6 +465,79 @@ void CFakeScreen::Move()
 }
 
 //============================================================================
+// 波打ち
+//============================================================================
+void CFakeScreen::Wave()
+{
+	// 頂点情報へのポインタ
+	VERTEX_2D* pVtx;
+
+	// 頂点バッファをロック
+	m_pVtxBuff->Lock(0, 0, reinterpret_cast<void**>(&pVtx), 0);
+
+	float fWavePosX = 0.0f;		// ゆがみ具合
+	int nCntAdd = 0;
+	static float fAdd = 0.05f;	// ゆがみ増加量
+	static float fHoge = 50.0f;	// ゆがみ強度
+	if (CManager::GetKeyboard()->GetPress(DIK_R))
+	{
+		fAdd += 0.01f;
+	}
+	else if	(CManager::GetKeyboard()->GetPress(DIK_F))
+	{
+		fAdd += -0.01f;
+	}
+	else if (CManager::GetKeyboard()->GetPress(DIK_V))
+	{
+		fAdd = 0.0f;
+	}
+	CManager::GetRenderer()->SetDebugString("ゆがみ具合:" + std::to_string(fAdd));
+
+	int nCntVtxX = 0, nCntVtxY = 0;								// 各方向の頂点数をカウントする
+	float fEachSizeX = (m_size.x * 2.0f) / SPLIT_ALONG_X_AXIS;	// ポリゴン1枚あたりのX方向への頂点配置間隔
+	float fEachSizeY = (m_size.y * 2.0f) / SPLIT_ALONG_Y_AXIS;	// ポリゴン1枚あたりのY方向への頂点配置間隔
+
+	for (int i = 0; i < m_nNumVtx; i++)
+	{
+		// 頂点座標の設定 (サイズ値をもとにした左上の頂点位置に、変動位置を加算して矩形を形成)
+		pVtx[i].pos = {
+			m_pos.x - m_size.x + (fEachSizeX * nCntVtxX) + (sinf(fWavePosX) * fHoge),
+			m_pos.y - m_size.y + (fEachSizeY * nCntVtxY),
+			0.0f };
+
+		// X方向頂点数のカウントを行う
+		if (nCntVtxX >= SPLIT_ALONG_X_AXIS)
+		{ // カウント数が分割数に達したら
+
+			// X方向頂点数のカウントをリセット
+			nCntVtxX = 0;
+
+			// Y方向頂点数をカウントアップ
+			nCntVtxY++;
+
+			//fWavePosX += fAdd;
+
+			//if (fWavePosX > fAdd * 5.0f)
+			//{
+			//	fAdd *= -1.0f;
+			//}
+			//else if (fWavePosX < fAdd * -5.0f)
+			//{
+			//	fAdd *= -1.0f;
+			//}
+		}
+		else
+		{
+			// X方向頂点数をカウントアップ
+			nCntVtxX++;
+		}
+	}
+
+	// 頂点バッファをアンロックする
+	m_pVtxBuff->Unlock();
+}
+
+//============================================================================
 // 頂点情報の設定
 //============================================================================
 void CFakeScreen::SetVtx()
@@ -468,23 +548,34 @@ void CFakeScreen::SetVtx()
 	// 頂点バッファをロック
 	m_pVtxBuff->Lock(0, 0, reinterpret_cast<void**>(&pVtx), 0);
 
-#if 0
-	// 位置の設定
-	static float ずれ = 0.0f;
-	//ずれ += 1.0f;
-	pVtx[0].pos = { m_pos.x - m_size.x, m_pos.y - m_size.y, 0.0f };
-	pVtx[1].pos = { m_pos.x + m_size.x, m_pos.y - m_size.y, 0.0f };
-	pVtx[2].pos = { m_pos.x - m_size.x + ずれ, m_pos.y + m_size.y, 0.0f };
-	pVtx[3].pos = { m_pos.x + m_size.x + ずれ, m_pos.y + m_size.y, 0.0f };
+	int nCntVtxX = 0, nCntVtxY = 0;								// 各方向の頂点数をカウントする
+	float fEachSizeX = (m_size.x * 2.0f) / SPLIT_ALONG_X_AXIS;	// ポリゴン1枚あたりのX方向への頂点配置間隔
+	float fEachSizeY = (m_size.y * 2.0f) / SPLIT_ALONG_Y_AXIS;	// ポリゴン1枚あたりのY方向への頂点配置間隔
 
-	// テクスチャの設定
-	static float はば = 0.0f;
-	//はば += 0.01f;
-	pVtx[0].tex = { 0.0f, 0.0f };
-	pVtx[1].tex = { 1.0f + はば, 0.0f };
-	pVtx[2].tex = { 0.0f, 1.0f + はば };
-	pVtx[3].tex = { 1.0f + はば, 1.0f + はば };
-#endif
+	for (int i = 0; i < m_nNumVtx; i++)
+	{
+		// 頂点座標の設定 (サイズ値をもとにした左上の頂点位置に、変動位置を加算して矩形を形成)
+		pVtx[i].pos = {
+			m_pos.x - m_size.x + (fEachSizeX * nCntVtxX),
+			m_pos.y - m_size.y + (fEachSizeY * nCntVtxY),
+			0.0f };
+
+		// X方向頂点数のカウントを行う
+		if (nCntVtxX >= SPLIT_ALONG_X_AXIS)
+		{ // カウント数が分割数に達したら
+
+			// X方向頂点数のカウントをリセット
+			nCntVtxX = 0;
+
+			// Y方向頂点数をカウントアップ
+			nCntVtxY++;
+		}
+		else
+		{
+			// X方向頂点数をカウントアップ
+			nCntVtxX++;
+		}
+	}
 
 	// 頂点バッファをアンロックする
 	m_pVtxBuff->Unlock();

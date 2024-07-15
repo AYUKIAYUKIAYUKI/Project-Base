@@ -40,6 +40,7 @@ private:
 	HRESULT CreateIdxBuff();	// インデックスバッファの生成
 	HRESULT CreateTex();		// テクスチャの生成
 	void Move();				// 移動
+	void Wave();				// 波打ち
 	void SetVtx();				// 頂点情報の設定
 
 	static CFakeScreen* m_pInstance;	// 自クラス情報
