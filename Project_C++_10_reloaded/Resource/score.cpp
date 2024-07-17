@@ -10,7 +10,6 @@
 //****************************************************
 #include "score.h"
 #include "manager.h"
-#include "particle.h"
 
 //****************************************************
 // 静的メンバの初期化
@@ -81,14 +80,14 @@ void CScore::Update()
 				0.0f,
 			};
 
-			// パーティクルを生成
-			for (int i = 0; i < 20; i++)
-			{
-				CParticle::Create(
-					pos,					// 位置
-					{ 15.0f, 15.0f, 0.0f },	// サイズ
-					atan2f((float)(rand() % 314), (float)(rand() % 314)) * (rand() % 314));	// 飛ぶ角度
-			}
+			//// パーティクルを生成
+			//for (int i = 0; i < 20; i++)
+			//{
+			//	CParticle::Create(
+			//		pos,					// 位置
+			//		{ 15.0f, 15.0f, 0.0f },	// サイズ
+			//		atan2f((float)(rand() % 314), (float)(rand() % 314)) * (rand() % 314));	// 飛ぶ角度
+			//}
 		}
 	}
 

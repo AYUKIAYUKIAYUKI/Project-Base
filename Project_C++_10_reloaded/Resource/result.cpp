@@ -12,8 +12,8 @@
 #include "manager.h"
 #include "object.h"
 
-// オブジェクト生成用
-#include "item.h"
+// 仮リザルト表示用
+#include "bg.h"
 
 //============================================================================
 // コンストラクタ
@@ -36,10 +36,11 @@ CResult::~CResult()
 //============================================================================
 HRESULT CResult::Init()
 {
-	// アイテムの生成 (仮)
-	CItem::Create(
+	// 背景の生成
+	CBg::Create(
 		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// 位置
-		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f });	// サイズ
+		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// サイズ
+		CTexture::TEX_TYPE::BG_001);							// テクスチャ
 
 	return S_OK;
 }

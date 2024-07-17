@@ -12,6 +12,7 @@
 // インクルードファイル
 //****************************************************
 #include "object_2D.h"
+#include "texture.h"
 
 //****************************************************
 // 背景クラス
@@ -28,7 +29,7 @@ public:
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
 
-	static CBg* Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);	// 生成
+	static CBg* Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, CTexture::TEX_TYPE type);	// 生成
 
 private:
 

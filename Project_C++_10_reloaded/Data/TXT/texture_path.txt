@@ -1,5 +1,5 @@
 data\\TEXTURE\\title.png
-data\\TEXTURE\\title.png
+data\\TEXTURE\\result.png
 data\\TEXTURE\\Bakemon.png
 data\\TEXTURE\\bullet000.png
 data\\TEXTURE\\effect000.png

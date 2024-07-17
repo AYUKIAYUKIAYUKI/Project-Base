@@ -11,7 +11,7 @@
 #include "title.h"
 #include "manager.h"
 
-// オブジェクト生成用
+// 仮タイトル表示用
 #include "bg.h"
 
 //============================================================================
@@ -35,10 +35,11 @@ CTitle::~CTitle()
 //============================================================================
 HRESULT CTitle::Init()
 {
-	// 背景の生成 (仮)
+	// 背景の生成
 	CBg::Create(
 		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// 位置
-		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f });	// サイズ
+		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// サイズ
+		CTexture::TEX_TYPE::BG_000);							// テクスチャ
 
 	return S_OK;
 }

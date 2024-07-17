@@ -72,7 +72,7 @@ void CBg::Draw()
 //============================================================================
 // 生成
 //============================================================================
-CBg* CBg::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
+CBg* CBg::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, CTexture::TEX_TYPE tex)
 {
 	// インスタンスを生成
 	CBg* pBg = DBG_NEW CBg;
@@ -89,7 +89,7 @@ CBg* CBg::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	pBg->SetSize(size);	// サイズの設定
 
 	// テクスチャを設定
-	pBg->BindTex(CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BG_000));
+	pBg->BindTex(CManager::GetRenderer()->GetTextureInstane()->GetTexture(tex));
 
 	return pBg;
 }
