@@ -15,19 +15,16 @@
 #include "explosion.h"
 #include "start.h"
 
-// 試験的にインクルード
-#include "block.h"
-
 //****************************************************
 // 静的メンバ変数の初期化
 //****************************************************
-const float CPlayerStateDefault::MAX_WALK_VELOCITY = 0.75f;	// 歩行時の最大加速度
+const float CPlayerStateDefault::MAX_WALK_VELOCITY = 1.5f;	// 歩行時の最大加速度
 const float CPlayerStateDefault::BRAKING_WALK_SPEED = 0.8f;	// 歩行時の制動力
 const int CPlayerStateBeginning::BEGIN_CNT_MAX = 20;		// 変身必要時間
 const float CPlayerStateBeginning::BEGIN_FLOATING = 1.25f;	// 変身時上昇量
 const float CPlayerStateBeginning::BEGIN_SPINNING = 0.5f;	// 変身時回転量
-const float CPlayerStateFlying::MAX_FLY_VELOCITY = 2.0f;	// 飛行時の最大加速度
-const float CPlayerStateFlying::FLY_SPEED = 2.0f;			// 飛行速度
+const float CPlayerStateFlying::MAX_FLY_VELOCITY = 3.0f;	// 飛行時の最大加速度
+const float CPlayerStateFlying::FLY_SPEED = 3.0f;			// 飛行速度
 const int CPlayerStateStopping::STOP_CNT_MAX = 10;			// 変身停止必要時間
 const float CPlayerStateStopping::RECOIL_SPEED = 2.0f;		// 反動移動速度
 const float CPlayerStateMistook::MAX_WARP_SPEED = 15.0f;	// 強制移動速度の上限
@@ -63,11 +60,11 @@ void CPlayerState::Update()
 }
 
 //============================================================================
-// プレイヤー情報の設定
+// プレイヤーを登録
 //============================================================================
-void CPlayerState::SetPlayerInstance(CPlayer* player)
+void CPlayerState::RegisterPlayer(CPlayer* pPlayer)
 {
-	m_pPlayer = player;
+	m_pPlayer = pPlayer;
 }
 
 
@@ -125,16 +122,15 @@ void CPlayerStateDefault::Update()
 	// 制動調整
 	Braking();
 
-	// 加速度を位置に加算
-	D3DXVECTOR3 posTarget = m_pPlayer->GetPosTarget();
-	posTarget += m_pPlayer->GetVelocity();
-	m_pPlayer->SetPosTarget(posTarget);
+	auto test = m_pPlayer->GetPosTarget().y;
 
-	// 位置調整
-	m_pPlayer->AdjustPos();
+	// 座標変更を反映
+	m_pPlayer->ApplyPos();
+
+	/* これ以降m_pPlayeが解放されたままになる */
 
 	// おかしなところに行くと一旦殺す
-	if (posTarget.y < -300.0f)
+	if (test < -300.0f)
 	{
 		// 失敗状態に変更
 		m_pPlayer->GetStateManager()->ChangeState(CPlayerState::STATE::MISS);
@@ -410,35 +406,8 @@ void CPlayerStateFlying::Update()
 	// 制動調整
 	Braking();
 
-	// 加速度を位置に加算
-	D3DXVECTOR3 posTarget = m_pPlayer->GetPosTarget();
-	posTarget += m_pPlayer->GetVelocity();
-	m_pPlayer->SetPosTarget(posTarget);
-
-	//// オブジェクトを取得
-	//CObject** pObject = CObject::FindAllObject(CObject::TYPE::BLOCK);
-
-	//for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
-	//{
-	//	// オブジェクトの情報が無くなったら終了
-	//	if (pObject[nCntObj] == nullptr)
-	//	{
-	//		break;
-	//	}
-
-	//	// ブロッククラスへダウンキャスト
-	//	CBlock* pBlock = CBlock::DownCast(pObject[nCntObj]);
-
-	//	// ブロックと衝突する場合
-	//	if (CPhysics::GetInstance()->OnlyCube(m_pPlayer->GetPosTarget(), m_pPlayer->GetSize(), pBlock->GetPos(), { 10.0f, 10.0f, 10.0f }))
-	//	{
-	//		// この時に衝突しているブロックを試験的に消去
-	//		pBlock->Release();
-	//	}
-	//}
-
-	// 位置調整
-	if (m_pPlayer->AdjustPos())
+	// 座標変更を反映
+	if (m_pPlayer->ApplyPos())
 	{
 		// 何かに衝突で変身停止へ
 		m_pPlayer->GetStateManager()->ChangeState(CPlayerState::STATE::STOPPING);
@@ -643,13 +612,8 @@ void CPlayerStateStopping::Update()
 		CPhysics::GetInstance()->Gravity(velocity);
 		m_pPlayer->SetVelocity(velocity);
 
-		// 加速度を位置に加算
-		D3DXVECTOR3 posTarget = m_pPlayer->GetPosTarget();
-		posTarget += m_pPlayer->GetVelocity();
-		m_pPlayer->SetPosTarget(posTarget);
-
-		// 位置調整
-		m_pPlayer->AdjustPos();
+		// 座標変更を反映
+		m_pPlayer->ApplyPos();
 	}
 	else
 	{
@@ -890,8 +854,8 @@ void CPlayerStateGoal::Update()
 	rot.z = 0.0f;
 	m_pPlayer->SetRot(rot);
 
-	// 位置調整
-	m_pPlayer->AdjustPos();
+	// 座標変更を反映
+	m_pPlayer->ApplyPos();
 }
 
 //============================================================================
@@ -906,7 +870,7 @@ void CPlayerStateGoal::Exit()
 
 //============================================================================
 // 
-// プレイヤー状態管理クラス
+// プレイヤー状態マネージャークラス
 // 
 //============================================================================
 
@@ -929,10 +893,21 @@ CPlayerStateManager::~CPlayerStateManager()
 //============================================================================
 // 初期設定
 //============================================================================
-void CPlayerStateManager::Init()
+void CPlayerStateManager::Init(CPlayer* pPlayer)
 {
+	// 状態マネージャーにプレイヤーを登録
+	RegisterPlayer(pPlayer);
+
 	// 初期状態を設定しておく
 	ChangeState(CPlayerState::STATE::MISS);
+}
+
+//============================================================================
+// プレイヤーを登録
+//============================================================================
+void CPlayerStateManager::RegisterPlayer(CPlayer* pPlayer)
+{
+	m_pPlayer = pPlayer;
 }
 
 //============================================================================
@@ -940,6 +915,10 @@ void CPlayerStateManager::Init()
 //============================================================================
 void CPlayerStateManager::Uninit()
 {
+	// プレイヤーのポインタを初期化
+	m_pPlayer = nullptr;
+
+	// 状態を破棄
 	if (m_pState != nullptr)
 	{
 		// メモリを解放
@@ -951,26 +930,11 @@ void CPlayerStateManager::Uninit()
 }
 
 //============================================================================
-// プレイヤー情報の取得
-//============================================================================
-CPlayer* CPlayerStateManager::GetPlayerInstance()
-{
-	return m_pPlayer;
-}
-
-//============================================================================
-// プレイヤー情報の設定
-//============================================================================
-void CPlayerStateManager::SetPlayerInstance(CPlayer* player)
-{
-	m_pPlayer = player;
-}
-
-//============================================================================
 // 状態を変更
 //============================================================================
 void CPlayerStateManager::ChangeState(CPlayerState::STATE state)
 {
+	// 既に状態が設定されていれば破棄
 	if (m_pState != nullptr)
 	{
 		// 変更終了時の処理
@@ -986,10 +950,19 @@ void CPlayerStateManager::ChangeState(CPlayerState::STATE state)
 	// 次の状態を生成
 	Create(state);
 
-	m_pState->SetPlayerInstance(m_pPlayer);
+	// 状態オブジェクトにプレイヤーを登録
+	m_pState->RegisterPlayer(m_pPlayer);
 
-	// 初回変更時の処理
+	// 変更時の処理
 	m_pState->Enter();
+}
+
+//============================================================================
+// プレイヤーを取得
+//============================================================================
+CPlayer* CPlayerStateManager::GetPlayer()
+{
+	return m_pPlayer;
 }
 
 //============================================================================

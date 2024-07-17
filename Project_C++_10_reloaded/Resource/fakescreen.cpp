@@ -57,7 +57,7 @@ HRESULT CFakeScreen::Init()
 	m_pos = { SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f };
 
 	// サイズを設定
-	float fSize = 0.3f;
+	float fSize = 0.5f;
 	m_size = { SCREEN_WIDTH * fSize, SCREEN_HEIGHT * fSize, 0.0f };
 
 	// メッシュ情報の計算

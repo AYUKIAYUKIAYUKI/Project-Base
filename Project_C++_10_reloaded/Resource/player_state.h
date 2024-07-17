@@ -37,15 +37,15 @@ public:
 	CPlayerState();				// コンストラクタ
 	virtual ~CPlayerState();	// デストラクタ
 
-	virtual void Enter() = 0;	// 変更開始
-	virtual void Update();		// 更新
-	virtual void Exit() = 0;	// 変更終了
+	virtual void Enter() = 0;				// 変更開始
+	void RegisterPlayer(CPlayer* pPlayer);	// プレイヤーを登録
+	virtual void Update();					// 更新
+	virtual void Exit() = 0;				// 変更終了
 
-	void SetPlayerInstance(CPlayer* player);	// プレイヤー情報の設定
 
 protected:
 
-	CPlayer* m_pPlayer;	// プレイヤーインスタンスへのポインタ
+	CPlayer* m_pPlayer;	// プレイヤーのポインタ
 };
 
 //****************************************************
@@ -186,7 +186,7 @@ public:
 };
 
 //****************************************************
-// プレイヤー状態管理クラス
+// プレイヤー状態マネージャークラス
 //****************************************************
 class CPlayerStateManager
 {
@@ -195,22 +195,20 @@ public:
 	CPlayerStateManager();	// コンストラクタ
 	~CPlayerStateManager();	// デストラクタ
 
-	void Init();	// 初期設定
-	void Uninit();	// 終了処理
-
-	CPlayer* GetPlayerInstance();				// プレイヤーインスタンスの取得
-	void SetPlayerInstance(CPlayer* player);	// プレイヤーインスタンスの設定
-
+	void Init(CPlayer* pPlayer);					// 初期設定
+	void RegisterPlayer(CPlayer* pPlayer);			// プレイヤーを登録
+	void Uninit();									// 終了処理
 	void ChangeState(CPlayerState::STATE state);	// 状態を変更
 
+	CPlayer* GetPlayer();		// プレイヤーを取得
 	CPlayerState* GetState();	// 状態を取得
 
 private:
 
 	void Create(CPlayerState::STATE state);	// 新たな状態を生成
 
-	CPlayer* m_pPlayer;		// プレイヤーインスタンスへのポインタ
-	CPlayerState* m_pState;	// 状態を保持
+	CPlayer* m_pPlayer;		// プレイヤーのポインタ
+	CPlayerState* m_pState;	// 状態のポインタ
 };
 
 #endif // _PLAYER_STATE_H_

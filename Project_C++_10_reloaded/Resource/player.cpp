@@ -50,19 +50,13 @@ HRESULT CPlayer::Init()
 	// 大きさを設定
 	SetSize({ 10.0f, 10.0f, 10.0f });
 
-	// 状態管理クラスの生成
 	if (m_pStateManager == nullptr)
 	{
+		// 状態マネージャーの生成
 		m_pStateManager = DBG_NEW CPlayerStateManager;
 
-		// プレイヤーのインスタンス情報を状態管理クラスに渡す
-		m_pStateManager->SetPlayerInstance(this);
-
-		// 初期化
-		m_pStateManager->Init();
-
-		// プレイヤーのインスタンス情報を状態クラスに渡す
-		m_pStateManager->GetState()->SetPlayerInstance(this);
+		// 初期設定
+		m_pStateManager->Init(this);
 	}
 
 	return hr;
@@ -73,7 +67,7 @@ HRESULT CPlayer::Init()
 //============================================================================
 void CPlayer::Uninit()
 {
-	// 状態管理クラスの破棄
+	// 状態マネージャーの破棄
 	if (m_pStateManager != nullptr)
 	{
 		// 終了処理
@@ -104,9 +98,6 @@ void CPlayer::Update()
 	// 位置を反映
 	SetPos(m_posTarget);
 
-	// カメラ位置を設定
-	//CManager::GetCamera()->SetPos(GetPos());
-
 	// 位置をデバッグ表示
 	CManager::GetRenderer()->SetDebugString("【プレイヤー位置】");
 	std::ostringstream oss;
@@ -127,23 +118,23 @@ void CPlayer::Draw()
 }
 
 //============================================================================
-// 位置調整
+// 座標変更を反映
 //============================================================================
-bool CPlayer::AdjustPos()
+bool CPlayer::ApplyPos()
 {
-	// 何かへの衝突検出
+	// 衝突検出用
 	bool bDetected = false;
 
-	// 加速度分位置を変動
+	// 加速度分座標を変動
 	m_posTarget += m_velocity;
 
 	// 当たり判定
 	bDetected = Collision();
 
-	// 位置を設定
+	// 座標を設定
 	SetPos(m_posTarget);
 
-	// 検出を返す
+	// 衝突検出を返す
 	return bDetected;
 }
 
@@ -291,18 +282,18 @@ bool CPlayer::Collision()
 		}
 	}
 
-	// ゴールオブジェクトを取得
-	CGoal* pGoal = CGoal::DownCast(CObject::FindObject(CObject::TYPE::GOAL));
-
-	// ゴールと衝突する場合
-	if (CPhysics::GetInstance()->SphereAndCube(pGoal->GetPos(), 10.0f, m_posTarget, GetSize()))
+	// ゴールフェーズでなければ
+	if (CGameManager::GetInstance()->GetPhase() != CGameManager::PHASE::GOAL)
 	{
-		// ゴール後状態へ (接触後もここを通ります)
-		m_pStateManager->ChangeState(CPlayerState::STATE::GOAL);
+		// ゴールオブジェクトを取得
+		CGoal* pGoal = CGoal::DownCast(CObject::FindObject(CObject::TYPE::GOAL));
 
-		// ゴールフェーズでなければ
-		if (CGameManager::GetInstance()->GetPhase() != CGameManager::PHASE::GOAL)
+		// ゴールと衝突する場合
+		if (CPhysics::GetInstance()->SphereAndCube(pGoal->GetPos(), 10.0f, m_posTarget, GetSize()))
 		{
+			// ゴール後状態へ (接触後もここを通ります)
+			m_pStateManager->ChangeState(CPlayerState::STATE::GOAL);
+			
 			// ゴールフェーズへ
 			CGameManager::GetInstance()->SetPhase(CGameManager::PHASE::GOAL);
 		}
