@@ -57,7 +57,7 @@ HRESULT CFakeScreen::Init()
 	m_pos = { SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f };
 
 	// サイズを設定
-	float fSize = 0.45f;
+	float fSize = 0.3f;
 	m_size = { SCREEN_WIDTH * fSize, SCREEN_HEIGHT * fSize, 0.0f };
 
 	// メッシュ情報の計算
@@ -477,7 +477,7 @@ void CFakeScreen::Wave()
 
 	float fWavePosX = 0.0f;		// ゆがみ具合
 	int nCntAdd = 0;
-	static float fAdd = 0.05f;	// ゆがみ増加量
+	static float fAdd = 0.00f;	// ゆがみ増加量
 	static float fHoge = 50.0f;	// ゆがみ強度
 	if (CManager::GetKeyboard()->GetPress(DIK_R))
 	{
@@ -515,16 +515,8 @@ void CFakeScreen::Wave()
 			// Y方向頂点数をカウントアップ
 			nCntVtxY++;
 
-			//fWavePosX += fAdd;
-
-			//if (fWavePosX > fAdd * 5.0f)
-			//{
-			//	fAdd *= -1.0f;
-			//}
-			//else if (fWavePosX < fAdd * -5.0f)
-			//{
-			//	fAdd *= -1.0f;
-			//}
+			// ゆがみを増加
+			fWavePosX += fAdd;
 		}
 		else
 		{

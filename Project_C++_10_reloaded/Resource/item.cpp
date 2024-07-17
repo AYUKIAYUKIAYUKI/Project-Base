@@ -167,69 +167,69 @@ void CItem::AdjustPos()
 //============================================================================
 void CItem::Collision()
 {
-	for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::MAX); nCntPriority++)
-	{
-		for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
-		{
-			// オブジェクト情報を取得
-			CObject* pObject = CObject::GetObject(nCntPriority, nCntObj);
+	//for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::MAX); nCntPriority++)
+	//{
+	//	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	//	{
+	//		// オブジェクト情報を取得
+	//		CObject* pObject = CObject::GetObject(nCntPriority, nCntObj);
 
-			if (pObject == nullptr)
-			{ // 情報がなければコンティニュー
-				continue;
-			}
+	//		if (pObject == nullptr)
+	//		{ // 情報がなければコンティニュー
+	//			continue;
+	//		}
 
-			if (pObject->GetType() != CObject::TYPE::BLOCK)
-			{ // ブロックタイプ以外はコンティニュー
-				continue;
-			}
+	//		if (pObject->GetType() != CObject::TYPE::BLOCK)
+	//		{ // ブロックタイプ以外はコンティニュー
+	//			continue;
+	//		}
 
-			// オブジェクトクラスをブロッククラスへダウンキャスト
-			CBlock* pBlock = dynamic_cast<CBlock*>(pObject);
+	//		// オブジェクトクラスをブロッククラスへダウンキャスト
+	//		CBlock* pBlock = dynamic_cast<CBlock*>(pObject);
 
-			if (pBlock == nullptr)
-			{ // ダウンキャスト失敗
-				assert(false);
-			}
+	//		if (pBlock == nullptr)
+	//		{ // ダウンキャスト失敗
+	//			assert(false);
+	//		}
 
-			// ブロックと衝突する場合
-			if (m_posTarget.x + GetSize().x >= pBlock->GetPos().x - pBlock->GetSize().x &&
-				m_posTarget.x - GetSize().x <= pBlock->GetPos().x + pBlock->GetSize().x &&
-				m_posTarget.y + GetSize().y >= pBlock->GetPos().y - pBlock->GetSize().y &&
-				m_posTarget.y - GetSize().y <= pBlock->GetPos().y + pBlock->GetSize().y)
-			{
-				// 過去の位置がどちらかの軸方向に重なっていたかで処理分岐
-				if (GetPos().x + GetSize().x > pBlock->GetPos().x - pBlock->GetSize().x &&
-					GetPos().x - GetSize().x < pBlock->GetPos().x + pBlock->GetSize().x)
-				{
-					if (GetPos().y < pBlock->GetPos().y)
-					{
-						// 位置をこのブロックの上端に設定
-						m_posTarget.y = -GetSize().y + (pBlock->GetPos().y - pBlock->GetSize().y);
+	//		// ブロックと衝突する場合
+	//		if (m_posTarget.x + GetSize().x >= pBlock->GetPos().x - pBlock->GetSize().x &&
+	//			m_posTarget.x - GetSize().x <= pBlock->GetPos().x + pBlock->GetSize().x &&
+	//			m_posTarget.y + GetSize().y >= pBlock->GetPos().y - pBlock->GetSize().y &&
+	//			m_posTarget.y - GetSize().y <= pBlock->GetPos().y + pBlock->GetSize().y)
+	//		{
+	//			// 過去の位置がどちらかの軸方向に重なっていたかで処理分岐
+	//			if (GetPos().x + GetSize().x > pBlock->GetPos().x - pBlock->GetSize().x &&
+	//				GetPos().x - GetSize().x < pBlock->GetPos().x + pBlock->GetSize().x)
+	//			{
+	//				if (GetPos().y < pBlock->GetPos().y)
+	//				{
+	//					// 位置をこのブロックの上端に設定
+	//					m_posTarget.y = -GetSize().y + (pBlock->GetPos().y - pBlock->GetSize().y);
 
-						// Y軸方向の加速度をリセット
-						m_velocity.y = 0.0f;
-					}
-					else if (GetPos().y > pBlock->GetPos().y)
-					{
-						// 位置をこのブロックの下端に設定
-						m_posTarget.y = GetSize().y + (pBlock->GetPos().y + pBlock->GetSize().y);
-					}
-				}
-				else
-				{
-					if (GetPos().x < pBlock->GetPos().x)
-					{
-						// 位置をこのブロックの左端に設定
-						m_posTarget.x = -GetSize().x + (pBlock->GetPos().x - pBlock->GetSize().x);
-					}
-					else if (GetPos().x > pBlock->GetPos().x)
-					{
-						// 位置をこのブロックの右端に設定
-						m_posTarget.x = GetSize().x + (pBlock->GetPos().x + pBlock->GetSize().x);
-					}
-				}
-			}
-		}
-	}
+	//					// Y軸方向の加速度をリセット
+	//					m_velocity.y = 0.0f;
+	//				}
+	//				else if (GetPos().y > pBlock->GetPos().y)
+	//				{
+	//					// 位置をこのブロックの下端に設定
+	//					m_posTarget.y = GetSize().y + (pBlock->GetPos().y + pBlock->GetSize().y);
+	//				}
+	//			}
+	//			else
+	//			{
+	//				if (GetPos().x < pBlock->GetPos().x)
+	//				{
+	//					// 位置をこのブロックの左端に設定
+	//					m_posTarget.x = -GetSize().x + (pBlock->GetPos().x - pBlock->GetSize().x);
+	//				}
+	//				else if (GetPos().x > pBlock->GetPos().x)
+	//				{
+	//					// 位置をこのブロックの右端に設定
+	//					m_posTarget.x = GetSize().x + (pBlock->GetPos().x + pBlock->GetSize().x);
+	//				}
+	//			}
+	//		}
+	//	}
+	//}
 }

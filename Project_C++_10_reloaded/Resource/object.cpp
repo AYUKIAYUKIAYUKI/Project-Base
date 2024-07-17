@@ -11,31 +11,48 @@
 #include "object.h"
 #include "main.h"
 
+// デバッグ表示用
+#include "manager.h"
+
 //****************************************************
 // 静的メンバの初期化
 //****************************************************
-CObject* CObject::m_apObject[static_cast<int>(LAYER::MAX)][MAX_OBJ] = {};	// オブジェクト管理
-CObject* CObject::m_apFind[MAX_OBJ] = {};									// 検索されたオブジェクト保持用
-int CObject::m_nNumAll = 0;													// オブジェクト総数
+CObject* CObject::m_apFind[MAX_OBJ];							// 検索されたオブジェクト保持用
+int CObject::m_nNumAll = 0;										// オブジェクト総数
+CObject* CObject::m_pTop[static_cast<int>(LAYER::MAX)] = {};	// 先頭オブジェクトのポインタ
+CObject* CObject::m_pCur[static_cast<int>(LAYER::MAX)] = {};	// 終端オブジェクトのポインタ
 
 //============================================================================
 // コンストラクタ
 //============================================================================
-CObject::CObject(int nPriority) : m_nPriority(nPriority), m_nID(0), m_type(TYPE::NONE)
+CObject::CObject(int nPriority) : m_nPriority(nPriority), m_type(TYPE::NONE)
 {
-	for (int nCntObj = 0; nCntObj < MAX_OBJ; nCntObj++)
-	{
-		if (m_apObject[m_nPriority][nCntObj] == nullptr)
-		{
-			m_apObject[m_nPriority][nCntObj] = this;	// 自分自身のポインタを代入
-			m_nID = nCntObj;							// 自分自身のIDを代入
-			m_nNumAll++;								// 総数をカウントアップ
-			return;										// 終了
-		}
+	m_pPrev = nullptr;	// 前のオブジェクト
+	m_pNext = nullptr;	// 次のオブジェクト
+	m_bDeath = false;	// 死亡フラグ
+
+	// このオブジェクトをリストに登録
+	if (m_pCur[nPriority] == nullptr)
+	{ // 終端オブジェクトが無い (オブジェクトが1つも存在しない)
+		
+		// このオブジェクトを先頭と終端に登録
+		m_pTop[nPriority] = this;
+		m_pCur[nPriority] = this;
+	}
+	else
+	{ // 終端オブジェクトがある
+
+		// 現在の終端をこのオブジェクトの前として登録
+		m_pPrev = m_pCur[nPriority];
+
+		// 新たな終端としてこのオブジェクトを登録
+		m_pCur[nPriority] = this;
+
+		// 前のオブジェクトの次にこのオブジェクトを登録
+		m_pPrev->m_pNext = this;
 	}
 
-	// オブジェクト上限に到達し、新規生成に失敗
-	assert(false);
+	m_nNumAll++;	// 総数をカウントアップ
 }
 
 //============================================================================
@@ -43,39 +60,94 @@ CObject::CObject(int nPriority) : m_nPriority(nPriority), m_nID(0), m_type(TYPE:
 //============================================================================
 CObject::~CObject()
 {
-
+	
 }
 
 //============================================================================
-// 初期設定
+// 解放処理
 //============================================================================
-HRESULT CObject::Init()
+void CObject::Release()
 {
-	return S_OK;
+	int nPriority = m_nPriority;	// プライオリティをコピーしておく
+
+	if (m_pPrev == nullptr)
+	{ // 前のオブジェクトが無い (このオブジェクトが先頭)
+
+		if (m_pNext == nullptr)
+		{ // 次のオブジェクトが無い (オブジェクトが全て無くなる)
+			
+			m_pTop[nPriority] = nullptr;	// 先頭オブジェクトのポインタを初期化
+			m_pCur[nPriority] = nullptr;	// 終端オブジェクトのポインタを初期化
+		}
+		else
+		{ // 次のオブジェクトはある
+
+			// 新たな先頭として次のオブジェクトを登録
+			m_pTop[nPriority] = m_pNext;
+
+			// 次のオブジェクトの前のポインタを初期化
+			m_pNext->m_pPrev = nullptr;
+		}
+	}
+	else
+	{ // 前のオブジェクトがある
+
+		if (m_pNext == nullptr)
+		{ // 次のオブジェクトが無い (このオブジェクトが終端)
+
+			// 新たな終端として前のオブジェクト登録
+			m_pCur[nPriority] = m_pPrev;
+
+			// 前のオブジェクトの次のポインタを初期化
+			/* そもそも「このオブジェクトの次のポインタ(m_pNext)を渡す」という行為なら、中身の有無にかかわらずつながるのでは */
+			m_pPrev->m_pNext = nullptr;
+		}
+		else
+		{ // 次のオブジェクトもある
+
+			// 前のオブジェクトの次にこのオブジェクトの次を登録
+			m_pPrev->m_pNext = m_pNext;
+
+			// 次のオブジェクトの前に
+			m_pNext->m_pPrev = m_pPrev;
+		}
+	}
+
+	Uninit();		// 終了処理
+	delete this;	// メモリを解放
+	m_nNumAll--;	// 総数をカウントダウン
 }
 
 //============================================================================
-// 終了処理
+// タイプを取得
 //============================================================================
-void CObject::Uninit()
+CObject::TYPE CObject::GetType()
 {
-
+	return m_type;
 }
 
 //============================================================================
-// 更新処理
+// タイプを設定
 //============================================================================
-void CObject::Update()
+void CObject::SetType(TYPE type)
 {
-
+	m_type = type;
 }
 
 //============================================================================
-// 描画処理
+// 死亡フラグ取得
 //============================================================================
-void CObject::Draw()
+bool CObject::GetDeath()
 {
+	return m_bDeath;
+}
 
+//============================================================================
+// 死亡フラグ設定
+//============================================================================
+void CObject::SetDeath(bool bDeath)
+{
+	m_bDeath = bDeath;
 }
 
 //============================================================================
@@ -85,12 +157,20 @@ void CObject::ReleaseAll()
 {
 	for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::MAX); nCntPriority++)
 	{
-		for (int nCntObj = 0; nCntObj < MAX_OBJ; nCntObj++)
+		// 先頭オブジェクトのポインタをコピー
+		CObject* pObj = m_pTop[nCntPriority];
+
+		// 次のオブジェクトが無くなるまで
+		while (pObj != nullptr)
 		{
-			if (m_apObject[nCntPriority][nCntObj] != nullptr)
-			{
-				m_apObject[nCntPriority][nCntObj]->Release();	// 解放処理
-			}
+			// 次のオブジェクトのポインタをコピー
+			CObject* pNext = pObj->m_pNext;
+
+			// 解放処理
+			pObj->Release();
+
+			// このオブジェクトを次のポインタで上書き
+			pObj = pNext;
 		}
 	}
 }
@@ -100,14 +180,25 @@ void CObject::ReleaseAll()
 //============================================================================
 void CObject::UpdateAll()
 {
+	// オブジェクト数を表示
+	CManager::GetRenderer()->SetDebugString("現在のオブジェクト数:" + std::to_string(m_nNumAll));
+
 	for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::MAX); nCntPriority++)
 	{
-		for (int nCntObj = 0; nCntObj < MAX_OBJ; nCntObj++)
+		// 先頭オブジェクトのポインタをコピー
+		CObject* pObj = m_pTop[nCntPriority];
+
+		// 次のオブジェクトが無くなるまで
+		while (pObj != nullptr)
 		{
-			if (m_apObject[nCntPriority][nCntObj] != nullptr)
-			{
-				m_apObject[nCntPriority][nCntObj]->Update();	// 更新処理
-			}
+			// 次のオブジェクトのポインタをコピー
+			CObject* pNext = pObj->m_pNext;
+
+			// 更新処理
+			pObj->Update();
+
+			// 次のオブジェクトのポインタをコピー
+			pObj = pNext;
 		}
 	}
 }
@@ -119,38 +210,30 @@ void CObject::DrawAll()
 {
 	for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::MAX); nCntPriority++)
 	{
-		for (int nCntObj = 0; nCntObj < MAX_OBJ; nCntObj++)
+		// 先頭オブジェクトのポインタをコピー
+		CObject* pObj = m_pTop[nCntPriority];
+
+		// 次のオブジェクトが無くなるまで
+		while (pObj != nullptr)
 		{
-			if (m_apObject[nCntPriority][nCntObj] != nullptr)
-			{
-				m_apObject[nCntPriority][nCntObj]->Draw();	// 描画処理
-			}
+			// 次のオブジェクトのポインタをコピー
+			CObject* pNext = pObj->m_pNext;
+
+			// 描画処理
+			pObj->Draw();
+
+			// 次のオブジェクトのポインタをコピー
+			pObj = pNext;
 		}
 	}
 }
 
 //============================================================================
-// オブジェクト情報取得
+// 先頭オブジェクトのポインタ取得
 //============================================================================
-CObject* CObject::GetObject(int nPriority, int nID)
+CObject* CObject::GetObject(int nPriority)
 {
-	return m_apObject[nPriority][nID];
-}
-
-//============================================================================
-// オブジェクト総数取得
-//============================================================================
-int CObject::GetNumAll()
-{
-	return m_nNumAll;
-}
-
-//============================================================================
-// オブジェクトのタイプを取得
-//============================================================================
-CObject::TYPE CObject::GetType()
-{
-	return m_type;
+	return m_pTop[nPriority];
 }
 
 //============================================================================
@@ -160,17 +243,20 @@ CObject* CObject::FindObject(TYPE type)
 {
 	for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::MAX); nCntPriority++)
 	{
-		for (int nCntObj = 0; nCntObj < MAX_OBJ; nCntObj++)
+		// 先頭オブジェクトのポインタをコピー
+		CObject* pObj = m_pTop[nCntPriority];
+
+		// 次のオブジェクトが無くなるまで
+		while (pObj != nullptr)
 		{
-			if (m_apObject[nCntPriority][nCntObj] == nullptr)
-			{ // 情報がなければコンティニュー
-				continue;
+			if (pObj->GetType() == type)
+			{
+				// タイプ一致なら返す
+				return pObj;
 			}
 
-			if (m_apObject[nCntPriority][nCntObj]->GetType() == type)
-			{ // タイプ一致なら返す
-				return m_apObject[nCntPriority][nCntObj];
-			}
+			// 次のオブジェクトのポインタをコピー
+			pObj = pObj->m_pNext;
 		}
 	}
 
@@ -193,47 +279,25 @@ CObject** CObject::FindAllObject(TYPE type)
 
 	for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::MAX); nCntPriority++)
 	{
-		for (int nCntObj = 0; nCntObj < MAX_OBJ; nCntObj++)
-		{
-			if (m_apObject[nCntPriority][nCntObj] == nullptr)
-			{ // 情報がなければコンティニュー
-				continue;
-			}
+		// 先頭オブジェクトのポインタをコピー
+		CObject* pObj = m_pTop[nCntPriority];
 
-			if (m_apObject[nCntPriority][nCntObj]->GetType() == type)
-			{ // タイプ一致なら保持
-				m_apFind[nCntFind] = m_apObject[nCntPriority][nCntObj];
+		// 次のオブジェクトが無くなるまで
+		while (pObj != nullptr)
+		{
+			if (pObj->GetType() == type)
+			{
+				// タイプ一致なら保持
+				m_apFind[nCntFind] = pObj;
 
 				// 検索の順番をカウントアップ
 				nCntFind++;
 			}
+
+			// 次のオブジェクトのポインタをコピー
+			pObj = pObj->m_pNext;
 		}
 	}
 
 	return m_apFind;
-}
-
-//============================================================================
-// タイプ設定
-//============================================================================
-void CObject::SetType(TYPE type) 
-{
-	m_type = type;
-}
-
-//============================================================================
-// 解放処理
-//============================================================================
-void CObject::Release()
-{
-	int nPriority = m_nPriority;	// プライオリティをコピーしておく
-	int nID = m_nID;				// IDをコピーしておく
-
-	if (m_apObject[nPriority][nID] != nullptr)
-	{
-		m_apObject[nPriority][nID]->Uninit();	// 終了処理
-		delete m_apObject[nPriority][nID];		// メモリを解放
-		m_apObject[nPriority][nID] = nullptr;	// ポインタを初期化
-		m_nNumAll--;							// 総数をカウントダウン
-	}
 }

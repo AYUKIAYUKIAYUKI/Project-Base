@@ -135,112 +135,112 @@ void CBullet::Translation()
 //============================================================================
 bool CBullet::CollisionEnemy()
 {
-	for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::MAX); nCntPriority++)
-	{
-		for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
-		{
-			// オブジェクト情報を取得
-			CObject* pObject = CObject::GetObject(nCntPriority, nCntObj);
+	//for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::MAX); nCntPriority++)
+	//{
+	//	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	//	{
+	//		// オブジェクト情報を取得
+	//		CObject* pObject = CObject::GetObject(nCntPriority, nCntObj);
 
-			if (pObject == nullptr)
-			{ // 情報がなければコンティニュー
-				continue;
-			}
+	//		if (pObject == nullptr)
+	//		{ // 情報がなければコンティニュー
+	//			continue;
+	//		}
 
-			if (pObject->GetType() == CObject::TYPE::ENEMY)
-			{ // エネミータイプなら
+	//		if (pObject->GetType() == CObject::TYPE::ENEMY)
+	//		{ // エネミータイプなら
 
-				// オブジェクトクラスをエネミークラスへダウンキャスト
-				CEnemy* pEnemy = dynamic_cast<CEnemy*>(pObject);
+	//			// オブジェクトクラスをエネミークラスへダウンキャスト
+	//			CEnemy* pEnemy = dynamic_cast<CEnemy*>(pObject);
 
-				if (pEnemy == nullptr)
-				{ // ダウンキャスト失敗
-					assert(false);
-				}
+	//			if (pEnemy == nullptr)
+	//			{ // ダウンキャスト失敗
+	//				assert(false);
+	//			}
 
-				// 敵と衝突したら
-				if (GetPos().x + GetSize().x >= pEnemy->GetPos().x - pEnemy->GetSize().x &&
-					GetPos().x - GetSize().x <= pEnemy->GetPos().x + pEnemy->GetSize().x &&
-					GetPos().y + GetSize().y >= pEnemy->GetPos().y - pEnemy->GetSize().y &&
-					GetPos().y - GetSize().y <= pEnemy->GetPos().y + pEnemy->GetSize().y)
-				{
-					// スコアインスタンスを取得
-					//CObject* pFindObject = FindScoreInstance();
+	//			// 敵と衝突したら
+	//			if (GetPos().x + GetSize().x >= pEnemy->GetPos().x - pEnemy->GetSize().x &&
+	//				GetPos().x - GetSize().x <= pEnemy->GetPos().x + pEnemy->GetSize().x &&
+	//				GetPos().y + GetSize().y >= pEnemy->GetPos().y - pEnemy->GetSize().y &&
+	//				GetPos().y - GetSize().y <= pEnemy->GetPos().y + pEnemy->GetSize().y)
+	//			{
+	//				// スコアインスタンスを取得
+	//				//CObject* pFindObject = FindScoreInstance();
 
-					// オブジェクトクラスをスコアクラスへダウンキャスト
-					//CScore* pScore = dynamic_cast<CScore*>(pFindObject);
+	//				// オブジェクトクラスをスコアクラスへダウンキャスト
+	//				//CScore* pScore = dynamic_cast<CScore*>(pFindObject);
 
-					//if (pScore == nullptr)
-					//{ // ダウンキャスト失敗
-					//	assert(false);
-					//}
+	//				//if (pScore == nullptr)
+	//				//{ // ダウンキャスト失敗
+	//				//	assert(false);
+	//				//}
 
-					// スコアを加算
-					//pScore->SetScore(pScore->GetScore() + 123456);
+	//				// スコアを加算
+	//				//pScore->SetScore(pScore->GetScore() + 123456);
 
-					// 爆発を生成
-					CExplosion::Create(
-						GetPos(),					// 位置
-						{ 40.0f, 40.0f, 0.0f });	// サイズ
+	//				// 爆発を生成
+	//				CExplosion::Create(
+	//					GetPos(),					// 位置
+	//					{ 40.0f, 40.0f, 0.0f });	// サイズ
 
-					// 自身を破棄
-					CObject::Release();
+	//				// 自身を破棄
+	//				CObject::Release();
 
-					// エネミーを破棄
-					pObject->Release();
+	//				// エネミーを破棄
+	//				pObject->Release();
 
-					// 終了
-					return false;
-				}
-			}
-			else if (pObject->GetType() == CObject::TYPE::BLOCK)
-			{ // ブロックタイプなら
+	//				// 終了
+	//				return false;
+	//			}
+	//		}
+	//		else if (pObject->GetType() == CObject::TYPE::BLOCK)
+	//		{ // ブロックタイプなら
 
-				// オブジェクトクラスをブロッククラスへダウンキャスト
-				CBlock* pBlock = dynamic_cast<CBlock*>(pObject);
+	//			// オブジェクトクラスをブロッククラスへダウンキャスト
+	//			CBlock* pBlock = dynamic_cast<CBlock*>(pObject);
 
-				if (pBlock == nullptr)
-				{ // ダウンキャスト失敗
-					assert(false);
-				}
+	//			if (pBlock == nullptr)
+	//			{ // ダウンキャスト失敗
+	//				assert(false);
+	//			}
 
-				// ブロックと衝突したら
-				if (GetPos().x + GetSize().x >= pBlock->GetPos().x - pBlock->GetSize().x &&
-					GetPos().x - GetSize().x <= pBlock->GetPos().x + pBlock->GetSize().x &&
-					GetPos().y + GetSize().y >= pBlock->GetPos().y - pBlock->GetSize().y &&
-					GetPos().y - GetSize().y <= pBlock->GetPos().y + pBlock->GetSize().y)
-				{
-					// スコアインスタンスを取得
-					//CObject* pFindObject = FindScoreInstance();
+	//			// ブロックと衝突したら
+	//			if (GetPos().x + GetSize().x >= pBlock->GetPos().x - pBlock->GetSize().x &&
+	//				GetPos().x - GetSize().x <= pBlock->GetPos().x + pBlock->GetSize().x &&
+	//				GetPos().y + GetSize().y >= pBlock->GetPos().y - pBlock->GetSize().y &&
+	//				GetPos().y - GetSize().y <= pBlock->GetPos().y + pBlock->GetSize().y)
+	//			{
+	//				// スコアインスタンスを取得
+	//				//CObject* pFindObject = FindScoreInstance();
 
-					//// オブジェクトクラスをスコアクラスへダウンキャスト
-					//CScore* pScore = dynamic_cast<CScore*>(pFindObject);
+	//				//// オブジェクトクラスをスコアクラスへダウンキャスト
+	//				//CScore* pScore = dynamic_cast<CScore*>(pFindObject);
 
-					//if (pScore == nullptr)
-					//{ // ダウンキャスト失敗
-					//	assert(false);
-					//}
+	//				//if (pScore == nullptr)
+	//				//{ // ダウンキャスト失敗
+	//				//	assert(false);
+	//				//}
 
-					//// スコアを加算
-					//pScore->SetScore(pScore->GetScore() + 62);
+	//				//// スコアを加算
+	//				//pScore->SetScore(pScore->GetScore() + 62);
 
-					// 爆発を生成
-					CExplosion::Create(
-						GetPos(),					// 位置
-						{ 40.0f, 40.0f, 0.0f });	// サイズ
+	//				// 爆発を生成
+	//				CExplosion::Create(
+	//					GetPos(),					// 位置
+	//					{ 40.0f, 40.0f, 0.0f });	// サイズ
 
-					// 自身を破棄
-					CObject::Release();
+	//				// 自身を破棄
+	//				CObject::Release();
 
-					// ブロックを破棄
-					pObject->Release();
+	//				// ブロックを破棄
+	//				pObject->Release();
 
-					// 終了
-					return false;
-				}
-			}
-		}
-	}
+	//				// 終了
+	//				return false;
+	//			}
+	//		}
+	//	}
+	//}
 
 	return true;
 }

@@ -59,47 +59,37 @@ HRESULT CCamera::Init()
 //============================================================================
 void CCamera::Update()
 {
-	// 対象が存在しないシーンでの検索エラーを避けるため
-	for (int nCntPriority = 0; nCntPriority < static_cast<int>(CObject::LAYER::MAX); nCntPriority++)
-	{
-		for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
-		{
-			// オブジェクト情報を取得
-			CObject* pObject = CObject::GetObject(nCntPriority, nCntObj);
+	// オブジェクト用ポインタ
+	CObject* pObj;
 
-			if (pObject == nullptr)
-			{ // 情報がなければコンティニュー
-				continue;
-			}
+	// プレイヤータイプのオブジェクトを取得
+	pObj = CObject::FindObject(CObject::TYPE::PLAYER);
 
-			if (pObject->GetType() == CObject::TYPE::PLAYER)
-			{ // プレイヤータイプなら
+	if (pObj != nullptr)
+	{ // プレイヤータイプの取得に成功
 
-				// プレイヤークラスのポインタ
-				CPlayer* pPlayer = dynamic_cast<CPlayer*>(pObject);
+		// プレイヤークラスにダウンキャスト
+		CPlayer* pPlayer = CPlayer::DownCast(pObj);
 
-				if (pPlayer == nullptr)
-				{ // ダウンキャスト失敗
-					assert(false);
-				}
+		// 位置を同期
+		m_pos = pPlayer->GetPos();
+		m_fAdjust = 50.0f;
+	}
+	else
+	{ // プレイヤータイプの取得に失敗
 
-				m_pos = pPlayer->GetPos();
-				m_fAdjust = 50.0f;
-			}
-			else if (pObject->GetType() == CObject::TYPE::DUMMY)
-			{ // ダミータイプなら
+		// ダミータイプのオブジェクトを取得
+		pObj = CObject::FindObject(CObject::TYPE::DUMMY);
 
-				// ダミークラスのポインタ
-				CDummy* pDummy = dynamic_cast<CDummy*>(pObject);
+		if(pObj != nullptr)
+		{ // ダミータイプの取得に成功
 
-				if (pDummy == nullptr)
-				{ // ダウンキャスト失敗
-					assert(false);
-				}
+			// ダミークラスにダウンキャスト
+			CDummy* pDummy = CDummy::DownCast(pObj);
 
-				m_pos = pDummy->GetPos();
-				m_fAdjust = 0.0f;
-			}
+			// 位置を同期
+			m_pos = pDummy->GetPos();
+			m_fAdjust = 0.0f;
 		}
 	}
 

@@ -15,7 +15,7 @@ class CObject
 {
 public:
 
-	static const int MAX_OBJ = 512;		// オブジェクト最大数
+	static const int MAX_OBJ = 512;	// オブジェクトの最大数
 
 	//****************************************************
 	// オブジェクトの種類識別
@@ -42,7 +42,7 @@ public:
 		NONE = 0,		// 無し
 		BACK,			// 背景
 		BACK_MIDDLE,	// 後ろ側
-		FRONT_MIDDLE,	// 前川
+		FRONT_MIDDLE,	// 前側
 		FRONT,			// 前景
 		UI,				// UI
 		MAX,
@@ -55,34 +55,34 @@ public:
 	virtual void Uninit() = 0;	// 終了処理
 	virtual void Update() = 0;	// 更新処理
 	virtual void Draw() = 0;	// 描画処理
+	void Release();				// 個別解放処理
+
+	TYPE GetType();				// タイプを取得
+	void SetType(TYPE type);	// タイプを設定
+
+	bool GetDeath();				// 死亡フラグ取得
+	void SetDeath(bool bDetected);	// 死亡フラグ設定
 
 	static void ReleaseAll();	// 全オブジェクト解放処理
 	static void UpdateAll();	// 全オブジェクト更新処理
 	static void DrawAll();		// 全オブジェクト描画処理
 
-	static CObject* GetObject(int nPriority, int nID);	// オブジェクト情報取得
-	static int GetNumAll();								// オブジェクト総数取得
-
-	void Release();	// 個別解放処理 (仮)
-	
-	TYPE GetType();	// オブジェクトのタイプを取得
-
+	static CObject* GetObject(int nPriority);	// 先頭オブジェクトのポインタ取得
 	static CObject* FindObject(TYPE type);		// 特定タイプのオブジェクト探す
 	static CObject** FindAllObject(TYPE type);	// 特定タイプのオブジェクトをすべて探す
 
-protected:
-
-	void SetType(TYPE type);	// タイプ設定
-
 private:
 
-	static CObject* m_apObject[static_cast<int>(LAYER::MAX)][MAX_OBJ];	// オブジェクト管理
-	static CObject* m_apFind[MAX_OBJ];									// 検索されたオブジェクト保持用
-	static int m_nNumAll;												// オブジェクト総数
+	static CObject* m_apFind[MAX_OBJ];							// 検索されたオブジェクト保持用
+	static int m_nNumAll;										// オブジェクト総数
+	static CObject* m_pTop[static_cast<int>(LAYER::MAX)];		// 先頭オブジェクトのポインタ
+	static CObject* m_pCur[static_cast<int>(LAYER::MAX)];		// 終端オブジェクトのポインタ
 
 	int m_nPriority;	// 描画優先度
-	int m_nID;			// 自分自身のID
+	CObject* m_pPrev;	// 前のオブジェクトのポインタ
+	CObject* m_pNext;	// 次のオブジェクトのポインタ
 	TYPE m_type;		// タイプ識別 
+	bool m_bDeath;		// 死亡フラグ
 };
 
 #endif // _OBJECT_H_
