@@ -23,7 +23,7 @@
     <ClCompile Include="resource\block.cpp" />
     <ClCompile Include="resource\camera.cpp" />
     <ClCompile Include="Resource\dummy.cpp" />
-    <ClCompile Include="Resource\explosion3D.cpp" />
+    <ClCompile Include="Resource\explosion.cpp" />
     <ClCompile Include="Resource\fade.cpp" />
     <ClCompile Include="Resource\game.cpp" />
     <ClCompile Include="Resource\game_manager.cpp" />
@@ -64,7 +64,7 @@
     <ClInclude Include="resource\block.h" />
     <ClInclude Include="resource\camera.h" />
     <ClInclude Include="Resource\dummy.h" />
-    <ClInclude Include="Resource\explosion3D.h" />
+    <ClInclude Include="Resource\explosion.h" />
     <ClInclude Include="Resource\fade.h" />
     <ClInclude Include="Resource\game.h" />
     <ClInclude Include="Resource\game_manager.h" />

@@ -15,7 +15,7 @@
 #include "game_manager.h"
 #include "physics.h"
 #include "block.h"
-#include "explosion3D.h"
+#include "explosion.h"
 #include "goal.h"
 #include "start.h"
 

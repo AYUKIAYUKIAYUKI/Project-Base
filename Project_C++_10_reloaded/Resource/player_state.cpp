@@ -12,8 +12,11 @@
 
 #include "manager.h"
 #include "physics.h"
-#include "explosion3D.h"
+#include "explosion.h"
 #include "start.h"
+
+// 試験的にインクルード
+#include "block.h"
 
 //****************************************************
 // 静的メンバ変数の初期化
@@ -302,7 +305,7 @@ void CPlayerStateBeginning::Enter()
 	m_pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_001));
 
 	// 爆発を生成
-	CExplosion3D::Create(
+	CExplosion::Create(
 		m_pPlayer->GetPos(),		// 位置
 		{ 30.0f, 0.0f, 30.0f });	// サイズ
 }
@@ -411,6 +414,28 @@ void CPlayerStateFlying::Update()
 	D3DXVECTOR3 posTarget = m_pPlayer->GetPosTarget();
 	posTarget += m_pPlayer->GetVelocity();
 	m_pPlayer->SetPosTarget(posTarget);
+
+	//// オブジェクトを取得
+	//CObject** pObject = CObject::FindAllObject(CObject::TYPE::BLOCK);
+
+	//for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	//{
+	//	// オブジェクトの情報が無くなったら終了
+	//	if (pObject[nCntObj] == nullptr)
+	//	{
+	//		break;
+	//	}
+
+	//	// ブロッククラスへダウンキャスト
+	//	CBlock* pBlock = CBlock::DownCast(pObject[nCntObj]);
+
+	//	// ブロックと衝突する場合
+	//	if (CPhysics::GetInstance()->OnlyCube(m_pPlayer->GetPosTarget(), m_pPlayer->GetSize(), pBlock->GetPos(), { 10.0f, 10.0f, 10.0f }))
+	//	{
+	//		// この時に衝突しているブロックを試験的に消去
+	//		pBlock->Release();
+	//	}
+	//}
 
 	// 位置調整
 	if (m_pPlayer->AdjustPos())
@@ -592,7 +617,7 @@ void CPlayerStateStopping::Enter()
 	m_pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_003));
 
 	// 爆発を生成
-	CExplosion3D::Create(
+	CExplosion::Create(
 		m_pPlayer->GetPos(),		// 位置
 		{ 30.0f, 0.0f, 30.0f });	// サイズ
 

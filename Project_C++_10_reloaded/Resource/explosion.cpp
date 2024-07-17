@@ -1,6 +1,6 @@
 //============================================================================
 // 
-// 3D爆発 [explosion3D.cpp]
+// 爆発 [explosion.cpp]
 // Author : 福田歩希
 // 
 //============================================================================
@@ -8,13 +8,13 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
-#include "explosion3D.h"
+#include "explosion.h"
 #include "manager.h"
 
 //============================================================================
 // コンストラクタ
 //============================================================================
-CExplosion3D::CExplosion3D() : CObject_billboard(static_cast<int>(LAYER::FRONT_MIDDLE))
+CExplosion::CExplosion() : CObject_billboard(static_cast<int>(LAYER::FRONT_MIDDLE))
 {
 	m_nCntTexChange = 0;	// テクスチャ変更管理
 }
@@ -22,7 +22,7 @@ CExplosion3D::CExplosion3D() : CObject_billboard(static_cast<int>(LAYER::FRONT_M
 //============================================================================
 // デストラクタ
 //============================================================================
-CExplosion3D::~CExplosion3D()
+CExplosion::~CExplosion()
 {
 
 }
@@ -30,7 +30,7 @@ CExplosion3D::~CExplosion3D()
 //============================================================================
 // 初期設定
 //============================================================================
-HRESULT CExplosion3D::Init()
+HRESULT CExplosion::Init()
 {
 	// 基底クラスの初期設定
 	HRESULT hr = CObject_billboard::Init();
@@ -41,7 +41,7 @@ HRESULT CExplosion3D::Init()
 //============================================================================
 // 終了処理
 //============================================================================
-void CExplosion3D::Uninit()
+void CExplosion::Uninit()
 {
 	// 基底クラスの終了処理
 	CObject_billboard::Uninit();
@@ -50,7 +50,7 @@ void CExplosion3D::Uninit()
 //============================================================================
 // 更新処理
 //============================================================================
-void CExplosion3D::Update()
+void CExplosion::Update()
 {
 	// アニメーション
 	if (!Animation())
@@ -65,7 +65,7 @@ void CExplosion3D::Update()
 //============================================================================
 // 描画処理
 //============================================================================
-void CExplosion3D::Draw()
+void CExplosion::Draw()
 {
 	// 基底クラスの描画処理
 	CObject_billboard::Draw();
@@ -74,10 +74,10 @@ void CExplosion3D::Draw()
 //============================================================================
 // 生成
 //============================================================================
-CExplosion3D* CExplosion3D::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
+CExplosion* CExplosion::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	// インスタンスを生成
-	CExplosion3D* pExplosion = DBG_NEW CExplosion3D;
+	CExplosion* pExplosion = DBG_NEW CExplosion;
 
 	if (pExplosion == nullptr)
 	{ // 生成失敗
@@ -102,7 +102,7 @@ CExplosion3D* CExplosion3D::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 //============================================================================
 // アニメーション
 //============================================================================
-bool CExplosion3D::Animation()
+bool CExplosion::Animation()
 {
 	// テクスチャ変更管理カウントアップ
 	m_nCntTexChange++;
