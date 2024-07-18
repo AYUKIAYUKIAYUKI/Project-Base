@@ -48,7 +48,7 @@ CPlayerState::CPlayerState() : m_pPlayer(nullptr)
 //============================================================================
 CPlayerState::~CPlayerState()
 {
-
+	m_pPlayer = nullptr;	// プレイヤーのポインタを初期化
 }
 
 //============================================================================
@@ -122,18 +122,14 @@ void CPlayerStateDefault::Update()
 	// 制動調整
 	Braking();
 
-	auto test = m_pPlayer->GetPosTarget().y;
-
 	// 座標変更を反映
 	m_pPlayer->ApplyPos();
 
-	/* これ以降m_pPlayeが解放されたままになる */
-
 	// おかしなところに行くと一旦殺す
-	if (test < -300.0f)
+	if (m_pPlayer->GetPosTarget().y < -300.0f)
 	{
 		// 失敗状態に変更
-		m_pPlayer->GetStateManager()->ChangeState(CPlayerState::STATE::MISS);
+		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::MISS);
 	}
 }
 
@@ -203,7 +199,7 @@ bool CPlayerStateDefault::Walk()
 		if (m_pPlayer->GetVelocity().y == 0.0f)
 		{
 			// 飛行状態へ
-			m_pPlayer->GetStateManager()->ChangeState(CPlayerState::STATE::BEGINNING);
+			m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::BEGINNING);
 
 			// 以降の更新処理を行わない
 			return false;
@@ -281,7 +277,7 @@ void CPlayerStateDefault::Braking()
 //============================================================================
 CPlayerStateBeginning::CPlayerStateBeginning()
 {
-	m_nCntMetamorphose = 0;	// 変身時間カウント
+	m_nCntMetamorphose = 0;	// 変身時間カウントを初期化
 }
 
 //============================================================================
@@ -289,7 +285,7 @@ CPlayerStateBeginning::CPlayerStateBeginning()
 //============================================================================
 CPlayerStateBeginning::~CPlayerStateBeginning()
 {
-
+	m_nCntMetamorphose = 0;	// 変身時間カウントを初期化
 }
 
 //============================================================================
@@ -330,7 +326,7 @@ void CPlayerStateBeginning::Update()
 	else
 	{
 		// 状態変更
-		m_pPlayer->GetStateManager()->ChangeState(CPlayerState::STATE::FLYING);
+		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::FLYING);
 	}
 }
 
@@ -369,7 +365,7 @@ void CPlayerStateBeginning::Exit()
 //============================================================================
 CPlayerStateFlying::CPlayerStateFlying()
 {
-	m_velocityTarget = { 0.0f, 0.0f, 0.0f };	// 目標加速度
+	m_velocityTarget = { 0.0f, 0.0f, 0.0f };	// 目標加速度を初期化
 }
 
 //============================================================================
@@ -377,7 +373,7 @@ CPlayerStateFlying::CPlayerStateFlying()
 //============================================================================
 CPlayerStateFlying::~CPlayerStateFlying()
 {
-
+	m_velocityTarget = { 0.0f, 0.0f, 0.0f };	// 目標加速度を初期化
 }
 
 //============================================================================
@@ -410,7 +406,7 @@ void CPlayerStateFlying::Update()
 	if (m_pPlayer->ApplyPos())
 	{
 		// 何かに衝突で変身停止へ
-		m_pPlayer->GetStateManager()->ChangeState(CPlayerState::STATE::STOPPING);
+		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::STOPPING);
 	}
 }
 
@@ -566,7 +562,7 @@ void CPlayerStateFlying::Braking()
 //============================================================================
 CPlayerStateStopping::CPlayerStateStopping()
 {
-	m_nCntStopMetamorphose = 0;	// 変身時間カウント
+	m_nCntStopMetamorphose = 0;	// 変身時間カウントを初期化
 }
 
 //============================================================================
@@ -574,7 +570,7 @@ CPlayerStateStopping::CPlayerStateStopping()
 //============================================================================
 CPlayerStateStopping::~CPlayerStateStopping()
 {
-
+	m_nCntStopMetamorphose = 0;	// 変身時間カウントを初期化
 }
 
 //============================================================================
@@ -618,7 +614,7 @@ void CPlayerStateStopping::Update()
 	else
 	{
 		// 状態変更
-		m_pPlayer->GetStateManager()->ChangeState(CPlayerState::STATE::DEFAULT);
+		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::DEFAULT);
 	}
 }
 
@@ -695,7 +691,7 @@ void CPlayerStateStopping::Recoil()
 //============================================================================
 CPlayerStateMistook::CPlayerStateMistook()
 {
-	m_posStartObject = { 0.0f, 0.0f, 0.0f };
+	m_posStartObject = { 0.0f, 0.0f, 0.0f };	// スタートオブジェクトの位置を初期化
 }
 
 //============================================================================
@@ -703,7 +699,7 @@ CPlayerStateMistook::CPlayerStateMistook()
 //============================================================================
 CPlayerStateMistook::~CPlayerStateMistook()
 {
-
+	m_posStartObject = { 0.0f, 0.0f, 0.0f };	// スタートオブジェクトの位置を初期化
 }
 
 //============================================================================
@@ -796,7 +792,7 @@ void CPlayerStateMistook::Respawn()
 	else
 	{
 		// 通常状態に変更
-		m_pPlayer->GetStateManager()->ChangeState(CPlayerState::STATE::DEFAULT);
+		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::DEFAULT);
 	}
 }
 
@@ -879,7 +875,7 @@ void CPlayerStateGoal::Exit()
 //============================================================================
 CPlayerStateManager::CPlayerStateManager() : m_pPlayer(nullptr), m_pState(nullptr)
 {
-
+	m_PendingState = CPlayerState::STATE::NONE;	// 変更予定の状態を初期化
 }
 
 //============================================================================
@@ -887,7 +883,46 @@ CPlayerStateManager::CPlayerStateManager() : m_pPlayer(nullptr), m_pState(nullpt
 //============================================================================
 CPlayerStateManager::~CPlayerStateManager()
 {
+	m_pPlayer = nullptr;						// プレイヤーのポインタを初期化
+	m_pState = nullptr;							// 状態クラスのポインタを初期化
+	m_PendingState = CPlayerState::STATE::NONE;	// 変更予定の状態を初期化
+}
 
+//============================================================================
+// 状態を変更
+//============================================================================
+void CPlayerStateManager::CheckStateChange()
+{
+	// 変更予定の状態が無ければリターン
+	if (m_PendingState == CPlayerState::STATE::NONE)
+	{
+		return;
+	}
+
+	// 既に状態が設定されていれば破棄
+	if (m_pState != nullptr)
+	{
+		// 変更終了時の処理
+		m_pState->Exit();
+
+		// メモリを解放
+		delete m_pState;
+
+		// 状態クラスのポインタを初期化
+		m_pState = nullptr;
+	}
+
+	// 次の状態を生成
+	Create(m_PendingState);
+
+	// 変更予定の状態を初期化
+	m_PendingState = CPlayerState::STATE::NONE;
+
+	// 新しい状態オブジェクトにプレイヤーを登録
+	m_pState->RegisterPlayer(m_pPlayer);
+
+	// 変更時の処理
+	m_pState->Enter();
 }
 
 //============================================================================
@@ -898,8 +933,11 @@ void CPlayerStateManager::Init(CPlayer* pPlayer)
 	// 状態マネージャーにプレイヤーを登録
 	RegisterPlayer(pPlayer);
 
-	// 初期状態を設定しておく
-	ChangeState(CPlayerState::STATE::MISS);
+	// 初期状態を予定しておく
+	m_PendingState = CPlayerState::STATE::MISS;
+
+	// 初期状態を反映する
+	CheckStateChange();
 }
 
 //============================================================================
@@ -930,34 +968,6 @@ void CPlayerStateManager::Uninit()
 }
 
 //============================================================================
-// 状態を変更
-//============================================================================
-void CPlayerStateManager::ChangeState(CPlayerState::STATE state)
-{
-	// 既に状態が設定されていれば破棄
-	if (m_pState != nullptr)
-	{
-		// 変更終了時の処理
-		m_pState->Exit();
-
-		// メモリを解放
-		delete m_pState;
-
-		// ポインタを初期化
-		m_pState = nullptr;
-	}
-
-	// 次の状態を生成
-	Create(state);
-
-	// 状態オブジェクトにプレイヤーを登録
-	m_pState->RegisterPlayer(m_pPlayer);
-
-	// 変更時の処理
-	m_pState->Enter();
-}
-
-//============================================================================
 // プレイヤーを取得
 //============================================================================
 CPlayer* CPlayerStateManager::GetPlayer()
@@ -972,6 +982,24 @@ CPlayerState* CPlayerStateManager::GetState()
 {
 	return m_pState;
 }
+
+//============================================================================
+// 変更予定の状態を取得
+//============================================================================
+CPlayerState::STATE CPlayerStateManager::GetPendingState()
+{
+	return m_PendingState;
+}
+
+//============================================================================
+// 変更予定の状態を設定
+//============================================================================
+void CPlayerStateManager::SetPendingState(CPlayerState::STATE state)
+{
+	m_PendingState = state;
+}
+
+
 
 //============================================================================
 // 新たな状態を生成

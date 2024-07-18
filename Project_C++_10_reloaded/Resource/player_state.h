@@ -25,12 +25,13 @@ public:
 	//****************************************************
 	enum class STATE
 	{
-		DEFAULT = 0,	// 通常状態
-		BEGINNING,		// 変身開始
-		FLYING,			// 飛行状態
-		STOPPING,		// 変身停止
-		MISS,			// 失敗状態
-		GOAL,			// ゴール後
+		NONE = 0,	// 無し
+		DEFAULT,	// 通常状態
+		BEGINNING,	// 変身開始
+		FLYING,		// 飛行状態
+		STOPPING,	// 変身停止
+		MISS,		// 失敗状態
+		GOAL,		// ゴール後
 		MAX,
 	};
 
@@ -41,7 +42,6 @@ public:
 	void RegisterPlayer(CPlayer* pPlayer);	// プレイヤーを登録
 	virtual void Update();					// 更新
 	virtual void Exit() = 0;				// 変更終了
-
 
 protected:
 
@@ -195,20 +195,23 @@ public:
 	CPlayerStateManager();	// コンストラクタ
 	~CPlayerStateManager();	// デストラクタ
 
+	void CheckStateChange();						// 状態の変更を確認
 	void Init(CPlayer* pPlayer);					// 初期設定
 	void RegisterPlayer(CPlayer* pPlayer);			// プレイヤーを登録
 	void Uninit();									// 終了処理
-	void ChangeState(CPlayerState::STATE state);	// 状態を変更
 
-	CPlayer* GetPlayer();		// プレイヤーを取得
-	CPlayerState* GetState();	// 状態を取得
+	CPlayer* GetPlayer();								// プレイヤーを取得
+	CPlayerState* GetState();							// 状態を取得
+	CPlayerState::STATE GetPendingState();				// 変更予定の状態を取得
+	void SetPendingState(CPlayerState::STATE state);	// 変更予定の状態を設定
 
 private:
 
 	void Create(CPlayerState::STATE state);	// 新たな状態を生成
 
-	CPlayer* m_pPlayer;		// プレイヤーのポインタ
-	CPlayerState* m_pState;	// 状態のポインタ
+	CPlayer* m_pPlayer;					// プレイヤーのポインタ
+	CPlayerState* m_pState;				// 状態クラスのポインタ
+	CPlayerState::STATE m_PendingState;	// 変更予定の状態
 };
 
 #endif // _PLAYER_STATE_H_

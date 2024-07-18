@@ -68,6 +68,12 @@ void CObject_X::Update()
 //============================================================================
 void CObject_X::Draw()
 {
+	// モデルが設定されていない
+	if (m_pModel == nullptr)
+	{
+		assert(false);
+	}
+
 	// デバイスを取得
 	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
 

@@ -89,17 +89,24 @@ void CPlayer::Uninit()
 //============================================================================
 void CPlayer::Update()
 {
-	// 現在位置を取得、以降このコピーを目標位置として変更を加えていく
+	// 現在座標をコピーし、以降このコピーを目標座標として変更を加えていく
 	m_posTarget = CObject_X::GetPos();
 
-	// 状態の更新処理
-	m_pStateManager->GetState()->Update();
+	// 状態オブジェクトが生成されていれば
+	if (m_pStateManager->GetState() != nullptr)
+	{
+		// 状態の更新
+		m_pStateManager->GetState()->Update();
 
-	// 位置を反映
+		// 状態の変更を確認する (メモリ解放を含む処理は更新の後にフラグを参照して行う)
+		m_pStateManager->CheckStateChange();
+	}
+
+	// 目標座標を反映
 	SetPos(m_posTarget);
 
-	// 位置をデバッグ表示
-	CManager::GetRenderer()->SetDebugString("【プレイヤー位置】");
+	// 座標をデバッグ表示
+	CManager::GetRenderer()->SetDebugString("【プレイヤー座標】");
 	std::ostringstream oss;
 	oss << std::fixed << std::setprecision(1) << "X:" << GetPos().x << "\nY:" << GetPos().y;
 	CManager::GetRenderer()->SetDebugString(oss.str().c_str());
@@ -251,10 +258,10 @@ CPlayer* CPlayer::DownCast(CObject* pObject)
 //============================================================================
 bool CPlayer::Collision()
 {
-	// 衝突判定
+	// 衝突検出
 	bool bDetected = 0;
 
-	// 仮サイズ
+	/* 仮のブロックサイズ */
 	D3DXVECTOR3 BlockSize = { 10.0f, 10.0f, 10.0f };
 
 	// オブジェクトを取得
@@ -290,10 +297,10 @@ bool CPlayer::Collision()
 
 		// ゴールと衝突する場合
 		if (CPhysics::GetInstance()->SphereAndCube(pGoal->GetPos(), 10.0f, m_posTarget, GetSize()))
-		{
-			// ゴール後状態へ (接触後もここを通ります)
-			m_pStateManager->ChangeState(CPlayerState::STATE::GOAL);
-			
+		{			
+			// ゴール状態に移行する合図を設定
+			m_pStateManager->SetPendingState(CPlayerState::STATE::GOAL);
+
 			// ゴールフェーズへ
 			CGameManager::GetInstance()->SetPhase(CGameManager::PHASE::GOAL);
 		}
