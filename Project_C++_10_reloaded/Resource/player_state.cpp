@@ -52,14 +52,6 @@ CPlayerState::~CPlayerState()
 }
 
 //============================================================================
-// 更新
-//============================================================================
-void CPlayerState::Update()
-{
-
-}
-
-//============================================================================
 // プレイヤーを登録
 //============================================================================
 void CPlayerState::RegisterPlayer(CPlayer* pPlayer)
@@ -884,12 +876,12 @@ CPlayerStateManager::CPlayerStateManager() : m_pPlayer(nullptr), m_pState(nullpt
 CPlayerStateManager::~CPlayerStateManager()
 {
 	m_pPlayer = nullptr;						// プレイヤーのポインタを初期化
-	m_pState = nullptr;							// 状態クラスのポインタを初期化
+	m_pState = nullptr;							// 状態のポインタを初期化
 	m_PendingState = CPlayerState::STATE::NONE;	// 変更予定の状態を初期化
 }
 
 //============================================================================
-// 状態を変更
+// 状態の変更を確認
 //============================================================================
 void CPlayerStateManager::CheckStateChange()
 {
@@ -899,7 +891,7 @@ void CPlayerStateManager::CheckStateChange()
 		return;
 	}
 
-	// 既に状態が設定されていれば破棄
+	// 既に状態が生成されていれば破棄
 	if (m_pState != nullptr)
 	{
 		// 変更終了時の処理
@@ -918,7 +910,7 @@ void CPlayerStateManager::CheckStateChange()
 	// 変更予定の状態を初期化
 	m_PendingState = CPlayerState::STATE::NONE;
 
-	// 新しい状態オブジェクトにプレイヤーを登録
+	// 新しい状態にプレイヤーを登録
 	m_pState->RegisterPlayer(m_pPlayer);
 
 	// 変更時の処理
@@ -998,8 +990,6 @@ void CPlayerStateManager::SetPendingState(CPlayerState::STATE state)
 {
 	m_PendingState = state;
 }
-
-
 
 //============================================================================
 // 新たな状態を生成

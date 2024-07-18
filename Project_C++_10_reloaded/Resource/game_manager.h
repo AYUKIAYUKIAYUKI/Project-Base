@@ -21,10 +21,10 @@ public:
 	enum class PHASE
 	{
 		NONE = 0,	// 無し
-		BEGIN,		// 開始
-		PLAY,		// ゲーム中
-		GOAL,		// ゴール後
-		END,		// 終了
+		START,		// レベル開始
+		INGAME,		// ゲーム進行
+		FINISH,		// レベル終了
+		END,		// ゲーム終了
 		MAX,
 	};
 
@@ -40,18 +40,18 @@ public:
 	PHASE GetPhase();			// フェーズ取得
 	void SetPhase(PHASE phase);	// フェーズ設定
 
-	static CGameManager* GetInstance();	// 取得
+	static CGameManager* GetInstance();	// ゲームマネージャーを取得
 
 private:
 
 	void ImportLevel();	// レベル読み込み
 
-	PHASE m_phase;		// フェーズ識別
-	int m_nMaxStage;	// ステージ数
-	int m_nCntGoal;		// ゴール後カウント
+	PHASE m_phase;							// フェーズ識別
+	int m_nMaxStage;						// ステージ数
+	int m_nCntGoal;							// ゴール後カウント
 	std::vector<std::string> m_stagePath;	// ステージパス
 
-	static CGameManager* m_pGameManager;	// 自クラス情報
+	static CGameManager* m_pGameManager;	// ゲームマネージャー
 };
 
-#endif // _GAME_MANAGERH_
+#endif // _GAME_MANAGER_H_

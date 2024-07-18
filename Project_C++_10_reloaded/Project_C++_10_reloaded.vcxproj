@@ -27,6 +27,7 @@
     <ClCompile Include="Resource\fade.cpp" />
     <ClCompile Include="Resource\game.cpp" />
     <ClCompile Include="Resource\game_manager.cpp" />
+    <ClCompile Include="Resource\game_phase.cpp" />
     <ClCompile Include="Resource\goal.cpp" />
     <ClCompile Include="resource\input.cpp" />
     <ClCompile Include="resource\light.cpp" />
@@ -68,6 +69,7 @@
     <ClInclude Include="Resource\fade.h" />
     <ClInclude Include="Resource\game.h" />
     <ClInclude Include="Resource\game_manager.h" />
+    <ClInclude Include="Resource\game_phase.h" />
     <ClInclude Include="Resource\goal.h" />
     <ClInclude Include="resource\input.h" />
     <ClInclude Include="resource\light.h" />

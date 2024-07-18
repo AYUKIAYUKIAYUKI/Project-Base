@@ -19,17 +19,17 @@
 //****************************************************
 // 静的メンバ変数の初期化
 //****************************************************
-CGameManager* CGameManager::m_pGameManager = nullptr;	// 自クラス情報
+CGameManager* CGameManager::m_pGameManager = nullptr;	// ゲームマネージャー
 
 //============================================================================
 // コンストラクタ
 //============================================================================
 CGameManager::CGameManager()
 {
-	m_phase = PHASE::NONE;		// フェーズ識別
-	m_nMaxStage = 0;			// ステージ数
-	m_nCntGoal = 0;				// ゴール後カウント
-	m_pGameManager = nullptr;	// 自クラス情報の初期化
+	m_phase = PHASE::NONE;		// フェーズ識別の初期化
+	m_nMaxStage = 0;			// ステージ数の初期化
+	m_nCntGoal = 0;				// ゴール後カウントの初期化
+	m_pGameManager = nullptr;	// ゲームマネージャーの初期化
 }
 
 //============================================================================
@@ -37,7 +37,10 @@ CGameManager::CGameManager()
 //============================================================================
 CGameManager::~CGameManager()
 {
-
+	m_phase = PHASE::NONE;		// フェーズ識別の初期化
+	m_nMaxStage = 0;			// ステージ数の初期化
+	m_nCntGoal = 0;				// ゴール後カウントの初期化
+	m_pGameManager = nullptr;	// ゲームマネージャーの初期化
 }
 
 //============================================================================
@@ -45,8 +48,8 @@ CGameManager::~CGameManager()
 //============================================================================
 void CGameManager::Init()
 {
-	// 開始フェーズへ
-	m_phase = PHASE::BEGIN;
+	// レベル開始フェーズへ
+	m_phase = PHASE::START;
 
 	// レベルを読み込む
 	ImportLevel();
@@ -77,7 +80,7 @@ void CGameManager::Update()
 
 		break;
 
-	case PHASE::BEGIN:
+	case PHASE::START:
 
 		// 全オブジェクト解放処理
 		CObject::ReleaseAll();
@@ -97,15 +100,15 @@ void CGameManager::Update()
 			25.0f);					// 数列の配置間隔
 
 		// プレイフェーズへ
-		m_phase = PHASE::PLAY;
+		m_phase = PHASE::INGAME;
 
 		break;
 
-	case PHASE::PLAY:
+	case PHASE::INGAME:
 
 		break;
 
-	case PHASE::GOAL:
+	case PHASE::FINISH:
 
 		m_nCntGoal++;
 
@@ -133,7 +136,7 @@ void CGameManager::Update()
 			return;
 		}
 
-		m_phase = PHASE::BEGIN;
+		m_phase = PHASE::START;
 
 		break;
 
@@ -156,7 +159,7 @@ void CGameManager::Create()
 		assert(false);
 	}
 
-	// インスタンスを生成
+	// ゲームマネージャーを生成
 	m_pGameManager = DBG_NEW CGameManager;
 }
 
@@ -195,7 +198,7 @@ void CGameManager::SetPhase(PHASE phase)
 }
 
 //============================================================================
-// 取得
+// ゲームマネージャーを取得
 //============================================================================
 CGameManager* CGameManager::GetInstance()
 {

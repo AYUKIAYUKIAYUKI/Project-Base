@@ -24,11 +24,11 @@
 //============================================================================
 CPlayer::CPlayer() : CObject_X(static_cast<int>(LAYER::FRONT_MIDDLE))
 {
-	m_pStateManager = nullptr;				// 状態管理
-	m_velocity = { 0.0f, 0.0f, 0.0f };		// 加速度
-	m_posTarget = { 0.0f, 0.0f, 0.0f };		// 目標位置
-	m_rotTarget = { 0.0f, 0.0f, 0.0f };		// 目標向き
-	m_fAngleFlying = 0.0f;					// 飛行向き
+	m_pStateManager = nullptr;				// 状態マネージャーの初期化
+	m_velocity = { 0.0f, 0.0f, 0.0f };		// 加速度の初期化
+	m_posTarget = { 0.0f, 0.0f, 0.0f };		// 目標位置の初期化
+	m_rotTarget = { 0.0f, 0.0f, 0.0f };		// 目標向きの初期化
+	m_fAngleFlying = 0.0f;					// 飛行向きの初期化
 }
 
 //============================================================================
@@ -289,8 +289,8 @@ bool CPlayer::Collision()
 		}
 	}
 
-	// ゴールフェーズでなければ
-	if (CGameManager::GetInstance()->GetPhase() != CGameManager::PHASE::GOAL)
+	// レベル終了フェーズでなければ
+	if (CGameManager::GetInstance()->GetPhase() != CGameManager::PHASE::FINISH)
 	{
 		// ゴールオブジェクトを取得
 		CGoal* pGoal = CGoal::DownCast(CObject::FindObject(CObject::TYPE::GOAL));
@@ -301,8 +301,8 @@ bool CPlayer::Collision()
 			// ゴール状態に移行する合図を設定
 			m_pStateManager->SetPendingState(CPlayerState::STATE::GOAL);
 
-			// ゴールフェーズへ
-			CGameManager::GetInstance()->SetPhase(CGameManager::PHASE::GOAL);
+			// レベル終了フェーズへ移行
+			CGameManager::GetInstance()->SetPhase(CGameManager::PHASE::FINISH);
 		}
 	}
 

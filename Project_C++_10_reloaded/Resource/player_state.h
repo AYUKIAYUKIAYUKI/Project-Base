@@ -40,7 +40,7 @@ public:
 
 	virtual void Enter() = 0;				// 変更開始
 	void RegisterPlayer(CPlayer* pPlayer);	// プレイヤーを登録
-	virtual void Update();					// 更新
+	virtual void Update() = 0;				// 更新
 	virtual void Exit() = 0;				// 変更終了
 
 protected:
@@ -210,7 +210,7 @@ private:
 	void Create(CPlayerState::STATE state);	// 新たな状態を生成
 
 	CPlayer* m_pPlayer;					// プレイヤーのポインタ
-	CPlayerState* m_pState;				// 状態クラスのポインタ
+	CPlayerState* m_pState;				// 状態のポインタ
 	CPlayerState::STATE m_PendingState;	// 変更予定の状態
 };
 

@@ -46,7 +46,7 @@ public:
 	D3DXVECTOR3 GetRotTarget();					// 目標向きを取得
 	void SetRotTarget(D3DXVECTOR3 rotTarget);	// 目標向きを設定
 
-	CPlayerStateManager* GetStateManager();	// 状態管理取得
+	CPlayerStateManager* GetStateManager();	// 状態マネージャーを取得
 
 	static CPlayer* Create(D3DXVECTOR3 pos);	// 生成
 	static CPlayer* DownCast(CObject* pObject);	// ダウンキャスト
