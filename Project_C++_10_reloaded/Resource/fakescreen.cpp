@@ -19,7 +19,7 @@
 //****************************************************
 // 静的メンバ変数の初期化
 //****************************************************
-CFakeScreen* CFakeScreen::m_pInstance = nullptr;	// 自クラス情報
+CFakeScreen* CFakeScreen::m_pInstance = nullptr;	// 疑似スクリーンのポインタ
 const int CFakeScreen::SPLIT_ALONG_X_AXIS = 50;		// X軸方向の分割数
 const int CFakeScreen::SPLIT_ALONG_Y_AXIS = 50;		// Y軸方向の分割数
 
@@ -28,16 +28,22 @@ const int CFakeScreen::SPLIT_ALONG_Y_AXIS = 50;		// Y軸方向の分割数
 //============================================================================
 CFakeScreen::CFakeScreen()
 {
-	m_pVtxBuff = nullptr;			// 頂点バッファのポインタ
-	m_pIdxBuff = nullptr;			// インデックスバッファのポインタ
-	m_pTex = nullptr;				// テクスチャ情報のポインタ
-	m_pSurface = nullptr;			// サーフェイス情報のポインタ
-	m_nNumVtx = 0;					// 頂点数
-	m_nNumPolygon = 0;				// ポリゴン数
-	m_nNumDegenerated = 0;			// 縮退ポリゴン数
-	m_nNumIndex = 0;				// インデックス数
-	m_pos = { 0.0f, 0.0f, 0.0f };	// 位置
-	m_size = { 0.0f, 0.0f, 0.0f };	// サイズ
+	m_pVtxBuff = nullptr;						// 頂点バッファのポインタ
+	m_pIdxBuff = nullptr;						// インデックスバッファのポインタ
+	m_pTex = nullptr;							// テクスチャ情報のポインタ
+	m_pSurface = nullptr;						// サーフェイス情報のポインタ
+	m_nNumVtx = 0;								// 頂点数
+	m_nNumPolygon = 0;							// ポリゴン数
+	m_nNumDegenerated = 0;						// 縮退ポリゴン数
+	m_nNumIndex = 0;							// インデックス数
+	m_pos = { 0.0f, 0.0f, 0.0f };				// 位置
+	m_size = { 0.0f, 0.0f, 0.0f };				// サイズ
+	m_NextPhase = CGameManager::PHASE::NONE;	// 次のフェーズ
+	m_bWaveIn = false;							// 波打ちイン判定
+	m_bWaveOut = false;							// 波打ちアウト判定
+	m_fBrightness = 1.0f;						// 明度
+	m_fPosDistortion = 0.0f;					// 座標変動用
+	m_fAddDistortion = 0.0f;					// ゆがみ増加量
 }
 
 //============================================================================
@@ -45,7 +51,22 @@ CFakeScreen::CFakeScreen()
 //============================================================================
 CFakeScreen::~CFakeScreen()
 {
-
+	m_pVtxBuff = nullptr;						// 頂点バッファのポインタ
+	m_pIdxBuff = nullptr;						// インデックスバッファのポインタ
+	m_pTex = nullptr;							// テクスチャ情報のポインタ
+	m_pSurface = nullptr;						// サーフェイス情報のポインタ
+	m_nNumVtx = 0;								// 頂点数
+	m_nNumPolygon = 0;							// ポリゴン数
+	m_nNumDegenerated = 0;						// 縮退ポリゴン数
+	m_nNumIndex = 0;							// インデックス数
+	m_pos = { 0.0f, 0.0f, 0.0f };				// 位置
+	m_size = { 0.0f, 0.0f, 0.0f };				// サイズ
+	m_NextPhase = CGameManager::PHASE::NONE;	// 次のフェーズ
+	m_bWaveIn = false;							// 波打ちイン判定
+	m_bWaveOut = false;							// 波打ちアウト判定
+	m_fBrightness = 1.0f;						// 明度
+	m_fPosDistortion = 0.0f;					// 座標変動用
+	m_fAddDistortion = 0.0f;					// ゆがみ増加量
 }
 
 //============================================================================
@@ -123,14 +144,17 @@ void CFakeScreen::Uninit()
 //============================================================================
 void CFakeScreen::Update()
 {
-	// 移動
-	//Move();
-	 
-	// 波打ち
-	Wave();
+	// ゆがみの強度を表示
+	CManager::GetRenderer()->SetDebugString("ゆがみの強度:" + std::to_string(m_fAddDistortion));
 
-	// 頂点情報の設定
-	//SetVtx();
+	// ウェーブイン処理
+	WaveIn();
+
+	// ウェーブアウト処理
+	WaveOut();
+
+	// 頂点情報の設定処理
+	SetVtx();
 }
 
 //============================================================================
@@ -210,6 +234,22 @@ void CFakeScreen::Release()
 
 		// ポインタを初期化
 		m_pInstance = nullptr;
+	}
+}
+
+//============================================================================
+// 波打ち設定
+//============================================================================
+void CFakeScreen::SetWave(CGameManager::PHASE phase)
+{
+	// 波打ち関連の判定が何も出てなければ
+	if (!m_bWaveIn && !m_bWaveOut)
+	{
+		// 波打ちイン判定を出す
+		m_bWaveIn = true;
+
+		// 次のフェーズの情報を保持しておく
+		m_NextPhase = phase;
 	}
 }
 
@@ -443,90 +483,68 @@ void CFakeScreen::CalcMesh()
 }
 
 //============================================================================
-// 移動
+// 波打ちイン
 //============================================================================
-void CFakeScreen::Move()
+void CFakeScreen::WaveIn()
 {
-	// 移動
-	static D3DXVECTOR3 move = { 3.0f, 3.0f, 0.0f };
-	m_pos += move;
-
-	// 左右端に到達
-	if (m_pos.x + m_size.x >= SCREEN_WIDTH || m_pos.x - m_size.x <= 0.0f)
+	if (m_bWaveIn)
 	{
-		move.x *= -1.0f;
-	}
+		// 明度が下がっていく
+		m_fBrightness += -0.01f;
 
-	// 上下端に到達
-	if (m_pos.y + m_size.y >= SCREEN_HEIGHT || m_pos.y - m_size.y <= 0.0f)
-	{
-		move.y *= -1.0f;
+		// ゆがみが増加していく
+		m_fAddDistortion += 0.01f;
+
+		// 最低明度到達で
+		if (m_fBrightness < 0.0f)
+		{
+			// 明度を最低に固定
+			m_fBrightness = 0.0f;
+
+			// 波打ちインを終了
+			m_bWaveIn = false;
+
+			// 予定のフェーズへ変更
+			CGameManager::GetInstance()->SetPhase(m_NextPhase);
+
+			// 波打ちアウトを開始
+			m_bWaveOut = true;
+		}
 	}
 }
 
 //============================================================================
-// 波打ち
+// 波打ちアウト
 //============================================================================
-void CFakeScreen::Wave()
+void CFakeScreen::WaveOut()
 {
-	// 頂点情報へのポインタ
-	VERTEX_2D* pVtx;
-
-	// 頂点バッファをロック
-	m_pVtxBuff->Lock(0, 0, reinterpret_cast<void**>(&pVtx), 0);
-
-	float fWavePosX = 0.0f;		// ゆがみ具合
-	int nCntAdd = 0;
-	static float fAdd = 0.00f;	// ゆがみ増加量
-	static float fHoge = 50.0f;	// ゆがみ強度
-	if (CManager::GetKeyboard()->GetPress(DIK_R))
+	if (m_bWaveOut)
 	{
-		fAdd += 0.01f;
+		// 明度が上がっていく
+		m_fBrightness += 0.01f;
+
+		// 最高明度到達で
+		if (m_fBrightness > 1.0f)
+		{
+			// 明度を最高に固定
+			m_fBrightness = 1.0f;
+
+			// 波打ちアウトを終了
+			m_bWaveOut = false;
+		}
 	}
-	else if	(CManager::GetKeyboard()->GetPress(DIK_F))
+
+	if (!m_bWaveIn)
 	{
-		fAdd += -0.01f;
-	}
-	else if (CManager::GetKeyboard()->GetPress(DIK_V))
-	{
-		fAdd = 0.0f;
-	}
-	CManager::GetRenderer()->SetDebugString("ゆがみ具合:" + std::to_string(fAdd));
-
-	int nCntVtxX = 0, nCntVtxY = 0;								// 各方向の頂点数をカウントする
-	float fEachSizeX = (m_size.x * 2.0f) / SPLIT_ALONG_X_AXIS;	// ポリゴン1枚あたりのX方向への頂点配置間隔
-	float fEachSizeY = (m_size.y * 2.0f) / SPLIT_ALONG_Y_AXIS;	// ポリゴン1枚あたりのY方向への頂点配置間隔
-
-	for (int i = 0; i < m_nNumVtx; i++)
-	{
-		// 頂点座標の設定 (サイズ値をもとにした左上の頂点位置に、変動位置を加算して矩形を形成)
-		pVtx[i].pos = {
-			m_pos.x - m_size.x + (fEachSizeX * nCntVtxX) + (sinf(fWavePosX) * fHoge),
-			m_pos.y - m_size.y + (fEachSizeY * nCntVtxY),
-			0.0f };
-
-		// X方向頂点数のカウントを行う
-		if (nCntVtxX >= SPLIT_ALONG_X_AXIS)
-		{ // カウント数が分割数に達したら
-
-			// X方向頂点数のカウントをリセット
-			nCntVtxX = 0;
-
-			// Y方向頂点数をカウントアップ
-			nCntVtxY++;
-
-			// ゆがみを増加
-			fWavePosX += fAdd;
+		if (m_fAddDistortion > 0.0f)
+		{
+			m_fAddDistortion = m_fAddDistortion * 0.95f;
 		}
 		else
 		{
-			// X方向頂点数をカウントアップ
-			nCntVtxX++;
+			m_fAddDistortion = 0.0f;
 		}
 	}
-
-	// 頂点バッファをアンロックする
-	m_pVtxBuff->Unlock();
 }
 
 //============================================================================
@@ -534,6 +552,9 @@ void CFakeScreen::Wave()
 //============================================================================
 void CFakeScreen::SetVtx()
 {
+	// 変動位置をリセット
+	m_fPosDistortion = 0.0f;
+
 	// 頂点情報へのポインタ
 	VERTEX_2D* pVtx;
 
@@ -546,11 +567,15 @@ void CFakeScreen::SetVtx()
 
 	for (int i = 0; i < m_nNumVtx; i++)
 	{
-		// 頂点座標の設定 (サイズ値をもとにした左上の頂点位置に、変動位置を加算して矩形を形成)
+		// 頂点座標の設定 (サイズ値をもとにした左上の頂点位置に、変動位置を加算してメッシュを形成)
 		pVtx[i].pos = {
-			m_pos.x - m_size.x + (fEachSizeX * nCntVtxX),
-			m_pos.y - m_size.y + (fEachSizeY * nCntVtxY),
+			m_pos.x - m_size.x + (fEachSizeX * nCntVtxX) + (sinf(m_fPosDistortion) * 30.0f),
+			m_pos.y - m_size.y + (fEachSizeY * nCntVtxY) + (sinf(m_fPosDistortion) * 5.0f),
 			0.0f };
+
+		// 頂点カラーの設定
+		//pVtx[i].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, m_fBrightness);
+		pVtx[i].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
 
 		// X方向頂点数のカウントを行う
 		if (nCntVtxX >= SPLIT_ALONG_X_AXIS)
@@ -561,6 +586,9 @@ void CFakeScreen::SetVtx()
 
 			// Y方向頂点数をカウントアップ
 			nCntVtxY++;
+
+			// ゆがみを反映
+			m_fPosDistortion += m_fAddDistortion;
 		}
 		else
 		{

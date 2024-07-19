@@ -179,7 +179,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 	}
 
 	// ウインドウクラスの登録を解除
-	UnregisterClass(CLASS_NAME, wcex.hInstance);
 
 	// CRTメモリリーク箇所検出
 	//_CrtSetBreakAlloc();

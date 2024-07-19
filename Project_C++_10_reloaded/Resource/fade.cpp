@@ -182,7 +182,7 @@ void CFade::FadeIn()
 		if (m_fBrightness > 1.0f)
 		{
 			// 明度を最高に固定
-			m_fBrightness += 0.05f;
+			m_fBrightness = 1.0f;
 
 			// フェードインを終了
 			m_bFadeIn = false;

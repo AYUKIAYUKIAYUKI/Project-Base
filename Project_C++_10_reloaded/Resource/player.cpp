@@ -10,10 +10,11 @@
 //****************************************************
 #include "player.h"
 #include "player_state.h"
-
 #include "manager.h"
 #include "game_manager.h"
 #include "physics.h"
+#include "fakescreen.h"
+
 #include "block.h"
 #include "explosion.h"
 #include "goal.h"
@@ -289,21 +290,17 @@ bool CPlayer::Collision()
 		}
 	}
 
-	// レベル終了フェーズでなければ
-	if (CGameManager::GetInstance()->GetPhase() != CGameManager::PHASE::FINISH)
-	{
-		// ゴールオブジェクトを取得
-		CGoal* pGoal = CGoal::DownCast(CObject::FindObject(CObject::TYPE::GOAL));
+	// ゴールオブジェクトを取得
+	CGoal* pGoal = CGoal::DownCast(CObject::FindObject(CObject::TYPE::GOAL));
 
-		// ゴールと衝突する場合
-		if (CPhysics::GetInstance()->SphereAndCube(pGoal->GetPos(), 10.0f, m_posTarget, GetSize()))
-		{			
-			// ゴール状態に移行する合図を設定
-			m_pStateManager->SetPendingState(CPlayerState::STATE::GOAL);
+	// ゴールと衝突する場合
+	if (CPhysics::GetInstance()->SphereAndCube(pGoal->GetPos(), 10.0f, m_posTarget, GetSize()))
+	{			
+		// ゴール状態に移行する合図を設定
+		m_pStateManager->SetPendingState(CPlayerState::STATE::GOAL);
 
-			// レベル終了フェーズへ移行
-			CGameManager::GetInstance()->SetPhase(CGameManager::PHASE::FINISH);
-		}
+		// レベル終了フェーズへ移行
+		CFakeScreen::GetInstance()->SetWave(CGameManager::PHASE::FINISH);
 	}
 
 	return bDetected;

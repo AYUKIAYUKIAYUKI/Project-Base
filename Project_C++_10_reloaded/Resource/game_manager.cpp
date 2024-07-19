@@ -110,14 +110,7 @@ void CGameManager::Update()
 
 	case PHASE::FINISH:
 
-		m_nCntGoal++;
-
-		if (m_nCntGoal > 50)
-		{
-			m_nCntGoal = 0;
-
-			m_phase = PHASE::END;
-		}
+		m_phase = PHASE::END;
 		
 		break;
 
