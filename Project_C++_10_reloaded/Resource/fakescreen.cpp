@@ -24,49 +24,17 @@ const int CFakeScreen::SPLIT_ALONG_X_AXIS = 50;		// X軸方向の分割数
 const int CFakeScreen::SPLIT_ALONG_Y_AXIS = 50;		// Y軸方向の分割数
 
 //============================================================================
-// コンストラクタ
+// 生成
 //============================================================================
-CFakeScreen::CFakeScreen()
+void CFakeScreen::Create()
 {
-	m_pVtxBuff = nullptr;						// 頂点バッファのポインタ
-	m_pIdxBuff = nullptr;						// インデックスバッファのポインタ
-	m_pTex = nullptr;							// テクスチャ情報のポインタ
-	m_pSurface = nullptr;						// サーフェイス情報のポインタ
-	m_nNumVtx = 0;								// 頂点数
-	m_nNumPolygon = 0;							// ポリゴン数
-	m_nNumDegenerated = 0;						// 縮退ポリゴン数
-	m_nNumIndex = 0;							// インデックス数
-	m_pos = { 0.0f, 0.0f, 0.0f };				// 位置
-	m_size = { 0.0f, 0.0f, 0.0f };				// サイズ
-	m_NextPhase = CGameManager::PHASE::NONE;	// 次のフェーズ
-	m_bWaveIn = false;							// 波打ちイン判定
-	m_bWaveOut = false;							// 波打ちアウト判定
-	m_fBrightness = 1.0f;						// 明度
-	m_fPosDistortion = 0.0f;					// 座標変動用
-	m_fAddDistortion = 0.0f;					// ゆがみ増加量
-}
+	if (m_pInstance != nullptr)
+	{ // 二重生成禁止
+		assert(false);
+	}
 
-//============================================================================
-// デストラクタ
-//============================================================================
-CFakeScreen::~CFakeScreen()
-{
-	m_pVtxBuff = nullptr;						// 頂点バッファのポインタ
-	m_pIdxBuff = nullptr;						// インデックスバッファのポインタ
-	m_pTex = nullptr;							// テクスチャ情報のポインタ
-	m_pSurface = nullptr;						// サーフェイス情報のポインタ
-	m_nNumVtx = 0;								// 頂点数
-	m_nNumPolygon = 0;							// ポリゴン数
-	m_nNumDegenerated = 0;						// 縮退ポリゴン数
-	m_nNumIndex = 0;							// インデックス数
-	m_pos = { 0.0f, 0.0f, 0.0f };				// 位置
-	m_size = { 0.0f, 0.0f, 0.0f };				// サイズ
-	m_NextPhase = CGameManager::PHASE::NONE;	// 次のフェーズ
-	m_bWaveIn = false;							// 波打ちイン判定
-	m_bWaveOut = false;							// 波打ちアウト判定
-	m_fBrightness = 1.0f;						// 明度
-	m_fPosDistortion = 0.0f;					// 座標変動用
-	m_fAddDistortion = 0.0f;					// ゆがみ増加量
+	// インスタンスを生成
+	m_pInstance = DBG_NEW CFakeScreen{};
 }
 
 //============================================================================
@@ -103,6 +71,24 @@ HRESULT CFakeScreen::Init()
 	}
 
 	return S_OK;
+}
+
+//============================================================================
+// 解放
+//============================================================================
+void CFakeScreen::Release()
+{
+	if (m_pInstance != nullptr)
+	{
+		// 終了処理
+		m_pInstance->Uninit();
+
+		// メモリを解放
+		delete m_pInstance;
+
+		// ポインタを初期化
+		m_pInstance = nullptr;
+	}
 }
 
 //============================================================================
@@ -203,38 +189,6 @@ void CFakeScreen::Draw()
 		0,
 		m_nNumPolygon);
 #endif
-}
-
-//============================================================================
-// 生成
-//============================================================================
-void CFakeScreen::Create()
-{
-	if (m_pInstance != nullptr)
-	{ // 二重生成禁止
-		assert(false);
-	}
-
-	// インスタンスを生成
-	m_pInstance = DBG_NEW CFakeScreen;
-}
-
-//============================================================================
-// 解放
-//============================================================================
-void CFakeScreen::Release()
-{
-	if (m_pInstance != nullptr)
-	{
-		// 終了処理
-		m_pInstance->Uninit();
-
-		// メモリを解放
-		delete m_pInstance;
-
-		// ポインタを初期化
-		m_pInstance = nullptr;
-	}
 }
 
 //============================================================================
@@ -456,6 +410,42 @@ HRESULT CFakeScreen::CreateTex()
 	m_pTex->GetSurfaceLevel(0, &m_pSurface);
 
 	return S_OK;
+}
+
+//============================================================================
+// コンストラクタ
+//============================================================================
+CFakeScreen::CFakeScreen() : m_pVtxBuff{ nullptr }, m_pIdxBuff{ nullptr },
+m_pTex{ nullptr }, m_pSurface{ nullptr }, m_nNumVtx{ 0 }, m_nNumPolygon{ 0 },
+m_nNumDegenerated{ 0 }, m_nNumIndex{ 0 }, m_pos{ 0.0f, 0.0f, 0.0f },
+m_size{ 0.0f, 0.0f, 0.0f }, m_NextPhase{ CGameManager::PHASE::NONE },
+m_bWaveIn{ false }, m_bWaveOut{ false }, m_fBrightness{ 0.0f },
+m_fPosDistortion{ 0.0f }, m_fAddDistortion{ 0.0f }
+{
+
+}
+
+//============================================================================
+// デストラクタ
+//============================================================================
+CFakeScreen::~CFakeScreen()
+{
+	m_pVtxBuff = nullptr;						// 頂点バッファのポインタ
+	m_pIdxBuff = nullptr;						// インデックスバッファのポインタ
+	m_pTex = nullptr;							// テクスチャ情報のポインタ
+	m_pSurface = nullptr;						// サーフェイス情報のポインタ
+	m_nNumVtx = 0;								// 頂点数
+	m_nNumPolygon = 0;							// ポリゴン数
+	m_nNumDegenerated = 0;						// 縮退ポリゴン数
+	m_nNumIndex = 0;							// インデックス数
+	m_pos = { 0.0f, 0.0f, 0.0f };				// 位置
+	m_size = { 0.0f, 0.0f, 0.0f };				// サイズ
+	m_NextPhase = CGameManager::PHASE::NONE;	// 次のフェーズ
+	m_bWaveIn = false;							// 波打ちイン判定
+	m_bWaveOut = false;							// 波打ちアウト判定
+	m_fBrightness = 1.0f;						// 明度
+	m_fPosDistortion = 0.0f;					// 座標変動用
+	m_fAddDistortion = 0.0f;					// ゆがみ増加量
 }
 
 //============================================================================

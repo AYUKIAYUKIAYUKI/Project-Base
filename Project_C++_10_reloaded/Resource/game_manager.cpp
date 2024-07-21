@@ -19,37 +19,20 @@
 //****************************************************
 // 静的メンバ変数の初期化
 //****************************************************
-CGameManager* CGameManager::m_pGameManager = nullptr;	// ゲームマネージャー
-
-//============================================================================
-// コンストラクタ
-//============================================================================
-CGameManager::CGameManager() : m_phase{ PHASE::NONE }, m_nMaxStage{ 0 },
-m_nCntGoal{ 0 }, m_stagePath{}
-{
-
-}
-
-//============================================================================
-// デストラクタ
-//============================================================================
-CGameManager::~CGameManager()
-{
-	
-}
+CGameManager* CGameManager::m_pInstance = nullptr;	// ゲームマネージャーのポインタ
 
 //============================================================================
 // 生成
 //============================================================================
 void CGameManager::Create()
 {
-	if (m_pGameManager != nullptr)
+	if (m_pInstance != nullptr)
 	{ // 二重生成禁止
 		assert(false);
 	}
 
 	// ゲームマネージャーを生成
-	m_pGameManager = DBG_NEW CGameManager{};
+	m_pInstance = DBG_NEW CGameManager{};
 }
 
 //============================================================================
@@ -69,16 +52,16 @@ void CGameManager::Init()
 //============================================================================
 void CGameManager::Release()
 {
-	if (m_pGameManager != nullptr)
+	if (m_pInstance != nullptr)
 	{
 		// 終了処理
-		m_pGameManager->Uninit();
+		m_pInstance->Uninit();
 
 		// メモリを解放
-		delete m_pGameManager;
+		delete m_pInstance;
 
 		// ポインタを初期化
-		m_pGameManager = nullptr;
+		m_pInstance = nullptr;
 	}
 }
 
@@ -192,13 +175,30 @@ void CGameManager::SetPhase(PHASE phase)
 CGameManager* CGameManager::GetInstance()
 {
 	// オブジェクトが無ければ
-	if (m_pGameManager == nullptr)
+	if (m_pInstance == nullptr)
 	{
 		// 生成
-		m_pGameManager->Create();
+		m_pInstance->Create();
 	}
 
-	return m_pGameManager;
+	return m_pInstance;
+}
+
+//============================================================================
+// コンストラクタ
+//============================================================================
+CGameManager::CGameManager() : m_phase{ PHASE::NONE }, m_nMaxStage{ 0 },
+m_nCntGoal{ 0 }, m_stagePath{}
+{
+
+}
+
+//============================================================================
+// デストラクタ
+//============================================================================
+CGameManager::~CGameManager()
+{
+
 }
 
 //============================================================================

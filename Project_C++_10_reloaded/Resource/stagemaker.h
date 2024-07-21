@@ -10,36 +10,36 @@
 
 //****************************************************
 // インクルードファイル
-//****************************************************}
+//****************************************************
 #include "block.h"
 
 //****************************************************
 // ステージメーカークラス
 //****************************************************
-class CStageMaker
+class CStageMaker final
 {
 public:
 
-	CStageMaker();	// コンストラクタ
-	~CStageMaker();	// デストラクタ
-
+	void Create();	// 生成
 	void Init();	// 初期設定
+	void Release();	// 解放
 	void Uninit();	// 終了処理
 	void Update();	// 更新処理
-	void Create();	// 生成
-	void Release();	// 解放
 	void Import(std::string path);	// ステージ読み込み
 
-	static CStageMaker* GetInstance();	// 取得
+	static CStageMaker* GetInstance();	// ステージメーカーを取得
 
 private:
+
+	CStageMaker();	// コンストラクタ
+	~CStageMaker();	// デストラクタ
 
 	void Control();	// 操作
 	void Regist();	// 設置
 	void Export();	// ステージ書き出し
 	void Output(std::ofstream& file, D3DXVECTOR3 pos, std::string str);	// 情報書き出し
 
-	static CStageMaker* m_pStageMaker;	// 自クラス情報
+	static CStageMaker* m_pInstance;	// ステージメーカー
 };
 
 #endif // _SATEGEMAKER_H_

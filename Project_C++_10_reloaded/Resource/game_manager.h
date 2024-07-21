@@ -11,7 +11,7 @@
 //****************************************************
 // ゲームマネージャークラス
 //****************************************************
-class CGameManager
+class CGameManager final
 {
 public:
 
@@ -28,9 +28,6 @@ public:
 		MAX,
 	};
 
-	CGameManager();		// コンストラクタ
-	~CGameManager();	// デストラクタ
-
 	void Create();	// 生成
 	void Init();	// 初期設定
 	void Release();	// 解放
@@ -44,6 +41,9 @@ public:
 
 private:
 
+	CGameManager();		// コンストラクタ
+	~CGameManager();	// デストラクタ
+
 	void ImportLevel();	// レベル読み込み
 
 	PHASE m_phase;							// フェーズ識別
@@ -51,7 +51,7 @@ private:
 	int m_nCntGoal;							// ゴール後カウント
 	std::vector<std::string> m_stagePath;	// ステージパス
 
-	static CGameManager* m_pGameManager;	// ゲームマネージャー
+	static CGameManager* m_pInstance;	// ゲームマネージャー
 };
 
 #endif // _GAME_MANAGER_H_
