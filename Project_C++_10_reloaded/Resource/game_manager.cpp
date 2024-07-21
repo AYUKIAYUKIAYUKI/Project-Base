@@ -24,12 +24,10 @@ CGameManager* CGameManager::m_pGameManager = nullptr;	// ゲームマネージャー
 //============================================================================
 // コンストラクタ
 //============================================================================
-CGameManager::CGameManager()
+CGameManager::CGameManager() : m_phase{ PHASE::NONE }, m_nMaxStage{ 0 },
+m_nCntGoal{ 0 }, m_stagePath{}
 {
-	m_phase = PHASE::NONE;		// フェーズ識別の初期化
-	m_nMaxStage = 0;			// ステージ数の初期化
-	m_nCntGoal = 0;				// ゴール後カウントの初期化
-	m_pGameManager = nullptr;	// ゲームマネージャーの初期化
+
 }
 
 //============================================================================
@@ -37,10 +35,21 @@ CGameManager::CGameManager()
 //============================================================================
 CGameManager::~CGameManager()
 {
-	m_phase = PHASE::NONE;		// フェーズ識別の初期化
-	m_nMaxStage = 0;			// ステージ数の初期化
-	m_nCntGoal = 0;				// ゴール後カウントの初期化
-	m_pGameManager = nullptr;	// ゲームマネージャーの初期化
+	
+}
+
+//============================================================================
+// 生成
+//============================================================================
+void CGameManager::Create()
+{
+	if (m_pGameManager != nullptr)
+	{ // 二重生成禁止
+		assert(false);
+	}
+
+	// ゲームマネージャーを生成
+	m_pGameManager = DBG_NEW CGameManager{};
 }
 
 //============================================================================
@@ -54,6 +63,25 @@ void CGameManager::Init()
 	// レベルを読み込む
 	ImportLevel();
 }
+
+//============================================================================
+// 解放
+//============================================================================
+void CGameManager::Release()
+{
+	if (m_pGameManager != nullptr)
+	{
+		// 終了処理
+		m_pGameManager->Uninit();
+
+		// メモリを解放
+		delete m_pGameManager;
+
+		// ポインタを初期化
+		m_pGameManager = nullptr;
+	}
+}
+
 
 //============================================================================
 // 終了処理
@@ -143,38 +171,6 @@ void CGameManager::Update()
 }
 
 //============================================================================
-// 生成
-//============================================================================
-void CGameManager::Create()
-{
-	if (m_pGameManager != nullptr)
-	{ // 二重生成禁止
-		assert(false);
-	}
-
-	// ゲームマネージャーを生成
-	m_pGameManager = DBG_NEW CGameManager;
-}
-
-//============================================================================
-// 解放
-//============================================================================
-void CGameManager::Release()
-{
-	if (m_pGameManager != nullptr)
-	{
-		// 終了処理
-		m_pGameManager->Uninit();
-
-		// メモリを解放
-		delete m_pGameManager;
-
-		// ポインタを初期化
-		m_pGameManager = nullptr;
-	}
-}
-
-//============================================================================
 // フェーズ取得
 //============================================================================
 CGameManager::PHASE CGameManager::GetPhase()
@@ -195,6 +191,7 @@ void CGameManager::SetPhase(PHASE phase)
 //============================================================================
 CGameManager* CGameManager::GetInstance()
 {
+	// オブジェクトが無ければ
 	if (m_pGameManager == nullptr)
 	{
 		// 生成

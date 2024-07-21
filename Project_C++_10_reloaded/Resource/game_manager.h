@@ -31,11 +31,11 @@ public:
 	CGameManager();		// コンストラクタ
 	~CGameManager();	// デストラクタ
 
+	void Create();	// 生成
 	void Init();	// 初期設定
+	void Release();	// 解放
 	void Uninit();	// 終了処理
 	void Update();	// 更新処理
-	void Create();	// 生成
-	void Release();	// 解放
 
 	PHASE GetPhase();			// フェーズ取得
 	void SetPhase(PHASE phase);	// フェーズ設定
