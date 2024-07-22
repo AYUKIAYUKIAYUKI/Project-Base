@@ -187,8 +187,11 @@ CGameManager* CGameManager::GetInstance()
 //============================================================================
 // コンストラクタ
 //============================================================================
-CGameManager::CGameManager() : m_phase{ PHASE::NONE }, m_nMaxStage{ 0 },
-m_nCntGoal{ 0 }, m_stagePath{}
+CGameManager::CGameManager() : 
+	m_phase{ PHASE::NONE },	// フェーズ識別
+	m_nMaxStage{ 0 },		// ステージ数
+	m_nCntGoal{ 0 },		// ゴール後カウント
+	m_stagePath{}			// ステージパス
 {
 
 }

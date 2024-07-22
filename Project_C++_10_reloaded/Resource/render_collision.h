@@ -20,17 +20,22 @@ class CRender_Collision : public CObject
 {
 public:
 
-	CRender_Collision(D3DXVECTOR3& pos, int nPriority = static_cast<int>(LAYER::FRONT));	// コンストラクタ
-	~CRender_Collision() override;															// デストラクタ
+	CRender_Collision(D3DXVECTOR3& m_posRef, int nPriority = static_cast<int>(LAYER::FRONT));	// コンストラクタ
+	~CRender_Collision() override;																// デストラクタ
 
 	HRESULT Init() override;	// 初期設定
 	void Uninit() override;		// 終了処理
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
 
-	static CRender_Collision* Create(D3DXVECTOR3& pos);	// 生成
+	static CRender_Collision* Create(D3DXVECTOR3& posRef);	// 生成
 
 private:
+
+	// 箱型のみの定数
+	static const int m_nNumVtx;			// 頂点数
+	static const int m_nNumPrimitive;	// 辺数
+	static const int m_nNumIdx;			// インデックス数
 
 	HRESULT CreateVtxBuff();	// 頂点バッファの生成
 	HRESULT CreateIdxBuff();	// インデックスバッファの生成
@@ -39,11 +44,12 @@ private:
 
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	// 頂点バッファのポインタ
 	LPDIRECT3DINDEXBUFFER9 m_pIdxBuff;	// インデックスバッファのポインタ
-	D3DXVECTOR3& m_pos;					// 位置
-	D3DXVECTOR3 m_rot;					// 向き
-	D3DXVECTOR3 m_size;					// サイズ
+	D3DXVECTOR3& m_posRef;				// 参照位置
 	D3DXCOLOR m_col;					// 色
 	D3DXMATRIX m_mtxWorld;				// ワールド行列
+
+	// 箱型のみのメンバ
+	D3DXVECTOR3 m_size;	// サイズ
 };
 
 #endif	// _RENDER_COLLISION_H_

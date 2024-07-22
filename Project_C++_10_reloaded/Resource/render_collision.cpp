@@ -11,21 +11,23 @@
 #include "render_collision.h"
 #include "manager.h"
 
-// 仮
-static const int g_nNumVtx = 8;						// 頂点の数
-static const int g_nNumPrimitive = 12;				// 辺の数
-static const int g_nNumIdx = g_nNumPrimitive * 2;	// インデックスの数
+//****************************************************
+// 静的メンバ変数の初期化
+//****************************************************
+const int CRender_Collision::m_nNumVtx = 8;			// 頂点数
+const int CRender_Collision::m_nNumPrimitive = 12;	// 辺数
+const int CRender_Collision::m_nNumIdx = 24;		// インデックス数
 
 //============================================================================
 // コンストラクタ
 //============================================================================
-CRender_Collision::CRender_Collision(D3DXVECTOR3& pos, int nPriority) : CObject{ nPriority }, 
-m_pVtxBuff{ nullptr }, m_pIdxBuff{ nullptr }, m_pos{ pos },
-m_rot{ 0.0f, 0.0f, 0.0f }, m_col{ 0.0f, 0.0f, 0.0f, 0.0f }
+CRender_Collision::CRender_Collision(D3DXVECTOR3& posRef, int nPriority) : 
+	CObject{ nPriority },				// プライオリティ
+	m_pVtxBuff{ nullptr },				// 頂点バッファのポインタ
+	m_pIdxBuff{ nullptr },				// インデックスバッファのポインタ
+	m_posRef{ posRef },					// 参照位置
+	m_col{ 0.0f, 0.0f, 0.0f, 0.0f }		// 色
 {
-	// 仮のサイズを設定
-	m_size = { 10.0f, 10.0f, 10.0f };
-
 	// ワールド行列の初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
 }
@@ -124,9 +126,9 @@ void CRender_Collision::Draw()
 	pDev->DrawIndexedPrimitive(D3DPT_LINELIST,
 		0,
 		0,
-		g_nNumVtx,			// 頂点数
+		m_nNumVtx,			// 頂点数
 		0,
-		g_nNumPrimitive);	// 辺の数
+		m_nNumPrimitive);	// 辺の数
 	
 	// ライトをオン
 	pDev->SetRenderState(D3DRS_LIGHTING, TRUE);
@@ -135,10 +137,10 @@ void CRender_Collision::Draw()
 //============================================================================
 // 生成
 //============================================================================
-CRender_Collision* CRender_Collision::Create(D3DXVECTOR3& pos)
+CRender_Collision* CRender_Collision::Create(D3DXVECTOR3& posRef)
 {
 	// インスタンスを生成
-	CRender_Collision* pRender_Collision = DBG_NEW CRender_Collision{ pos, static_cast<int>(LAYER::FRONT) };
+	CRender_Collision* pRender_Collision = DBG_NEW CRender_Collision{ posRef, static_cast<int>(LAYER::FRONT) };
 
 	// 生成出来ていたら初期設定
 	if (pRender_Collision != nullptr)
@@ -158,7 +160,7 @@ HRESULT CRender_Collision::CreateVtxBuff()
 	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
 
 	// 頂点バッファの生成
-	pDev->CreateVertexBuffer(sizeof(VERTEX_3D) * g_nNumVtx,
+	pDev->CreateVertexBuffer(sizeof(VERTEX_3D) * m_nNumVtx,
 		D3DUSAGE_WRITEONLY,
 		FVF_VERTEX_3D,
 		D3DPOOL_MANAGED,
@@ -176,7 +178,7 @@ HRESULT CRender_Collision::CreateVtxBuff()
 	// 頂点バッファをロック
 	m_pVtxBuff->Lock(0, 0, reinterpret_cast<void**>(&pVtx), 0);
 
-	for (int i = 0; i < g_nNumVtx; i++)
+	for (int i = 0; i < m_nNumVtx; i++)
 	{
 		// 位置の設定
 		pVtx[i].pos = { 0.0f, 0.0f, 0.0f };
@@ -203,7 +205,7 @@ HRESULT CRender_Collision::CreateVtxBuff()
 HRESULT CRender_Collision::CreateIdxBuff()
 {
 	// インデックスバッファの生成
-	CManager::GetRenderer()->GetDeviece()->CreateIndexBuffer(sizeof(WORD) * g_nNumIdx,
+	CManager::GetRenderer()->GetDeviece()->CreateIndexBuffer(sizeof(WORD) * m_nNumIdx,
 		D3DUSAGE_WRITEONLY,
 		D3DFMT_INDEX16,
 		D3DPOOL_MANAGED,
@@ -285,22 +287,11 @@ void CRender_Collision::SetMtxWorld()
 	// ワールド行列を初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
 
-	// 回転行列作成
-	D3DXMatrixRotationYawPitchRoll(&mtxRot,
-		m_rot.y,
-		m_rot.x,
-		m_rot.z);
-
-	// 回転行列との掛け算
-	D3DXMatrixMultiply(&m_mtxWorld,
-		&m_mtxWorld,
-		&mtxRot);
-
 	// 平行移動行列作成
 	D3DXMatrixTranslation(&mtxTrans,
-		m_pos.x,
-		m_pos.y,
-		m_pos.z);
+		m_posRef.x,
+		m_posRef.y,
+		m_posRef.z);
 
 	// 平行移動行列との掛け算
 	D3DXMatrixMultiply(&m_mtxWorld,

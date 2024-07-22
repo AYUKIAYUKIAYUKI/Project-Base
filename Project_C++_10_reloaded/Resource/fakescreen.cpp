@@ -415,12 +415,23 @@ HRESULT CFakeScreen::CreateTex()
 //============================================================================
 // コンストラクタ
 //============================================================================
-CFakeScreen::CFakeScreen() : m_pVtxBuff{ nullptr }, m_pIdxBuff{ nullptr },
-m_pTex{ nullptr }, m_pSurface{ nullptr }, m_nNumVtx{ 0 }, m_nNumPolygon{ 0 },
-m_nNumDegenerated{ 0 }, m_nNumIndex{ 0 }, m_pos{ 0.0f, 0.0f, 0.0f },
-m_size{ 0.0f, 0.0f, 0.0f }, m_NextPhase{ CGameManager::PHASE::NONE },
-m_bWaveIn{ false }, m_bWaveOut{ false }, m_fBrightness{ 0.0f },
-m_fPosDistortion{ 0.0f }, m_fAddDistortion{ 0.0f }
+CFakeScreen::CFakeScreen() : 
+	m_pVtxBuff{ nullptr },						// 頂点バッファのポインタ
+	m_pIdxBuff{ nullptr },						// インデックスバッファのポインタ
+	m_pTex{ nullptr },							// テクスチャ情報のポインタ
+	m_pSurface{ nullptr },						// サーフェイス情報のポインタ
+	m_nNumVtx{ 0 },								// 頂点数
+	m_nNumPolygon{ 0 },							// ポリゴン数
+	m_nNumDegenerated{ 0 },						// 縮退ポリゴン数
+	m_nNumIndex{ 0 },							// インデックス数
+	m_pos{ 0.0f, 0.0f, 0.0f },					// 位置
+	m_size{ 0.0f, 0.0f, 0.0f },					// サイズ
+	m_NextPhase{ CGameManager::PHASE::NONE },	// 次のフェーズ
+	m_bWaveIn{ false },							// 波打ちイン判定
+	m_bWaveOut{ false },						// 波打ちアウト判定
+	m_fBrightness{ 0.0f },						// 明度
+	m_fPosDistortion{ 0.0f },					// 座標変動用
+	m_fAddDistortion{ 0.0f }					// ゆがみ増加量
 {
 
 }
