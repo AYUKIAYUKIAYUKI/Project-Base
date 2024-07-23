@@ -20,15 +20,16 @@ class CRender_Collision : public CObject
 {
 public:
 
-	CRender_Collision(D3DXVECTOR3& m_posRef, int nPriority = static_cast<int>(LAYER::FRONT));	// コンストラクタ
-	~CRender_Collision() override;																// デストラクタ
+	CRender_Collision(D3DXVECTOR3& m_posRef, D3DXVECTOR3& sizeRef, int nPriority = static_cast<int>(LAYER::FRONT));	// コンストラクタ
+	~CRender_Collision() override;	// デストラクタ
 
 	HRESULT Init() override;	// 初期設定
 	void Uninit() override;		// 終了処理
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
 
-	static CRender_Collision* Create(D3DXVECTOR3& posRef);	// 生成
+	// 箱型の作成
+	static CRender_Collision* Create(D3DXVECTOR3& posRef, D3DXVECTOR3& sizeRef);	// 生成
 
 private:
 
@@ -49,7 +50,7 @@ private:
 	D3DXMATRIX m_mtxWorld;				// ワールド行列
 
 	// 箱型のみのメンバ
-	D3DXVECTOR3 m_size;	// サイズ
+	D3DXVECTOR3& m_size;	// サイズ
 };
 
 #endif	// _RENDER_COLLISION_H_

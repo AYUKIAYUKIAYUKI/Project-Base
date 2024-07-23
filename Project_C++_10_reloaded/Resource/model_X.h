@@ -61,6 +61,8 @@ public:
 
 private:
 
+	D3DXVECTOR3 ImportSize(std::string filename);	// サイズ読み込み
+
 	static MODEL m_apModelTemp[static_cast<int>(MODEL_TYPE::MAX)];	// モデル管理
 };
 

@@ -20,8 +20,6 @@
 #include "goal.h"
 #include "start.h"
 
-#include "render_collision.h"
-
 //============================================================================
 // コンストラクタ
 //============================================================================
@@ -32,9 +30,6 @@ CPlayer::CPlayer() : CObject_X(static_cast<int>(LAYER::FRONT_MIDDLE))
 	m_posTarget = { 0.0f, 0.0f, 0.0f };		// 目標位置の初期化
 	m_rotTarget = { 0.0f, 0.0f, 0.0f };		// 目標向きの初期化
 	m_fAngleFlying = 0.0f;					// 飛行向きの初期化
-
-	// 判定表示の生成
-	CRender_Collision::Create(m_posTarget);
 }
 
 //============================================================================

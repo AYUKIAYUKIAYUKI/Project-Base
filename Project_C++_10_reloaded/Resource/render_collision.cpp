@@ -21,12 +21,13 @@ const int CRender_Collision::m_nNumIdx = 24;		// インデックス数
 //============================================================================
 // コンストラクタ
 //============================================================================
-CRender_Collision::CRender_Collision(D3DXVECTOR3& posRef, int nPriority) : 
+CRender_Collision::CRender_Collision(D3DXVECTOR3& posRef, D3DXVECTOR3& sizeRef, int nPriority) :
 	CObject{ nPriority },				// プライオリティ
 	m_pVtxBuff{ nullptr },				// 頂点バッファのポインタ
 	m_pIdxBuff{ nullptr },				// インデックスバッファのポインタ
 	m_posRef{ posRef },					// 参照位置
-	m_col{ 0.0f, 0.0f, 0.0f, 0.0f }		// 色
+	m_col{ 0.0f, 0.0f, 0.0f, 0.0f },	// 色
+	m_size{ sizeRef }
 {
 	// ワールド行列の初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
@@ -137,10 +138,10 @@ void CRender_Collision::Draw()
 //============================================================================
 // 生成
 //============================================================================
-CRender_Collision* CRender_Collision::Create(D3DXVECTOR3& posRef)
+CRender_Collision* CRender_Collision::Create(D3DXVECTOR3& posRef, D3DXVECTOR3& sizeRef)
 {
 	// インスタンスを生成
-	CRender_Collision* pRender_Collision = DBG_NEW CRender_Collision{ posRef, static_cast<int>(LAYER::FRONT) };
+	CRender_Collision* pRender_Collision = DBG_NEW CRender_Collision{ posRef,sizeRef, static_cast<int>(LAYER::FRONT) };
 
 	// 生成出来ていたら初期設定
 	if (pRender_Collision != nullptr)

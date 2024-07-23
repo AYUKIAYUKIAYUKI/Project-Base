@@ -11,6 +11,7 @@
 #include "object_X.h"
 #include "main.h"
 #include "manager.h"
+#include "render_collision.h"
 
 //****************************************************
 // 静的メンバ変数の初期化
@@ -28,6 +29,9 @@ CObject_X::CObject_X(int nPriority) : CObject(nPriority)
 	m_size = { 0.0f, 0.0f, 0.0f };		// サイズ
 	m_fAlpha = DEFAULT_ALPHA_VALUE;		// アルファ値
 	D3DXMatrixIdentity(&m_mtxWorld);	// ワールド行列
+
+	// 判定表示の生成
+	CRender_Collision::Create(m_pos, m_size);
 }
 
 //============================================================================
