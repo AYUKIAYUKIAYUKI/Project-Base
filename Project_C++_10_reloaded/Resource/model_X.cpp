@@ -176,8 +176,6 @@ CModel_X::MODEL* CModel_X::GetModel(MODEL_TYPE type)
 //============================================================================
 D3DXVECTOR3 CModel_X::ImportSize(std::string filename)
 {
-	D3DXVECTOR3 size = { 0.0f, 0.0f, 0.0f };
-
 	// 比較処理用に数値を入れておく
 	D3DXVECTOR3 sizeMin{ FLT_MAX, FLT_MAX, FLT_MAX };
 	D3DXVECTOR3 sizeMax{ FLT_MIN, FLT_MIN, FLT_MIN };
@@ -211,6 +209,12 @@ D3DXVECTOR3 CModel_X::ImportSize(std::string filename)
 	// 数値を比較していく
 	while (std::getline(file, str))
 	{
+		// 終了条件
+		if (str == " ")
+		{
+			break;
+		}
+
 		// 数値用
 		float fNum[nNumArray]{};
 
@@ -256,5 +260,5 @@ D3DXVECTOR3 CModel_X::ImportSize(std::string filename)
 	// ファイルを閉じる
 	file.close();
 
-	return size;
+	return sizeMax;
 }

@@ -78,13 +78,23 @@ CBlock* CBlock::Create(D3DXVECTOR3 pos)
 		assert(false);
 	}
 
-	pBlock->SetType(TYPE::BLOCK);	// タイプを設定
+	// タイプを設定
+	pBlock->SetType(TYPE::BLOCK);
 
-	pBlock->Init();			// 基底クラスの初期設定
-	pBlock->SetPos(pos);	// 位置の設定
+	// 基底クラスの初期設定
+	pBlock->Init();
+
+	// 座標の設定
+	pBlock->SetPos(pos);
+
+	// モデルを取得
+	auto model = CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::BLOCK_000);
 
 	// モデルを設定
-	pBlock->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::BLOCK_000));
+	pBlock->BindModel(model);
+
+	// サイズを設定
+	pBlock->SetSize(model->size);
 
 	// 描画される前に一度更新しておく
 	pBlock->Update();

@@ -88,8 +88,14 @@ CPlayerStateDefault::~CPlayerStateDefault()
 //============================================================================
 void CPlayerStateDefault::Enter()
 {
-	// 見た目を変更
-	m_pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_000));
+	// モデルを取得
+	auto model = CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_000);
+
+	// モデルの設定
+	m_pPlayer->BindModel(model);
+
+	// サイズを設定
+	m_pPlayer->SetSize(model->size);
 }
 
 //============================================================================
@@ -285,8 +291,14 @@ CPlayerStateBeginning::~CPlayerStateBeginning()
 //============================================================================
 void CPlayerStateBeginning::Enter()
 {
-	// 見た目を変更
-	m_pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_001));
+	// モデルを取得
+	auto model = CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_001);
+
+	// モデルの設定
+	m_pPlayer->BindModel(model);
+
+	// サイズを設定
+	m_pPlayer->SetSize(model->size);
 
 	// 爆発を生成
 	CExplosion::Create(
@@ -373,8 +385,14 @@ CPlayerStateFlying::~CPlayerStateFlying()
 //============================================================================
 void CPlayerStateFlying::Enter()
 {
-	// 見た目を変更
-	m_pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_002));
+	// モデルを取得
+	auto model = CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_002);
+
+	// モデルの設定
+	m_pPlayer->BindModel(model);
+
+	// サイズを設定
+	m_pPlayer->SetSize(model->size);
 }
 
 //============================================================================
@@ -570,8 +588,14 @@ CPlayerStateStopping::~CPlayerStateStopping()
 //============================================================================
 void CPlayerStateStopping::Enter()
 {
-	// 見た目を変更
-	m_pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_003));
+	// モデルを取得
+	auto model = CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_003);
+
+	// モデルの設定
+	m_pPlayer->BindModel(model);
+
+	// サイズを設定
+	m_pPlayer->SetSize(model->size);
 
 	// 爆発を生成
 	CExplosion::Create(
@@ -621,8 +645,14 @@ void CPlayerStateStopping::Exit()
 	rot.z = 0.0f;
 	m_pPlayer->SetRot(rot);
 
-	// 見た目を変更
-	m_pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_000));
+	// モデルを取得
+	auto model = CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_000);
+
+	// モデルの設定
+	m_pPlayer->BindModel(model);
+
+	// サイズを設定
+	m_pPlayer->SetSize(model->size);
 }
 
 //============================================================================
@@ -702,8 +732,14 @@ void CPlayerStateMistook::Enter()
 	// 回転を初期化
 	m_pPlayer->SetRot({ 0.0f, 0.0f, 0.0f });
 
-	// 見た目を変更
-	m_pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_004));
+	// モデルを取得
+	auto model = CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_004);
+
+	// モデルの設定
+	m_pPlayer->BindModel(model);
+
+	// サイズを設定
+	m_pPlayer->SetSize(model->size);
 
 	// スタートオブジェクトの位置情報を取得
 	FindStartObject();
@@ -817,8 +853,14 @@ CPlayerStateGoal::~CPlayerStateGoal()
 //============================================================================
 void CPlayerStateGoal::Enter()
 {
-	// 見た目を変更
-	m_pPlayer->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_005));
+	// モデルを取得
+	auto model = CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_005);
+
+	// モデルの設定
+	m_pPlayer->BindModel(model);
+
+	// サイズを設定
+	m_pPlayer->SetSize(model->size);
 }
 
 //============================================================================

@@ -48,9 +48,6 @@ HRESULT CPlayer::Init()
 	// 基底クラスの初期設定
 	HRESULT hr = CObject_X::Init();
 
-	// 大きさを設定
-	SetSize({ 10.0f, 10.0f, 10.0f });
-
 	if (m_pStateManager == nullptr)
 	{
 		// 状態マネージャーの生成
@@ -231,10 +228,14 @@ CPlayer* CPlayer::Create(D3DXVECTOR3 pos)
 		assert(false);
 	}
 
-	pPlayer->SetType(TYPE::PLAYER);	// タイプを設定
+	// タイプを設定
+	pPlayer->SetType(TYPE::PLAYER);
 
-	pPlayer->Init();		// 基底クラスの初期設定
-	pPlayer->SetPos(pos);	// 位置の設定
+	// 基底クラスの初期設定
+	pPlayer->Init();
+
+	// 位置の設定
+	pPlayer->SetPos(pos);
 
 	return pPlayer;
 }
