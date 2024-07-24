@@ -92,13 +92,23 @@ CStart* CStart::Create(D3DXVECTOR3 pos)
 		assert(false);
 	}
 
-	pStart->SetType(TYPE::START);	// タイプを設定
+	// タイプを設定
+	pStart->SetType(TYPE::START);
 
-	pStart->Init();			// 基底クラスの初期設定
-	pStart->SetPos(pos);	// 位置の設定
+	// 基底クラスの初期設定
+	pStart->Init();
+
+	// 位置の設定
+	pStart->SetPos(pos);
+
+	// モデルを取得
+	auto model = CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::START);
 
 	// モデルを設定
-	pStart->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::START));
+	pStart->BindModel(model);
+
+	// サイズを設定
+	pStart->SetSize(model->size);
 
 	// 描画される前に一度更新しておく
 	pStart->Update();

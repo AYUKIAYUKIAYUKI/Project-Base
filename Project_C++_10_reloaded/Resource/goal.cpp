@@ -83,13 +83,23 @@ CGoal* CGoal::Create(D3DXVECTOR3 pos)
 		assert(false);
 	}
 
-	pGoal->SetType(TYPE::GOAL);	// タイプを設定
+	// タイプを設定
+	pGoal->SetType(TYPE::GOAL);
 
-	pGoal->Init();		// 基底クラスの初期設定
-	pGoal->SetPos(pos);	// 位置の設定
+	// 基底クラスの初期設定
+	pGoal->Init();
+
+	// 位置の設定
+	pGoal->SetPos(pos);	
+
+	// モデルを取得
+	auto model = CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::GOAL);
 
 	// モデルを設定
-	pGoal->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::GOAL));
+	pGoal->BindModel(model);
+
+	// サイズを設定
+	pGoal->SetSize(model->size);
 
 	// 描画される前に一度更新しておく
 	pGoal->Update();

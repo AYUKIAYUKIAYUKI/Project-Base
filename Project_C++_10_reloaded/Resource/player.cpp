@@ -263,9 +263,6 @@ bool CPlayer::Collision()
 	// 衝突検出
 	bool bDetected = 0;
 
-	/* 仮のブロックサイズ */
-	D3DXVECTOR3 BlockSize = { 10.0f, 10.0f, 10.0f };
-
 	// オブジェクトを取得
 	CObject** pObject = CObject::FindAllObject(CObject::TYPE::BLOCK);
 
@@ -281,10 +278,10 @@ bool CPlayer::Collision()
 		CBlock* pBlock = CBlock::DownCast(pObject[nCntObj]);
 
 		// ブロックと衝突する場合
-		if (CPhysics::GetInstance()->OnlyCube(m_posTarget, GetSize(), pBlock->GetPos(), BlockSize))
+		if (CPhysics::GetInstance()->OnlyCube(pBlock->GetPos(), pBlock->GetSize(), m_posTarget, GetSize()))
 		{
 			// 押し出し処理
-			CPhysics::GetInstance()->CubeResponse(m_posTarget, m_velocity, GetPos(), GetSize(), pBlock->GetPos(), BlockSize);
+			CPhysics::GetInstance()->CubeResponse(m_posTarget, m_velocity, GetPos(), GetSize(), pBlock->GetPos(), pBlock->GetSize());
 
 			// 衝突判定を出す
 			bDetected = 1;
@@ -295,7 +292,7 @@ bool CPlayer::Collision()
 	CGoal* pGoal = CGoal::DownCast(CObject::FindObject(CObject::TYPE::GOAL));
 
 	// ゴールと衝突する場合
-	if (CPhysics::GetInstance()->SphereAndCube(pGoal->GetPos(), 10.0f, m_posTarget, GetSize()))
+	if (CPhysics::GetInstance()->SphereAndCube(pGoal->GetPos(), pGoal->GetSize().x, m_posTarget, GetSize()))
 	{			
 		// ゴール状態に移行する合図を設定
 		m_pStateManager->SetPendingState(CPlayerState::STATE::GOAL);

@@ -1,4 +1,4 @@
-data\\MODEL\\test.x
+data\\MODEL\\testplayer.x
 data\\MODEL\\player2_Y_0.x
 data\\MODEL\\player3_Y_0.x
 data\\MODEL\\player4_Y_0.x
