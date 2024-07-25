@@ -12,6 +12,7 @@
 #include "manager.h"
 
 #include "block.h"
+#include "block_destructible.h"
 #include "dummy.h"
 #include "start.h"
 #include "goal.h"
@@ -147,6 +148,14 @@ void CStageMaker::Import(std::string path)
 }
 
 //============================================================================
+// 配置物の種類を参照
+//============================================================================
+int& CStageMaker::GetPatternRef()
+{
+	return m_nPattern;
+}
+
+//============================================================================
 // 取得
 //============================================================================
 CStageMaker* CStageMaker::GetInstance()
@@ -163,7 +172,7 @@ CStageMaker* CStageMaker::GetInstance()
 //============================================================================
 // コンストラクタ
 //============================================================================
-CStageMaker::CStageMaker()
+CStageMaker::CStageMaker() : m_nPattern{ 0 }	// 配置物の種類識別
 {
 
 }
@@ -200,6 +209,17 @@ void CStageMaker::Control()
 		}
 	}
 
+	if (CManager::GetKeyboard()->GetTrigger(DIK_Q))
+	{
+		m_nPattern > 0 ? m_nPattern-- : m_nPattern = 3;
+	}
+	else if (CManager::GetKeyboard()->GetTrigger(DIK_E))
+	{
+		m_nPattern < 3 ? m_nPattern++ : m_nPattern = 0;
+	}
+
+	CManager::GetRenderer()->SetDebugString("現在の配置物の種類:" + std::to_string(m_nPattern));
+
 	if (CManager::GetKeyboard()->GetTrigger(DIK_F3))
 	{
 		// ステージ読み込み
@@ -209,20 +229,61 @@ void CStageMaker::Control()
 	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
 	{
 		// 設置
-		Regist();
+		Register();
 	}
 }
 
 //============================================================================
 // 設置
 //============================================================================
-void CStageMaker::Regist()
+void CStageMaker::Register()
 {
-	//ダミーを取得
+	// ダミーを取得
 	CDummy* pDummy = CDummy::DownCast(CObject::FindObject(CObject::TYPE::DUMMY));
 
-	// ダミーの位置にブロックを生成
-	CBlock::Create(pDummy->GetPos());
+	// ダミーの位置にオブジェクト生成
+	switch (m_nPattern)
+	{
+	case 0:
+		CBlock::Create(pDummy->GetPos());
+		break;
+
+	case 1:
+		CBlockDestructible::Create(pDummy->GetPos());
+		break;
+
+	case 2:
+
+		// スタートタイプのオブジェクトを検索
+		if (!CObject::FindObject(CObject::TYPE::START))
+		{
+			CStart::Create(pDummy->GetPos());
+		}
+		else
+		{
+			CManager::GetRenderer()->SetTimeString("【スタートはすでに配置されています】", 60);
+		}
+
+		break;
+
+	case 3:
+
+		// スタートタイプのオブジェクトを検索
+		if (!CObject::FindObject(CObject::TYPE::GOAL))
+		{
+			CGoal::Create(pDummy->GetPos());
+		}
+		else
+		{
+			CManager::GetRenderer()->SetTimeString("【ゴールはすでに配置されています】", 60);
+		}
+
+		break;
+
+	default:
+		assert(false);
+		break;
+	}
 }
 
 //============================================================================

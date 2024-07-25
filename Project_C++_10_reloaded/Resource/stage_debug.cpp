@@ -38,11 +38,14 @@ CStage_Debug::~CStage_Debug()
 //============================================================================
 HRESULT CStage_Debug::Init()
 {
+	// ステージメーカーの初期化
+	CStageMaker::GetInstance()->Init();
+
 	// グリッドライン生成
 	CLine::CreateGrid();
 
 	// ダミーの生成
-	CDummy::Create({ 0.0f, 0.0f, 0.0f });
+	CDummy::Create({ 0.0f, 0.0f, 0.0f }, CStageMaker::GetInstance()->GetPatternRef());
 
 	return S_OK;
 }

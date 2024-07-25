@@ -20,20 +20,23 @@ class CDummy : public CObject_X
 {
 public:
 
-	CDummy();// コンストラクタ
-	~CDummy();// デストラクタ
+	CDummy(int& nPattern);	// コンストラクタ
+	~CDummy();				// デストラクタ
 
 	HRESULT Init() override;	// 初期設定
 	void Uninit() override;		// 終了処理
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
 
-	static CDummy* Create(D3DXVECTOR3 pos);		// 生成
-	static CDummy* DownCast(CObject* pObject);	// ダウンキャスト
+	static CDummy* Create(D3DXVECTOR3 pos, int& nPattern);	// 生成
+	static CDummy* DownCast(CObject* pObject);				// ダウンキャスト
 
 private:
 
-	void Control();	// 操作
+	void Control();			// 操作
+	void CheckPattern();	// ダミーの種類を確認
+
+	int& m_nPatternRef;	// 配置物の種類を参照
 };
 
 #endif // _DUMMY_H_

@@ -27,6 +27,8 @@ public:
 	void Update();	// 更新処理
 	void Import(std::string path);	// ステージ読み込み
 
+	int& GetPatternRef();	// 配置物の種類を参照
+
 	static CStageMaker* GetInstance();	// ステージメーカーを取得
 
 private:
@@ -34,10 +36,12 @@ private:
 	CStageMaker();	// コンストラクタ
 	~CStageMaker();	// デストラクタ
 
-	void Control();	// 操作
-	void Regist();	// 設置
-	void Export();	// ステージ書き出し
+	void Control();		// 操作
+	void Register();	// 設置
+	void Export();		// ステージ書き出し
 	void Output(std::ofstream& file, D3DXVECTOR3 pos, std::string str);	// 情報書き出し
+
+	int m_nPattern;	// 配置物の種類を識別
 
 	static CStageMaker* m_pInstance;	// ステージメーカー
 };
