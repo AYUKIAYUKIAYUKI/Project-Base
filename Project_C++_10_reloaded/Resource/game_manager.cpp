@@ -13,6 +13,7 @@
 #include "manager.h"
 
 // オブジェクト生成用
+#include "block_destructible.h"
 #include "player.h"
 #include "score.h"
 
@@ -98,6 +99,9 @@ void CGameManager::Update()
 
 		// ステージを読み込む
 		CStageMaker::GetInstance()->Import(m_stagePath[0]);
+
+		// 可壊ブロックを生成
+		CBlockDestructible::Create({ 0.0f, 300.0f, 0.0f });
 
 		// 先頭要素を削除する
 		m_stagePath.erase(m_stagePath.begin());

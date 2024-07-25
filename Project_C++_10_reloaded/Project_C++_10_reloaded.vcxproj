@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="resource\bg.cpp" />
     <ClCompile Include="resource\block.cpp" />
+    <ClCompile Include="Resource\block_destructible.cpp" />
     <ClCompile Include="resource\camera.cpp" />
     <ClCompile Include="Resource\dummy.cpp" />
     <ClCompile Include="Resource\explosion.cpp" />
@@ -51,6 +52,7 @@
     <ClCompile Include="resource\renderer.cpp" />
     <ClCompile Include="Resource\render_collision.cpp" />
     <ClCompile Include="Resource\render_collision_box.cpp" />
+    <ClCompile Include="Resource\render_collision_sphere.cpp" />
     <ClCompile Include="Resource\result.cpp" />
     <ClCompile Include="Resource\scene.cpp" />
     <ClCompile Include="resource\score.cpp" />
@@ -65,6 +67,7 @@
   <ItemGroup>
     <ClInclude Include="resource\bg.h" />
     <ClInclude Include="resource\block.h" />
+    <ClInclude Include="Resource\block_destructible.h" />
     <ClInclude Include="resource\camera.h" />
     <ClInclude Include="Resource\dummy.h" />
     <ClInclude Include="Resource\explosion.h" />
@@ -92,6 +95,7 @@
     <ClInclude Include="resource\renderer.h" />
     <ClInclude Include="Resource\render_collision.h" />
     <ClInclude Include="Resource\render_collision_box.h" />
+    <ClInclude Include="Resource\render_collision_sphere.h" />
     <ClInclude Include="Resource\result.h" />
     <ClInclude Include="Resource\scene.h" />
     <ClInclude Include="resource\score.h" />

@@ -12,7 +12,6 @@
 #include "game_manager.h"
 #include "stagemaker.h"
 #include "manager.h"
-#include "object.h"
 
 //============================================================================
 // コンストラクタ

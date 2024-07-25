@@ -16,6 +16,7 @@
 #include "fakescreen.h"
 
 #include "block.h"
+#include "block_destructible.h"
 #include "explosion.h"
 #include "goal.h"
 #include "start.h"
@@ -282,6 +283,34 @@ bool CPlayer::Collision()
 		{
 			// 押し出し処理
 			CPhysics::GetInstance()->CubeResponse(m_posTarget, m_velocity, GetPos(), GetSize(), pBlock->GetPos(), pBlock->GetSize());
+
+			// 衝突判定を出す
+			bDetected = 1;
+		}
+	}
+
+	// オブジェクトを取得
+	pObject = CObject::FindAllObject(CObject::TYPE::DESTRUCTIBLE);
+
+	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	{
+		// オブジェクトの情報が無くなったら終了
+		if (pObject[nCntObj] == nullptr)
+		{
+			break;
+		}
+
+		// 可壊ブロックへダウンキャスト
+		CBlockDestructible* pDestructible = CBlockDestructible::DownCast(pObject[nCntObj]);
+
+		// 可壊ブロックと衝突する場合
+		if (CPhysics::GetInstance()->OnlyCube(pDestructible->GetPos(), pDestructible->GetSize(), m_posTarget, GetSize()))
+		{
+			// 押し出し処理
+			CPhysics::GetInstance()->CubeResponse(m_posTarget, m_velocity, GetPos(), GetSize(), pDestructible->GetPos(), pDestructible->GetSize());
+
+			// 消す
+			pDestructible->Release();
 
 			// 衝突判定を出す
 			bDetected = 1;

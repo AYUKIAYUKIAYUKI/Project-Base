@@ -22,15 +22,16 @@ public:
 	//****************************************************
 	enum class TYPE
 	{
-		NONE = 0,	// 無し
-		PLAYER,		// プレイヤー
-		DUMMY,		// ダミー
-		ENEMY,		// エネミー
-		BLOCK,		// ブロック
-		ITEM,		// アイテム
-		START,		// スタート
-		GOAL,		// ゴール
-		SCORE,		// スコア
+		NONE = 0,		// 無し
+		PLAYER,			// プレイヤー
+		DUMMY,			// ダミー
+		ENEMY,			// エネミー
+		BLOCK,			// ブロック
+		DESTRUCTIBLE,	// 可壊ブロック
+		ITEM,			// アイテム
+		START,			// スタート
+		GOAL,			// ゴール
+		SCORE,			// スコア
 		MAX,
 	};
 
