@@ -129,6 +129,10 @@ void CStageMaker::Import(std::string path)
 		{ // ブロック
 			CBlock::Create(pos);
 		}
+		else if (str_type == "destructible")
+		{ // 可壊ブロック
+			CBlockDestructible::Create(pos);
+		}
 		else if (str_type == "start")
 		{ // スタート
 			CStart::Create(pos);
@@ -322,6 +326,24 @@ void CStageMaker::Export()
 
 		// 情報を書き出す
 		Output(Export, pBlock->GetPos(), "block");
+	}
+
+	// 可壊ブロックタイプのオブジェクトをすべて取得
+	pObject = CObject::FindAllObject(CObject::TYPE::DESTRUCTIBLE);
+
+	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	{
+		// オブジェクトの情報が無くなったら終了
+		if (pObject[nCntObj] == nullptr)
+		{
+			break;
+		}
+
+		// 可壊ブロッククラスへダウンキャスト
+		CBlockDestructible* pDestructible = CBlockDestructible::DownCast(pObject[nCntObj]);
+
+		// 情報を書き出す
+		Output(Export, pDestructible->GetPos(), "destructible");
 	}
 
 	Export.close();	// ファイルを閉じる

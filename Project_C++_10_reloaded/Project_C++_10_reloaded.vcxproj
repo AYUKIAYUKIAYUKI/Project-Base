@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -56,6 +56,7 @@
     <ClCompile Include="Resource\result.cpp" />
     <ClCompile Include="Resource\scene.cpp" />
     <ClCompile Include="resource\score.cpp" />
+    <ClCompile Include="Resource\smoke.cpp" />
     <ClCompile Include="resource\sound.cpp" />
     <ClCompile Include="Resource\stagemaker.cpp" />
     <ClCompile Include="Resource\stage_debug.cpp" />
@@ -99,6 +100,7 @@
     <ClInclude Include="Resource\result.h" />
     <ClInclude Include="Resource\scene.h" />
     <ClInclude Include="resource\score.h" />
+    <ClInclude Include="Resource\smoke.h" />
     <ClInclude Include="resource\sound.h" />
     <ClInclude Include="Resource\stagemaker.h" />
     <ClInclude Include="Resource\stage_debug.h" />
