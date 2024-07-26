@@ -11,7 +11,7 @@
 #include "player_state.h"
 
 #include "manager.h"
-#include "physics.h"
+#include "utility.h"
 #include "explosion.h"
 #include "start.h"
 
@@ -114,7 +114,7 @@ void CPlayerStateDefault::Update()
 
 	// 重力落下
 	D3DXVECTOR3 velocity = m_pPlayer->GetVelocity();
-	CPhysics::GetInstance()->Gravity(velocity);
+	CUtility::GetInstance()->Gravity(velocity);
 	m_pPlayer->SetVelocity(velocity);
 
 	// 制動調整
@@ -621,7 +621,7 @@ void CPlayerStateStopping::Update()
 
 		// 重力加速
 		D3DXVECTOR3 velocity = m_pPlayer->GetVelocity();
-		CPhysics::GetInstance()->Gravity(velocity);
+		CUtility::GetInstance()->Gravity(velocity);
 		m_pPlayer->SetVelocity(velocity);
 
 		// 座標変更を反映

@@ -1,6 +1,6 @@
 //============================================================================
 // 
-// 物理演算 [physics.cpp]
+// 便利関数群 [utility.cpp]
 // Author : 福田歩希
 // 
 //============================================================================
@@ -8,18 +8,58 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
-#include "physics.h"
+#include "utility.h"
 
 //****************************************************
 // 静的メンバ変数の初期化
 //****************************************************
-const float CPhysics::GRAVITY_FORCE = -0.15f;	// 重力
-CPhysics* CPhysics::m_pInstance = nullptr;		// インスタンス情報
+const float CUtility::GRAVITY_FORCE = -0.15f;	// 重力
+CUtility* CUtility::m_pInstance = nullptr;		// 便利関数群
+
+//============================================================================
+// 初期設定
+//============================================================================
+HRESULT CUtility::Init()
+{
+	return S_OK;
+}
+
+//============================================================================
+// 破棄
+//============================================================================
+void CUtility::Release()
+{
+	if (m_pInstance != nullptr)
+	{
+		// 終了処理
+		m_pInstance->Uninit();
+
+		// メモリ解放
+		delete m_pInstance;	
+
+		// ポインタを初期化
+		m_pInstance = nullptr;
+	}
+}
+
+//============================================================================
+// 便利関数群を取得
+//============================================================================
+CUtility* CUtility::GetInstance()
+{
+	if (m_pInstance == nullptr)
+	{
+		// 生成
+		m_pInstance->Create();
+	}
+
+	return m_pInstance;
+}
 
 //============================================================================
 // 重力落下
 //============================================================================
-void CPhysics::Gravity(D3DXVECTOR3& vec)
+void CUtility::Gravity(D3DXVECTOR3& vec)
 {
 	vec.y += GRAVITY_FORCE;
 }
@@ -27,7 +67,7 @@ void CPhysics::Gravity(D3DXVECTOR3& vec)
 //============================================================================
 // 球形の衝突判定
 //============================================================================
-bool CPhysics::OnlySphere(const D3DXVECTOR3& posSelf, const float& fRadiusSelf, const D3DXVECTOR3& posTarget, const float& fRadiusTarget)
+bool CUtility::OnlySphere(const D3DXVECTOR3& posSelf, const float& fRadiusSelf, const D3DXVECTOR3& posTarget, const float& fRadiusTarget)
 {
 	// 目標地点へのベクトルを算出
 	D3DXVECTOR3 vec = posTarget - posSelf;
@@ -44,7 +84,7 @@ bool CPhysics::OnlySphere(const D3DXVECTOR3& posSelf, const float& fRadiusSelf, 
 //============================================================================
 // 球と立方体の当たり判定
 //============================================================================
-bool CPhysics::SphereAndCube(const D3DXVECTOR3& posSph, const float& fRadius, const D3DXVECTOR3& posCube, const D3DXVECTOR3& size)
+bool CUtility::SphereAndCube(const D3DXVECTOR3& posSph, const float& fRadius, const D3DXVECTOR3& posCube, const D3DXVECTOR3& size)
 {
 	// 全ての軸方向からお互いにめり込んでいるとき衝突
 	if (posSph.x + fRadius > posCube.x - size.x &&
@@ -63,7 +103,7 @@ bool CPhysics::SphereAndCube(const D3DXVECTOR3& posSph, const float& fRadius, co
 //============================================================================
 // 立方形の衝突判定
 //============================================================================
-bool CPhysics::OnlyCube(const D3DXVECTOR3& posSelf, const D3DXVECTOR3& sizeSelf, const D3DXVECTOR3& posTarget, const D3DXVECTOR3& sizeTarget)
+bool CUtility::OnlyCube(const D3DXVECTOR3& posSelf, const D3DXVECTOR3& sizeSelf, const D3DXVECTOR3& posTarget, const D3DXVECTOR3& sizeTarget)
 {
 	// 全ての軸方向からお互いにめり込んでいるとき衝突
 	if (posSelf.x + sizeSelf.x > posTarget.x - sizeTarget.x &&
@@ -82,7 +122,7 @@ bool CPhysics::OnlyCube(const D3DXVECTOR3& posSelf, const D3DXVECTOR3& sizeSelf,
 //============================================================================
 // 押し出し処理
 //============================================================================
-bool CPhysics::CubeResponse(D3DXVECTOR3& posDest, D3DXVECTOR3& velocity, const D3DXVECTOR3& posSelf, const D3DXVECTOR3& sizeSelf, const D3DXVECTOR3& posTarget, const D3DXVECTOR3& sizeTarget)
+bool CUtility::CubeResponse(D3DXVECTOR3& posDest, D3DXVECTOR3& velocity, const D3DXVECTOR3& posSelf, const D3DXVECTOR3& sizeSelf, const D3DXVECTOR3& posTarget, const D3DXVECTOR3& sizeTarget)
 {
 	// 過去の位置がどちらかの軸方向に重なっていたかで処理分岐
 	if (posSelf.x + sizeSelf.x > posTarget.x - sizeTarget.x &&
@@ -128,55 +168,9 @@ bool CPhysics::CubeResponse(D3DXVECTOR3& posDest, D3DXVECTOR3& velocity, const D
 }
 
 //============================================================================
-// 生成
-//============================================================================
-HRESULT CPhysics::Create()
-{
-	if (m_pInstance == nullptr)
-	{
-		// インスタンスを生成
-		m_pInstance = DBG_NEW CPhysics();
-	}
-
-	if (m_pInstance == nullptr)
-	{
-		// 生成失敗
-		return E_FAIL;
-	}
-
-	return S_OK;
-}
-
-//============================================================================
-// 破棄
-//============================================================================
-void CPhysics::Release()
-{
-	if (m_pInstance != nullptr)
-	{
-		delete m_pInstance;		// メモリ解放
-		m_pInstance = nullptr;	// ポインタを初期化
-	}
-}
-
-//============================================================================
-// インスタンスを取得
-//============================================================================
-CPhysics* CPhysics::GetInstance()
-{
-	if (m_pInstance == nullptr)
-	{
-		// 取得失敗
-		assert(false);
-	}
-
-	return m_pInstance;
-}
-
-//============================================================================
 // コンストラクタ
 //============================================================================
-CPhysics::CPhysics()
+CUtility::CUtility()
 {
 
 }
@@ -184,7 +178,29 @@ CPhysics::CPhysics()
 //============================================================================
 // デストラクタ
 //============================================================================
-CPhysics::~CPhysics()
+CUtility::~CUtility()
+{
+
+}
+
+//============================================================================
+// 生成
+//============================================================================
+void CUtility::Create()
+{
+	if (m_pInstance != nullptr)
+	{ // 二重生成禁止
+		assert(false);
+	}
+
+	// インスタンスを生成
+	m_pInstance = DBG_NEW CUtility{};
+}
+
+//============================================================================
+// 終了処理
+//============================================================================
+void CUtility::Uninit()
 {
 
 }

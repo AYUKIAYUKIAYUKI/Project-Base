@@ -12,7 +12,7 @@
 #include "player_state.h"
 #include "manager.h"
 #include "game_manager.h"
-#include "physics.h"
+#include "utility.h"
 #include "fakescreen.h"
 
 #include "block.h"
@@ -24,13 +24,15 @@
 //============================================================================
 // コンストラクタ
 //============================================================================
-CPlayer::CPlayer() : CObject_X(static_cast<int>(LAYER::FRONT_MIDDLE))
+CPlayer::CPlayer() :
+	CObject_X(static_cast<int>(LAYER::FRONT_MIDDLE)),	// プライオリティの設定
+	m_pStateManager{ nullptr },							// 状態マネージャーの初期化
+	m_velocity{ 0.0f, 0.0f, 0.0f },						// 加速度の初期化
+	m_posTarget{ 0.0f, 0.0f, 0.0f },					// 目標位置の初期化
+	m_rotTarget{ 0.0f, 0.0f, 0.0f },					// 目標向きの初期化
+	m_fAngleFlying{ 0.0f }								// 飛行向きの初期化
 {
-	m_pStateManager = nullptr;				// 状態マネージャーの初期化
-	m_velocity = { 0.0f, 0.0f, 0.0f };		// 加速度の初期化
-	m_posTarget = { 0.0f, 0.0f, 0.0f };		// 目標位置の初期化
-	m_rotTarget = { 0.0f, 0.0f, 0.0f };		// 目標向きの初期化
-	m_fAngleFlying = 0.0f;					// 飛行向きの初期化
+	
 }
 
 //============================================================================
@@ -279,10 +281,10 @@ bool CPlayer::Collision()
 		CBlock* pBlock = CBlock::DownCast(pObject[nCntObj]);
 
 		// ブロックと衝突する場合
-		if (CPhysics::GetInstance()->OnlyCube(pBlock->GetPos(), pBlock->GetSize(), m_posTarget, GetSize()))
+		if (CUtility::GetInstance()->OnlyCube(pBlock->GetPos(), pBlock->GetSize(), m_posTarget, GetSize()))
 		{
 			// 押し出し処理
-			CPhysics::GetInstance()->CubeResponse(m_posTarget, m_velocity, GetPos(), GetSize(), pBlock->GetPos(), pBlock->GetSize());
+			CUtility::GetInstance()->CubeResponse(m_posTarget, m_velocity, GetPos(), GetSize(), pBlock->GetPos(), pBlock->GetSize());
 
 			// 衝突判定を出す
 			bDetected = 1;
@@ -304,10 +306,10 @@ bool CPlayer::Collision()
 		CBlockDestructible* pDestructible = CBlockDestructible::DownCast(pObject[nCntObj]);
 
 		// 可壊ブロックと衝突する場合
-		if (CPhysics::GetInstance()->OnlyCube(pDestructible->GetPos(), pDestructible->GetSize(), m_posTarget, GetSize()))
+		if (CUtility::GetInstance()->OnlyCube(pDestructible->GetPos(), pDestructible->GetSize(), m_posTarget, GetSize()))
 		{
 			// 押し出し処理
-			CPhysics::GetInstance()->CubeResponse(m_posTarget, m_velocity, GetPos(), GetSize(), pDestructible->GetPos(), pDestructible->GetSize());
+			CUtility::GetInstance()->CubeResponse(m_posTarget, m_velocity, GetPos(), GetSize(), pDestructible->GetPos(), pDestructible->GetSize());
 
 			// 消す
 			pDestructible->Release();
@@ -321,7 +323,7 @@ bool CPlayer::Collision()
 	CGoal* pGoal = CGoal::DownCast(CObject::FindObject(CObject::TYPE::GOAL));
 
 	// ゴールと衝突する場合
-	if (CPhysics::GetInstance()->SphereAndCube(pGoal->GetPos(), pGoal->GetSize().x, m_posTarget, GetSize()))
+	if (CUtility::GetInstance()->SphereAndCube(pGoal->GetPos(), pGoal->GetSize().x, m_posTarget, GetSize()))
 	{			
 		// ゴール状態に移行する合図を設定
 		m_pStateManager->SetPendingState(CPlayerState::STATE::GOAL);
