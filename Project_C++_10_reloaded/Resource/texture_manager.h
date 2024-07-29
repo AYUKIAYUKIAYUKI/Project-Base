@@ -1,24 +1,24 @@
 //============================================================================
 // 
-// テクスチャ管理、ヘッダファイル [texture.h]
+// テクスチャマネージャー、ヘッダファイル [texture_manager.h]
 // Author : 福田歩希
 // 
 //============================================================================
 
-#ifndef _TEXTURE_H_
-#define _TEXTURE_H_	// 二重インクルード防止
+#ifndef _TEXTURE_MANAGER_H_
+#define _TEXTURE_MANAGER_H_	// 二重インクルード防止
 
 //****************************************************
-// テクスチャクラス
+// テクスチャマネージャークラス
 //****************************************************
-class CTexture
+class CTexture_Manager final
 {
 public:
 
 	//****************************************************
 	// テクスチャ識別
 	//****************************************************
-	enum class TEX_TYPE
+	enum class TYPE
 	{
 		BG_000 = 0,		// 背景0
 		BG_001,			// 背景1
@@ -34,17 +34,24 @@ public:
 		MAX,
 	};
 
-	CTexture();		// コンストラクタ
-	~CTexture();	// デストラクタ
-
 	HRESULT Load();	// テクスチャ読込
-	void Unload();	// テクスチャ破棄
+	void Release();	// 解放
 
-	LPDIRECT3DTEXTURE9 GetTexture(TEX_TYPE type);	// テクスチャを取得
+	LPDIRECT3DTEXTURE9 GetTexture(TYPE type);	// テクスチャを取得
+
+	static CTexture_Manager* GetInstance();	// テクスチャマネージャーを取得
 
 private:
 
-	static LPDIRECT3DTEXTURE9 m_apTexTemp[static_cast<int>(TEX_TYPE::MAX)];	// テクスチャ管理
+	CTexture_Manager();		// コンストラクタ
+	~CTexture_Manager();	// デストラクタ
+
+	void Create();	// 生成
+	void Unload();	// テクスチャ破棄
+
+	LPDIRECT3DTEXTURE9 m_apTexTemp[static_cast<int>(TYPE::MAX)];	// テクスチャ情報
+
+	static CTexture_Manager* m_pInstance;	// テクスチャマネージャー
 };
 
 #endif // _TEXTURE_H_

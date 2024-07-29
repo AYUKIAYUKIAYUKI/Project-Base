@@ -27,7 +27,6 @@ CRenderer::CRenderer() :
 	m_pFont{ nullptr },			// フォント
 	m_debugStr{},				// 表示用文字列
 	m_timeStr{},				// 時限式文字列
-	m_pTexture{ nullptr },		// テクスチャマネージャー
 	m_pModel_X{ nullptr }		// Xモデルマネージャー
 {
 
@@ -124,17 +123,6 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 		FALSE, SHIFTJIS_CHARSET,
 		OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH,
 		"Terminal", &m_pFont);
-
-	// テクスチャマネージャーを生成
-	m_pTexture = DBG_NEW CTexture;
-
-	if (m_pTexture == nullptr)
-	{ // 生成失敗
-		return E_FAIL;
-	}
-
-	// テクスチャ読み込み
-	m_pTexture->Load();
 
 	// Xモデルマネージャーを生成
 	m_pModel_X = DBG_NEW CModel_X;
@@ -314,14 +302,6 @@ LPDIRECT3DDEVICE9 CRenderer::GetDeviece()
 }
 
 //============================================================================
-// テクスチャマネージャーの取得
-//============================================================================
-CTexture* CRenderer::GetTextureInstane()
-{
-	return m_pTexture;
-}
-
-//============================================================================
 // モデルマネージャーの取得
 //============================================================================
 CModel_X* CRenderer::GetModelInstane()
@@ -369,14 +349,6 @@ void CRenderer::Uninit()
 
 	// 疑似スクリーンの破棄
 	CFakeScreen::GetInstance()->Release();
-
-	//  テクスチャマネージャー破棄
-	if (m_pTexture != nullptr)
-	{
-		m_pTexture->Unload();
-		delete m_pTexture;
-		m_pTexture = nullptr;
-	}
 
 	// Xモデルマネージャー破棄
 	if (m_pModel_X != nullptr)

@@ -11,7 +11,7 @@
 #include "number.h"
 
 // テクスチャ設定用
-#include "renderer.h"
+#include "texture_manager.h"
 
 //============================================================================
 // コンストラクタ
@@ -93,7 +93,7 @@ CNumber* CNumber::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	pNumber->SetTexHeight(1.0f);	// 縦テクスチャ分縦幅
 
 	// テクスチャを設定
-	pNumber->BindTex(CRenderer::GetInstance()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::NUMBER_000));
+	pNumber->BindTex(CTexture_Manager::GetInstance()->GetTexture(CTexture_Manager::TYPE::NUMBER_000));
 
 	return pNumber;
 }

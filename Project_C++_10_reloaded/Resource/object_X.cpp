@@ -10,10 +10,12 @@
 //****************************************************
 #include "object_X.h"
 #include "main.h"
-#include "render_collision.h"
 
 // デバイス取得用
 #include "renderer.h"
+
+// 判定可視化用
+#include "render_collision.h"
 
 //****************************************************
 // 静的メンバ変数の初期化

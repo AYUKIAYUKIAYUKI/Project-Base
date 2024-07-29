@@ -10,8 +10,6 @@
 //****************************************************
 #include "bg.h"
 
-#include "renderer.h"
-
 //============================================================================
 // コンストラクタ
 //============================================================================
@@ -73,7 +71,7 @@ void CBg::Draw()
 //============================================================================
 // 生成
 //============================================================================
-CBg* CBg::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, CTexture::TEX_TYPE tex)
+CBg* CBg::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, CTexture_Manager::TYPE tex)
 {
 	// インスタンスを生成
 	CBg* pBg = DBG_NEW CBg;
@@ -90,7 +88,7 @@ CBg* CBg::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, CTexture::TEX_TYPE tex)
 	pBg->SetSize(size);	// サイズの設定
 
 	// テクスチャを設定
-	pBg->BindTex(CRenderer::GetInstance()->GetTextureInstane()->GetTexture(tex));
+	pBg->BindTex(CTexture_Manager::GetInstance()->GetTexture(tex));
 
 	return pBg;
 }
@@ -100,41 +98,41 @@ CBg* CBg::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, CTexture::TEX_TYPE tex)
 //============================================================================
 void CBg::PAKUPAKU()
 {
-	m_nDelayPAKU++;
+	//m_nDelayPAKU++;
 
-	if (m_nCntPAKU <= 0)
-	{
-		if (m_nDelayPAKU >= 140)
-		{
-			BindTex(CRenderer::GetInstance()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BG_000));
+	//if (m_nCntPAKU <= 0)
+	//{
+	//	if (m_nDelayPAKU >= 140)
+	//	{
+	//		BindTex(CRenderer::GetInstance()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BG_000));
 
-			m_nCntPAKU++;
+	//		m_nCntPAKU++;
 
-			m_nDelayPAKU = 0;
-		}
-		if (m_nDelayPAKU >= 120)
-		{
-			BindTex(CRenderer::GetInstance()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BG_001));
-		}
-	}
-	else
-	{
-		if (m_nDelayPAKU >= 40)
-		{
-			BindTex(CRenderer::GetInstance()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BG_000));
+	//		m_nDelayPAKU = 0;
+	//	}
+	//	if (m_nDelayPAKU >= 120)
+	//	{
+	//		BindTex(CRenderer::GetInstance()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BG_001));
+	//	}
+	//}
+	//else
+	//{
+	//	if (m_nDelayPAKU >= 40)
+	//	{
+	//		BindTex(CRenderer::GetInstance()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BG_000));
 
-			m_nCntPAKU++;
+	//		m_nCntPAKU++;
 
-			m_nDelayPAKU = 0;
+	//		m_nDelayPAKU = 0;
 
-			if (m_nCntPAKU >= 4)
-			{
-				m_nCntPAKU = 0;
-			}
-		}
-		if (m_nDelayPAKU >= 20)
-		{
-			BindTex(CRenderer::GetInstance()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BG_001));
-		}
-	}
+	//		if (m_nCntPAKU >= 4)
+	//		{
+	//			m_nCntPAKU = 0;
+	//		}
+	//	}
+	//	if (m_nDelayPAKU >= 20)
+	//	{
+	//		BindTex(CRenderer::GetInstance()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BG_001));
+	//	}
+	//}
 }

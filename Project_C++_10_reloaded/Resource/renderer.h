@@ -11,7 +11,6 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
-#include "texture.h"
 #include "model_X.h"
 
 //****************************************************
@@ -33,7 +32,6 @@ public:
 	static CRenderer* GetInstance();	// レンダラーを取得
 
 	LPDIRECT3DDEVICE9 GetDeviece();		// デバイスの取得
-	CTexture* GetTextureInstane();		// テクスチャマネージャーの取得
 	CModel_X* GetModelInstane();		// モデルマネージャーの取得
 
 	void SetDebugString(std::string str);			// デバッグ文字列に追加
@@ -51,7 +49,6 @@ private:
 	LPD3DXFONT m_pFont;									// フォント
 	std::string m_debugStr;								// 表示用文字列
 	std::vector<std::pair<std::string, int>> m_timeStr;	// 時限式文字列
-	CTexture* m_pTexture;								// テクスチャ管理
 	CModel_X* m_pModel_X;								// Xモデル管理
 };
 

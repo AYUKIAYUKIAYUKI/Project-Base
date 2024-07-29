@@ -28,7 +28,7 @@ CRender_Collision::CRender_Collision(D3DXVECTOR3& posRef, D3DXVECTOR3& sizeRef, 
 	m_pVtxBuff{ nullptr },				// 頂点バッファのポインタ
 	m_pIdxBuff{ nullptr },				// インデックスバッファのポインタ
 	m_posRef{ posRef },					// 参照位置
-	m_col{ 0.0f, 0.0f, 0.0f, 0.0f },	// 色
+	m_col{ 1.0f, 0.0f, 0.0f, 1.0f },	// 色
 	m_size{ sizeRef }
 {
 	// ワールド行列の初期化
@@ -190,7 +190,7 @@ HRESULT CRender_Collision::CreateVtxBuff()
 		pVtx[i].nor = { 0.0f, 0.0f, 0.0f };
 
 		// 色の設定
-		pVtx[i].col = D3DXCOLOR{ 1.0f, 0.0f, 0.0f, 1.0f };
+		pVtx[i].col = m_col;
 
 		// テクスチャの設定
 		pVtx[i].tex = { 0.0f, 0.0f };

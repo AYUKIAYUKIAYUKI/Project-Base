@@ -12,6 +12,7 @@
 
 // シングルトン管理用
 #include "renderer.h"
+#include "texture_manager.h"
 #include "utility.h"
 
 //****************************************************
@@ -54,6 +55,12 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {
 	// レンダラーの初期設定
 	CRenderer::GetInstance()->Init(hWnd, bWindow);
+
+	// テクスチャマネージャー初期設定
+	if (FAILED(CTexture_Manager::GetInstance()->Load()))
+	{
+		return E_FAIL;
+	}
 
 	// カメラの生成
 	m_pCamera = DBG_NEW CCamera;
@@ -191,6 +198,9 @@ void CManager::Uninit()
 		delete m_pCamera;		// メモリを解放
 		m_pCamera = nullptr;	// ポインタを初期化
 	}
+
+	// テクスチャマネージャー破棄
+	CTexture_Manager::GetInstance()->Release();
 
 	// レンダラーの破棄
 	CRenderer::GetInstance()->Release();

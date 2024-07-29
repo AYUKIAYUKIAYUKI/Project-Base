@@ -10,8 +10,8 @@
 //****************************************************
 #include "explosion.h"
 
-// テクスチャ設定用
-#include "renderer.h"
+// テクスチャ取得用
+#include "texture_manager.h"
 
 //============================================================================
 // コンストラクタ
@@ -96,7 +96,7 @@ CExplosion* CExplosion::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	pExplosion->SetTexHeight(1.0f);			// 縦テクスチャ分縦幅
 
 	// テクスチャを設定
-	pExplosion->BindTex(CRenderer::GetInstance()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::EXPLOSION_000));
+	pExplosion->BindTex(CTexture_Manager::GetInstance()->GetTexture(CTexture_Manager::TYPE::EXPLOSION_000));
 
 	return pExplosion;
 }

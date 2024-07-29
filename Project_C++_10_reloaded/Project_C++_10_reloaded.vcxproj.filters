@@ -69,7 +69,7 @@
     <ClCompile Include="resource\sound.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="resource\texture.cpp">
+    <ClCompile Include="resource\texture_manager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Resource\explosion.cpp">
@@ -197,7 +197,7 @@
     <ClInclude Include="resource\sound.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="resource\texture.h">
+    <ClInclude Include="resource\texture_manager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Resource\explosion.h">

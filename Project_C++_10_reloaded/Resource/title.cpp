@@ -9,10 +9,15 @@
 // インクルードファイル
 //****************************************************
 #include "title.h"
-#include "manager.h"
 
 // 仮タイトル表示用
 #include "bg.h"
+
+// インプット取得用
+#include "manager.h"
+
+// テクスチャ取得用
+#include "texture_manager.h"
 
 //============================================================================
 // コンストラクタ
@@ -39,7 +44,7 @@ HRESULT CTitle::Init()
 	CBg::Create(
 		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// 位置
 		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// サイズ
-		CTexture::TEX_TYPE::BG_000);							// テクスチャ
+		CTexture_Manager::TYPE::BG_000);						// テクスチャ
 
 	return S_OK;
 }
