@@ -9,7 +9,9 @@
 // インクルードファイル
 //****************************************************
 #include "model_X.h"
-#include "manager.h"
+
+// デバイス取得用
+#include "renderer.h"
 
 //****************************************************
 // 静的メンバの初期化
@@ -54,7 +56,7 @@ HRESULT CModel_X::Load()
 	}
 
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
 
 	for (int nCntModel = 0; nCntModel < static_cast<int>(MODEL_TYPE::MAX); nCntModel++)
 	{

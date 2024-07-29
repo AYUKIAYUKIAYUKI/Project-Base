@@ -9,7 +9,8 @@
 // インクルードファイル
 //****************************************************
 #include "fakescreen.h"
-#include "manager.h"
+
+#include "renderer.h"
 
 //****************************************************
 // マクロ定義
@@ -131,7 +132,7 @@ void CFakeScreen::Uninit()
 void CFakeScreen::Update()
 {
 	// ゆがみの強度を表示
-	CManager::GetRenderer()->SetDebugString("ゆがみの強度:" + std::to_string(m_fAddDistortion));
+	CRenderer::GetInstance()->SetDebugString("ゆがみの強度:" + std::to_string(m_fAddDistortion));
 
 	// ウェーブイン処理
 	WaveIn();
@@ -150,7 +151,7 @@ void CFakeScreen::Draw()
 {
 #if 0
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
 
 	// 頂点バッファをデータストリームに設定
 	pDev->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
@@ -167,7 +168,7 @@ void CFakeScreen::Draw()
 		2);										// プリミティブ数
 #else
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
 
 	// 頂点バッファをデータストリームに設定
 	pDev->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));
@@ -243,7 +244,7 @@ CFakeScreen* CFakeScreen::GetInstance()
 HRESULT CFakeScreen::CreateVtxBuff()
 {
 	// 頂点バッファの生成
-	CManager::GetRenderer()->GetDeviece()->CreateVertexBuffer(sizeof(VERTEX_2D) * m_nNumVtx,
+	CRenderer::GetInstance()->GetDeviece()->CreateVertexBuffer(sizeof(VERTEX_2D) * m_nNumVtx,
 		D3DUSAGE_WRITEONLY,
 		FVF_VERTEX_2D,
 		D3DPOOL_MANAGED,
@@ -276,7 +277,7 @@ HRESULT CFakeScreen::CreateVtxBuff()
 #if MESH_DBG
 
 		// 各頂点座標のデバッグ表示
-		CManager::GetRenderer()->SetTimeString(std::to_string(i + 1) + "頂点:" + std::to_string(pVtx[i].pos.x) + ":" + std::to_string(pVtx[i].pos.y) + ":" + std::to_string(pVtx[i].pos.z), 30);
+		CRenderer::GetInstance()->SetTimeString(std::to_string(i + 1) + "頂点:" + std::to_string(pVtx[i].pos.x) + ":" + std::to_string(pVtx[i].pos.y) + ":" + std::to_string(pVtx[i].pos.z), 30);
 
 #endif	// MESH_DBG
 
@@ -294,7 +295,7 @@ HRESULT CFakeScreen::CreateVtxBuff()
 #if MESH_DBG
 
 		// 各UV座標のデバッグ表示
-		CManager::GetRenderer()->SetTimeString(std::to_string(i + 1) + "UV:" + std::to_string(pVtx[i].tex.x) + " : " + std::to_string(pVtx[i].tex.y), 30);
+		CRenderer::GetInstance()->SetTimeString(std::to_string(i + 1) + "UV:" + std::to_string(pVtx[i].tex.x) + " : " + std::to_string(pVtx[i].tex.y), 30);
 
 #endif	// MESH_DBG
 
@@ -327,7 +328,7 @@ HRESULT CFakeScreen::CreateVtxBuff()
 HRESULT CFakeScreen::CreateIdxBuff()
 {
 	// インデックスバッファの生成
-	CManager::GetRenderer()->GetDeviece()->CreateIndexBuffer(sizeof(WORD) * m_nNumIndex,
+	CRenderer::GetInstance()->GetDeviece()->CreateIndexBuffer(sizeof(WORD) * m_nNumIndex,
 		D3DUSAGE_WRITEONLY,
 		D3DFMT_INDEX16,
 		D3DPOOL_MANAGED,
@@ -390,7 +391,7 @@ HRESULT CFakeScreen::CreateTex()
 {
 #if 1
 	// テクスチャを作成
-	CManager::GetRenderer()->GetDeviece()->CreateTexture(
+	CRenderer::GetInstance()->GetDeviece()->CreateTexture(
 		SCREEN_WIDTH,			// U
 		SCREEN_HEIGHT,			// V
 		0,						// ミップマップレベル
@@ -401,7 +402,7 @@ HRESULT CFakeScreen::CreateTex()
 		nullptr);				// ハンドル
 #else
 	// テクスチャの生成
-	D3DXCreateTextureFromFileA(CManager::GetRenderer()->GetDeviece(),
+	D3DXCreateTextureFromFileA(CRenderer::GetInstance()->GetDeviece(),
 		"Data\\TEXTURE\\AL-1S.png",
 		&m_pTex);
 #endif

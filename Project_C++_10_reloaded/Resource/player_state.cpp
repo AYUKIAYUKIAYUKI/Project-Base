@@ -11,6 +11,7 @@
 #include "player_state.h"
 
 #include "manager.h"
+#include "renderer.h"
 #include "utility.h"
 #include "explosion.h"
 #include "start.h"
@@ -89,7 +90,7 @@ CPlayerStateDefault::~CPlayerStateDefault()
 void CPlayerStateDefault::Enter()
 {
 	// モデルを取得
-	auto model = CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_000);
+	auto model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_000);
 
 	// モデルの設定
 	m_pPlayer->BindModel(model);
@@ -292,7 +293,7 @@ CPlayerStateBeginning::~CPlayerStateBeginning()
 void CPlayerStateBeginning::Enter()
 {
 	// モデルを取得
-	auto model = CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_001);
+	auto model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_001);
 
 	// モデルの設定
 	m_pPlayer->BindModel(model);
@@ -386,7 +387,7 @@ CPlayerStateFlying::~CPlayerStateFlying()
 void CPlayerStateFlying::Enter()
 {
 	// モデルを取得
-	auto model = CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_002);
+	auto model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_002);
 
 	// モデルの設定
 	m_pPlayer->BindModel(model);
@@ -429,9 +430,9 @@ void CPlayerStateFlying::Exit()
 	//m_pPlayer->SetAngleFlying(atan2f(m_pPlayer->GetVelocity().y, m_pPlayer->GetVelocity().x));
 
 	// 衝突時点での加速度と、加速度ベクトルの方向を表示
-	//CManager::GetRenderer()->SetTimeString("X:" + std::to_string(m_pPlayer->GetVelocity().x), 240);
-	//CManager::GetRenderer()->SetTimeString("Y:" + std::to_string(m_pPlayer->GetVelocity().y), 240);
-	//CManager::GetRenderer()->SetTimeString(std::to_string(atan2f(m_pPlayer->GetVelocity().y, m_pPlayer->GetVelocity().x)), 240);
+	//CRenderer::GetInstance()->SetTimeString("X:" + std::to_string(m_pPlayer->GetVelocity().x), 240);
+	//CRenderer::GetInstance()->SetTimeString("Y:" + std::to_string(m_pPlayer->GetVelocity().y), 240);
+	//CRenderer::GetInstance()->SetTimeString(std::to_string(atan2f(m_pPlayer->GetVelocity().y, m_pPlayer->GetVelocity().x)), 240);
 }
 
 //============================================================================
@@ -589,7 +590,7 @@ CPlayerStateStopping::~CPlayerStateStopping()
 void CPlayerStateStopping::Enter()
 {
 	// モデルを取得
-	auto model = CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_003);
+	auto model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_003);
 
 	// モデルの設定
 	m_pPlayer->BindModel(model);
@@ -646,7 +647,7 @@ void CPlayerStateStopping::Exit()
 	m_pPlayer->SetRot(rot);
 
 	// モデルを取得
-	auto model = CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_000);
+	auto model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_000);
 
 	// モデルの設定
 	m_pPlayer->BindModel(model);
@@ -733,7 +734,7 @@ void CPlayerStateMistook::Enter()
 	m_pPlayer->SetRot({ 0.0f, 0.0f, 0.0f });
 
 	// モデルを取得
-	auto model = CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_004);
+	auto model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_004);
 
 	// モデルの設定
 	m_pPlayer->BindModel(model);
@@ -854,7 +855,7 @@ CPlayerStateGoal::~CPlayerStateGoal()
 void CPlayerStateGoal::Enter()
 {
 	// モデルを取得
-	auto model = CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_005);
+	auto model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_005);
 
 	// モデルの設定
 	m_pPlayer->BindModel(model);

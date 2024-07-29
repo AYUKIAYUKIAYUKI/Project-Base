@@ -10,8 +10,10 @@
 //****************************************************
 #include "object_X.h"
 #include "main.h"
-#include "manager.h"
 #include "render_collision.h"
+
+// デバイス取得用
+#include "renderer.h"
 
 //****************************************************
 // 静的メンバ変数の初期化
@@ -79,7 +81,7 @@ void CObject_X::Draw()
 	}
 
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
 
 	// 現在のマテリアル保存用
 	D3DMATERIAL9 matDef;

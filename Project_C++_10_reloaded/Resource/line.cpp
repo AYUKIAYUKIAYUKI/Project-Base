@@ -10,7 +10,8 @@
 //****************************************************
 #include "line.h"
 
-#include "manager.h"
+// モデル取得用
+#include "renderer.h"
 
 //============================================================================
 // コンストラクタ
@@ -102,7 +103,7 @@ void CLine::CreateGrid()
 		pLine->SetPos({ (-fLineSize * (nMaxLine / 2)) + (fLineSize * i), 0.0f, fLineSize * 0.5f });
 
 		// 見た目を設定
-		pLine->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::LINE_X));
+		pLine->BindModel(CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::LINE_X));
 	}
 
 	// 縦ラインを自動的には位置していく
@@ -126,6 +127,6 @@ void CLine::CreateGrid()
 		pLine->SetPos({ 0.0f, (-fLineSize * (nMaxLine / 2)) + (fLineSize * i), fLineSize * 0.5f });
 
 		// 見た目を設定
-		pLine->BindModel(CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::LINE_Y));
+		pLine->BindModel(CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::LINE_Y));
 	}
 }

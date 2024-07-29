@@ -10,7 +10,12 @@
 //****************************************************
 #include "game_manager.h"
 #include "stagemaker.h"
+
+// フェード取得用
 #include "manager.h"
+
+// デバッグ表示用
+#include "renderer.h"
 
 // オブジェクト生成用
 #include "block_destructible.h"
@@ -66,7 +71,6 @@ void CGameManager::Release()
 	}
 }
 
-
 //============================================================================
 // 終了処理
 //============================================================================
@@ -82,7 +86,7 @@ void CGameManager::Update()
 {
 	// ステージ数を表示
 	std::string str = "【現在のステージ:" + std::to_string(m_nMaxStage - m_stagePath.size()) + "/" + std::to_string(m_nMaxStage) + "】";
-	CManager::GetRenderer()->SetDebugString(str);
+	CRenderer::GetInstance()->SetDebugString(str);
 
 	switch (m_phase)
 	{

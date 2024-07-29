@@ -10,7 +10,12 @@
 //****************************************************
 #include "camera.h"
 #include "main.h"
+
+// インプット取得用
 #include "manager.h"
+
+// デバイス取得用
+#include "renderer.h"
 
 // 追従地点参照用
 #include "game.h"
@@ -94,10 +99,10 @@ void CCamera::Update()
 	}
 
 	// 位置をデバッグ表示
-	//CManager::GetRenderer()->SetDebugString("【カメラ位置】");
+	//CRenderer::GetInstance()->SetDebugString("【カメラ位置】");
 	//std::ostringstream oss;
 	//oss << std::fixed << std::setprecision(1) << "X:" << GetPos().x << "\nY:" << GetPos().y;
-	//CManager::GetRenderer()->SetDebugString(oss.str().c_str());
+	//CRenderer::GetInstance()->SetDebugString(oss.str().c_str());
 
 	// カメラ操作
 	Control();
@@ -127,7 +132,7 @@ void CCamera::Update()
 void CCamera::SetCamera()
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
 
 	// 画面バッファクリア
 	pDev->Clear(0, nullptr,
@@ -312,7 +317,7 @@ void CCamera::CalcPosR()
 void CCamera::CalcMtxProjection()
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
 
 	// プロジェクション行列の初期化
 	D3DXMatrixIdentity(&m_mtxProjection);
@@ -341,7 +346,7 @@ void CCamera::CalcMtxProjection()
 		eiieei = 0.0f;
 	}
 	std::string str = std::to_string(eiieei);
-	CManager::GetRenderer()->SetDebugString(str);
+	CRenderer::GetInstance()->SetDebugString(str);
 	m_mtxProjection._44 += eiieei;
 	
 #else
@@ -364,7 +369,7 @@ void CCamera::CalcMtxProjection()
 void CCamera::CalcMtxView()
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
 
 	// ビューマトリックスの初期化
 	D3DXMatrixIdentity(&m_mtxView);

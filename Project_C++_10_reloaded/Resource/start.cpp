@@ -9,7 +9,9 @@
 // インクルードファイル
 //****************************************************
 #include "start.h"
-#include "manager.h"
+
+// モデル取得用
+#include "renderer.h"
 
 //============================================================================
 // コンストラクタ
@@ -102,7 +104,7 @@ CStart* CStart::Create(D3DXVECTOR3 pos)
 	pStart->SetPos(pos);
 
 	// モデルを取得
-	auto model = CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::START);
+	auto model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::START);
 
 	// モデルを設定
 	pStart->BindModel(model);

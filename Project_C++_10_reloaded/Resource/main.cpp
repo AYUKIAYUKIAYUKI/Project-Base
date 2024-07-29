@@ -11,6 +11,9 @@
 #include "main.h"
 #include "manager.h"
 
+// デバッグ表示用
+#include "renderer.h"
+
 // メモリリーク検出用
 #include <crtdbg.h>
 #include <stdlib.h>
@@ -156,7 +159,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 				g_pManager->Update();
 
 				// FPS表示
-				CManager::GetRenderer()->SetDebugString("FPS:" + std::to_string(nCountFPS));
+				CRenderer::GetInstance()->SetDebugString("FPS:" + std::to_string(nCountFPS));
 
 				// 描画処理
 				g_pManager->Draw();

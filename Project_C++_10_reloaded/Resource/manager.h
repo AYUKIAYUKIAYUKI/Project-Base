@@ -11,7 +11,6 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
-#include "renderer.h"
 #include "camera.h"
 #include "light.h"
 #include "input.h"
@@ -34,7 +33,6 @@ public:
 	void Update();	// 更新処理
 	void Draw();	// 描画処理
 
-	static CRenderer* GetRenderer();			// レンダラー取得
 	static CCamera* GetCamera();				// カメラ取得
 	static CLight* GetLight();					// ライト取得
 	static CInputKeyboard* GetKeyboard();		// キーボード取得
@@ -46,7 +44,6 @@ public:
 
 private:
 
-	static CRenderer* m_pRenderer;		// レンダラー管理
 	static CCamera* m_pCamera;			// カメラ管理
 	static CLight* m_pLight;			// ライト管理
 	static CInputKeyboard* m_pKeyboard;	// キーボード管理

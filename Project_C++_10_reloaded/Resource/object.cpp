@@ -12,7 +12,7 @@
 #include "main.h"
 
 // デバッグ表示用
-#include "manager.h"
+#include "renderer.h"
 
 //****************************************************
 // 静的メンバの初期化
@@ -181,7 +181,7 @@ void CObject::ReleaseAll()
 void CObject::UpdateAll()
 {
 	// オブジェクト数を表示
-	CManager::GetRenderer()->SetDebugString("現在のオブジェクト数:" + std::to_string(m_nNumAll));
+	CRenderer::GetInstance()->SetDebugString("現在のオブジェクト数:" + std::to_string(m_nNumAll));
 
 	for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::MAX); nCntPriority++)
 	{

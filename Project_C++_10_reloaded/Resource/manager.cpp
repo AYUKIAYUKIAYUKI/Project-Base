@@ -9,12 +9,14 @@
 // インクルードファイル
 //****************************************************
 #include "manager.h"
+
+// シングルトン管理用
+#include "renderer.h"
 #include "utility.h"
 
 //****************************************************
 // 静的メンバの初期化
 //****************************************************
-CRenderer* CManager::m_pRenderer = nullptr;			// レンダラー管理
 CCamera* CManager::m_pCamera = nullptr;				// カメラ管理
 CLight* CManager::m_pLight = nullptr;				// ライト管理
 CInputKeyboard* CManager::m_pKeyboard = nullptr;	// キーボード管理
@@ -28,7 +30,6 @@ CFade* CManager::m_pFade = nullptr;					// フェード管理
 //============================================================================
 CManager::CManager()
 {
-	m_pRenderer = nullptr;
 	m_pCamera = nullptr;
 	m_pLight = nullptr;
 	m_pKeyboard = nullptr;
@@ -51,16 +52,8 @@ CManager::~CManager()
 //============================================================================
 HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {
-	// レンダラーの生成
-	m_pRenderer = DBG_NEW CRenderer;
-
-	if (m_pRenderer == nullptr)
-	{ // 生成失敗
-		return E_FAIL;
-	}
-
-	// レンダラーの初期化
-	m_pRenderer->Init(hWnd, bWindow);
+	// レンダラーの初期設定
+	CRenderer::GetInstance()->Init(hWnd, bWindow);
 
 	// カメラの生成
 	m_pCamera = DBG_NEW CCamera;
@@ -200,12 +193,7 @@ void CManager::Uninit()
 	}
 
 	// レンダラーの破棄
-	if (m_pRenderer != nullptr)
-	{
-		m_pRenderer->Uninit();	// 終了処理
-		delete m_pRenderer;		// メモリを解放
-		m_pRenderer = nullptr;	// ポインタを初期化
-	}
+	CRenderer::GetInstance()->Release();
 }
 
 //============================================================================
@@ -217,7 +205,7 @@ void CManager::Update()
 	m_pFade->Update();
 
 	// レンダラーの更新
-	m_pRenderer->Update();
+	CRenderer::GetInstance()->Update();
 
 	// シーンの更新
 	m_pScene->Update();
@@ -241,15 +229,7 @@ void CManager::Update()
 void CManager::Draw()
 {
 	// レンダラーの描画
-	m_pRenderer->Draw();
-}
-
-//============================================================================
-// レンダラー取得
-//============================================================================
-CRenderer* CManager::GetRenderer()
-{ 
-	return m_pRenderer;
+	CRenderer::GetInstance()->Draw();
 }
 
 //============================================================================

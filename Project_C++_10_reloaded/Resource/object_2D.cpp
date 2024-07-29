@@ -10,7 +10,9 @@
 //****************************************************
 #include "object_2D.h"
 #include "main.h"
-#include "manager.h"
+
+// デバイスを取得
+#include "renderer.h"
 
 //============================================================================
 // コンストラクタ
@@ -45,7 +47,7 @@ CObject_2D::~CObject_2D()
 HRESULT CObject_2D::Init()
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
 
 	// 頂点バッファの生成
 	pDev->CreateVertexBuffer(sizeof(VERTEX_2D) * 4,
@@ -170,7 +172,7 @@ void CObject_2D::Update()
 void CObject_2D::Draw()
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
 
 	// 頂点バッファをデータストリームに設定
 	pDev->SetStreamSource(0, m_pVtxBuff, 0, sizeof(VERTEX_2D));

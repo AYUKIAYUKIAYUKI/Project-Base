@@ -15,6 +15,9 @@
 #include "utility.h"
 #include "fakescreen.h"
 
+// デバッグ表示用
+#include "renderer.h"
+
 #include "block.h"
 #include "block_destructible.h"
 #include "explosion.h"
@@ -107,10 +110,10 @@ void CPlayer::Update()
 	SetPos(m_posTarget);
 
 	// 座標をデバッグ表示
-	CManager::GetRenderer()->SetDebugString("【プレイヤー座標】");
+	CRenderer::GetInstance()->SetDebugString("【プレイヤー座標】");
 	std::ostringstream oss;
 	oss << std::fixed << std::setprecision(1) << "X:" << GetPos().x << "\nY:" << GetPos().y;
-	CManager::GetRenderer()->SetDebugString(oss.str().c_str());
+	CRenderer::GetInstance()->SetDebugString(oss.str().c_str());
 
 	// 基底クラスの更新
 	CObject_X::Update();

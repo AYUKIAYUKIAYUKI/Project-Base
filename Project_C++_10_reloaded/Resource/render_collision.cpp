@@ -9,7 +9,9 @@
 // インクルードファイル
 //****************************************************
 #include "render_collision.h"
-#include "manager.h"
+
+// デバイス取得用
+#include "renderer.h"
 
 //****************************************************
 // 静的メンバ変数の初期化
@@ -103,7 +105,7 @@ void CRender_Collision::Update()
 void CRender_Collision::Draw()
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
 
 	// ライトをオフ
 	pDev->SetRenderState(D3DRS_LIGHTING, FALSE);
@@ -158,7 +160,7 @@ CRender_Collision* CRender_Collision::Create(D3DXVECTOR3& posRef, D3DXVECTOR3& s
 HRESULT CRender_Collision::CreateVtxBuff()
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
 
 	// 頂点バッファの生成
 	pDev->CreateVertexBuffer(sizeof(VERTEX_3D) * m_nNumVtx,
@@ -206,7 +208,7 @@ HRESULT CRender_Collision::CreateVtxBuff()
 HRESULT CRender_Collision::CreateIdxBuff()
 {
 	// インデックスバッファの生成
-	CManager::GetRenderer()->GetDeviece()->CreateIndexBuffer(sizeof(WORD) * m_nNumIdx,
+	CRenderer::GetInstance()->GetDeviece()->CreateIndexBuffer(sizeof(WORD) * m_nNumIdx,
 		D3DUSAGE_WRITEONLY,
 		D3DFMT_INDEX16,
 		D3DPOOL_MANAGED,

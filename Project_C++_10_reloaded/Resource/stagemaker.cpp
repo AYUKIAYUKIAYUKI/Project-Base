@@ -9,8 +9,14 @@
 // インクルードファイル
 //****************************************************
 #include "stagemaker.h"
+
+// キーボード取得用
 #include "manager.h"
 
+// デバッグ表示用
+#include "renderer.h"
+
+// オブジェクト配置用
 #include "block.h"
 #include "block_destructible.h"
 #include "dummy.h"
@@ -204,7 +210,7 @@ void CStageMaker::Control()
 
 		if (pStart == nullptr || pGoal == nullptr)
 		{ // スタート・ゴールタイプのオブジェクトの発見に失敗
-			CManager::GetRenderer()->SetTimeString("【スタート・ゴールの配置情報が異常です！】", 180);
+			CRenderer::GetInstance()->SetTimeString("【スタート・ゴールの配置情報が異常です！】", 180);
 		}
 		else
 		{
@@ -222,7 +228,7 @@ void CStageMaker::Control()
 		m_nPattern < 3 ? m_nPattern++ : m_nPattern = 0;
 	}
 
-	CManager::GetRenderer()->SetDebugString("現在の配置物の種類:" + std::to_string(m_nPattern));
+	CRenderer::GetInstance()->SetDebugString("現在の配置物の種類:" + std::to_string(m_nPattern));
 
 	if (CManager::GetKeyboard()->GetTrigger(DIK_F3))
 	{
@@ -265,7 +271,7 @@ void CStageMaker::Register()
 		}
 		else
 		{
-			CManager::GetRenderer()->SetTimeString("【スタートはすでに配置されています】", 60);
+			CRenderer::GetInstance()->SetTimeString("【スタートはすでに配置されています】", 60);
 		}
 
 		break;
@@ -279,7 +285,7 @@ void CStageMaker::Register()
 		}
 		else
 		{
-			CManager::GetRenderer()->SetTimeString("【ゴールはすでに配置されています】", 60);
+			CRenderer::GetInstance()->SetTimeString("【ゴールはすでに配置されています】", 60);
 		}
 
 		break;
@@ -349,7 +355,7 @@ void CStageMaker::Export()
 	Export.close();	// ファイルを閉じる
 
 	// デバッグ表示の期間を設定
-	CManager::GetRenderer()->SetTimeString("【ステージを書き出しました】", 180);
+	CRenderer::GetInstance()->SetTimeString("【ステージを書き出しました】", 180);
 }
 
 //============================================================================

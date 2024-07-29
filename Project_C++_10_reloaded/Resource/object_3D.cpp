@@ -10,7 +10,9 @@
 //****************************************************
 #include "object_3D.h"
 #include "main.h"
-#include "manager.h"
+
+// デバイス取得用
+#include "renderer.h"
 
 //============================================================================
 // コンストラクタ
@@ -42,7 +44,7 @@ CObject_3D::~CObject_3D()
 HRESULT CObject_3D::Init()
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
 
 	// 頂点バッファの生成
 	pDev->CreateVertexBuffer(sizeof(VERTEX_3D) * 4,
@@ -164,7 +166,7 @@ void CObject_3D::Update()
 void CObject_3D::Draw()
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
 
 	// ワールド行列の設定
 	pDev->SetTransform(D3DTS_WORLD, &m_mtxWorld);

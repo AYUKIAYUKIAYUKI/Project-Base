@@ -9,7 +9,8 @@
 // インクルードファイル
 //****************************************************
 #include "bg.h"
-#include "manager.h"
+
+#include "renderer.h"
 
 //============================================================================
 // コンストラクタ
@@ -89,7 +90,7 @@ CBg* CBg::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size, CTexture::TEX_TYPE tex)
 	pBg->SetSize(size);	// サイズの設定
 
 	// テクスチャを設定
-	pBg->BindTex(CManager::GetRenderer()->GetTextureInstane()->GetTexture(tex));
+	pBg->BindTex(CRenderer::GetInstance()->GetTextureInstane()->GetTexture(tex));
 
 	return pBg;
 }
@@ -105,7 +106,7 @@ void CBg::PAKUPAKU()
 	{
 		if (m_nDelayPAKU >= 140)
 		{
-			BindTex(CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BG_000));
+			BindTex(CRenderer::GetInstance()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BG_000));
 
 			m_nCntPAKU++;
 
@@ -113,14 +114,14 @@ void CBg::PAKUPAKU()
 		}
 		if (m_nDelayPAKU >= 120)
 		{
-			BindTex(CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BG_001));
+			BindTex(CRenderer::GetInstance()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BG_001));
 		}
 	}
 	else
 	{
 		if (m_nDelayPAKU >= 40)
 		{
-			BindTex(CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BG_000));
+			BindTex(CRenderer::GetInstance()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BG_000));
 
 			m_nCntPAKU++;
 
@@ -133,7 +134,7 @@ void CBg::PAKUPAKU()
 		}
 		if (m_nDelayPAKU >= 20)
 		{
-			BindTex(CManager::CManager::GetRenderer()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BG_001));
+			BindTex(CRenderer::GetInstance()->GetTextureInstane()->GetTexture(CTexture::TEX_TYPE::BG_001));
 		}
 	}
 }

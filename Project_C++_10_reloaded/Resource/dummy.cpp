@@ -10,7 +10,11 @@
 //****************************************************
 #include "dummy.h"
 
+// キーボード取得用
 #include "manager.h"
+
+// デバッグ表示用
+#include "renderer.h"
 
 //============================================================================
 // コンストラクタ
@@ -60,10 +64,10 @@ void CDummy::Update()
 	CheckPattern();
 
 	// 位置をデバッグ表示
-	CManager::GetRenderer()->SetDebugString("【ダミー位置】");
+	CRenderer::GetInstance()->SetDebugString("【ダミー位置】");
 	std::ostringstream oss;
 	oss << std::fixed << std::setprecision(1) << "X:" << GetPos().x << "\nY:" << GetPos().y;
-	CManager::GetRenderer()->SetDebugString(oss.str().c_str());
+	CRenderer::GetInstance()->SetDebugString(oss.str().c_str());
 
 	// 基底クラスの更新
 	CObject_X::Update();
@@ -104,7 +108,7 @@ CDummy* CDummy::Create(D3DXVECTOR3 pos, int& nPattern)
 	pDummy->SetAlpha(0.8f);
 
 	// モデルを取得
-	auto model = CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::BLOCK_000);
+	auto model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::BLOCK_000);
 
 	// 仮のモデルを設定
 	pDummy->BindModel(model);
@@ -209,7 +213,7 @@ void CDummy::CheckPattern()
 	case 0:
 
 		// ブロックモデルに見た目を変更
-		model = CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::BLOCK_000);
+		model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::BLOCK_000);
 		BindModel(model);
 
 		break;
@@ -217,7 +221,7 @@ void CDummy::CheckPattern()
 	case 1:
 
 		// 可壊ブロックモデルに見た目を変更
-		model = CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::DESTRUCTIBLE);
+		model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::DESTRUCTIBLE);
 		BindModel(model);
 
 		break;
@@ -225,7 +229,7 @@ void CDummy::CheckPattern()
 	case 2:
 
 		// スタートモデルに見た目を変更
-		model = CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::START);
+		model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::START);
 		BindModel(model);
 
 		break;
@@ -233,7 +237,7 @@ void CDummy::CheckPattern()
 	case 3:
 
 		// ゴールモデルに見た目を変更
-		model = CManager::GetRenderer()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::GOAL);
+		model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::GOAL);
 		BindModel(model);
 
 		break;

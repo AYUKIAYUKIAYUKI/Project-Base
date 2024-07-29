@@ -10,7 +10,12 @@
 //****************************************************
 #include "light.h"
 #include "main.h"
+
+// キーボード取得用
 #include "manager.h"
+
+// デバイス取得用
+#include "renderer.h"
 
 //============================================================================
 // コンストラクタ
@@ -89,7 +94,7 @@ void CLight::SetTempDirection()
 void CLight::Create()
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
 
 	for (int i = 0; i < MAX_LIGHT; i++)
 	{ // ライト情報初期設定
@@ -174,7 +179,7 @@ void CLight::Reset()
 void CLight::SetLight()
 {
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
 
 	for (int i = 0; i < MAX_LIGHT; i++)
 	{

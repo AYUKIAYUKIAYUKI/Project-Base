@@ -9,7 +9,9 @@
 // インクルードファイル
 //****************************************************
 #include "texture.h"
+
 #include "manager.h"
+#include "renderer.h"
 
 //****************************************************
 // 静的メンバの初期化
@@ -49,7 +51,7 @@ HRESULT CTexture::Load()
 	}
 
 	// デバイスを取得
-	LPDIRECT3DDEVICE9 pDev = CManager::GetRenderer()->GetDeviece();
+	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
 
 	for (int i = 0; i < static_cast<int>(TEX_TYPE::MAX); i++)
 	{

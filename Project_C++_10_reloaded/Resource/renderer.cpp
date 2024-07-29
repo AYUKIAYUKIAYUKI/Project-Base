@@ -13,14 +13,24 @@
 #include "object.h"
 #include "fakescreen.h"
 
+//****************************************************
+// 静的メンバ変数の初期化
+//****************************************************
+CRenderer* CRenderer::m_pRenderer = nullptr;	// レンダラー
+
 //============================================================================
 // コンストラクタ
 //============================================================================
-CRenderer::CRenderer() : m_pD3D(nullptr), m_pD3DDevice(nullptr)
+CRenderer::CRenderer() :
+	m_pD3D{ nullptr },			// Direct3D
+	m_pD3DDevice{ nullptr },	// デバイス
+	m_pFont{ nullptr },			// フォント
+	m_debugStr{},				// 表示用文字列
+	m_timeStr{},				// 時限式文字列
+	m_pTexture{ nullptr },		// テクスチャマネージャー
+	m_pModel_X{ nullptr }		// Xモデルマネージャー
 {
-	m_pFont = nullptr;		// フォント
-	m_pTexture = nullptr;	// テクスチャ管理
-	m_pModel_X = nullptr;	// Xモデル管理
+
 }
 
 //============================================================================
@@ -115,7 +125,7 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 		OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH,
 		"Terminal", &m_pFont);
 
-	// テクスチャ管理インスタンスを生成
+	// テクスチャマネージャーを生成
 	m_pTexture = DBG_NEW CTexture;
 
 	if (m_pTexture == nullptr)
@@ -126,7 +136,7 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 	// テクスチャ読み込み
 	m_pTexture->Load();
 
-	// Xモデル管理インスタンスを生成
+	// Xモデルマネージャーを生成
 	m_pModel_X = DBG_NEW CModel_X;
 
 	if (m_pModel_X == nullptr)
@@ -144,51 +154,20 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 }
 
 //============================================================================
-// 終了処理
+// 解放
 //============================================================================
-void CRenderer::Uninit()
+void CRenderer::Release()
 {
-	// 全オブジェクト解放処理
-	CObject::ReleaseAll();
-	
-	// 疑似スクリーンの破棄
-	CFakeScreen::GetInstance()->Release();
-
-	//  テクスチャ破棄
-	if (m_pTexture != nullptr)
+	if (m_pRenderer != nullptr)
 	{
-		m_pTexture->Unload();
-		delete m_pTexture;
-		m_pTexture = nullptr;
-	}
+		// 終了処理
+		m_pRenderer->Uninit();
 
-	// Xモデル破棄
-	if (m_pModel_X != nullptr)
-	{
-		m_pModel_X->Unload();
-		delete m_pModel_X;
-		m_pModel_X = nullptr;
-	}
+		// メモリを解放
+		delete m_pRenderer;
 
-	// フォントの破棄
-	if (m_pFont != nullptr)
-	{
-		m_pFont->Release();
-		m_pFont = nullptr;
-	}
-
-	// Direct3Dデバイスの破棄
-	if (m_pD3DDevice != nullptr)
-	{
-		m_pD3DDevice->Release();
-		m_pD3DDevice = nullptr;
-	}
-
-	// Direct3Dオブジェクトの破棄
-	if (m_pD3D != nullptr)
-	{
-		m_pD3D->Release();
-		m_pD3D = nullptr;
+		// ポインタを初期化
+		m_pRenderer = nullptr;
 	}
 }
 
@@ -313,6 +292,44 @@ void CRenderer::PrintDebug()
 }
 
 //============================================================================
+// レンダラーの取得
+//============================================================================
+CRenderer* CRenderer::GetInstance()
+{
+	if (m_pRenderer == nullptr)
+	{
+		// 生成
+		m_pRenderer->Create();
+	}
+
+	return m_pRenderer;
+}
+
+//============================================================================
+// デバイスの取得
+//============================================================================
+LPDIRECT3DDEVICE9 CRenderer::GetDeviece()
+{
+	return m_pD3DDevice;
+}
+
+//============================================================================
+// テクスチャマネージャーの取得
+//============================================================================
+CTexture* CRenderer::GetTextureInstane()
+{
+	return m_pTexture;
+}
+
+//============================================================================
+// モデルマネージャーの取得
+//============================================================================
+CModel_X* CRenderer::GetModelInstane()
+{
+	return m_pModel_X;
+}
+
+//============================================================================
 // デバッグ用文字列に追加
 //============================================================================
 void CRenderer::SetDebugString(std::string str)
@@ -329,25 +346,64 @@ void CRenderer::SetTimeString(std::string str, int nCnt)
 }
 
 //============================================================================
-// デバイスの取得
+// 生成
 //============================================================================
-LPDIRECT3DDEVICE9 CRenderer::GetDeviece()
+void CRenderer::Create()
 {
-	return m_pD3DDevice;
+	if (m_pRenderer != nullptr)
+	{ // 二重生成禁止
+		assert(false);
+	}
+
+	// インスタンスを生成
+	m_pRenderer = DBG_NEW CRenderer{};
 }
 
 //============================================================================
-// テクスチャ管理の取得
+// 終了処理
 //============================================================================
-CTexture* CRenderer::GetTextureInstane()
+void CRenderer::Uninit()
 {
-	return m_pTexture;
-}
+	// 全オブジェクト解放処理
+	CObject::ReleaseAll();
 
-//============================================================================
-// モデル管理の取得
-//============================================================================
-CModel_X* CRenderer::GetModelInstane()
-{
-	return m_pModel_X;
+	// 疑似スクリーンの破棄
+	CFakeScreen::GetInstance()->Release();
+
+	//  テクスチャマネージャー破棄
+	if (m_pTexture != nullptr)
+	{
+		m_pTexture->Unload();
+		delete m_pTexture;
+		m_pTexture = nullptr;
+	}
+
+	// Xモデルマネージャー破棄
+	if (m_pModel_X != nullptr)
+	{
+		m_pModel_X->Unload();
+		delete m_pModel_X;
+		m_pModel_X = nullptr;
+	}
+
+	// フォントの破棄
+	if (m_pFont != nullptr)
+	{
+		m_pFont->Release();
+		m_pFont = nullptr;
+	}
+
+	// Direct3Dデバイスの破棄
+	if (m_pD3DDevice != nullptr)
+	{
+		m_pD3DDevice->Release();
+		m_pD3DDevice = nullptr;
+	}
+
+	// Direct3Dオブジェクトの破棄
+	if (m_pD3D != nullptr)
+	{
+		m_pD3D->Release();
+		m_pD3D = nullptr;
+	}
 }
