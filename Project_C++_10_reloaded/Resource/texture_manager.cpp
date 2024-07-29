@@ -23,8 +23,8 @@ CTexture_Manager* CTexture_Manager::m_pInstance = nullptr;	// テクスチャマネージ
 //============================================================================
 HRESULT CTexture_Manager::Load()
 {
-	// テクスチャ名管理ファイルを展開
-	std::ifstream file("data\\TXT\\texture_path.txt");
+	// テクスチャリストを展開
+	std::ifstream file{ "data\\TXT\\texture_path.txt" };
 
 	if (!file)
 	{ // 展開に失敗
@@ -37,7 +37,7 @@ HRESULT CTexture_Manager::Load()
 	for (int i = 0; i < static_cast<int>(TYPE::MAX); i++)
 	{
 		// テクスチャ名格納先
-		std::string filename;
+		std::string filename{};
 
 		// テクスチャ名を取得する
 		std::getline(file, filename);

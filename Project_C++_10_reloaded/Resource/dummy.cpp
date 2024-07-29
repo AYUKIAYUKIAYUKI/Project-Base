@@ -108,7 +108,7 @@ CDummy* CDummy::Create(D3DXVECTOR3 pos, int& nPattern)
 	pDummy->SetAlpha(0.8f);
 
 	// モデルを取得
-	auto model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::BLOCK_000);
+	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::BLOCK_000);
 
 	// 仮のモデルを設定
 	pDummy->BindModel(model);
@@ -206,14 +206,14 @@ void CDummy::CheckPattern()
 		return;
 	}
 
-	CModel_X::MODEL* model;
+	CModel_X_Manager::MODEL* model{};
 
 	switch (m_nPatternRef)
 	{
 	case 0:
 
 		// ブロックモデルに見た目を変更
-		model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::BLOCK_000);
+		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::BLOCK_000);
 		BindModel(model);
 
 		break;
@@ -221,7 +221,7 @@ void CDummy::CheckPattern()
 	case 1:
 
 		// 可壊ブロックモデルに見た目を変更
-		model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::DESTRUCTIBLE);
+		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::DESTRUCTIBLE);
 		BindModel(model);
 
 		break;
@@ -229,7 +229,7 @@ void CDummy::CheckPattern()
 	case 2:
 
 		// スタートモデルに見た目を変更
-		model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::START);
+		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::START);
 		BindModel(model);
 
 		break;
@@ -237,7 +237,7 @@ void CDummy::CheckPattern()
 	case 3:
 
 		// ゴールモデルに見た目を変更
-		model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::GOAL);
+		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::GOAL);
 		BindModel(model);
 
 		break;

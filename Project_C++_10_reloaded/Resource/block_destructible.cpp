@@ -10,9 +10,6 @@
 //****************************************************
 #include "block_destructible.h"
 
-// モデル取得用
-#include "renderer.h"
-
 //============================================================================
 // デフォルトコンストラクタ
 //============================================================================
@@ -98,7 +95,7 @@ CBlockDestructible* CBlockDestructible::Create(D3DXVECTOR3 pos)
 	pBlockDestructible->SetPos(pos);
 
 	// モデルを取得
-	auto model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::DESTRUCTIBLE);
+	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::DESTRUCTIBLE);
 
 	// モデルを設定
 	pBlockDestructible->BindModel(model);

@@ -10,9 +10,6 @@
 //****************************************************
 #include "goal.h"
 
-// モデル取得用
-#include "renderer.h"
-
 //============================================================================
 // コンストラクタ
 //============================================================================
@@ -95,7 +92,7 @@ CGoal* CGoal::Create(D3DXVECTOR3 pos)
 	pGoal->SetPos(pos);	
 
 	// モデルを取得
-	auto model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::GOAL);
+	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::GOAL);
 
 	// モデルを設定
 	pGoal->BindModel(model);

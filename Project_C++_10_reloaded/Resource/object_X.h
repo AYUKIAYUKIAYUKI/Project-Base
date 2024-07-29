@@ -11,8 +11,10 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
-#include "model_X.h"
 #include "object.h"
+
+// Xモデル情報用
+#include "model_X_manager.h"
 
 //****************************************************
 // Xオブジェクトクラス
@@ -29,7 +31,7 @@ public:
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
 
-	void BindModel(CModel_X::MODEL* pModel);	// モデル割当
+	void BindModel(CModel_X_Manager::MODEL* pModel);	// モデル割当
 
 	D3DXVECTOR3 GetPos();			// 位置取得
 	void SetPos(D3DXVECTOR3 pos);	// 位置設定
@@ -51,12 +53,12 @@ private:
 
 	void SetMtxWorld();	// ワールド行列設定
 
-	CModel_X::MODEL* m_pModel;	// モデル情報
-	D3DXVECTOR3 m_pos;			// 位置
-	D3DXVECTOR3 m_rot;			// 向き
-	D3DXVECTOR3 m_size;			// サイズ
-	float m_fAlpha;				// アルファ値
-	D3DXMATRIX m_mtxWorld;		// ワールド行列
+	CModel_X_Manager::MODEL* m_pModel;	// モデル情報
+	D3DXVECTOR3 m_pos;					// 位置
+	D3DXVECTOR3 m_rot;					// 向き
+	D3DXVECTOR3 m_size;					// サイズ
+	float m_fAlpha;						// アルファ値
+	D3DXMATRIX m_mtxWorld;				// ワールド行列
 };
 
 #endif // _OBJECT_X_H_

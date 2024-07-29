@@ -22,15 +22,8 @@ public:
 	{
 		BG_000 = 0,		// 背景0
 		BG_001,			// 背景1
-		BLOCK_000,		// ブロック0
-		BULLET_000,		// 弾0
-		EFFECT_000,		// エフェクト0
-		ENEMY_000,		// 敵0
 		EXPLOSION_000,	// 爆発0
-		ITEM_000,		// アイテム0
 		NUMBER_000,		// 数字0
-		PLAYER_000,		// プレイヤー0
-		PLAYER_001,		// プレイヤー1
 		MAX,
 	};
 
@@ -54,4 +47,4 @@ private:
 	static CTexture_Manager* m_pInstance;	// テクスチャマネージャー
 };
 
-#endif // _TEXTURE_H_
+#endif // _TEXTURE_MANAGER_H_

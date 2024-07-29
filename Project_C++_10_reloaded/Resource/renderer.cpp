@@ -26,8 +26,7 @@ CRenderer::CRenderer() :
 	m_pD3DDevice{ nullptr },	// デバイス
 	m_pFont{ nullptr },			// フォント
 	m_debugStr{},				// 表示用文字列
-	m_timeStr{},				// 時限式文字列
-	m_pModel_X{ nullptr }		// Xモデルマネージャー
+	m_timeStr{}					// 時限式文字列
 {
 
 }
@@ -123,17 +122,6 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 		FALSE, SHIFTJIS_CHARSET,
 		OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH,
 		"Terminal", &m_pFont);
-
-	// Xモデルマネージャーを生成
-	m_pModel_X = DBG_NEW CModel_X;
-
-	if (m_pModel_X == nullptr)
-	{ // 生成失敗
-		return E_FAIL;
-	}
-
-	// Xモデル読み込み
-	m_pModel_X->Load();
 
 	// 疑似スクリーンの初期設定
 	CFakeScreen::GetInstance()->Init();
@@ -302,14 +290,6 @@ LPDIRECT3DDEVICE9 CRenderer::GetDeviece()
 }
 
 //============================================================================
-// モデルマネージャーの取得
-//============================================================================
-CModel_X* CRenderer::GetModelInstane()
-{
-	return m_pModel_X;
-}
-
-//============================================================================
 // デバッグ用文字列に追加
 //============================================================================
 void CRenderer::SetDebugString(std::string str)
@@ -349,14 +329,6 @@ void CRenderer::Uninit()
 
 	// 疑似スクリーンの破棄
 	CFakeScreen::GetInstance()->Release();
-
-	// Xモデルマネージャー破棄
-	if (m_pModel_X != nullptr)
-	{
-		m_pModel_X->Unload();
-		delete m_pModel_X;
-		m_pModel_X = nullptr;
-	}
 
 	// フォントの破棄
 	if (m_pFont != nullptr)

@@ -10,8 +10,6 @@
 //****************************************************
 #include "block.h"
 
-#include "renderer.h"
-
 //============================================================================
 // コンストラクタ
 //============================================================================
@@ -89,7 +87,7 @@ CBlock* CBlock::Create(D3DXVECTOR3 pos)
 	pBlock->SetPos(pos);
 
 	// モデルを取得
-	auto model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::BLOCK_000);
+	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::BLOCK_000);
 
 	// モデルを設定
 	pBlock->BindModel(model);

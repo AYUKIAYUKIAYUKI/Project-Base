@@ -36,7 +36,7 @@
     <ClCompile Include="resource\manager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Resource\model_X.cpp">
+    <ClCompile Include="Resource\model_X_manager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="resource\number.cpp">
@@ -164,7 +164,7 @@
     <ClInclude Include="resource\manager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="resource\model_X.h">
+    <ClInclude Include="Resource\model_X_manager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="resource\number.h">

@@ -122,7 +122,7 @@ void CObject_X::Draw()
 //============================================================================
 // ƒ‚ƒfƒ‹Š„“–
 //============================================================================
-void CObject_X::BindModel(CModel_X::MODEL* pModel)
+void CObject_X::BindModel(CModel_X_Manager::MODEL* pModel)
 {
 	if (pModel->pMesh == nullptr)
 	{ // Žæ“¾Ž¸”s

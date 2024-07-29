@@ -10,6 +10,9 @@
 //****************************************************
 #include "render_collision.h"
 
+// 頂点フォーマット用
+#include "main.h"
+
 // デバイス取得用
 #include "renderer.h"
 

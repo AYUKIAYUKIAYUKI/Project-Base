@@ -1,11 +1,4 @@
-data\\TEXTURE\\title.png
-data\\TEXTURE\\result.png
-data\\TEXTURE\\Bakemon.png
-data\\TEXTURE\\bullet000.png
-data\\TEXTURE\\effect000.png
-data\\TEXTURE\\AL-1S.png
-data\\TEXTURE\\explosion000.png
-data\\TEXTURE\\result.png
-data\\TEXTURE\\number000.png
-data\\TEXTURE\\62ki.png
-data\\TEXTURE\\62ki_Bikini.png
+Data\\TEXTURE\\title.png
+Data\\TEXTURE\\result.png
+Data\\TEXTURE\\explosion000.png
+Data\\TEXTURE\\number000.png

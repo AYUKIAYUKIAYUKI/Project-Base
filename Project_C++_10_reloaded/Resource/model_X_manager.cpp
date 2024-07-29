@@ -1,6 +1,6 @@
 //============================================================================
 // 
-// Xモデル管理 [model_X.cpp]
+// Xモデルマネージャー [model_X_manager.cpp]
 // Author : 福田歩希
 // 
 //============================================================================
@@ -8,7 +8,7 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
-#include "model_X.h"
+#include "model_X_manager.h"
 
 // デバイス取得用
 #include "renderer.h"
@@ -16,39 +16,15 @@
 //****************************************************
 // 静的メンバの初期化
 //****************************************************
-CModel_X::MODEL CModel_X::m_apModelTemp[static_cast<int>(MODEL_TYPE::MAX)];	// モデル管理
-
-//============================================================================
-// コンストラクタ
-//============================================================================
-CModel_X::CModel_X()
-{
-	for (int i = 0; i < static_cast<int>(MODEL_TYPE::MAX); i++)
-	{
-		// モデル情報の初期化
-		m_apModelTemp[i].size = { 0.0f, 0.0f, 0.0f };	// サイズ
-		m_apModelTemp[i].pMesh = nullptr;				// メッシュのポインタ
-		m_apModelTemp[i].pBuffMat = nullptr;			// マテリアルバッファのポインタ
-		m_apModelTemp[i].dwNumMat = 0;					// マテリアル数
-		m_apModelTemp[i].ppTex = nullptr;				// テクスチャのポインタ
-	}
-}
-
-//============================================================================
-// デストラクタ
-//============================================================================
-CModel_X::~CModel_X()
-{
-
-}
+CModel_X_Manager* CModel_X_Manager::m_pInstnce;	// Xモデルマネージャー
 
 //============================================================================
 // モデル読み込み
 //============================================================================
-HRESULT CModel_X::Load()
+HRESULT CModel_X_Manager::Load()
 {
-	// モデル名管理ファイルを展開
-	std::ifstream file("data\\TXT\\model_path.txt");
+	// モデルリストを展開
+	std::ifstream file{ "data\\TXT\\model_path.txt" };
 
 	if (!file)
 	{ // 展開に失敗
@@ -58,7 +34,7 @@ HRESULT CModel_X::Load()
 	// デバイスを取得
 	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
 
-	for (int nCntModel = 0; nCntModel < static_cast<int>(MODEL_TYPE::MAX); nCntModel++)
+	for (int nCntModel = 0; nCntModel < static_cast<int>(TYPE::MAX); nCntModel++)
 	{
 		// モデル名格納先
 		std::string filename{};
@@ -121,49 +97,27 @@ HRESULT CModel_X::Load()
 }
 
 //============================================================================
-// モデル破棄
+// 解放
 //============================================================================
-void CModel_X::Unload()
+void CModel_X_Manager::Release()
 {
-	for (int i = 0; i < static_cast<int>(MODEL_TYPE::MAX); i++)
+	if (m_pInstnce != nullptr)
 	{
-		// テクスチャポインタの破棄
-		if (m_apModelTemp[i].ppTex != nullptr)
-		{
-			// テクスチャの破棄
-			for (int nCntMat = 0; nCntMat < static_cast<int>(m_apModelTemp[i].dwNumMat); nCntMat++)
-			{
-				if (m_apModelTemp[i].ppTex[nCntMat] != nullptr)
-				{
-					m_apModelTemp[i].ppTex[nCntMat]->Release();
-					m_apModelTemp[i].ppTex[nCntMat] = nullptr;
-				}
-			}
+		// Xモデルの破棄
+		m_pInstnce->Unload();
 
-			delete[] m_apModelTemp[i].ppTex;
-			m_apModelTemp[i].ppTex = nullptr;
-		}
+		// メモリの解放
+		delete m_pInstnce;
 
-		// メッシュの破棄
-		if (m_apModelTemp[i].pMesh != nullptr)
-		{
-			m_apModelTemp[i].pMesh->Release();
-			m_apModelTemp[i].pMesh = nullptr;
-		}
-
-		// マテリアルの破棄
-		if (m_apModelTemp[i].pBuffMat != nullptr)
-		{
-			m_apModelTemp[i].pBuffMat->Release();
-			m_apModelTemp[i].pBuffMat = nullptr;
-		}
+		// ポインタの初期化
+		m_pInstnce = nullptr;
 	}
 }
 
 //============================================================================
 // モデルを取得
 //============================================================================
-CModel_X::MODEL* CModel_X::GetModel(MODEL_TYPE type)
+CModel_X_Manager::MODEL* CModel_X_Manager::GetModel(TYPE type)
 {
 	if (&m_apModelTemp[static_cast<int>(type)].pMesh == nullptr)
 	{ // モデル取得不能
@@ -174,9 +128,61 @@ CModel_X::MODEL* CModel_X::GetModel(MODEL_TYPE type)
 }
 
 //============================================================================
+// Xモデルマネージャーを取得
+//============================================================================
+CModel_X_Manager* CModel_X_Manager::GetInstance()
+{
+	if (m_pInstnce == nullptr)
+	{
+		// 生成
+		m_pInstnce->Create();
+	}
+
+	return m_pInstnce;
+}
+
+//============================================================================
+// コンストラクタ
+//============================================================================
+CModel_X_Manager::CModel_X_Manager()
+{
+	for (int i = 0; i < static_cast<int>(TYPE::MAX); i++)
+	{
+		// モデル情報の初期化
+		m_apModelTemp[i].size = { 0.0f, 0.0f, 0.0f };	// サイズ
+		m_apModelTemp[i].pMesh = nullptr;				// メッシュのポインタ
+		m_apModelTemp[i].pBuffMat = nullptr;			// マテリアルバッファのポインタ
+		m_apModelTemp[i].dwNumMat = 0;					// マテリアル数
+		m_apModelTemp[i].ppTex = nullptr;				// テクスチャのポインタ
+	}
+}
+
+//============================================================================
+// デストラクタ
+//============================================================================
+CModel_X_Manager::~CModel_X_Manager()
+{
+
+}
+
+//============================================================================
+// 生成
+//============================================================================
+void CModel_X_Manager::Create()
+{
+	if (m_pInstnce != nullptr)
+	{ // 二重生成禁止
+		assert(false);
+	}
+
+	// インスタンスを生成
+	m_pInstnce = DBG_NEW CModel_X_Manager{};
+}
+
+//============================================================================
 // サイズ読み込み
 //============================================================================
-D3DXVECTOR3 CModel_X::ImportSize(std::string filename)
+D3DXVECTOR3 CModel_X_Manager::ImportSize(std::string filename)
 {
 	// 比較処理用に数値を入れておく
 	D3DXVECTOR3 sizeMin{ FLT_MAX, FLT_MAX, FLT_MAX };
@@ -263,4 +269,44 @@ D3DXVECTOR3 CModel_X::ImportSize(std::string filename)
 	file.close();
 
 	return sizeMax;
+}
+
+//============================================================================
+// モデル破棄
+//============================================================================
+void CModel_X_Manager::Unload()
+{
+	for (int i = 0; i < static_cast<int>(TYPE::MAX); i++)
+	{
+		// テクスチャポインタの破棄
+		if (m_apModelTemp[i].ppTex != nullptr)
+		{
+			// テクスチャの破棄
+			for (int nCntMat = 0; nCntMat < static_cast<int>(m_apModelTemp[i].dwNumMat); nCntMat++)
+			{
+				if (m_apModelTemp[i].ppTex[nCntMat] != nullptr)
+				{
+					m_apModelTemp[i].ppTex[nCntMat]->Release();
+					m_apModelTemp[i].ppTex[nCntMat] = nullptr;
+				}
+			}
+
+			delete[] m_apModelTemp[i].ppTex;
+			m_apModelTemp[i].ppTex = nullptr;
+		}
+
+		// メッシュの破棄
+		if (m_apModelTemp[i].pMesh != nullptr)
+		{
+			m_apModelTemp[i].pMesh->Release();
+			m_apModelTemp[i].pMesh = nullptr;
+		}
+
+		// マテリアルの破棄
+		if (m_apModelTemp[i].pBuffMat != nullptr)
+		{
+			m_apModelTemp[i].pBuffMat->Release();
+			m_apModelTemp[i].pBuffMat = nullptr;
+		}
+	}
 }

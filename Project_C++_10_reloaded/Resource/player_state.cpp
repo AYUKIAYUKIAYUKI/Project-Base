@@ -9,10 +9,12 @@
 // インクルードファイル
 //****************************************************
 #include "player_state.h"
-
-#include "manager.h"
-#include "renderer.h"
 #include "utility.h"
+
+// 
+#include "manager.h"
+
+// オブジェクト情報用
 #include "explosion.h"
 #include "start.h"
 
@@ -90,7 +92,7 @@ CPlayerStateDefault::~CPlayerStateDefault()
 void CPlayerStateDefault::Enter()
 {
 	// モデルを取得
-	auto model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_000);
+	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_000);
 
 	// モデルの設定
 	m_pPlayer->BindModel(model);
@@ -293,7 +295,7 @@ CPlayerStateBeginning::~CPlayerStateBeginning()
 void CPlayerStateBeginning::Enter()
 {
 	// モデルを取得
-	auto model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_001);
+	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_001);
 
 	// モデルの設定
 	m_pPlayer->BindModel(model);
@@ -387,7 +389,7 @@ CPlayerStateFlying::~CPlayerStateFlying()
 void CPlayerStateFlying::Enter()
 {
 	// モデルを取得
-	auto model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_002);
+	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_002);
 
 	// モデルの設定
 	m_pPlayer->BindModel(model);
@@ -590,7 +592,7 @@ CPlayerStateStopping::~CPlayerStateStopping()
 void CPlayerStateStopping::Enter()
 {
 	// モデルを取得
-	auto model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_003);
+	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_003);
 
 	// モデルの設定
 	m_pPlayer->BindModel(model);
@@ -647,7 +649,7 @@ void CPlayerStateStopping::Exit()
 	m_pPlayer->SetRot(rot);
 
 	// モデルを取得
-	auto model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_000);
+	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_000);
 
 	// モデルの設定
 	m_pPlayer->BindModel(model);
@@ -734,7 +736,7 @@ void CPlayerStateMistook::Enter()
 	m_pPlayer->SetRot({ 0.0f, 0.0f, 0.0f });
 
 	// モデルを取得
-	auto model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_004);
+	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_004);
 
 	// モデルの設定
 	m_pPlayer->BindModel(model);
@@ -855,7 +857,7 @@ CPlayerStateGoal::~CPlayerStateGoal()
 void CPlayerStateGoal::Enter()
 {
 	// モデルを取得
-	auto model = CRenderer::GetInstance()->GetModelInstane()->GetModel(CModel_X::MODEL_TYPE::PLAYER_005);
+	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_005);
 
 	// モデルの設定
 	m_pPlayer->BindModel(model);
