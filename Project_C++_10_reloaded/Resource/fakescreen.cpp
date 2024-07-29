@@ -430,7 +430,7 @@ CFakeScreen::CFakeScreen() :
 	m_NextPhase{ CGameManager::PHASE::NONE },	// 次のフェーズ
 	m_bWaveIn{ false },							// 波打ちイン判定
 	m_bWaveOut{ false },						// 波打ちアウト判定
-	m_fBrightness{ 0.0f },						// 明度
+	m_fBrightness{ 1.0f },						// 明度
 	m_fPosDistortion{ 0.0f },					// 座標変動用
 	m_fAddDistortion{ 0.0f }					// ゆがみ増加量
 {
