@@ -9,7 +9,11 @@
 // インクルードファイル
 //****************************************************
 #include "renderer.h"
+
+// 描画用
 #include "manager.h"
+
+// オブジェクト情報
 #include "object.h"
 #include "fakescreen.h"
 

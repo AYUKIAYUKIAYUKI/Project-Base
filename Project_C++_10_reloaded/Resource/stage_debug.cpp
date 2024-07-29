@@ -11,11 +11,14 @@
 #include "stage_debug.h"
 #include "stagemaker.h"
 
+// インプット取得用
 #include "manager.h"
+
+// オブジェクト用
 #include "dummy.h"
+#include "goal.h"
 #include "line.h"
 #include "start.h"
-#include "goal.h"
 
 //============================================================================
 // コンストラクタ

@@ -100,7 +100,7 @@ void CLine::CreateGrid()
 		pLine->SetPos({ (-fLineSize * (nMaxLine / 2)) + (fLineSize * i), 0.0f, fLineSize * 0.5f });
 
 		// Œ©‚½–Ú‚ðÝ’è
-		CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::LINE_X);
+		pLine->BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::LINE_X));
 	}
 
 	// cƒ‰ƒCƒ“‚ðŽ©“®“I‚É‚ÍˆÊ’u‚µ‚Ä‚¢‚­
@@ -124,6 +124,6 @@ void CLine::CreateGrid()
 		pLine->SetPos({ 0.0f, (-fLineSize * (nMaxLine / 2)) + (fLineSize * i), fLineSize * 0.5f });
 
 		// Œ©‚½–Ú‚ðÝ’è
-		CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::LINE_Y);
+		pLine->BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::LINE_Y));
 	}
 }

@@ -9,13 +9,15 @@
 // インクルードファイル
 //****************************************************
 #include "scene.h"
-#include "object.h"
 
 // シーン用
 #include "title.h"
 #include "game.h"
 #include "stage_debug.h"
 #include "result.h"
+
+// オブジェクト管理用
+#include "object.h"
 
 //============================================================================
 // コンストラクタ

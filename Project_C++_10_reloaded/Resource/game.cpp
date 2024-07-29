@@ -11,6 +11,8 @@
 #include "game.h"
 #include "game_manager.h"
 #include "stagemaker.h"
+
+// インプット取得用
 #include "manager.h"
 
 //============================================================================

@@ -10,17 +10,19 @@
 //****************************************************
 #include "player.h"
 #include "player_state.h"
-#include "manager.h"
-#include "game_manager.h"
 #include "utility.h"
-#include "fakescreen.h"
+
+// フェーズ情報用
+#include "game_manager.h"
 
 // デバッグ表示用
 #include "renderer.h"
 
+// オブジェクト情報用 
 #include "block.h"
 #include "block_destructible.h"
 #include "explosion.h"
+#include "fakescreen.h"
 #include "goal.h"
 #include "start.h"
 
