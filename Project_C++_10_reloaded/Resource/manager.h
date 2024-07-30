@@ -14,7 +14,6 @@
 #include "camera.h"
 #include "light.h"
 #include "input.h"
-#include "sound.h"
 #include "scene.h"
 #include "fade.h"
 
@@ -37,7 +36,6 @@ public:
 	static CLight* GetLight();					// ライト取得
 	static CInputKeyboard* GetKeyboard();		// キーボード取得
 	static CInputPad* GetPad();					// パッド取得
-	static CSound* GetSound();					// サウンド取得
 	static CScene* GetScene();					// シーン取得
 	static void SetScene(CScene::MODE mode);	// シーン設定
 	static CFade* GetFade();					// フェード取得
@@ -48,7 +46,6 @@ private:
 	static CLight* m_pLight;			// ライト管理
 	static CInputKeyboard* m_pKeyboard;	// キーボード管理
 	static CInputPad* m_pPad;			// パッド管理
-	static CSound* m_pSound;			// サウンド管理
 	static CScene* m_pScene;			// シーン管理
 	static CFade* m_pFade;				// フェード管理
 };

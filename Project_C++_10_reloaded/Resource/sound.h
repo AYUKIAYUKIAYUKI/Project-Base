@@ -10,29 +10,28 @@
 //****************************************************
 // サウンドクラス
 //****************************************************
-class CSound
+class CSound final
 {
 public:
 
 	//****************************************************
 	// サウンド一覧
 	//****************************************************
-	enum SOUND_LABEL
+	enum class LABEL
 	{
-		SOUND_LABEL_00 = 0,	// ダミー
-		SOUND_LABEL_MAX,
+		LABEL_00 = 0,	// ダミー
+		MAX,
 	};
 
-	CSound();	// コンストラクタ
-	~CSound();	// デストラクタ
+	HRESULT Init(HWND hWnd);		// 初期設定
+	void Release();					// 解放
+	HRESULT PlaySound(LABEL label);	// 再生
+	void Stop(LABEL label);			// 停止 (選択)
+	void Stop();					// 停止 (全て)
+	void SetVol(LABEL label);		// 音量を設定
+	float GetVol(LABEL label);		// 音量を取得
 
-	HRESULT Init(HWND hWnd);				// 初期設定
-	void Uninit(void);						// 終了処理
-	HRESULT PlaySound(SOUND_LABEL label);	// 再生
-	void Stop(SOUND_LABEL label);			// 停止 (選択)
-	void Stop(void);						// 停止 (全て)
-	void SetVol(int label);					// 音量を設定
-	float GetVol(int label);				// 音量を取得
+	static CSound* GetInstance();	// サウンドを取得
 
 private:
 
@@ -46,15 +45,22 @@ private:
 		float fVolume;			// 音量
 	};
 
+	CSound();	// コンストラクタ
+	~CSound();	// デストラクタ
+
+	void Create();																					// 生成
+	void Uninit();																					// 終了処理
 	HRESULT CheckChunk(HANDLE hFile, DWORD format, DWORD* pChunkSize, DWORD* pChunkDataPosition);	// チャンクのチェック
 	HRESULT ReadChunkData(HANDLE hFile, void* pBuffer, DWORD dwBuffersize, DWORD dwBufferoffset);	// チャンクデータの読み込み
 
-	IXAudio2* m_pXAudio2;									// XAudio2オブジェクトへのインターフェイス
-	IXAudio2MasteringVoice* m_pMasteringVoice;				// マスターボイス
-	IXAudio2SourceVoice* m_apSourceVoice[SOUND_LABEL_MAX];	// ソースボイス
-	BYTE* m_apDataAudio[SOUND_LABEL_MAX];					// オーディオデータ
-	DWORD m_aSizeAudio[SOUND_LABEL_MAX];					// オーディオデータサイズ
-	SOUNDINFO m_aSoundInfo[SOUND_LABEL_MAX];				// サウンド情報 (仮)
+	IXAudio2* m_pXAudio2;												// XAudio2オブジェクトへのインターフェイス
+	IXAudio2MasteringVoice* m_pMasteringVoice;							// マスターボイス
+	IXAudio2SourceVoice* m_apSourceVoice[static_cast<int>(LABEL::MAX)];	// ソースボイス
+	BYTE* m_apDataAudio[static_cast<int>(LABEL::MAX)];					// オーディオデータ
+	DWORD m_aSizeAudio[static_cast<int>(LABEL::MAX)];					// オーディオデータサイズ
+	SOUNDINFO m_aSoundInfo[static_cast<int>(LABEL::MAX)];				// サウンド情報 (仮)
+
+	static CSound* m_pSound;	// サウンド
 };
 
 #endif	// _SOUND_H_

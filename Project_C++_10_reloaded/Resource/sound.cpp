@@ -10,28 +10,10 @@
 //****************************************************
 #include "sound.h"
 
-//=============================================================================
-// コンストラクタ
-//=============================================================================
-CSound::CSound()
-{
-	m_pXAudio2 = nullptr;					// XAudio2オブジェクトへのインターフェイス
-	m_pMasteringVoice = nullptr;			// マスターボイス
-	m_apSourceVoice[SOUND_LABEL_MAX] = {};	// ソースボイス
-	m_apDataAudio[SOUND_LABEL_MAX] = {};	// オーディオデータ
-	m_aSizeAudio[SOUND_LABEL_MAX] = {};		// オーディオデータサイズ
-
-	// サウンド情報 (仮)
-	m_aSoundInfo[0] = { "data\\SE\\00.wav", 0, 1.0f };
-}
-
-//=============================================================================
-// デストラクタ
-//=============================================================================
-CSound::~CSound()
-{
-
-}
+//****************************************************
+// 静的メンバ変数の初期化
+//****************************************************
+CSound* CSound::m_pSound = nullptr;	// サウンド
 
 //=============================================================================
 // 初期化処理
@@ -75,7 +57,7 @@ HRESULT CSound::Init(HWND hWnd)
 	}
 
 	// サウンドデータの初期化
-	for (int nCntSound = 0; nCntSound < SOUND_LABEL_MAX; nCntSound++)
+	for (int nCntSound = 0; nCntSound < static_cast<int>(LABEL::MAX); nCntSound++)
 	{
 		HANDLE hFile;
 		DWORD dwChunkSize = 0;
@@ -175,12 +157,188 @@ HRESULT CSound::Init(HWND hWnd)
 }
 
 //=============================================================================
+// 解放
+//=============================================================================
+void CSound::Release()
+{
+	if (m_pSound != nullptr)
+	{
+		// サウンドの終了処理
+		m_pSound->Uninit();
+	
+		// メモリを解放
+		delete m_pSound;
+
+		// ポインタを初期化
+		m_pSound = nullptr;
+	}
+}
+
+//=============================================================================
+// セグメント再生(再生中なら停止)
+//=============================================================================
+HRESULT CSound::PlaySound(LABEL label)
+{
+	// ラベル指定を要素数に変換
+	const int nNumElement{ static_cast<int>(label) };
+
+	XAUDIO2_VOICE_STATE xa2state;
+	XAUDIO2_BUFFER buffer;
+
+	// バッファの値設定
+	memset(&buffer, 0, sizeof(XAUDIO2_BUFFER));
+	buffer.AudioBytes = m_aSizeAudio[nNumElement];
+	buffer.pAudioData = m_apDataAudio[nNumElement];
+	buffer.Flags = XAUDIO2_END_OF_STREAM;
+	buffer.LoopCount = m_aSoundInfo[nNumElement].nCntLoop;
+
+	// 状態取得
+	m_apSourceVoice[nNumElement]->GetState(&xa2state);
+
+	// 音量取得
+	m_apSourceVoice[nNumElement]->SetVolume(m_aSoundInfo[nNumElement].fVolume);
+
+	if (xa2state.BuffersQueued != 0)
+	{// 再生中
+		// 一時停止
+		m_apSourceVoice[nNumElement]->Stop(0);
+
+		// オーディオバッファの削除
+		m_apSourceVoice[nNumElement]->FlushSourceBuffers();
+	}
+
+	// オーディオバッファの登録
+	m_apSourceVoice[nNumElement]->SubmitSourceBuffer(&buffer);
+
+	// 再生
+	m_apSourceVoice[nNumElement]->Start(0);
+
+	return S_OK;
+}
+
+//=============================================================================
+// セグメント停止(ラベル指定)
+//=============================================================================
+void CSound::Stop(LABEL label)
+{
+	// ラベル指定を要素数に変換
+	const int nNumElement{ static_cast<int>(label) };
+
+	XAUDIO2_VOICE_STATE xa2state;
+
+	// 状態取得
+	m_apSourceVoice[nNumElement]->GetState(&xa2state);
+
+	// 音量取得
+	m_apSourceVoice[nNumElement]->SetVolume(m_aSoundInfo[nNumElement].fVolume);
+
+	if (xa2state.BuffersQueued != 0)
+	{// 再生中
+		// 一時停止
+		m_apSourceVoice[nNumElement]->Stop(0);
+
+		// オーディオバッファの削除
+		m_apSourceVoice[nNumElement]->FlushSourceBuffers();
+	}
+}
+
+//=============================================================================
+// セグメント停止(全て)
+//=============================================================================
+void CSound::Stop(void)
+{
+	// 一時停止
+	for (int nCntSound = 0; nCntSound < static_cast<int>(LABEL::MAX); nCntSound++)
+	{
+		if (m_apSourceVoice[nCntSound] != NULL)
+		{
+			// 一時停止
+			m_apSourceVoice[nCntSound]->Stop(0);
+		}
+	}
+}
+
+//=============================================================================
+// 音量設定
+//=============================================================================
+void CSound::SetVol(LABEL label)
+{
+	// ラベル指定を要素数に変換
+	const int nNumElement{ static_cast<int>(label) };
+
+	// 指定のサウンドの音量をセット
+	m_apSourceVoice[nNumElement]->SetVolume(m_aSoundInfo[nNumElement].fVolume);
+}
+
+//=============================================================================
+// 音量取得
+//=============================================================================
+float CSound::GetVol(LABEL label)
+{
+	// ラベル指定を要素数に変換
+	const int nNumElement{ static_cast<int>(label) };
+
+	return m_aSoundInfo[nNumElement].fVolume;
+}
+
+//=============================================================================
+// サウンドを取得
+//=============================================================================
+CSound* CSound::GetInstance()
+{
+	if (m_pSound == nullptr)
+	{
+		// 生成
+		m_pSound->Create();
+	}
+
+	return m_pSound;
+}
+
+//=============================================================================
+// コンストラクタ
+//=============================================================================
+CSound::CSound()
+{
+	m_pXAudio2 = nullptr;								// XAudio2オブジェクトへのインターフェイス
+	m_pMasteringVoice = nullptr;						// マスターボイス
+	m_apSourceVoice[static_cast<int>(LABEL::MAX)] = {};	// ソースボイス
+	m_apDataAudio[static_cast<int>(LABEL::MAX)] = {};	// オーディオデータ
+	m_aSizeAudio[static_cast<int>(LABEL::MAX)] = {};	// オーディオデータサイズ
+
+	// サウンド情報 (仮)
+	m_aSoundInfo[0] = { "data\\SE\\00.wav", 0, 1.0f };
+}
+
+//=============================================================================
+// デストラクタ
+//=============================================================================
+CSound::~CSound()
+{
+
+}
+
+//=============================================================================
+// 生成
+//=============================================================================
+void CSound::Create()
+{
+	if (m_pSound != nullptr)
+	{ // 二重生成禁止
+		assert(false);
+	}
+
+	// インスタンスを生成
+	m_pSound = DBG_NEW CSound{};
+}
+
+//=============================================================================
 // 終了処理
 //=============================================================================
 void CSound::Uninit(void)
 {
 	// 一時停止
-	for (int nCntSound = 0; nCntSound < SOUND_LABEL_MAX; nCntSound++)
+	for (int nCntSound = 0; nCntSound < static_cast<int>(LABEL::MAX); nCntSound++)
 	{
 		if (m_apSourceVoice[nCntSound] != NULL)
 		{
@@ -210,84 +368,6 @@ void CSound::Uninit(void)
 
 	// COMライブラリの終了処理
 	CoUninitialize();
-}
-
-//=============================================================================
-// セグメント再生(再生中なら停止)
-//=============================================================================
-HRESULT CSound::PlaySound(SOUND_LABEL label)
-{
-	XAUDIO2_VOICE_STATE xa2state;
-	XAUDIO2_BUFFER buffer;
-
-	// バッファの値設定
-	memset(&buffer, 0, sizeof(XAUDIO2_BUFFER));
-	buffer.AudioBytes = m_aSizeAudio[label];
-	buffer.pAudioData = m_apDataAudio[label];
-	buffer.Flags = XAUDIO2_END_OF_STREAM;
-	buffer.LoopCount = m_aSoundInfo[label].nCntLoop;
-
-	// 状態取得
-	m_apSourceVoice[label]->GetState(&xa2state);
-
-	// 音量取得
-	m_apSourceVoice[label]->SetVolume(m_aSoundInfo[label].fVolume);
-
-	if (xa2state.BuffersQueued != 0)
-	{// 再生中
-		// 一時停止
-		m_apSourceVoice[label]->Stop(0);
-
-		// オーディオバッファの削除
-		m_apSourceVoice[label]->FlushSourceBuffers();
-	}
-
-	// オーディオバッファの登録
-	m_apSourceVoice[label]->SubmitSourceBuffer(&buffer);
-
-	// 再生
-	m_apSourceVoice[label]->Start(0);
-
-	return S_OK;
-}
-
-//=============================================================================
-// セグメント停止(ラベル指定)
-//=============================================================================
-void CSound::Stop(SOUND_LABEL label)
-{
-	XAUDIO2_VOICE_STATE xa2state;
-
-	// 状態取得
-	m_apSourceVoice[label]->GetState(&xa2state);
-
-	// 音量取得
-	m_apSourceVoice[label]->SetVolume(m_aSoundInfo[label].fVolume);
-
-	if (xa2state.BuffersQueued != 0)
-	{// 再生中
-		// 一時停止
-		m_apSourceVoice[label]->Stop(0);
-
-		// オーディオバッファの削除
-		m_apSourceVoice[label]->FlushSourceBuffers();
-	}
-}
-
-//=============================================================================
-// セグメント停止(全て)
-//=============================================================================
-void CSound::Stop(void)
-{
-	// 一時停止
-	for (int nCntSound = 0; nCntSound < SOUND_LABEL_MAX; nCntSound++)
-	{
-		if (m_apSourceVoice[nCntSound] != NULL)
-		{
-			// 一時停止
-			m_apSourceVoice[nCntSound]->Stop(0);
-		}
-	}
 }
 
 //=============================================================================
@@ -376,21 +456,4 @@ HRESULT CSound::ReadChunkData(HANDLE hFile, void* pBuffer, DWORD dwBuffersize, D
 	}
 
 	return S_OK;
-}
-
-//=============================================================================
-// 音量設定
-//=============================================================================
-void CSound::SetVol(int label)
-{
-	// 指定のサウンドの音量をセット
-	m_apSourceVoice[label]->SetVolume(m_aSoundInfo[label].fVolume);
-}
-
-//=============================================================================
-// 音量取得
-//=============================================================================
-float CSound::GetVol(int label)
-{
-	return m_aSoundInfo[label].fVolume;
 }

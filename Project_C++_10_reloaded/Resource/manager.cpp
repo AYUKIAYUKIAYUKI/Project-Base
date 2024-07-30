@@ -14,6 +14,7 @@
 #include "renderer.h"
 #include "texture_manager.h"
 #include "model_X_manager.h"
+#include "sound.h"
 #include "utility.h"
 
 //****************************************************
@@ -23,7 +24,6 @@ CCamera* CManager::m_pCamera = nullptr;				// カメラ管理
 CLight* CManager::m_pLight = nullptr;				// ライト管理
 CInputKeyboard* CManager::m_pKeyboard = nullptr;	// キーボード管理
 CInputPad* CManager::m_pPad = nullptr;				// パッド管理
-CSound* CManager::m_pSound = nullptr;				// サウンド管理
 CScene* CManager::m_pScene = nullptr;				// シーン管理
 CFade* CManager::m_pFade = nullptr;					// フェード管理
 
@@ -36,7 +36,6 @@ CManager::CManager()
 	m_pLight = nullptr;
 	m_pKeyboard = nullptr;
 	m_pPad = nullptr;
-	m_pSound = nullptr;
 	m_pScene = nullptr;
 	m_pFade = nullptr;
 }
@@ -65,6 +64,12 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	// Xモデルマネージャー初期設定
 	if (FAILED(CModel_X_Manager::GetInstance()->Load()))
+	{
+		return E_FAIL;
+	}
+
+	// サウンド初期設定
+	if (FAILED(CSound::GetInstance()->Init(hWnd)))
 	{
 		return E_FAIL;
 	}
@@ -113,17 +118,6 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// キーボードの初期化
 	m_pPad->Init();
 
-	// サウンドの生成
-	m_pSound = DBG_NEW CSound;
-
-	if (m_pSound == nullptr)
-	{ // 生成失敗
-		return E_FAIL;
-	}
-
-	// サウンドの初期化
-	m_pSound->Init(hWnd);
-
 	// フェードの生成
 	m_pFade = DBG_NEW CFade;
 
@@ -168,14 +162,6 @@ void CManager::Uninit()
 		m_pScene = nullptr;	// ポインタを初期化
 	}
 
-	// サウンドの破棄
-	if (m_pSound != nullptr)
-	{
-		m_pSound->Uninit();	// 終了処理
-		delete m_pSound;	// メモリを解放
-		m_pSound = nullptr;	// ポインタを初期化
-	}
-
 	// パッドの破棄
 	if (m_pPad != nullptr)
 	{
@@ -205,6 +191,9 @@ void CManager::Uninit()
 		delete m_pCamera;		// メモリを解放
 		m_pCamera = nullptr;	// ポインタを初期化
 	}
+
+	// サウンド破棄
+	CSound::GetInstance()->Release();
 
 	// Xモデルマネージャー破棄
 	CModel_X_Manager::GetInstance()->Release();
@@ -282,14 +271,6 @@ CInputKeyboard* CManager::GetKeyboard()
 CInputPad* CManager::GetPad()
 {
 	return m_pPad;
-}
-
-//============================================================================
-// サウンド取得
-//============================================================================
-CSound* CManager::GetSound()
-{
-	return m_pSound;
 }
 
 //============================================================================
