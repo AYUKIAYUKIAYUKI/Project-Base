@@ -283,7 +283,7 @@ bool CPlayer::Collision()
 		}
 
 		// ブロッククラスへダウンキャスト
-		CBlock* pBlock = CBlock::DownCast(pObject[nCntObj]);
+		CBlock* pBlock = CUtility::GetInstance()->DownCast<CBlock, CObject>(pObject[nCntObj]);
 
 		// ブロックと衝突する場合
 		if (CUtility::GetInstance()->OnlyCube(pBlock->GetPos(), pBlock->GetSize(), m_posTarget, GetSize()))
@@ -308,7 +308,7 @@ bool CPlayer::Collision()
 		}
 
 		// 可壊ブロックへダウンキャスト
-		CBlockDestructible* pDestructible = CBlockDestructible::DownCast(pObject[nCntObj]);
+		CBlockDestructible* pDestructible = CUtility::GetInstance()->DownCast<CBlockDestructible, CObject>(pObject[nCntObj]);
 
 		// 可壊ブロックと衝突する場合
 		if (CUtility::GetInstance()->OnlyCube(pDestructible->GetPos(), pDestructible->GetSize(), m_posTarget, GetSize()))

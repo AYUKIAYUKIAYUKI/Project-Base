@@ -20,6 +20,12 @@ public:
 
 	static CUtility* GetInstance();	// 便利関数群を取得
 
+	// ダウンキャスト
+	template <typename T1, typename T2> T1* DownCast(T2* pBase);
+
+	// カウントダウン
+	bool CountDown(int& nDuration);
+
 	// 重力落下
 	void Gravity(D3DXVECTOR3& vec);
 
@@ -47,5 +53,21 @@ private:
 
 	static CUtility* m_pInstance;	// 便利関数群
 };
+
+//============================================================================
+// ダウンキャスト
+//============================================================================
+template <typename T1, typename T2> T1* CUtility::DownCast(T2* pBase)
+{
+	T1* pObj{ dynamic_cast<T1*>(pBase) };
+
+	// ダウンキャスト失敗
+	if (!pObj)
+	{
+		assert(false);
+	}
+
+	return pObj;
+}
 
 #endif // _UTILITY_H_
