@@ -38,6 +38,7 @@ public:
 		PARTICLE00,		// 粒子00
 		PARTICLE01,		// 粒子01
 		PARTICLE02,		// 粒子02
+		PARTICLE03,		// 粒子03
 		MAX,
 	};
 

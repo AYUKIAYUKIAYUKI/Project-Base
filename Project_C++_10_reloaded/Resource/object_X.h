@@ -42,6 +42,9 @@ public:
 	D3DXVECTOR3 GetSize();			// サイズ取得
 	void SetSize(D3DXVECTOR3 size);	// サイズ設定
 
+	float& GetScale() { return m_fScale; }				// 縮尺取得
+	void SetScale(float scale) { m_fScale = scale; }	// 縮尺設定
+
 	float& GetAlpha();				// アルファ値取得
 	void SetAlpha(float fAlpha);	// アルファ値設定
 
@@ -57,6 +60,7 @@ private:
 	D3DXVECTOR3 m_pos;					// 位置
 	D3DXVECTOR3 m_rot;					// 向き
 	D3DXVECTOR3 m_size;					// サイズ
+	float m_fScale;						// 縮尺
 	float m_fAlpha;						// アルファ値
 	D3DXMATRIX m_mtxWorld;				// ワールド行列
 };

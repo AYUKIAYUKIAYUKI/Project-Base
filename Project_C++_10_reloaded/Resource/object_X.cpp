@@ -30,6 +30,7 @@ CObject_X::CObject_X(int nPriority) : CObject(nPriority)
 	m_pos = { 0.0f, 0.0f, 0.0f };		// 位置
 	m_rot = { 0.0f, 0.0f, 0.0f };		// 向き
 	m_size = { 0.0f, 0.0f, 0.0f };		// サイズ
+	m_fScale = 1.0f;					// 縮尺
 	m_fAlpha = DEFAULT_ALPHA_VALUE;		// アルファ値
 	D3DXMatrixIdentity(&m_mtxWorld);	// ワールド行列
 
@@ -224,9 +225,9 @@ void CObject_X::SetMtxWorld()
 
 	// 拡縮行列作成
 	D3DXMatrixScaling(&mtxScale,
-		1.0f,
-		1.0f,
-		1.0f);
+		m_fScale,
+		m_fScale,
+		m_fScale);
 
 	// 拡縮行列との掛け算
 	D3DXMatrixMultiply(&m_mtxWorld,

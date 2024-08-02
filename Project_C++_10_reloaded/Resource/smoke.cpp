@@ -11,11 +11,14 @@
 #include "smoke.h"
 #include "utility.h"
 
+#include "renderer.h"
+
 //============================================================================
 // コンストラクタ
 //============================================================================
 CSmoke::CSmoke() :
-	m_velocity{ 0.0f, 0.0f, 0.0f }	// 加速度
+	CObject_X(static_cast<int>(LAYER::FRONT_MIDDLE)),	// プライオリティの設定
+	m_velocity{ 0.0f, 0.0f, 0.0f }						// 加速度
 {
 
 }
@@ -61,7 +64,7 @@ void CSmoke::Update()
 
 	// 回転
 	auto rot{ GetRot() };
-	rot = m_velocity;
+	rot += m_velocity;
 	SetRot(rot);
 
 	// 移動
@@ -70,11 +73,12 @@ void CSmoke::Update()
 	SetPos(pos);
 
 	// 加速度を減少
-	m_velocity *= 0.97f;
+	m_velocity *= 0.9f;
+
+	CUtility::GetInstance()->DecrementUntilGone(GetScale(), 0.01f);
 
 	// アルファ値を減少
-	if (CUtility::GetInstance()->DecrementUntilGone(GetAlpha(), 0.0f))
-	//if (CUtility::GetInstance()->DecrementUntilGone(GetAlpha(), -0.005f))
+	if (CUtility::GetInstance()->DecrementUntilGone(GetAlpha(), -0.01f))
 	{
 		// 自身を破棄
 		CObject::Release();
@@ -86,8 +90,16 @@ void CSmoke::Update()
 //============================================================================
 void CSmoke::Draw()
 {
+	auto pDev{ CRenderer::GetInstance()->GetDeviece() };
+
+	// 深度バッファへの書き込みを無効に
+	pDev->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+
 	// 基底クラスの描画処理
 	CObject_X::Draw();
+
+	// 深度バッファへの書き込みを無効に
+	pDev->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 }
 
 //============================================================================
@@ -131,28 +143,8 @@ CSmoke* CSmoke::Create(D3DXVECTOR3&& pos, D3DXVECTOR3 velocity)
 	// 加速度を設定
 	pSmoke->SetVelocity(velocity);
 
-	// モデルのポインタ
-	CModel_X_Manager::MODEL* model{ nullptr };
-
-	// ランダムにモデルを取得
-	switch (rand() % 3)
-	{
-	case 0:
-		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::STAR00);
-		break;
-
-	case 1:
-		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PARTICLE01);
-		break;
-
-	case 2:
-		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PARTICLE02);
-		break;
-
-	default:
-		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::STAR00);
-		break;
-	}
+	// モデルを取得
+	auto model{ CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PARTICLE02) };
 
 	// モデルを設定
 	pSmoke->BindModel(model);

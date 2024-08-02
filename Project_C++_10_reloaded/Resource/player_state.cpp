@@ -303,7 +303,7 @@ void CPlayerStateBeginning::Enter()
 	// サイズを設定
 	m_pPlayer->SetSize(model->size);
 
-	for (int i = 0; i < 50; i++)
+	for (int i = 0; i < 10; i++)
 	{
 		// ランダムな加速度を生成
 		D3DXVECTOR3 velocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>() };
@@ -606,7 +606,7 @@ void CPlayerStateStopping::Enter()
 	// サイズを設定
 	m_pPlayer->SetSize(model->size);
 
-	for (int i = 0; i < 50; i++)
+	for (int i = 0; i < 10; i++)
 	{
 		// ランダムな加速度を生成
 		D3DXVECTOR3 velocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>() };
