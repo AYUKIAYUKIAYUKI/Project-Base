@@ -20,11 +20,17 @@ public:
 
 	static CUtility* GetInstance();	// 便利関数群を取得
 
+	// 減算消滅
+	template <typename T> bool DecrementUntilGone(T& base, T value);
+
+	// 乗算消滅
+	//template <typename T> bool DecayUntilGone(T& bas, T value);
+
+	// 乱数生成
+	template <typename T> T GetRandomValue();
+
 	// ダウンキャスト
 	template <typename T1, typename T2> T1* DownCast(T2* pBase);
-
-	// カウントダウン
-	bool CountDown(int& nDuration);
 
 	// 重力落下
 	void Gravity(D3DXVECTOR3& vec);
@@ -55,10 +61,48 @@ private:
 };
 
 //============================================================================
+// 減算消滅
+//============================================================================
+template <typename T> bool CUtility::DecrementUntilGone(T& base, T value)
+{
+	if (base > 0)
+	{
+		base += value;
+
+		return false;
+	}
+
+	return true;
+}
+
+//============================================================================
+// 乱数生成
+//============================================================================
+template <typename T> T CUtility::GetRandomValue()
+{
+	// 数値の取る範囲を設定
+	const int nRange = 180;
+
+	// 倍の範囲からランダムな整数を生成
+	int random{ rand() % (nRange * 2) };
+
+	// もとの範囲を超えていた場合正負を反転
+	if (random > nRange)
+	{
+		random %= nRange;
+		random *= -1;
+	}
+
+	// 整数を指定された型にキャスト
+	return static_cast<T>(random);
+}
+
+//============================================================================
 // ダウンキャスト
 //============================================================================
 template <typename T1, typename T2> T1* CUtility::DownCast(T2* pBase)
 {
+	// 引数のオブジェクトを指定されたクラスにダウンキャスト
 	T1* pObj{ dynamic_cast<T1*>(pBase) };
 
 	// ダウンキャスト失敗

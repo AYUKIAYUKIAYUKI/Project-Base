@@ -34,7 +34,7 @@ CObject_X::CObject_X(int nPriority) : CObject(nPriority)
 	D3DXMatrixIdentity(&m_mtxWorld);	// ワールド行列
 
 	// 判定表示の生成
-	CRender_Collision::Create(m_pos, m_size);
+	//CRender_Collision::Create(m_pos, m_size);
 }
 
 //============================================================================
@@ -150,7 +150,7 @@ void CObject_X::SetPos(D3DXVECTOR3 pos)
 //============================================================================
 // 向き取得
 //============================================================================
-D3DXVECTOR3 CObject_X::GetRot()
+D3DXVECTOR3& CObject_X::GetRot()
 {
 	return m_rot;
 }
@@ -182,7 +182,7 @@ void CObject_X::SetSize(D3DXVECTOR3 size)
 //============================================================================
 // アルファ値取得
 //============================================================================
-float CObject_X::GetAlpha()
+float& CObject_X::GetAlpha()
 {
 	return m_fAlpha;
 }
@@ -217,10 +217,21 @@ CObject_X* CObject_X::Create()
 void CObject_X::SetMtxWorld()
 {
 	// 計算用行列
-	D3DXMATRIX mtxRot, mtxTrans;
+	D3DXMATRIX mtxScale{}, mtxRot{}, mtxTrans{};
 
 	// ワールド行列を初期化
 	D3DXMatrixIdentity(&m_mtxWorld);
+
+	// 拡縮行列作成
+	D3DXMatrixScaling(&mtxScale,
+		1.0f,
+		1.0f,
+		1.0f);
+
+	// 拡縮行列との掛け算
+	D3DXMatrixMultiply(&m_mtxWorld,
+		&m_mtxWorld,
+		&mtxScale);
 
 	// 回転行列作成
 	D3DXMatrixRotationYawPitchRoll(&mtxRot,

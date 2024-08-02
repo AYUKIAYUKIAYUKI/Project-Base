@@ -32,6 +32,12 @@ public:
 		GOAL,			// ゴール
 		LINE_X,			// X軸
 		LINE_Y,			// Y軸
+		RIPPLE00,		// 波紋00
+		STAR00,			// 星00
+		STAR01,			// 星01
+		PARTICLE00,		// 粒子00
+		PARTICLE01,		// 粒子01
+		PARTICLE02,		// 粒子02
 		MAX,
 	};
 

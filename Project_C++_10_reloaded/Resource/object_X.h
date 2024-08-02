@@ -36,13 +36,13 @@ public:
 	D3DXVECTOR3 GetPos();			// 位置取得
 	void SetPos(D3DXVECTOR3 pos);	// 位置設定
 
-	D3DXVECTOR3 GetRot();			// 向き取得
+	D3DXVECTOR3& GetRot();			// 向き取得
 	void SetRot(D3DXVECTOR3 rot);	// 向き設定
 
 	D3DXVECTOR3 GetSize();			// サイズ取得
 	void SetSize(D3DXVECTOR3 size);	// サイズ設定
 
-	float GetAlpha();				// アルファ値取得
+	float& GetAlpha();				// アルファ値取得
 	void SetAlpha(float fAlpha);	// アルファ値設定
 
 	virtual CObject_X* Create();	// 生成

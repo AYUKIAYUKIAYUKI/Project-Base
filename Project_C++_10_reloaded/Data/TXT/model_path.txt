@@ -10,3 +10,9 @@ data\\MODEL\\start.x
 data\\MODEL\\goal.x
 data\\MODEL\\LINE_X.x
 data\\MODEL\\LINE_Y.x
+data\\MODEL\\Ripple00.x
+data\\MODEL\\Star00.x
+data\\MODEL\\Star01.x
+data\\MODEL\\Particle00.x
+data\\MODEL\\Particle01.x
+data\\MODEL\\Particle02.x

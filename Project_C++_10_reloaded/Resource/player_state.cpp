@@ -15,7 +15,7 @@
 #include "manager.h"
 
 // オブジェクト情報用
-#include "explosion.h"
+#include "smoke.h"
 #include "start.h"
 
 //****************************************************
@@ -303,10 +303,16 @@ void CPlayerStateBeginning::Enter()
 	// サイズを設定
 	m_pPlayer->SetSize(model->size);
 
-	// 爆発を生成
-	CExplosion::Create(
-		m_pPlayer->GetPos(),		// 位置
-		{ 30.0f, 0.0f, 30.0f });	// サイズ
+	for (int i = 0; i < 50; i++)
+	{
+		// ランダムな加速度を生成
+		D3DXVECTOR3 velocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>() };
+
+		// 煙を生成
+		CSmoke::Create(
+			m_pPlayer->GetPos(),	// 座標
+			velocity * 0.005f);		// 加速度
+	}
 }
 
 //============================================================================
@@ -600,10 +606,16 @@ void CPlayerStateStopping::Enter()
 	// サイズを設定
 	m_pPlayer->SetSize(model->size);
 
-	// 爆発を生成
-	CExplosion::Create(
-		m_pPlayer->GetPos(),		// 位置
-		{ 30.0f, 0.0f, 30.0f });	// サイズ
+	for (int i = 0; i < 50; i++)
+	{
+		// ランダムな加速度を生成
+		D3DXVECTOR3 velocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>() };
+
+		// 煙を生成
+		CSmoke::Create(
+			m_pPlayer->GetPos(),	// 座標
+			velocity * 0.005f);		// 加速度
+	}
 
 	// 反動
 	Recoil();
