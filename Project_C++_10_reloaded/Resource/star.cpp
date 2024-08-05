@@ -1,6 +1,6 @@
 //============================================================================
 // 
-// 煙エフェクト [smoke.cpp]
+// 星エフェクト [star.cpp]
 // Author : 福田歩希
 // 
 //============================================================================
@@ -8,7 +8,7 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
-#include "smoke.h"
+#include "star.h"
 #include "utility.h"
 
 // デバイス取得用
@@ -17,7 +17,7 @@
 //============================================================================
 // コンストラクタ
 //============================================================================
-CSmoke::CSmoke() :
+CStar::CStar() :
 	CObject_X(static_cast<int>(LAYER::FRONT_MIDDLE)),	// プライオリティの設定
 	m_velocity{ 0.0f, 0.0f, 0.0f }						// 加速度
 {
@@ -27,7 +27,7 @@ CSmoke::CSmoke() :
 //============================================================================
 // デストラクタ
 //============================================================================
-CSmoke::~CSmoke()
+CStar::~CStar()
 {
 
 }
@@ -35,7 +35,7 @@ CSmoke::~CSmoke()
 //============================================================================
 // 初期設定
 //============================================================================
-HRESULT CSmoke::Init()
+HRESULT CStar::Init()
 {
 	// 基底クラスの初期設定
 	if (FAILED(CObject_X::Init()))
@@ -49,7 +49,7 @@ HRESULT CSmoke::Init()
 //============================================================================
 // 終了処理
 //============================================================================
-void CSmoke::Uninit()
+void CStar::Uninit()
 {
 	// 基底クラスの終了処理
 	CObject_X::Uninit();
@@ -58,28 +58,27 @@ void CSmoke::Uninit()
 //============================================================================
 // 更新処理
 //============================================================================
-void CSmoke::Update()
+void CStar::Update()
 {
 	// 基底クラスの更新処理
 	CObject_X::Update();
 
 	// 回転
-	auto rot{ GetRot() };
-	rot += m_velocity;
-	SetRot(rot);
+	//auto rot{ GetRot() };
+	//rot = m_velocity * 0.1f;
+	//SetRot(rot);
 
 	// 移動
 	D3DXVECTOR3 pos = GetPos();
 	pos += m_velocity;
+	m_velocity.x += CUtility::GetInstance()->GetRandomValue<float>() * 0.01f;
+	m_velocity.y += CUtility::GetInstance()->GetRandomValue<float>() * 0.01f;
 	SetPos(pos);
 
 	// 加速度を減少
-	m_velocity *= 0.9f;
+	m_velocity *= 0.5f;
 
-	// 拡大
-	CUtility::GetInstance()->DecrementUntilGone(GetScale(), 0.01f);
-
-	// アルファ値を減少
+	// アルファ値が減少
 	if (CUtility::GetInstance()->DecrementUntilGone(GetAlpha(), -0.01f))
 	{
 		// 自身を破棄
@@ -90,7 +89,7 @@ void CSmoke::Update()
 //============================================================================
 // 描画処理
 //============================================================================
-void CSmoke::Draw()
+void CStar::Draw()
 {
 	auto pDev{ CRenderer::GetInstance()->GetDeviece() };
 
@@ -107,7 +106,7 @@ void CSmoke::Draw()
 //============================================================================
 // 加速度を取得
 //============================================================================
-D3DXVECTOR3& CSmoke::GetVelocity()
+D3DXVECTOR3& CStar::GetVelocity()
 {
 	return m_velocity;
 }
@@ -115,7 +114,7 @@ D3DXVECTOR3& CSmoke::GetVelocity()
 //============================================================================
 // 加速度を設定
 //============================================================================
-void CSmoke::SetVelocity(D3DXVECTOR3 velocity)
+void CStar::SetVelocity(D3DXVECTOR3 velocity)
 {
 	m_velocity = velocity;
 }
@@ -123,39 +122,54 @@ void CSmoke::SetVelocity(D3DXVECTOR3 velocity)
 //============================================================================
 // 生成
 //============================================================================
-CSmoke* CSmoke::Create(D3DXVECTOR3&& pos, D3DXVECTOR3 velocity)
+CStar* CStar::Create(D3DXVECTOR3&& pos, D3DXVECTOR3 velocity)
 {
-	CSmoke* pSmoke = DBG_NEW CSmoke{};
+	CStar* pStar = DBG_NEW CStar{};
 
 	// 生成失敗
-	if (!pSmoke)
+	if (!pStar)
 	{
 		assert(false);
 	}
 
 	// タイプを設定
-	pSmoke->SetType(CObject::TYPE::NONE);
+	pStar->SetType(CObject::TYPE::NONE);
 
 	// 初期設定
-	pSmoke->Init();
+	pStar->Init();
 
 	// 座標の設定
-	pSmoke->SetPos(pos);
+	pStar->SetPos(pos);
 
 	// 加速度を設定
-	pSmoke->SetVelocity(velocity);
+	pStar->SetVelocity(velocity);
 
 	// モデルを取得
-	auto model{ CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PARTICLE02) };
+	CModel_X_Manager::MODEL* model{ nullptr };
+
+	switch (rand() % 2)
+	{
+	case 0:
+		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::STAR00);
+		break;
+
+	case 1:
+		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::STAR01);
+		break;
+
+	default:
+		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::STAR00);
+		break;
+	}
 
 	// モデルを設定
-	pSmoke->BindModel(model);
+	pStar->BindModel(model);
 
 	// サイズを設定
-	pSmoke->SetSize(model->size);
+	pStar->SetSize(model->size);
 
 	// 描画される前に一度更新しておく
-	pSmoke->Update();
+	pStar->Update();
 
-	return pSmoke;
+	return pStar;
 }

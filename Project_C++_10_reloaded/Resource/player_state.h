@@ -114,7 +114,7 @@ private:
 	static const float MAX_FLY_VELOCITY;	// 飛行時の最大加速度
 	static const float FLY_SPEED;			// 飛行速度
 
-	bool Flying();		// 操作
+	bool Control();		// 操縦
 	void Rotation();	// 回転
 	void Braking();		// 制動調整
 

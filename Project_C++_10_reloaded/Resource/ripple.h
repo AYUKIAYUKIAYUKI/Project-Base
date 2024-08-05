@@ -1,12 +1,12 @@
 //============================================================================
 // 
-// 煙エフェクト、ヘッダファイル [smoke.h]
+// 波紋エフェクト、ヘッダファイル [ripple.h]
 // Author : 福田歩希
 // 
 //============================================================================
 
-#ifndef _SMOKE_H_
-#define _SMOKE_H_	// 二重インクルード防止
+#ifndef _RIPPLE_H_
+#define _RIPPLE_H_	// 二重インクルード防止
 
 //****************************************************
 // インクルードファイル
@@ -14,14 +14,14 @@
 #include "object_X.h"
 
 //****************************************************
-// 煙エフェクトクラス
+// 波紋エフェクトクラス
 //****************************************************
-class CSmoke : public CObject_X
+class CRipple : public CObject_X
 {
 public:
 
-	CSmoke();	// コンストラクタ
-	~CSmoke();	// デストラクタ
+	CRipple();	// コンストラクタ
+	~CRipple();	// デストラクタ
 
 	HRESULT Init() override;	// 初期設定
 	void Uninit() override;		// 終了処理
@@ -31,11 +31,11 @@ public:
 	D3DXVECTOR3& GetVelocity();				// 加速度を取得
 	void SetVelocity(D3DXVECTOR3 velocity);	// 加速度を設定
 
-	static CSmoke* Create(D3DXVECTOR3&& pos, D3DXVECTOR3 velocity);	// 生成
+	static CRipple* Create(D3DXVECTOR3&& pos, D3DXVECTOR3 velocity);	// 生成
 
 private:
 
 	D3DXVECTOR3 m_velocity;	// 加速度
 };
 
-#endif	// _SMOKE_H_
+#endif	// _RIPPLE_H_

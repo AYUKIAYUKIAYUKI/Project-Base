@@ -15,7 +15,9 @@
 #include "manager.h"
 
 // オブジェクト情報用
+#include "ripple.h"
 #include "smoke.h"
+#include "star.h"
 #include "start.h"
 
 //****************************************************
@@ -410,7 +412,7 @@ void CPlayerStateFlying::Enter()
 void CPlayerStateFlying::Update()
 {
 	// 飛行
-	if (!Flying())
+	if (!Control())
 	{
 		return;
 	}
@@ -444,9 +446,9 @@ void CPlayerStateFlying::Exit()
 }
 
 //============================================================================
-// 飛行
+// 操縦
 //============================================================================
-bool CPlayerStateFlying::Flying()
+bool CPlayerStateFlying::Control()
 {
 	// キーボード取得
 	CInputKeyboard* pKeyboard = CManager::GetKeyboard();
@@ -505,6 +507,19 @@ bool CPlayerStateFlying::Flying()
 	
 	// 変更した加速度を反映
 	m_pPlayer->SetVelocity(velocity);
+
+	// 星を生成
+	if (rand() % 2 == 0)
+	{
+		// 波紋を生成
+		CRipple::Create(
+			m_pPlayer->GetPos(),	// 座標
+			-velocity);				// 加速度 (飛行方向の逆)
+
+		CStar::Create(
+			m_pPlayer->GetPos(),	// 座標
+			-velocity);				// 加速度 (飛行方向の逆)
+	}
 
 	return true;
 }

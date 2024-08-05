@@ -33,6 +33,9 @@ public:
 		LINE_X,			// Xé≤
 		LINE_Y,			// Yé≤
 		RIPPLE00,		// îgñ‰00
+		RIPPLE01,		// îgñ‰01
+		RIPPLE02,		// îgñ‰02
+		RIPPLE03,		// îgñ‰03
 		STAR00,			// êØ00
 		STAR01,			// êØ01
 		PARTICLE00,		// ó±éq00
