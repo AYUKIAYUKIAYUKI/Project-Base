@@ -31,6 +31,7 @@
     <ClCompile Include="Resource\game_phase.cpp" />
     <ClCompile Include="Resource\goal.cpp" />
     <ClCompile Include="resource\input.cpp" />
+    <ClCompile Include="Resource\KARIHAIKEI.cpp" />
     <ClCompile Include="resource\light.cpp" />
     <ClCompile Include="Resource\line.cpp" />
     <ClCompile Include="resource\main.cpp" />
@@ -80,6 +81,7 @@
     <ClInclude Include="Resource\game_phase.h" />
     <ClInclude Include="Resource\goal.h" />
     <ClInclude Include="resource\input.h" />
+    <ClInclude Include="Resource\KARIHAIKEI.h" />
     <ClInclude Include="resource\light.h" />
     <ClInclude Include="Resource\line.h" />
     <ClInclude Include="resource\main.h" />

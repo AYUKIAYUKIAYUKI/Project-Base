@@ -94,7 +94,7 @@ void CStar::Draw()
 	auto pDev{ CRenderer::GetInstance()->GetDeviece() };
 
 	// 深度バッファへの書き込みを無効に
-	pDev->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+	//pDev->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 
 	// 基底クラスの描画処理
 	CObject_X::Draw();

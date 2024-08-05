@@ -1,3 +1,4 @@
+data\\MODEL\\KARIHAIKEI.x
 data\\MODEL\\player1_Y_0.x
 data\\MODEL\\player2_Y_0.x
 data\\MODEL\\player3_Y_0.x

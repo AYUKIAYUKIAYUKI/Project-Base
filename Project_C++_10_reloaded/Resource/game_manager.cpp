@@ -22,6 +22,9 @@
 #include "player.h"
 #include "score.h"
 
+// テスト用
+#include "KARIHAIKEI.h"
+
 //****************************************************
 // 静的メンバ変数の初期化
 //****************************************************
@@ -100,6 +103,9 @@ void CGameManager::Update()
 
 		// 全オブジェクト解放処理
 		CObject::ReleaseAll();
+
+		// KARIHAIKEIの生成
+		KARIHAIKEI::Create();
 
 		// ステージを読み込む
 		CStageMaker::GetInstance()->Import(m_stagePath[0]);
