@@ -4,8 +4,8 @@ Format Text Ver 1.0
 Scene {
 	pos -13.1280 -4.3607 1455.1915
 	lookat 0.0000 0.9442 -0.1357
-	head -43.8600
-	pich 0.1992
+	head -43.8000
+	pich 0.4692
 	bank 0.0000
 	ortho 0
 	zoom2 5.1539
@@ -18,7 +18,7 @@ Scene {
 	}
 }
 Material 1 {
-	"Halo" col(1.000 0.796 0.490 0.750) dif(0.300) amb(1.000) emi(0.500) spc(0.500) power(1.00) tex("C:\Users\student\Downloads\聖園ミカ_配布_ver1.1\聖園ミカ_配布_ver1.1\Texture\Acc_C.png")
+	"Halo" col(0.502 0.502 0.502 1.000) dif(0.300) amb(0.000) emi(0.500) spc(0.000) power(0.00)
 }
 Object "Particle00" {
 	visible 0
@@ -2933,7 +2933,7 @@ Object "Particle01" {
 	}
 }
 Object "Particle02" {
-	visible 0
+	visible 15
 	locking 1
 	shading 1
 	facet 59.5
