@@ -11,6 +11,7 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
+#include "scene.h"
 #include "game_manager.h"
 
 //****************************************************
@@ -26,6 +27,7 @@ public:
 	void Uninit();								// 終了処理
 	void Update();								// 更新処理
 	void Draw();								// 描画処理
+	void SetFade(CScene::MODE mode);			// モード設定
 	void SetWave(CGameManager::PHASE phase);	// ウェーブ設定
 
 	LPDIRECT3DTEXTURE9 GetTexture();	// テクスチャ情報を取得
@@ -45,8 +47,10 @@ private:
 	HRESULT CreateVtxBuff();	// 頂点バッファの生成
 	HRESULT CreateIdxBuff();	// インデックスバッファの生成
 	HRESULT CreateTex();		// テクスチャの生成
-	void WaveIn();				// ウェーブイン
+	void FadeOut();				// フェードアウト
+	void FadeIn();				// フェードイン
 	void WaveOut();				// ウェーブアウト
+	void WaveIn();				// ウェーブイン
 	void SetVtx();				// 頂点情報の設定
 
 	LPDIRECT3DVERTEXBUFFER9 m_pVtxBuff;	// 頂点バッファのポインタ
@@ -59,9 +63,12 @@ private:
 	int m_nNumIndex;					// インデックス数宇
 	D3DXVECTOR3 m_pos;					// 位置
 	D3DXVECTOR3 m_size;					// サイズ
+	CScene::MODE m_NextMode;			// 次のモード
 	CGameManager::PHASE m_NextPhase;	// 次のフェーズ
-	bool m_bWaveIn;						// ウェーブイン判定
+	bool m_bFadeOut;					// フェードアウト判定
+	bool m_bFadeIn;						// フェードイン判定
 	bool m_bWaveOut;					// ウェーブアウト判定
+	bool m_bWaveIn;						// ウェーブイン判定
 	float m_fBrightness;				// 明度
 	float m_fPosDistortion;				// 座標変動用
 	float m_fAddDistortion;				// ゆがみ増加量

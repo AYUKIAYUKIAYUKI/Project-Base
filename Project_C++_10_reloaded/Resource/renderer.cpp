@@ -198,7 +198,7 @@ void CRenderer::Draw()
 		CManager::GetScene()->Draw();
 
 		// フェードの描画処理
-		CManager::GetFade()->Draw();
+		//CManager::GetFade()->Draw();
 
 		// 描画終了
 		m_pD3DDevice->EndScene();

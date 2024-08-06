@@ -15,7 +15,6 @@
 #include "light.h"
 #include "input.h"
 #include "scene.h"
-#include "fade.h"
 
 //****************************************************
 // マネージャークラス
@@ -38,7 +37,6 @@ public:
 	static CInputPad* GetPad();					// パッド取得
 	static CScene* GetScene();					// シーン取得
 	static void SetScene(CScene::MODE mode);	// シーン設定
-	static CFade* GetFade();					// フェード取得
 
 private:
 
@@ -47,7 +45,6 @@ private:
 	static CInputKeyboard* m_pKeyboard;	// キーボード管理
 	static CInputPad* m_pPad;			// パッド管理
 	static CScene* m_pScene;			// シーン管理
-	static CFade* m_pFade;				// フェード管理
 };
 
 #endif // _MANAGER_H_

@@ -66,8 +66,8 @@ void CRipple::Update()
 	// ‰ñ“]
 	auto rot{ GetRot() };
 #if 1
-	rot.x += CUtility::GetInstance()->GetRandomValue<float>() * 0.0001f;
-	rot.y += CUtility::GetInstance()->GetRandomValue<float>() * 0.0001f;
+	rot.x += CUtility::GetInstance()->GetRandomValue<float>() * 0.001f;
+	rot.y += CUtility::GetInstance()->GetRandomValue<float>() * 0.001f;
 	rot.z = atan2f(m_velocity.y, m_velocity.x);
 #else
 	//rot.x += fabsf(CUtility::GetInstance()->GetRandomValue<float>()) * 0.01f;
@@ -161,7 +161,7 @@ CRipple* CRipple::Create(D3DXVECTOR3&& pos, D3DXVECTOR3 velocity)
 	switch (rand() % 2)
 	{
 	case 0:
-		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::RIPPLE02);
+		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::RIPPLE01);
 		break;
 
 	case 1:
@@ -169,7 +169,7 @@ CRipple* CRipple::Create(D3DXVECTOR3&& pos, D3DXVECTOR3 velocity)
 		break;
 
 	default:
-		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::STAR00);
+		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::RIPPLE01);
 		break;
 	}
 

@@ -9,6 +9,7 @@
 // インクルードファイル
 //****************************************************
 #include "result.h"
+#include "fakescreen.h"
 
 // 仮リザルト表示用
 #include "bg.h"
@@ -65,7 +66,7 @@ void CResult::Update()
 {
 	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
 	{
-		CManager::GetFade()->SetFade(MODE::TITLE);
+		CFakeScreen::GetInstance()->SetFade(MODE::TITLE);
 	}
 }
 

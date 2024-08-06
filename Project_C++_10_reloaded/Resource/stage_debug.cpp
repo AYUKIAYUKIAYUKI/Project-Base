@@ -10,6 +10,7 @@
 //****************************************************
 #include "stage_debug.h"
 #include "stagemaker.h"
+#include "fakescreen.h"
 
 // インプット取得用
 #include "manager.h"
@@ -76,7 +77,7 @@ void CStage_Debug::Update()
 	// ゲームモードへ戻る
 	if (CManager::GetKeyboard()->GetTrigger(DIK_F1))
 	{
-		CManager::GetFade()->SetFade(MODE::GAME);
+		CFakeScreen::GetInstance()->SetFade(MODE::GAME);
 	}
 }
 

@@ -9,6 +9,7 @@
 // インクルードファイル
 //****************************************************
 #include "title.h"
+#include "fakescreen.h"
 
 // 仮タイトル表示用
 #include "bg.h"
@@ -65,7 +66,7 @@ void CTitle::Update()
 {
 	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
 	{
-		CManager::GetFade()->SetFade(MODE::GAME);
+		CFakeScreen::GetInstance()->SetFade(MODE::GAME);
 	}
 }
 

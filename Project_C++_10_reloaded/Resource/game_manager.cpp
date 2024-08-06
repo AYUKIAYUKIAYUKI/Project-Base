@@ -10,6 +10,7 @@
 //****************************************************
 #include "game_manager.h"
 #include "stagemaker.h"
+#include "fakescreen.h"
 
 // フェード取得用
 #include "manager.h"
@@ -142,7 +143,7 @@ void CGameManager::Update()
 		{ // 読み込むステージがなくなったら
 
 			// リザルト画面へ遷移
-			CManager::GetFade()->SetFade(CScene::MODE::RESULT);
+			CFakeScreen::GetInstance()->SetFade(CScene::MODE::RESULT);
 
 			// フェーズ処理を行わない
 			m_phase = PHASE::NONE;

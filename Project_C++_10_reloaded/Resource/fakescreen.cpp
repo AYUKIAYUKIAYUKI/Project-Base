@@ -10,6 +10,9 @@
 //****************************************************
 #include "fakescreen.h"
 
+// シーン変更用
+#include "manager.h"
+
 // デバイス取得用
 #include "renderer.h"
 
@@ -135,6 +138,12 @@ void CFakeScreen::Update()
 	// ゆがみの強度を表示
 	CRenderer::GetInstance()->SetDebugString("ゆがみの強度:" + std::to_string(m_fAddDistortion));
 
+	// フェードイン処理
+	FadeIn();
+
+	// フェードアウト処理
+	FadeOut();
+
 	// ウェーブイン処理
 	WaveIn();
 
@@ -194,15 +203,31 @@ void CFakeScreen::Draw()
 }
 
 //============================================================================
+// フェード設定
+//============================================================================
+void CFakeScreen::SetFade(CScene::MODE mode)
+{
+	// フェード関連の判定が何も出てなければ
+	if (!m_bFadeOut && !m_bFadeIn)
+	{
+		// フェードアウト判定を出す
+		m_bFadeOut = true;
+
+		// 次のモードの情報を保持しておく
+		m_NextMode = mode;
+	}
+}
+
+//============================================================================
 // 波打ち設定
 //============================================================================
 void CFakeScreen::SetWave(CGameManager::PHASE phase)
 {
 	// 波打ち関連の判定が何も出てなければ
-	if (!m_bWaveIn && !m_bWaveOut)
+	if (!m_bWaveOut && !m_bWaveIn)
 	{
-		// 波打ちイン判定を出す
-		m_bWaveIn = true;
+		// 波打ちアウト判定を出す
+		m_bWaveOut = true;
 
 		// 次のフェーズの情報を保持しておく
 		m_NextPhase = phase;
@@ -428,9 +453,12 @@ CFakeScreen::CFakeScreen() :
 	m_nNumIndex{ 0 },							// インデックス数
 	m_pos{ 0.0f, 0.0f, 0.0f },					// 位置
 	m_size{ 0.0f, 0.0f, 0.0f },					// サイズ
+	m_NextMode{ CScene::MODE::NONE },			// 次のモード
 	m_NextPhase{ CGameManager::PHASE::NONE },	// 次のフェーズ
-	m_bWaveIn{ false },							// 波打ちイン判定
+	m_bFadeOut{ false },						// フェードアウト判定
+	m_bFadeIn{ false },							// フェードイン判定
 	m_bWaveOut{ false },						// 波打ちアウト判定
+	m_bWaveIn{ false },							// 波打ちイン判定
 	m_fBrightness{ 1.0f },						// 明度
 	m_fPosDistortion{ 0.0f },					// 座標変動用
 	m_fAddDistortion{ 0.0f }					// ゆがみ増加量
@@ -453,9 +481,12 @@ CFakeScreen::~CFakeScreen()
 	m_nNumIndex = 0;							// インデックス数
 	m_pos = { 0.0f, 0.0f, 0.0f };				// 位置
 	m_size = { 0.0f, 0.0f, 0.0f };				// サイズ
+	m_NextMode = CScene::MODE::NONE;			// 次のモード
 	m_NextPhase = CGameManager::PHASE::NONE;	// 次のフェーズ
-	m_bWaveIn = false;							// 波打ちイン判定
+	m_bFadeOut = false;							// フェードアウト判定
+	m_bFadeIn = false;							// フェードイン判定
 	m_bWaveOut = false;							// 波打ちアウト判定
+	m_bWaveIn = false;							// 波打ちイン判定
 	m_fBrightness = 1.0f;						// 明度
 	m_fPosDistortion = 0.0f;					// 座標変動用
 	m_fAddDistortion = 0.0f;					// ゆがみ増加量
@@ -486,33 +517,61 @@ void CFakeScreen::CalcMesh()
 }
 
 //============================================================================
-// 波打ちイン
+// フェードアウト
 //============================================================================
-void CFakeScreen::WaveIn()
+void CFakeScreen::FadeOut()
 {
-	if (m_bWaveIn)
+	if (!m_bFadeOut)
 	{
-		// 明度が下がっていく
-		m_fBrightness += -0.01f;
+		return;
+	}
 
-		// ゆがみが増加していく
-		m_fAddDistortion += 0.01f;
+	if (m_fBrightness > 0.0f)
+	{
+		// 透明度を減らしていく
+		m_fBrightness += -0.1f;
+	}
+	else
+	{
+		// 透明度が最低値を下回れば固定
+		m_fBrightness = 0.0f;
 
-		// 最低明度到達で
-		if (m_fBrightness < 0.0f)
-		{
-			// 明度を最低に固定
-			m_fBrightness = 0.0f;
+		// フェードアウトを終了する
+		m_bFadeOut = false;
 
-			// 波打ちインを終了
-			m_bWaveIn = false;
+		// モードを切り替える
+		CManager::SetScene(m_NextMode);
 
-			// 予定のフェーズへ変更
-			CGameManager::GetInstance()->SetPhase(m_NextPhase);
+		// 保持していたモード情報を初期化
+		m_NextMode = CScene::MODE::NONE;
 
-			// 波打ちアウトを開始
-			m_bWaveOut = true;
-		}
+		// フェードインを開始する
+		m_bFadeIn = true;
+	}
+}
+
+//============================================================================
+// フェードイン
+//============================================================================
+void CFakeScreen::FadeIn()
+{
+	if (!m_bFadeIn)
+	{
+		return;
+	}
+
+	if (m_fBrightness < 1.0f)
+	{
+		// 透明度を増やしていく
+		m_fBrightness += 0.1f;
+	}
+	else
+	{
+		// 透明度が最大値を上回れば固定
+		m_fBrightness = 1.0f;
+
+		// フェードインを終了する
+		m_bFadeIn = false;
 	}
 }
 
@@ -521,33 +580,15 @@ void CFakeScreen::WaveIn()
 //============================================================================
 void CFakeScreen::WaveOut()
 {
-	if (m_bWaveOut)
-	{
-		// 明度が上がっていく
-		m_fBrightness += 0.01f;
 
-		// 最高明度到達で
-		if (m_fBrightness > 1.0f)
-		{
-			// 明度を最高に固定
-			m_fBrightness = 1.0f;
+}
 
-			// 波打ちアウトを終了
-			m_bWaveOut = false;
-		}
-	}
+//============================================================================
+// 波打ちイン
+//============================================================================
+void CFakeScreen::WaveIn()
+{
 
-	if (!m_bWaveIn)
-	{
-		if (m_fAddDistortion > 0.0f)
-		{
-			m_fAddDistortion = m_fAddDistortion * 0.95f;
-		}
-		else
-		{
-			m_fAddDistortion = 0.0f;
-		}
-	}
 }
 
 //============================================================================
@@ -577,8 +618,7 @@ void CFakeScreen::SetVtx()
 			0.0f };
 
 		// 頂点カラーの設定
-		//pVtx[i].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, m_fBrightness);
-		pVtx[i].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+		pVtx[i].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, m_fBrightness);
 
 		// X方向頂点数のカウントを行う
 		if (nCntVtxX >= SPLIT_ALONG_X_AXIS)
