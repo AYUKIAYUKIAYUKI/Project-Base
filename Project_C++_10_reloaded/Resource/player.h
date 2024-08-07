@@ -32,7 +32,7 @@ public:
 	void Uninit() override;		// 終了処理
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
-	bool ApplyPos();			// 座標変更を反映
+	bool Collision();			// 当たり判定
 
 	D3DXVECTOR3 GetVelocity();				// 加速度を取得
 	void SetVelocity(D3DXVECTOR3 velocity);	// 加速度を設定
@@ -52,8 +52,6 @@ public:
 	static CPlayer* DownCast(CObject* pObject);	// ダウンキャスト
 
 private:
-
-	bool Collision();	// 当たり判定
 
 	CPlayerStateManager* m_pStateManager;	// 状態マネージャー
 	D3DXVECTOR3 m_velocity;					// 加速度

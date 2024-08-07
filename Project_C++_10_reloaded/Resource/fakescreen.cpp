@@ -235,6 +235,24 @@ void CFakeScreen::SetWave(CGameManager::PHASE phase)
 }
 
 //============================================================================
+// ウェーブ停止
+//============================================================================
+void CFakeScreen::StopWave()
+{
+	if (m_bWaveOut || m_bWaveIn)
+	{
+		// ウェーブアウトを終了
+		m_bWaveOut = false;
+
+		// ウェーブインを終了
+		m_bWaveIn = false;
+
+		// ゆがみを初期化
+		m_fAddDistortion = 0.0f;
+	}
+}
+
+//============================================================================
 // テクスチャ情報を取得
 //============================================================================
 LPDIRECT3DTEXTURE9 CFakeScreen::GetTexture()
@@ -592,7 +610,7 @@ void CFakeScreen::WaveOut()
 	}
 	else
 	{
-		// 透明度が最大値を上回れば固定
+		// ゆがみが最大値を上回れば固定
 		m_fAddDistortion = 1.0f;
 
 		// ウェーブアウトを終了する
@@ -619,10 +637,9 @@ void CFakeScreen::WaveIn()
 		return;
 	}
 
-	if (m_fAddDistortion > 0.0f)
+	if (m_fAddDistortion > 0.000001f)
 	{
 		// ゆがみを減らしていく
-		//m_fAddDistortion += -0.01f;
 		m_fAddDistortion *= 0.95f;
 	}
 	else
@@ -630,8 +647,8 @@ void CFakeScreen::WaveIn()
 		// ゆがみが最低値を下回ったら
 		m_fAddDistortion = 0.0f;
 
-		// ウェーブアウトを終了する
-		m_bWaveOut = false;
+		// ウェーブインを終了する
+		m_bWaveIn = false;
 	}
 }
 

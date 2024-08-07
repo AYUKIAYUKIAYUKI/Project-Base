@@ -125,8 +125,13 @@ void CPlayerStateDefault::Update()
 	// 制動調整
 	Braking();
 
-	// 座標変更を反映
-	m_pPlayer->ApplyPos();
+	// 加速度分、目標座標を変動
+	D3DXVECTOR3 posTarget = m_pPlayer->GetPosTarget();
+	posTarget += m_pPlayer->GetVelocity();
+	m_pPlayer->SetPosTarget(posTarget);
+
+	// 当たり判定
+	m_pPlayer->Collision();
 
 	// おかしなところに行くと一旦殺す
 	if (m_pPlayer->GetPosTarget().y < -300.0f)
@@ -423,8 +428,13 @@ void CPlayerStateFlying::Update()
 	// 制動調整
 	Braking();
 
-	// 座標変更を反映
-	if (m_pPlayer->ApplyPos())
+	// 加速度分、目標座標を変動
+	D3DXVECTOR3 posTarget = m_pPlayer->GetPosTarget();
+	posTarget += m_pPlayer->GetVelocity();
+	m_pPlayer->SetPosTarget(posTarget);
+
+	// 当たり判定
+	if (m_pPlayer->Collision())
 	{
 		// 何かに衝突で変身停止へ
 		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::STOPPING);
@@ -654,8 +664,13 @@ void CPlayerStateStopping::Update()
 		CUtility::GetInstance()->Gravity(velocity);
 		m_pPlayer->SetVelocity(velocity);
 
-		// 座標変更を反映
-		m_pPlayer->ApplyPos();
+		// 加速度分、目標座標を変動
+		D3DXVECTOR3 posTarget = m_pPlayer->GetPosTarget();
+		posTarget += m_pPlayer->GetVelocity();
+		m_pPlayer->SetPosTarget(posTarget);
+
+		// 当たり判定
+		m_pPlayer->Collision();
 	}
 	else
 	{
@@ -914,8 +929,10 @@ void CPlayerStateGoal::Update()
 	rot.z = 0.0f;
 	m_pPlayer->SetRot(rot);
 
-	// 座標変更を反映
-	m_pPlayer->ApplyPos();
+	// 加速度分、目標座標を変動
+	posTarget = m_pPlayer->GetPosTarget();
+	posTarget += m_pPlayer->GetVelocity();
+	m_pPlayer->SetPosTarget(posTarget);
 }
 
 //============================================================================

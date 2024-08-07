@@ -29,6 +29,7 @@ public:
 	void Draw();								// 描画処理
 	void SetFade(CScene::MODE mode);			// モード設定
 	void SetWave(CGameManager::PHASE phase);	// ウェーブ設定
+	void StopWave();							// ウェーブ停止
 
 	LPDIRECT3DTEXTURE9 GetTexture();	// テクスチャ情報を取得
 	LPDIRECT3DSURFACE9 GetSurface();	// サーフェイス情報を取得

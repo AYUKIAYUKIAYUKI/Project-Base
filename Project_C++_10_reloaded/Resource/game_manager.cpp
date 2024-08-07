@@ -98,6 +98,8 @@ void CGameManager::Update()
 
 		// ここデバッグ
 
+		CRenderer::GetInstance()->SetDebugString("無し");
+
 		break;
 
 	case PHASE::START:
@@ -122,37 +124,49 @@ void CGameManager::Update()
 			{ 25.0f, 30.0f, 0.0f },	// 位置
 			25.0f);					// 数列の配置間隔
 
-		// プレイフェーズへ
+		// レベル進行フェーズへ
 		m_phase = PHASE::INGAME;
+
+		CRenderer::GetInstance()->SetDebugString("レベル開始");
 
 		break;
 
 	case PHASE::INGAME:
 
+		CRenderer::GetInstance()->SetDebugString("インゲーム");
+
 		break;
 
 	case PHASE::FINISH:
 
-		m_phase = PHASE::END;
+		// 読み込むステージがなくなったら
+		if (!m_stagePath.size())
+		{
+			// ゲーム終了フェーズへ
+			m_phase = PHASE::END;
+		}
+		else
+		{
+			// レベル開始フェーズへ戻る
+			m_phase = PHASE::START;
+		}
 		
+		CRenderer::GetInstance()->SetDebugString("レベル終了");
+
 		break;
 
 	case PHASE::END:
 
-		if (!m_stagePath.size())
-		{ // 読み込むステージがなくなったら
+		// ウェーブ停止
+		CFakeScreen::GetInstance()->StopWave();
 
-			// リザルト画面へ遷移
-			CFakeScreen::GetInstance()->SetFade(CScene::MODE::RESULT);
+		// フェーズ情報を初期化
+		m_phase = PHASE::NONE;
 
-			// フェーズ処理を行わない
-			m_phase = PHASE::NONE;
+		// リザルト画面へ遷移
+		CFakeScreen::GetInstance()->SetFade(CScene::MODE::RESULT);
 
-			// 以降の処理を行わない
-			return;
-		}
-
-		m_phase = PHASE::START;
+		CRenderer::GetInstance()->SetDebugString("ゲーム終了");
 
 		break;
 

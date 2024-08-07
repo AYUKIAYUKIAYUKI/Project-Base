@@ -45,7 +45,11 @@ CPlayer::CPlayer() :
 //============================================================================
 CPlayer::~CPlayer()
 {
-
+	m_pStateManager = nullptr;				// 状態マネージャーの初期化
+	m_velocity = { 0.0f, 0.0f, 0.0f };		// 加速度の初期化
+	m_posTarget = { 0.0f, 0.0f, 0.0f };		// 目標位置の初期化
+	m_rotTarget = { 0.0f, 0.0f, 0.0f };		// 目標向きの初期化
+	m_fAngleFlying = 0.0f;					// 飛行向きの初期化
 }
 
 //============================================================================
@@ -104,7 +108,7 @@ void CPlayer::Update()
 		// 状態の更新
 		m_pStateManager->GetState()->Update();
 
-		// 状態の変更を確認する (メモリ解放を含む処理は更新の後にフラグを参照して行う)
+		// 状態の変更を確認する (メモリ解放を含む処理のため、更新の後に別途行う)
 		m_pStateManager->CheckStateChange();
 	}
 
@@ -131,23 +135,79 @@ void CPlayer::Draw()
 }
 
 //============================================================================
-// 座標変更を反映
+// 当たり判定
 //============================================================================
-bool CPlayer::ApplyPos()
+bool CPlayer::Collision()
 {
-	// 衝突検出用
-	bool bDetected = false;
+	// 衝突検出
+	bool bDetected = 0;
 
-	// 加速度分座標を変動
-	m_posTarget += m_velocity;
+	// オブジェクトを取得
+	CObject** pObject = CObject::FindAllObject(CObject::TYPE::BLOCK);
 
-	// 当たり判定
-	bDetected = Collision();
+	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	{
+		// オブジェクトの情報が無くなったら終了
+		if (pObject[nCntObj] == nullptr)
+		{
+			break;
+		}
 
-	// 座標を設定
-	SetPos(m_posTarget);
+		// ブロッククラスへダウンキャスト
+		CBlock* pBlock = CUtility::GetInstance()->DownCast<CBlock, CObject>(pObject[nCntObj]);
 
-	// 衝突検出を返す
+		// ブロックと衝突する場合
+		if (CUtility::GetInstance()->OnlyCube(pBlock->GetPos(), pBlock->GetSize(), m_posTarget, GetSize()))
+		{
+			// 押し出し処理
+			CUtility::GetInstance()->CubeResponse(m_posTarget, m_velocity, GetPos(), GetSize(), pBlock->GetPos(), pBlock->GetSize());
+
+			// 衝突判定を出す
+			bDetected = 1;
+		}
+	}
+
+	// オブジェクトを取得
+	pObject = CObject::FindAllObject(CObject::TYPE::DESTRUCTIBLE);
+
+	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	{
+		// オブジェクトの情報が無くなったら終了
+		if (pObject[nCntObj] == nullptr)
+		{
+			break;
+		}
+
+		// 可壊ブロックへダウンキャスト
+		CBlockDestructible* pDestructible = CUtility::GetInstance()->DownCast<CBlockDestructible, CObject>(pObject[nCntObj]);
+
+		// 可壊ブロックと衝突する場合
+		if (CUtility::GetInstance()->OnlyCube(pDestructible->GetPos(), pDestructible->GetSize(), m_posTarget, GetSize()))
+		{
+			// 押し出し処理
+			CUtility::GetInstance()->CubeResponse(m_posTarget, m_velocity, GetPos(), GetSize(), pDestructible->GetPos(), pDestructible->GetSize());
+
+			// 消す
+			pDestructible->Release();
+
+			// 衝突判定を出す
+			bDetected = 1;
+		}
+	}
+
+	// ゴールオブジェクトを取得
+	CGoal* pGoal = CGoal::DownCast(CObject::FindObject(CObject::TYPE::GOAL));
+
+	// ゴールと衝突する場合
+	if (CUtility::GetInstance()->SphereAndCube(pGoal->GetPos(), pGoal->GetSize().x, m_posTarget, GetSize()))
+	{
+		// ゴール状態に移行する合図を設定
+		m_pStateManager->SetPendingState(CPlayerState::STATE::GOAL);
+
+		// レベル終了フェーズへ移行
+		CFakeScreen::GetInstance()->SetWave(CGameManager::PHASE::FINISH);
+	}
+
 	return bDetected;
 }
 
@@ -261,81 +321,4 @@ CPlayer* CPlayer::DownCast(CObject* pObject)
 	}
 
 	return pPlayer;
-}
-
-//============================================================================
-// 当たり判定
-//============================================================================
-bool CPlayer::Collision()
-{
-	// 衝突検出
-	bool bDetected = 0;
-
-	// オブジェクトを取得
-	CObject** pObject = CObject::FindAllObject(CObject::TYPE::BLOCK);
-
-	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
-	{
-		// オブジェクトの情報が無くなったら終了
-		if (pObject[nCntObj] == nullptr)
-		{
-			break;
-		}
-
-		// ブロッククラスへダウンキャスト
-		CBlock* pBlock = CUtility::GetInstance()->DownCast<CBlock, CObject>(pObject[nCntObj]);
-
-		// ブロックと衝突する場合
-		if (CUtility::GetInstance()->OnlyCube(pBlock->GetPos(), pBlock->GetSize(), m_posTarget, GetSize()))
-		{
-			// 押し出し処理
-			CUtility::GetInstance()->CubeResponse(m_posTarget, m_velocity, GetPos(), GetSize(), pBlock->GetPos(), pBlock->GetSize());
-
-			// 衝突判定を出す
-			bDetected = 1;
-		}
-	}
-
-	// オブジェクトを取得
-	pObject = CObject::FindAllObject(CObject::TYPE::DESTRUCTIBLE);
-
-	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
-	{
-		// オブジェクトの情報が無くなったら終了
-		if (pObject[nCntObj] == nullptr)
-		{
-			break;
-		}
-
-		// 可壊ブロックへダウンキャスト
-		CBlockDestructible* pDestructible = CUtility::GetInstance()->DownCast<CBlockDestructible, CObject>(pObject[nCntObj]);
-
-		// 可壊ブロックと衝突する場合
-		if (CUtility::GetInstance()->OnlyCube(pDestructible->GetPos(), pDestructible->GetSize(), m_posTarget, GetSize()))
-		{
-			// 押し出し処理
-			CUtility::GetInstance()->CubeResponse(m_posTarget, m_velocity, GetPos(), GetSize(), pDestructible->GetPos(), pDestructible->GetSize());
-
-			// 消す
-			pDestructible->Release();
-
-			// 衝突判定を出す
-			bDetected = 1;
-		}
-	}
-
-	// ゴールオブジェクトを取得
-	CGoal* pGoal = CGoal::DownCast(CObject::FindObject(CObject::TYPE::GOAL));
-
-	// ゴールと衝突する場合
-	if (CUtility::GetInstance()->SphereAndCube(pGoal->GetPos(), pGoal->GetSize().x, m_posTarget, GetSize()))
-	{			
-		// ゴール状態に移行する合図を設定
-		m_pStateManager->SetPendingState(CPlayerState::STATE::GOAL);
-
-		// レベル終了フェーズへ移行
-		CFakeScreen::GetInstance()->SetWave(CGameManager::PHASE::FINISH);
-	}
-
-	return bDetected;
 }

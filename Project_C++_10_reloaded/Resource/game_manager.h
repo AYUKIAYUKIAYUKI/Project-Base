@@ -22,7 +22,7 @@ public:
 	{
 		NONE = 0,	// 無し
 		START,		// レベル開始
-		INGAME,		// ゲーム進行
+		INGAME,		// レベル進行
 		FINISH,		// レベル終了
 		END,		// ゲーム終了
 		MAX,
