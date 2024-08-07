@@ -576,19 +576,63 @@ void CFakeScreen::FadeIn()
 }
 
 //============================================================================
-// 波打ちアウト
+// ウェーブアウト
 //============================================================================
 void CFakeScreen::WaveOut()
 {
+	if (!m_bWaveOut)
+	{
+		return;
+	}
 
+	if (m_fAddDistortion < 1.0f)
+	{
+		// ゆがみを増やしていく
+		m_fAddDistortion += 0.01f;
+	}
+	else
+	{
+		// 透明度が最大値を上回れば固定
+		m_fAddDistortion = 1.0f;
+
+		// ウェーブアウトを終了する
+		m_bWaveOut = false;
+
+		// フェーズを切り替える
+		CGameManager::GetInstance()->SetPhase(m_NextPhase);
+
+		// 保持していたフェーズ情報を初期化
+		m_NextPhase = CGameManager::PHASE::NONE;
+
+		// ウェーブインを開始する
+		m_bWaveIn = true;
+	}
 }
 
 //============================================================================
-// 波打ちイン
+// ウェーブイン
 //============================================================================
 void CFakeScreen::WaveIn()
 {
+	if (!m_bWaveIn)
+	{
+		return;
+	}
 
+	if (m_fAddDistortion > 0.0f)
+	{
+		// ゆがみを減らしていく
+		//m_fAddDistortion += -0.01f;
+		m_fAddDistortion *= 0.95f;
+	}
+	else
+	{
+		// ゆがみが最低値を下回ったら
+		m_fAddDistortion = 0.0f;
+
+		// ウェーブアウトを終了する
+		m_bWaveOut = false;
+	}
 }
 
 //============================================================================
