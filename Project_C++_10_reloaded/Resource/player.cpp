@@ -187,8 +187,12 @@ bool CPlayer::Collision()
 			// 押し出し処理
 			CUtility::GetInstance()->CubeResponse(m_posTarget, m_velocity, GetPos(), GetSize(), pDestructible->GetPos(), pDestructible->GetSize());
 
-			// 消す
-			pDestructible->Release();
+			// 飛行状態の場合のみ
+			if (typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateFlying))
+			{
+				// 消す
+				pDestructible->Release();
+			}
 
 			// 衝突判定を出す
 			bDetected = 1;
@@ -304,21 +308,6 @@ CPlayer* CPlayer::Create(D3DXVECTOR3 pos)
 
 	// 位置の設定
 	pPlayer->SetPos(pos);
-
-	return pPlayer;
-}
-
-//============================================================================
-// ダウンキャスト
-//============================================================================
-CPlayer* CPlayer::DownCast(CObject* pObject)
-{
-	CPlayer* pPlayer = dynamic_cast<CPlayer*>(pObject);
-
-	if (pPlayer == nullptr)
-	{ // ダウンキャスト失敗
-		assert(false);
-	}
 
 	return pPlayer;
 }

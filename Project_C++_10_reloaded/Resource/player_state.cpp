@@ -14,6 +14,9 @@
 // インプット取得用
 #include "manager.h"
 
+// デバッグ表示用
+#include "renderer.h"
+
 // オブジェクト情報用
 #include "ripple.h"
 #include "smoke.h"
@@ -974,6 +977,12 @@ CPlayerStateManager::~CPlayerStateManager()
 //============================================================================
 void CPlayerStateManager::CheckStateChange()
 {
+	if (m_pState)
+	{
+		// 型名のデバッグ表示
+		CRenderer::GetInstance()->SetDebugString(typeid(*m_pState).name());
+	}
+
 	// 変更予定の状態が無ければリターン
 	if (m_PendingState == CPlayerState::STATE::NONE)
 	{

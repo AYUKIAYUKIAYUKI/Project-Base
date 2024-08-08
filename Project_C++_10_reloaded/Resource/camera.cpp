@@ -5,10 +5,11 @@
 // 
 //============================================================================
 
-//****************************************************s
+//****************************************************
 // インクルードファイル
 //****************************************************
 #include "camera.h"
+#include "utility.h"
 
 // インプット取得用
 #include "manager.h"
@@ -73,7 +74,7 @@ void CCamera::Update()
 	{ // プレイヤータイプの取得に成功
 
 		// プレイヤークラスにダウンキャスト
-		CPlayer* pPlayer = CPlayer::DownCast(pObj);
+		CPlayer* pPlayer = CUtility::GetInstance()->DownCast<CPlayer, CObject>(pObj);
 
 		// 位置を同期
 		m_pos = pPlayer->GetPos();

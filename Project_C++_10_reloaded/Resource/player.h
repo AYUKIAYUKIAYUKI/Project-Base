@@ -49,7 +49,6 @@ public:
 	CPlayerStateManager* GetStateManager();	// 状態マネージャーを取得
 
 	static CPlayer* Create(D3DXVECTOR3 pos);	// 生成
-	static CPlayer* DownCast(CObject* pObject);	// ダウンキャスト
 
 private:
 
