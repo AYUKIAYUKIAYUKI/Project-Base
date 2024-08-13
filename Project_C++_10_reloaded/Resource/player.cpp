@@ -153,6 +153,8 @@ bool CPlayer::Collision()
 			break;
 		}
 
+		auto Copy = pObject[nCntObj];
+
 		// ブロッククラスへダウンキャスト
 		CBlock* pBlock = CUtility::GetInstance()->DownCast<CBlock, CObject>(pObject[nCntObj]);
 

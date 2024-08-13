@@ -29,6 +29,7 @@ public:
 		PLAYER_005,		// プレイヤーゴール
 		BLOCK_000,		// ブロック0
 		DESTRUCTIBLE,	// 可壊ブロック
+		SPIKES,			// とげブロック
 		START,			// スタート
 		GOAL,			// ゴール
 		LINE_X,			// X軸

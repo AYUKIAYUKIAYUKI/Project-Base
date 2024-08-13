@@ -7,6 +7,7 @@ data\\MODEL\\player5_Y_0.x
 data\\MODEL\\player_goal_Y_0.x
 data\\MODEL\\block_Y_0.x
 data\\MODEL\\destructible.x
+data\\MODEL\\destructible.x
 data\\MODEL\\start.x
 data\\MODEL\\goal.x
 data\\MODEL\\LINE_X.x

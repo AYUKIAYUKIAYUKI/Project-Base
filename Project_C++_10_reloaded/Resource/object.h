@@ -28,6 +28,7 @@ public:
 		ENEMY,			// エネミー
 		BLOCK,			// ブロック
 		DESTRUCTIBLE,	// 可壊ブロック
+		SPIKES,			// トゲブロック
 		ITEM,			// アイテム
 		START,			// スタート
 		GOAL,			// ゴール
