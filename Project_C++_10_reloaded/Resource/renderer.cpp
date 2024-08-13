@@ -162,6 +162,9 @@ void CRenderer::Update()
 	// 全オブジェクト更新処理
 	CObject::UpdateAll();
 
+	// 全オブジェクト後更新処理
+	CObject::LateUpdateAll();
+
 	// 疑似スクリーンの更新
 	CFakeScreen::GetInstance()->Update();
 }
@@ -250,7 +253,7 @@ void CRenderer::PrintDebug()
 	// 表示位置
 	RECT rect = { 0, 50, SCREEN_WIDTH, SCREEN_HEIGHT };
 
-	for (int i = 0; i < m_timeStr.size(); i++)
+	for (unsigned int i = 0; i < m_timeStr.size(); i++)
 	{
 		if (m_timeStr[i].second > 0)
 		{

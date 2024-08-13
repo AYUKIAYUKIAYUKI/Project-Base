@@ -83,7 +83,7 @@ void CSmoke::Update()
 	if (CUtility::GetInstance()->DecrementUntilGone(GetAlpha(), -0.01f))
 	{
 		// ©g‚ğ”jŠü
-		CObject::Release();
+		CObject::SetRelease();
 	}
 }
 

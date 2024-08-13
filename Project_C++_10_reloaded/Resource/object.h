@@ -57,17 +57,16 @@ public:
 	virtual void Uninit() = 0;	// 終了処理
 	virtual void Update() = 0;	// 更新処理
 	virtual void Draw() = 0;	// 描画処理
+	void SetRelease();			// 解放予約設定
 	void Release();				// 個別解放処理
 
 	TYPE GetType();				// タイプを取得
 	void SetType(TYPE type);	// タイプを設定
 
-	bool GetDeath();				// 死亡フラグ取得
-	void SetDeath(bool bDetected);	// 死亡フラグ設定
-
-	static void ReleaseAll();	// 全オブジェクト解放処理
-	static void UpdateAll();	// 全オブジェクト更新処理
-	static void DrawAll();		// 全オブジェクト描画処理
+	static void ReleaseAll();		// 全オブジェクト解放処理
+	static void UpdateAll();		// 全オブジェクト更新処理
+	static void LateUpdateAll();	// 全オブジェクト後更新処理
+	static void DrawAll();			// 全オブジェクト描画処理
 
 	static CObject* GetObject(int nPriority);	// 先頭オブジェクトのポインタ取得
 	static CObject* FindObject(TYPE type);		// 特定タイプのオブジェクト探す

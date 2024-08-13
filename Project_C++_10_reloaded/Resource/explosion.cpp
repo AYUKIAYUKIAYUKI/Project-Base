@@ -120,7 +120,7 @@ bool CExplosion::Animation()
 		if (nTexPatternU >= 8)
 		{
 			// ©g‚ğ”jŠü
-			CObject::Release();
+			CObject::SetRelease();
 
 			// I—¹
 			return false;

@@ -153,8 +153,6 @@ bool CPlayer::Collision()
 			break;
 		}
 
-		auto Copy = pObject[nCntObj];
-
 		// ブロッククラスへダウンキャスト
 		CBlock* pBlock = CUtility::GetInstance()->DownCast<CBlock, CObject>(pObject[nCntObj]);
 
@@ -192,8 +190,8 @@ bool CPlayer::Collision()
 			// 飛行状態の場合のみ
 			if (typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateFlying))
 			{
-				// 消す
-				pDestructible->Release();
+				// 可壊ブロックを破棄
+				pDestructible->SetRelease();
 			}
 
 			// 衝突判定を出す
