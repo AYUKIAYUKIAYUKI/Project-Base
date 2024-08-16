@@ -26,6 +26,7 @@
 #include <fstream>
 #include <string>
 #include <tuple>
+#include <list>
 #include <sstream>
 #include <utility>
 #include <iomanip>
