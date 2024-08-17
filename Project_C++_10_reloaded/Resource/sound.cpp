@@ -306,8 +306,9 @@ CSound::CSound()
 	m_apDataAudio[static_cast<int>(LABEL::MAX)] = {};	// オーディオデータ
 	m_aSizeAudio[static_cast<int>(LABEL::MAX)] = {};	// オーディオデータサイズ
 
-	// サウンド情報 (仮)
-	m_aSoundInfo[0] = { "data\\SE\\00.wav", 0, 1.0f };
+	// サウンド情報
+	m_aSoundInfo[0] = { "Data\\BGM\\TADC_OPENING.wav", -1, 1.0f };
+	m_aSoundInfo[1] = { "Data\\BGM\\TADC_ENDING.wav", -1, 1.0f };
 }
 
 //=============================================================================

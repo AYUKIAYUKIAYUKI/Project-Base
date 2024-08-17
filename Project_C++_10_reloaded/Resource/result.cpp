@@ -10,6 +10,7 @@
 //****************************************************
 #include "result.h"
 #include "fakescreen.h"
+#include "sound.h"
 
 // 仮リザルト表示用
 #include "bg.h"
@@ -47,6 +48,9 @@ HRESULT CResult::Init()
 		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// サイズ
 		CTexture_Manager::TYPE::BG_001);						// テクスチャ
 
+	// BGMをかける
+	CSound::GetInstance()->PlaySound(CSound::LABEL::ENDING);
+
 	return S_OK;
 }
 
@@ -55,6 +59,9 @@ HRESULT CResult::Init()
 //============================================================================
 void CResult::Uninit()
 {
+	// BGMを止める
+	CSound::GetInstance()->Stop(CSound::LABEL::ENDING);
+
 	// 基底クラスの終了処理
 	CScene::Uninit();
 }

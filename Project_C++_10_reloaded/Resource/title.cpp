@@ -10,6 +10,7 @@
 //****************************************************
 #include "title.h"
 #include "fakescreen.h"
+#include "sound.h"
 
 // 仮タイトル表示用
 #include "bg.h"
@@ -47,6 +48,9 @@ HRESULT CTitle::Init()
 		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// サイズ
 		CTexture_Manager::TYPE::BG_000);						// テクスチャ
 
+	// BGMをかける
+	CSound::GetInstance()->PlaySound(CSound::LABEL::OPENING);
+
 	return S_OK;
 }
 
@@ -55,6 +59,9 @@ HRESULT CTitle::Init()
 //============================================================================
 void CTitle::Uninit()
 {
+	// BGMを止める
+	CSound::GetInstance()->Stop(CSound::LABEL::OPENING);
+
 	// 基底クラスの終了処理
 	CScene::Uninit();
 }
