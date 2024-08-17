@@ -228,13 +228,21 @@ void CDummy::CheckPattern()
 
 	case 2:
 
+		// とげブロックモデルに見た目を変更
+		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::SPIKES);
+		BindModel(model);
+
+		break;
+
+	case 3:
+
 		// スタートモデルに見た目を変更
 		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::START);
 		BindModel(model);
 
 		break;
 
-	case 3:
+	case 4:
 
 		// ゴールモデルに見た目を変更
 		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::GOAL);

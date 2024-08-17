@@ -19,6 +19,7 @@
 // オブジェクト配置用
 #include "block.h"
 #include "block_destructible.h"
+#include "block_spikes.h"
 #include "dummy.h"
 #include "start.h"
 #include "goal.h"
@@ -138,6 +139,10 @@ void CStageMaker::Import(std::string path)
 		else if (str_type == "destructible")
 		{ // 可壊ブロック
 			CBlockDestructible::Create(pos);
+		}
+		else if (str_type == "spikes")
+		{ // とげブロック
+			CBlockSpikes::Create(pos);
 		}
 		else if (str_type == "start")
 		{ // スタート
@@ -263,6 +268,10 @@ void CStageMaker::Register()
 		break;
 
 	case 2:
+		CBlockSpikes::Create(pDummy->GetPos());
+		break;
+
+	case 3:
 
 		// スタートタイプのオブジェクトを検索
 		if (!CObject::FindObject(CObject::TYPE::START))
@@ -276,7 +285,7 @@ void CStageMaker::Register()
 
 		break;
 
-	case 3:
+	case 4:
 
 		// スタートタイプのオブジェクトを検索
 		if (!CObject::FindObject(CObject::TYPE::GOAL))
@@ -350,6 +359,24 @@ void CStageMaker::Export()
 
 		// 情報を書き出す
 		Output(Export, pDestructible->GetPos(), "destructible");
+	}
+
+	// とげブロックタイプのオブジェクトをすべて取得
+	pObject = CObject::FindAllObject(CObject::TYPE::SPIKES);
+
+	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	{
+		// オブジェクトの情報が無くなったら終了
+		if (pObject[nCntObj] == nullptr)
+		{
+			break;
+		}
+
+		// とげブロッククラスへダウンキャスト
+		CBlockSpikes* pDestructible = CBlockSpikes::DownCast(pObject[nCntObj]);
+
+		// 情報を書き出す
+		Output(Export, pDestructible->GetPos(), "spikes");
 	}
 
 	Export.close();	// ファイルを閉じる
