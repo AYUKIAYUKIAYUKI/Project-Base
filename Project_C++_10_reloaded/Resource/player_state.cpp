@@ -822,7 +822,7 @@ void CPlayerStateMistook::Exit()
 //============================================================================
 void CPlayerStateMistook::FindStartObject()
 {
-	CStart* pStart = CStart::DownCast(CObject::FindObject(CObject::TYPE::START));
+	CStart* pStart = CUtility::GetInstance()->DownCast<CStart, CObject>(CObject::FindObject(CObject::TYPE::START));
 
 	if (pStart == nullptr)
 	{ // ”­Œ©Ž¸”s

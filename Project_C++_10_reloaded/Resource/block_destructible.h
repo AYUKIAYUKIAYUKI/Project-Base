@@ -29,8 +29,7 @@ public:
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
 
-	static CBlockDestructible* Create(D3DXVECTOR3 pos);		// 生成
-	static CBlockDestructible* DownCast(CObject* pObject);	// ダウンキャスト
+	static CBlockDestructible* Create(D3DXVECTOR3 pos);	// 生成
 };
 
 #endif // _BLOCK_DESTRUCTIBLE_H_

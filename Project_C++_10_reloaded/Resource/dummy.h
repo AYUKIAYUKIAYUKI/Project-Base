@@ -29,7 +29,6 @@ public:
 	void Draw() override;		// 描画処理
 
 	static CDummy* Create(D3DXVECTOR3 pos, int& nPattern);	// 生成
-	static CDummy* DownCast(CObject* pObject);				// ダウンキャスト
 
 private:
 

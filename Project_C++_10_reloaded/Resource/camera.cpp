@@ -90,7 +90,7 @@ void CCamera::Update()
 		{ // ダミータイプの取得に成功
 
 			// ダミークラスにダウンキャスト
-			CDummy* pDummy = CDummy::DownCast(pObj);
+			CDummy* pDummy = CUtility::GetInstance()->DownCast<CDummy, CObject>(pObj);
 
 			// 位置を同期
 			m_pos = pDummy->GetPos();

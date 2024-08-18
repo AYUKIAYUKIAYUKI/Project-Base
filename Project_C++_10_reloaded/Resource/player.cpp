@@ -264,7 +264,7 @@ bool CPlayer::Collision()
 	}
 
 	// ゴールオブジェクトを取得
-	CGoal* pGoal = CGoal::DownCast(CObject::FindObject(CObject::TYPE::GOAL));
+	CGoal* pGoal = CUtility::GetInstance()->DownCast<CGoal, CObject>(CObject::FindObject(CObject::TYPE::GOAL));
 
 	// ゴールと衝突する場合
 	if (CUtility::GetInstance()->SphereAndCube(pGoal->GetPos(), pGoal->GetSize().x, m_posTarget, GetSize()))

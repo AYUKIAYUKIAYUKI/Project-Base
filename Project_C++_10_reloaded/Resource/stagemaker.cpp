@@ -260,7 +260,7 @@ void CStageMaker::Control()
 void CStageMaker::Register()
 {
 	// ダミーを取得
-	CDummy* pDummy = CDummy::DownCast(CObject::FindObject(CObject::TYPE::DUMMY));
+	CDummy* pDummy = CUtility::GetInstance()->DownCast<CDummy, CObject>(CObject::FindObject(CObject::TYPE::DUMMY));
 
 	// ダミーの位置にオブジェクト生成
 	switch (m_nPattern)
@@ -324,13 +324,13 @@ void CStageMaker::Export()
 	std::ofstream Export("Data\\TXT\\stage.txt");
 
 	// スタートオブジェクトを取得
-	CStart* pStart = CStart::DownCast(CObject::FindObject(CObject::TYPE::START));
+	CStart* pStart = CUtility::GetInstance()->DownCast<CStart, CObject>(CObject::FindObject(CObject::TYPE::START));
 
 	// 情報を書き出す
 	Output(Export, pStart->GetPos(), "start");
 
 	// ゴールオブジェクトを取得
-	CGoal* pGoal = CGoal::DownCast(CObject::FindObject(CObject::TYPE::GOAL));
+	CGoal* pGoal = CUtility::GetInstance()->DownCast<CGoal, CObject>(CObject::FindObject(CObject::TYPE::GOAL));
 
 	// 情報を書き出す
 	Output(Export, pGoal->GetPos(), "goal");
@@ -347,7 +347,7 @@ void CStageMaker::Export()
 		}
 
 		// ブロッククラスへダウンキャスト
-		CBlock* pBlock = CBlock::DownCast(pObject[nCntObj]);
+		CBlock* pBlock = CUtility::GetInstance()->DownCast<CBlock, CObject>(pObject[nCntObj]);
 
 		// 情報を書き出す
 		Output(Export, pBlock->GetPos(), "block");
@@ -365,7 +365,7 @@ void CStageMaker::Export()
 		}
 
 		// 可壊ブロッククラスへダウンキャスト
-		CBlockDestructible* pDestructible = CBlockDestructible::DownCast(pObject[nCntObj]);
+		CBlockDestructible* pDestructible = CUtility::GetInstance()->DownCast<CBlockDestructible, CObject>(pObject[nCntObj]);
 
 		// 情報を書き出す
 		Output(Export, pDestructible->GetPos(), "destructible");

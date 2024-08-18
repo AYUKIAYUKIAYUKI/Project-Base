@@ -30,8 +30,7 @@ public:
 
 	D3DXVECTOR3 GetPos();	// 位置を取得
 
-	static CStart* Create(D3DXVECTOR3 pos);		// 生成
-	static CStart* DownCast(CObject* pObject);	// ダウンキャスト
+	static CStart* Create(D3DXVECTOR3 pos);	// 生成
 };
 
 #endif // _START_H_

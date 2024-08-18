@@ -108,18 +108,3 @@ CBlockDestructible* CBlockDestructible::Create(D3DXVECTOR3 pos)
 
 	return pBlockDestructible;
 }
-
-//============================================================================
-// ダウンキャスト
-//============================================================================
-CBlockDestructible* CBlockDestructible::DownCast(CObject* pObject)
-{
-	CBlockDestructible* pBlockDestructible = dynamic_cast<CBlockDestructible*>(pObject);
-
-	if (pBlockDestructible == nullptr)
-	{ // ダウンキャスト失敗
-		assert(false);
-	}
-
-	return pBlockDestructible;
-}
