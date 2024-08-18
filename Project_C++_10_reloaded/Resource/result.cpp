@@ -42,6 +42,9 @@ CResult::~CResult()
 //============================================================================
 HRESULT CResult::Init()
 {
+	// 全てのサウンドを停止
+	CSound::GetInstance()->Stop();
+
 	// 背景の生成
 	CBg::Create(
 		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// 位置
