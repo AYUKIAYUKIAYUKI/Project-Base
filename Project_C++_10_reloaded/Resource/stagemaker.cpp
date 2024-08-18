@@ -21,6 +21,7 @@
 #include "block.h"
 #include "block_destructible.h"
 #include "block_spikes.h"
+#include "enemy.h"
 #include "dummy.h"
 #include "start.h"
 #include "goal.h"
@@ -145,6 +146,10 @@ void CStageMaker::Import(std::string path)
 		{ // とげブロック
 			CBlockSpikes::Create(pos);
 		}
+		else if (str_type == "enemy")
+		{ // エネミー
+			CEnemy::Create(pos);
+		}
 		else if (str_type == "start")
 		{ // スタート
 			CStart::Create(pos);
@@ -227,11 +232,11 @@ void CStageMaker::Control()
 
 	if (CManager::GetKeyboard()->GetTrigger(DIK_Q))
 	{
-		m_nPattern > 0 ? m_nPattern-- : m_nPattern = 3;
+		m_nPattern > 0 ? m_nPattern-- : m_nPattern = 5;
 	}
 	else if (CManager::GetKeyboard()->GetTrigger(DIK_E))
 	{
-		m_nPattern < 3 ? m_nPattern++ : m_nPattern = 0;
+		m_nPattern < 5 ? m_nPattern++ : m_nPattern = 0;
 	}
 
 	CRenderer::GetInstance()->SetDebugString("現在の配置物の種類:" + std::to_string(m_nPattern));
@@ -273,6 +278,10 @@ void CStageMaker::Register()
 		break;
 
 	case 3:
+		CEnemy::Create(pDummy->GetPos());
+		break;
+
+	case 4:
 
 		// スタートタイプのオブジェクトを検索
 		if (!CObject::FindObject(CObject::TYPE::START))
@@ -286,7 +295,7 @@ void CStageMaker::Register()
 
 		break;
 
-	case 4:
+	case 5:
 
 		// スタートタイプのオブジェクトを検索
 		if (!CObject::FindObject(CObject::TYPE::GOAL))
@@ -378,6 +387,24 @@ void CStageMaker::Export()
 
 		// 情報を書き出す
 		Output(Export, pDestructible->GetPos(), "spikes");
+	}
+
+	// エネミータイプのオブジェクトをすべて取得
+	pObject = CObject::FindAllObject(CObject::TYPE::ENEMY);
+
+	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	{
+		// オブジェクトの情報が無くなったら終了
+		if (pObject[nCntObj] == nullptr)
+		{
+			break;
+		}
+
+		// エネミーブロッククラスへダウンキャスト
+		CEnemy* pEnemy = CUtility::GetInstance()->DownCast<CEnemy, CObject>(pObject[nCntObj]);
+
+		// 情報を書き出す
+		Output(Export, pEnemy->GetPos(), "enemy");
 	}
 
 	Export.close();	// ファイルを閉じる

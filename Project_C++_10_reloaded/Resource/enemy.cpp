@@ -1,6 +1,6 @@
 //============================================================================
 // 
-// とげブロック [block_spikes.cpp]
+// エネミー [enemy.cpp]
 // Author : 福田歩希
 // 
 //============================================================================
@@ -8,12 +8,22 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
+#include "enemy.h"
+#include "utility.h"
+
+// デバッグ表示用
+#include "renderer.h"
+
+// オブジェクト情報用 
+#include "block.h"
+#include "block_destructible.h"
 #include "block_spikes.h"
+#include "explosion.h"
 
 //============================================================================
 // デフォルトコンストラクタ
 //============================================================================
-CBlockSpikes::CBlockSpikes() :
+CEnemy::CEnemy() :
 	CObject_X{ static_cast<int>(LAYER::FRONT_MIDDLE) }	// プライオリティの設定
 {
 
@@ -22,7 +32,7 @@ CBlockSpikes::CBlockSpikes() :
 //============================================================================
 // プライオリティ指定コンストラクタ
 //============================================================================
-CBlockSpikes::CBlockSpikes(LAYER priority) :
+CEnemy::CEnemy(LAYER priority) :
 	CObject_X{ static_cast<int>(priority) }	// プライオリティの設定
 {
 
@@ -31,7 +41,7 @@ CBlockSpikes::CBlockSpikes(LAYER priority) :
 //============================================================================
 // デストラクタ
 //============================================================================
-CBlockSpikes::~CBlockSpikes()
+CEnemy::~CEnemy()
 {
 
 }
@@ -39,7 +49,7 @@ CBlockSpikes::~CBlockSpikes()
 //============================================================================
 // 初期設定
 //============================================================================
-HRESULT CBlockSpikes::Init()
+HRESULT CEnemy::Init()
 {
 	// 基底クラスの初期設定
 	HRESULT hr = CObject_X::Init();
@@ -50,7 +60,7 @@ HRESULT CBlockSpikes::Init()
 //============================================================================
 // 終了処理
 //============================================================================
-void CBlockSpikes::Uninit()
+void CEnemy::Uninit()
 {
 	// 基底クラスの終了処理
 	CObject_X::Uninit();
@@ -59,8 +69,11 @@ void CBlockSpikes::Uninit()
 //============================================================================
 // 更新処理
 //============================================================================
-void CBlockSpikes::Update()
+void CEnemy::Update()
 {
+	// 当たり判定
+	Collision();
+
 	// 基底クラスの更新
 	CObject_X::Update();
 }
@@ -68,45 +81,56 @@ void CBlockSpikes::Update()
 //============================================================================
 // 描画処理
 //============================================================================
-void CBlockSpikes::Draw()
+void CEnemy::Draw()
 {
 	// 基底クラスの描画処理
 	CObject_X::Draw();
 }
 
 //============================================================================
+// 当たり判定
+//============================================================================
+bool CEnemy::Collision()
+{
+	// 衝突検出
+	bool bDetected = 0;
+
+	return bDetected;
+}
+
+//============================================================================
 // 生成
 //============================================================================
-CBlockSpikes* CBlockSpikes::Create(D3DXVECTOR3 pos)
+CEnemy* CEnemy::Create(D3DXVECTOR3 pos)
 {
 	// インスタンスを生成
-	CBlockSpikes* pBlockSpikes = DBG_NEW CBlockSpikes{ LAYER::FRONT_MIDDLE };
+	CEnemy* pEnemy = DBG_NEW CEnemy;
 
-	if (pBlockSpikes == nullptr)
+	if (pEnemy == nullptr)
 	{ // 生成失敗
 		assert(false);
 	}
 
 	// タイプを設定
-	pBlockSpikes->SetType(TYPE::SPIKES);
+	pEnemy->SetType(TYPE::ENEMY);
 
 	// 基底クラスの初期設定
-	pBlockSpikes->Init();
+	pEnemy->Init();
 
-	// 座標の設定
-	pBlockSpikes->SetPos(pos);
+	// 位置の設定
+	pEnemy->SetPos(pos);
 
 	// モデルを取得
-	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::SPIKES);
+	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::ENEMY);
 
 	// モデルを設定
-	pBlockSpikes->BindModel(model);
+	pEnemy->BindModel(model);
 
 	// サイズを設定
-	pBlockSpikes->SetSize(model->size);
+	pEnemy->SetSize(model->size);
 
 	// 描画される前に一度更新しておく
-	pBlockSpikes->Update();
+	pEnemy->Update();
 
-	return pBlockSpikes;
+	return pEnemy;
 }

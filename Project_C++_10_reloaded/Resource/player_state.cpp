@@ -35,7 +35,7 @@ const float CPlayerStateBeginning::BEGIN_SPINNING = 0.5f;	// 変身時回転量
 const float CPlayerStateFlying::MAX_FLY_VELOCITY = 3.0f;	// 飛行時の最大加速度
 const float CPlayerStateFlying::FLY_SPEED = 3.0f;			// 飛行速度
 const int CPlayerStateStopping::STOP_CNT_MAX = 10;			// 変身停止必要時間
-const float CPlayerStateStopping::RECOIL_SPEED = 2.0f;		// 反動移動速度
+const float CPlayerStateStopping::RECOIL_SPEED = 3.0f;		// 反動移動速度
 const float CPlayerStateMistook::MAX_WARP_SPEED = 15.0f;	// 強制移動速度の上限
 
 //============================================================================

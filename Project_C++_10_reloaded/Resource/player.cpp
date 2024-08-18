@@ -22,6 +22,7 @@
 #include "block.h"
 #include "block_destructible.h"
 #include "block_spikes.h"
+#include "enemy.h"
 #include "explosion.h"
 #include "fakescreen.h"
 #include "goal.h"
@@ -219,6 +220,43 @@ bool CPlayer::Collision()
 		{
 			// ミス状態に移行
 			m_pStateManager->SetPendingState(CPlayerState::STATE::MISS);
+
+			// 衝突判定を出す
+			bDetected = 1;
+		}
+	}
+	
+	// エネミータグを取得
+	pObject = CObject::FindAllObject(CObject::TYPE::ENEMY);
+
+	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	{
+		// エネミータグの情報が無くなったら終了
+		if (pObject[nCntObj] == nullptr)
+		{
+			break;
+		}
+
+		// エネミーへダウンキャスト
+		CEnemy* pEnemy = CUtility::GetInstance()->DownCast<CEnemy, CObject>(pObject[nCntObj]);
+
+		// エネミーと衝突する場合
+		if (CUtility::GetInstance()->OnlyCube(pEnemy->GetPos(), pEnemy->GetSize(), m_posTarget, GetSize()))
+		{
+			if (typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateFlying))
+			{ // 飛行状態の場合
+
+				// 押し出し処理
+				CUtility::GetInstance()->CubeResponse(m_posTarget, m_velocity, GetPos(), GetSize(), pEnemy->GetPos(), pEnemy->GetSize());
+
+				// エネミーを破棄
+				pEnemy->SetRelease();
+			}
+			else
+			{
+				// ミス状態に移行
+				m_pStateManager->SetPendingState(CPlayerState::STATE::MISS);
+			}
 
 			// 衝突判定を出す
 			bDetected = 1;

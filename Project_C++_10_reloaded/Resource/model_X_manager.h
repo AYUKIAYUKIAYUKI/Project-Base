@@ -20,16 +20,17 @@ public:
 	//****************************************************
 	enum class TYPE
 	{
-		KARIHAIKEI = 0,	// 
-		PLAYER_000,		// プレイヤー1
-		PLAYER_001,		// プレイヤー2
-		PLAYER_002,		// プレイヤー3
-		PLAYER_003,		// プレイヤー4
-		PLAYER_004,		// プレイヤー5
-		PLAYER_005,		// プレイヤーゴール
-		BLOCK_000,		// ブロック0
+		KARIHAIKEI = 0,	// 仮背景
+		PLAYER_000,		// プレイヤー000
+		PLAYER_001,		// プレイヤー001
+		PLAYER_002,		// プレイヤー002
+		PLAYER_003,		// プレイヤー003
+		PLAYER_004,		// プレイヤー004
+		PLAYER_005,		// プレイヤー005
+		BLOCK_000,		// ブロック000
 		DESTRUCTIBLE,	// 可壊ブロック
 		SPIKES,			// とげブロック
+		ENEMY,			// エネミー
 		START,			// スタート
 		GOAL,			// ゴール
 		LINE_X,			// X軸

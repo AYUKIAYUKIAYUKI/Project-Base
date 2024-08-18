@@ -236,13 +236,21 @@ void CDummy::CheckPattern()
 
 	case 3:
 
+		// エネミーモデルに見た目を変更
+		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::ENEMY);
+		BindModel(model);
+
+		break;
+
+	case 4:
+
 		// スタートモデルに見た目を変更
 		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::START);
 		BindModel(model);
 
 		break;
 
-	case 4:
+	case 5:
 
 		// ゴールモデルに見た目を変更
 		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::GOAL);

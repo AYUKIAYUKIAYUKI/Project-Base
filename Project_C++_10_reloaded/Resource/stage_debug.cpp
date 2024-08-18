@@ -21,6 +21,9 @@
 #include "line.h"
 #include "start.h"
 
+// テスト用
+#include "KARIHAIKEI.h"
+
 //============================================================================
 // コンストラクタ
 //============================================================================
@@ -44,6 +47,9 @@ HRESULT CStage_Debug::Init()
 {
 	// ステージメーカーの初期化
 	CStageMaker::GetInstance()->Init();
+
+	// KARIHAIKEIの生成
+	KARIHAIKEI::Create();
 
 	// グリッドライン生成
 	CLine::CreateGrid();
