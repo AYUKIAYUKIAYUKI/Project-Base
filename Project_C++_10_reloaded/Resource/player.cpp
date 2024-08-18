@@ -21,6 +21,7 @@
 // オブジェクト情報用 
 #include "block.h"
 #include "block_destructible.h"
+#include "block_spikes.h"
 #include "explosion.h"
 #include "fakescreen.h"
 #include "goal.h"
@@ -142,12 +143,12 @@ bool CPlayer::Collision()
 	// 衝突検出
 	bool bDetected = 0;
 
-	// オブジェクトを取得
+	// ブロックタグを取得
 	CObject** pObject = CObject::FindAllObject(CObject::TYPE::BLOCK);
 
 	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
 	{
-		// オブジェクトの情報が無くなったら終了
+		// ブロックタグの情報が無くなったら終了
 		if (pObject[nCntObj] == nullptr)
 		{
 			break;
@@ -167,12 +168,12 @@ bool CPlayer::Collision()
 		}
 	}
 
-	// オブジェクトを取得
+	// 可壊タグを取得
 	pObject = CObject::FindAllObject(CObject::TYPE::DESTRUCTIBLE);
 
 	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
 	{
-		// オブジェクトの情報が無くなったら終了
+		// 可壊タグの情報が無くなったら終了
 		if (pObject[nCntObj] == nullptr)
 		{
 			break;
@@ -199,13 +200,38 @@ bool CPlayer::Collision()
 		}
 	}
 
+	// とげタグを取得
+	pObject = CObject::FindAllObject(CObject::TYPE::SPIKES);
+
+	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	{
+		// とげタグの情報が無くなったら終了
+		if (pObject[nCntObj] == nullptr)
+		{
+			break;
+		}
+
+		// とげブロックへダウンキャスト
+		CBlockSpikes* pBlockSpikes = CUtility::GetInstance()->DownCast<CBlockSpikes, CObject>(pObject[nCntObj]);
+
+		// とげブロックと衝突する場合
+		if (CUtility::GetInstance()->OnlyCube(pBlockSpikes->GetPos(), pBlockSpikes->GetSize(), m_posTarget, GetSize()))
+		{
+			// ミス状態に移行
+			m_pStateManager->SetPendingState(CPlayerState::STATE::MISS);
+
+			// 衝突判定を出す
+			bDetected = 1;
+		}
+	}
+
 	// ゴールオブジェクトを取得
 	CGoal* pGoal = CGoal::DownCast(CObject::FindObject(CObject::TYPE::GOAL));
 
 	// ゴールと衝突する場合
 	if (CUtility::GetInstance()->SphereAndCube(pGoal->GetPos(), pGoal->GetSize().x, m_posTarget, GetSize()))
 	{
-		// ゴール状態に移行する合図を設定
+		// ゴール状態に移行
 		m_pStateManager->SetPendingState(CPlayerState::STATE::GOAL);
 
 		// レベル終了フェーズへ移行

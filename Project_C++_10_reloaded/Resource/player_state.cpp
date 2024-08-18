@@ -10,6 +10,7 @@
 //****************************************************
 #include "player_state.h"
 #include "utility.h"
+#include "sound.h"
 
 // インプット取得用
 #include "manager.h"
@@ -323,6 +324,9 @@ void CPlayerStateBeginning::Enter()
 			m_pPlayer->GetPos(),	// 座標
 			velocity * 0.005f);		// 加速度
 	}
+
+	// 離陸SE
+	CSound::GetInstance()->Play(CSound::LABEL::TAKEOFF);
 }
 
 //============================================================================
@@ -532,6 +536,9 @@ bool CPlayerStateFlying::Control()
 		CStar::Create(
 			m_pPlayer->GetPos(),	// 座標
 			-velocity);				// 加速度 (飛行方向の逆)
+
+		// キラキラSE
+		CSound::GetInstance()->Play(CSound::LABEL::TWINKLING_00);
 	}
 
 	return true;

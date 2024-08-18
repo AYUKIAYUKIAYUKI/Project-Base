@@ -177,7 +177,7 @@ void CSound::Release()
 //=============================================================================
 // セグメント再生(再生中なら停止)
 //=============================================================================
-HRESULT CSound::PlaySound(LABEL label)
+HRESULT CSound::Play(LABEL label)
 {
 	// ラベル指定を要素数に変換
 	const int nNumElement{ static_cast<int>(label) };
@@ -200,6 +200,7 @@ HRESULT CSound::PlaySound(LABEL label)
 
 	if (xa2state.BuffersQueued != 0)
 	{// 再生中
+
 		// 一時停止
 		m_apSourceVoice[nNumElement]->Stop(0);
 
@@ -309,6 +310,9 @@ CSound::CSound()
 	// サウンド情報
 	m_aSoundInfo[0] = { "Data\\BGM\\TADC_OPENING.wav", -1, 1.0f };
 	m_aSoundInfo[1] = { "Data\\BGM\\TADC_ENDING.wav", -1, 1.0f };
+	m_aSoundInfo[2] = { "Data\\SE\\SMG_BLACKHOLE.wav", 0, 1.0f };
+	m_aSoundInfo[3] = { "Data\\SE\\SMG_TWINKLING_00.wav", 0, 1.0f };
+	m_aSoundInfo[4] = { "Data\\SE\\SMG_TWINKLING_01.wav", 0, 1.0f };
 }
 
 //=============================================================================

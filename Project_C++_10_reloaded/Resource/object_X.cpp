@@ -35,7 +35,7 @@ CObject_X::CObject_X(int nPriority) : CObject(nPriority)
 	D3DXMatrixIdentity(&m_mtxWorld);	// ワールド行列
 
 	// 判定表示の生成
-	CRender_Collision::Create(m_pos, m_size);
+	//CRender_Collision::Create(m_pos, m_size);
 }
 
 //============================================================================

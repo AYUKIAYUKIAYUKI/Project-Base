@@ -9,6 +9,7 @@
 // インクルードファイル
 //****************************************************
 #include "stagemaker.h"
+#include "utility.h"
 
 // キーボード取得用
 #include "manager.h"
@@ -373,7 +374,7 @@ void CStageMaker::Export()
 		}
 
 		// とげブロッククラスへダウンキャスト
-		CBlockSpikes* pDestructible = CBlockSpikes::DownCast(pObject[nCntObj]);
+		CBlockSpikes* pDestructible = CUtility::GetInstance()->DownCast<CBlockSpikes, CObject>(pObject[nCntObj]);
 
 		// 情報を書き出す
 		Output(Export, pDestructible->GetPos(), "spikes");

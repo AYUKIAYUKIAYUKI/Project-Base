@@ -108,18 +108,3 @@ CBlockSpikes* CBlockSpikes::Create(D3DXVECTOR3 pos)
 
 	return pBlockSpikes;
 }
-
-//============================================================================
-// ダウンキャスト
-//============================================================================
-CBlockSpikes* CBlockSpikes::DownCast(CObject* pObject)
-{
-	CBlockSpikes* pBlockSpikes = dynamic_cast<CBlockSpikes*>(pObject);
-
-	if (pBlockSpikes == nullptr)
-	{ // ダウンキャスト失敗
-		assert(false);
-	}
-
-	return pBlockSpikes;
-}

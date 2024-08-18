@@ -21,12 +21,15 @@ public:
 	{
 		OPENING = 0,	// オープニング
 		ENDING,			// エンディング
+		TAKEOFF,		// 離陸
+		TWINKLING_00,	// キラキラ00
+		TWINKLING_01,	// キラキラ01
 		MAX,
 	};
 
 	HRESULT Init(HWND hWnd);		// 初期設定
 	void Release();					// 解放
-	HRESULT PlaySound(LABEL label);	// 再生
+	HRESULT Play(LABEL label);		// 再生
 	void Stop(LABEL label);			// 停止 (選択)
 	void Stop();					// 停止 (全て)
 	void SetVol(LABEL label);		// 音量を設定

@@ -49,7 +49,7 @@ HRESULT CTitle::Init()
 		CTexture_Manager::TYPE::BG_000);						// テクスチャ
 
 	// BGMをかける
-	CSound::GetInstance()->PlaySound(CSound::LABEL::OPENING);
+	CSound::GetInstance()->Play(CSound::LABEL::OPENING);
 
 	return S_OK;
 }

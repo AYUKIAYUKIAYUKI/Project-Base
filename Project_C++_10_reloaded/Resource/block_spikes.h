@@ -30,7 +30,6 @@ public:
 	void Draw() override;		// 描画処理
 
 	static CBlockSpikes* Create(D3DXVECTOR3 pos);		// 生成
-	static CBlockSpikes* DownCast(CObject* pObject);	// ダウンキャスト
 };
 
 #endif // _BLOCK_SPIKES_H_
