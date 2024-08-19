@@ -143,7 +143,7 @@ void CRender_Collision::Draw()
 CRender_Collision* CRender_Collision::Create(D3DXVECTOR3& posRef, D3DXVECTOR3& sizeRef)
 {
 	// インスタンスを生成
-	CRender_Collision* pRender_Collision = DBG_NEW CRender_Collision{ posRef,sizeRef, static_cast<int>(LAYER::FRONT) };
+	CRender_Collision* pRender_Collision = DBG_NEW CRender_Collision{ posRef, sizeRef, static_cast<int>(LAYER::FRONT) };
 
 	// 生成出来ていたら初期設定
 	if (pRender_Collision != nullptr)

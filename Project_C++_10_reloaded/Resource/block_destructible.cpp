@@ -13,7 +13,8 @@
 //============================================================================
 // デフォルトコンストラクタ
 //============================================================================
-CBlockDestructible::CBlockDestructible() : CObject_X{ static_cast<int>(LAYER::FRONT_MIDDLE) }
+CBlockDestructible::CBlockDestructible() :
+	CObject_X{ static_cast<int>(LAYER::FRONT_MIDDLE) }	// 基底クラスのコンストラクタ
 {
 
 }
@@ -21,7 +22,8 @@ CBlockDestructible::CBlockDestructible() : CObject_X{ static_cast<int>(LAYER::FR
 //============================================================================
 // プライオリティ指定コンストラクタ
 //============================================================================
-CBlockDestructible::CBlockDestructible(LAYER priority) : CObject_X{ static_cast<int>(priority) }
+CBlockDestructible::CBlockDestructible(LAYER priority) :
+	CObject_X{ static_cast<int>(priority) }	// 基底クラスのコンストラクタ
 {
 
 }

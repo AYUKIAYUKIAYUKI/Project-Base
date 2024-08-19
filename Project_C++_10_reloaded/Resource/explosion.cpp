@@ -14,11 +14,13 @@
 #include "texture_manager.h"
 
 //============================================================================
-// コンストラクタ
+// デフォルトコンストラクタ
 //============================================================================
-CExplosion::CExplosion() : CObject_billboard(static_cast<int>(LAYER::FRONT_MIDDLE))
+CExplosion::CExplosion() :
+	CObject_billboard{ static_cast<int>(LAYER::FRONT_MIDDLE) },	// 基底クラスのコンストラクタ
+	m_nCntTexChange{ 0 }										// テクスチャ変更管理
 {
-	m_nCntTexChange = 0;	// テクスチャ変更管理
+
 }
 
 //============================================================================

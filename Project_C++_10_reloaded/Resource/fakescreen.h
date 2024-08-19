@@ -38,7 +38,7 @@ public:
 
 private:
 
-	CFakeScreen();	// コンストラクタ
+	CFakeScreen();	// デフォルトコンストラクタ
 	~CFakeScreen();	// デストラクタ
 
 	static const int SPLIT_ALONG_X_AXIS;	// X軸方向の分割数

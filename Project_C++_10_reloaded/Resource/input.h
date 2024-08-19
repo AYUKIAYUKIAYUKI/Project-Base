@@ -23,7 +23,7 @@ class CInput
 {
 public:
 
-	CInput();	// コンストラクタ
+	CInput();	// デフォルトコンストラクタ
 	~CInput();	// デストラクタ
 
 	virtual HRESULT Init(HINSTANCE hInstance, HWND hWnd);	// 初期設定
@@ -43,7 +43,7 @@ class CInputKeyboard : public CInput
 {
 public:
 
-	CInputKeyboard();	// コンストラクタ
+	CInputKeyboard();	// デフォルトコンストラクタ
 	~CInputKeyboard();	// デストラクタ
 
 	HRESULT Init(HINSTANCE hInstance, HWND hWnd) override;	// 初期設定
@@ -99,7 +99,7 @@ public:
 		SHORT Y;
 	} JOYSTICK;
 
-	CInputPad();	// コンストラクタ
+	CInputPad();	// デフォルトコンストラクタ
 	~CInputPad();	// デストラクタ
 
 	HRESULT Init();			// 初期設定

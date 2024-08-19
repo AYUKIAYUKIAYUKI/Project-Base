@@ -50,7 +50,8 @@ public:
 		MAX,
 	};
 
-	CObject(int nPriority = static_cast<int>(LAYER::MAX) - 1);	// コンストラクタ
+	CObject();													// デフォルトコンストラクタ
+	CObject(int nPriority = static_cast<int>(LAYER::MAX) - 1);	// プライオリティ指定コンストラクタ
 	virtual ~CObject() = 0;										// デストラクタ
 
 	virtual HRESULT Init() = 0;	// 初期設定

@@ -15,7 +15,7 @@ class CLight
 {
 public:
 
-	CLight();	// コンストラクタ
+	CLight();	// デフォルトコンストラクタ
 	~CLight();	// デストラクタ
 
 	HRESULT Init();	// 初期設定

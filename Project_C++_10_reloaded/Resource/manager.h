@@ -23,7 +23,7 @@ class CManager final
 {
 public:
 
-	CManager();		// コンストラクタ
+	CManager();		// デフォルトコンストラクタ
 	~CManager();	// デストラクタ
 
 	HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow);	// 初期設定

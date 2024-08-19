@@ -22,14 +22,56 @@ CObject* CObject::m_pTop[static_cast<int>(LAYER::MAX)] = {};	// 先頭オブジェクト
 CObject* CObject::m_pCur[static_cast<int>(LAYER::MAX)] = {};	// 終端オブジェクトのポインタ
 
 //============================================================================
-// コンストラクタ
+// デフォルトコンストラクタ
 //============================================================================
-CObject::CObject(int nPriority) : m_nPriority(nPriority), m_type(TYPE::NONE)
+CObject::CObject() :
+	m_nPriority{ static_cast<int>(LAYER::MAX) - 1 },	// 描画優先度
+	m_pPrev{ nullptr },									// 前のオブジェクトのポインタ
+	m_pNext{ nullptr },									// 次のオブジェクトのポインタ
+	m_type(TYPE::NONE),									// タイプ識別
+	m_bDeath{ false }									// 死亡フラグ
 {
-	m_pPrev = nullptr;	// 前のオブジェクト
-	m_pNext = nullptr;	// 次のオブジェクト
-	m_bDeath = false;	// 死亡フラグ
+	// このオブジェクトをリストに登録
+	if (m_pCur[m_nPriority] == nullptr)
+	{ // 終端オブジェクトが無い (オブジェクトが1つも存在しない)
 
+		// このオブジェクトを先頭と終端に登録
+		m_pTop[m_nPriority] = this;
+		m_pCur[m_nPriority] = this;
+	}
+	else
+	{ // 終端オブジェクトがある
+
+		// 現在の終端をこのオブジェクトの前として登録
+		m_pPrev = m_pCur[m_nPriority];
+
+		// 新たな終端としてこのオブジェクトを登録
+		m_pCur[m_nPriority] = this;
+
+		// 前のオブジェクトの次にこのオブジェクトを登録
+		m_pPrev->m_pNext = this;
+	}
+
+	// 総数をカウントアップ
+	m_nNumAll++;
+
+	// オブジェクトの生成限度を超えたら
+	if (m_nNumAll > MAX_OBJ)
+	{
+		assert(false);
+	}
+}
+
+//============================================================================
+// プライオリティ指定コンストラクタ
+//============================================================================
+CObject::CObject(int nPriority) :
+	m_nPriority{ nPriority },	// 描画優先度
+	m_pPrev{ nullptr },			// 前のオブジェクトのポインタ
+	m_pNext{ nullptr },			// 次のオブジェクトのポインタ
+	m_type(TYPE::NONE),			// タイプ識別
+	m_bDeath{ false }			// 死亡フラグ
+{
 	// このオブジェクトをリストに登録
 	if (m_pCur[nPriority] == nullptr)
 	{ // 終端オブジェクトが無い (オブジェクトが1つも存在しない)

@@ -15,7 +15,7 @@ class CCamera
 {
 public:
 
-	CCamera();	// コンストラクタ
+	CCamera();	// デフォルトコンストラクタ
 	~CCamera();	// デストラクタ
 
 	HRESULT Init();		// 初期設定

@@ -20,7 +20,7 @@ class CGoal : public CObject_X
 {
 public:
 
-	CGoal();			// コンストラクタ
+	CGoal();			// デフォルトコンストラクタ
 	~CGoal() override;	// デストラクタ
 
 	HRESULT Init() override;	// 初期設定

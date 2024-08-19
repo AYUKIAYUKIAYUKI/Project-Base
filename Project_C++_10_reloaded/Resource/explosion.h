@@ -20,7 +20,7 @@ class CExplosion : public CObject_billboard
 {
 public:
 
-	CExplosion();			// コンストラクタ
+	CExplosion();			// デフォルトコンストラクタ
 	~CExplosion() override;	// デストラクタ
 
 	HRESULT Init() override;	// 初期設定

@@ -27,10 +27,11 @@ CInputPad* CManager::m_pPad = nullptr;				// パッド管理
 CScene* CManager::m_pScene = nullptr;				// シーン管理
 
 //============================================================================
-// コンストラクタ
+// デフォルトコンストラクタ
 //============================================================================
 CManager::CManager()
 {
+	// 念のため静的メンバの初期化
 	m_pCamera = nullptr;
 	m_pLight = nullptr;
 	m_pKeyboard = nullptr;

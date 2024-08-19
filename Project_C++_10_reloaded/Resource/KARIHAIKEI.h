@@ -20,7 +20,7 @@ class KARIHAIKEI : public CObject_X
 {
 public:
 
-	KARIHAIKEI();			// コンストラクタ
+	KARIHAIKEI();			// デフォルトコンストラクタ
 	~KARIHAIKEI() override;	// デストラクタ
 
 	HRESULT Init() override;	// 初期設定

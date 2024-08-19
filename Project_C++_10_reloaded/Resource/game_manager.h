@@ -41,7 +41,7 @@ public:
 
 private:
 
-	CGameManager();		// コンストラクタ
+	CGameManager();		// デフォルトコンストラクタ
 	~CGameManager();	// デストラクタ
 
 	void ImportLevel();	// レベル読み込み

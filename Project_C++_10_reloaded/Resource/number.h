@@ -20,7 +20,7 @@ class CNumber : public CObject_2D
 {
 public:
 
-	CNumber();				// コンストラクタ
+	CNumber();				// デフォルトコンストラクタ
 	~CNumber() override;	// デストラクタ
 
 	HRESULT Init() override;	// 初期設定

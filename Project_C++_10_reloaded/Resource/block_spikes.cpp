@@ -14,7 +14,7 @@
 // デフォルトコンストラクタ
 //============================================================================
 CBlockSpikes::CBlockSpikes() :
-	CObject_X{ static_cast<int>(LAYER::FRONT_MIDDLE) }	// プライオリティの設定
+	CObject_X{ static_cast<int>(LAYER::FRONT_MIDDLE) }	// 基底クラスのコンストラクタ
 {
 
 }
@@ -23,7 +23,7 @@ CBlockSpikes::CBlockSpikes() :
 // プライオリティ指定コンストラクタ
 //============================================================================
 CBlockSpikes::CBlockSpikes(LAYER priority) :
-	CObject_X{ static_cast<int>(priority) }	// プライオリティの設定
+	CObject_X{ static_cast<int>(priority) }	// 基底クラスのコンストラクタ
 {
 
 }

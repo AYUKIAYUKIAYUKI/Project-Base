@@ -14,9 +14,10 @@
 #include "structure.h"
 
 //============================================================================
-// コンストラクタ
+// デフォルトコンストラクタ
 //============================================================================
-CBlock::CBlock() : CObject_X(static_cast<int>(LAYER::FRONT_MIDDLE))
+CBlock::CBlock() :
+	CObject_X{ static_cast<int>(LAYER::FRONT_MIDDLE) }	// 基底クラスのコンストラクタ
 {
 
 }

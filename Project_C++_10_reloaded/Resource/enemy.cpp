@@ -24,7 +24,7 @@
 // デフォルトコンストラクタ
 //============================================================================
 CEnemy::CEnemy() :
-	CObject_X{ static_cast<int>(LAYER::FRONT_MIDDLE) }	// プライオリティの設定
+	CObject_X{ static_cast<int>(LAYER::FRONT_MIDDLE) }	// 基底クラスのコンストラクタ
 {
 
 }
@@ -33,7 +33,7 @@ CEnemy::CEnemy() :
 // プライオリティ指定コンストラクタ
 //============================================================================
 CEnemy::CEnemy(LAYER priority) :
-	CObject_X{ static_cast<int>(priority) }	// プライオリティの設定
+	CObject_X{ static_cast<int>(priority) }	// 基底クラスのコンストラクタ
 {
 
 }

@@ -20,8 +20,8 @@ class CLine : public CObject_X
 {
 public:
 
-	CLine();// コンストラクタ
-	~CLine();// デストラクタ
+	CLine();			// デフォルトコンストラクタ
+	~CLine() override;	// デストラクタ
 
 	HRESULT Init() override;	// 初期設定
 	void Uninit() override;		// 終了処理

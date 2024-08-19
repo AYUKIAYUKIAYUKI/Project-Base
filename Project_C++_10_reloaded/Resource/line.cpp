@@ -11,7 +11,7 @@
 #include "line.h"
 
 //============================================================================
-// コンストラクタ
+// デフォルトコンストラクタ
 //============================================================================
 CLine::CLine()
 {
@@ -99,8 +99,14 @@ void CLine::CreateGrid()
 		// 位置を設定
 		pLine->SetPos({ (-fLineSize * (nMaxLine / 2)) + (fLineSize * i), 0.0f, fLineSize * 0.5f });
 
+		// モデルを取得
+		auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::LINE_X);
+
 		// 見た目を設定
-		pLine->BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::LINE_X));
+		pLine->BindModel(model);
+
+		// サイズを設定
+		//pLine->SetSize(model->size);
 	}
 
 	// 縦ラインを自動的には位置していく
@@ -123,7 +129,13 @@ void CLine::CreateGrid()
 		// 位置を設定
 		pLine->SetPos({ 0.0f, (-fLineSize * (nMaxLine / 2)) + (fLineSize * i), fLineSize * 0.5f });
 
+		// モデルを取得
+		auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::LINE_Y);
+
 		// 見た目を設定
-		pLine->BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::LINE_Y));
+		pLine->BindModel(model);
+
+		// サイズを設定
+		//pLine->SetSize(model->size);
 	}
 }
