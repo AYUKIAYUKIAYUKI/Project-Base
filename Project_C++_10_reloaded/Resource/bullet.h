@@ -34,9 +34,11 @@ public:
 private:
 
 	void Translate();	// 移動
+	bool Collision();	// 当たり判定
 
-	D3DXVECTOR3 m_velocity;	// 加速度
-	int m_nDuration;		// 寿命
+	D3DXVECTOR3 m_posTarget;	// 目標座標
+	D3DXVECTOR3 m_velocity;		// 加速度
+	int m_nDuration;			// 寿命
 };
 
 #endif // _BULLET_H_
