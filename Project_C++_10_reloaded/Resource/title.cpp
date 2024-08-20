@@ -42,6 +42,9 @@ CTitle::~CTitle()
 //============================================================================
 HRESULT CTitle::Init()
 {
+	// 全てのサウンドを停止
+	CSound::GetInstance()->Stop();
+
 	// 背景の生成
 	CBg::Create(
 		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// 位置
@@ -59,9 +62,6 @@ HRESULT CTitle::Init()
 //============================================================================
 void CTitle::Uninit()
 {
-	// BGMを止める
-	CSound::GetInstance()->Stop(CSound::LABEL::OPENING);
-
 	// 基底クラスの終了処理
 	CScene::Uninit();
 }

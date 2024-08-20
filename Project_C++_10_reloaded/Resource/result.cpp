@@ -62,9 +62,6 @@ HRESULT CResult::Init()
 //============================================================================
 void CResult::Uninit()
 {
-	// BGM‚ğ~‚ß‚é
-	CSound::GetInstance()->Stop(CSound::LABEL::ENDING);
-
 	// Šî’êƒNƒ‰ƒX‚ÌI—¹ˆ—
 	CScene::Uninit();
 }

@@ -20,6 +20,7 @@ public:
 	enum class LABEL
 	{
 		OPENING = 0,	// オープニング
+		INGAME,			// インゲーム
 		ENDING,			// エンディング
 		TAKEOFF,		// 離陸
 		TWINKLING_00,	// キラキラ00

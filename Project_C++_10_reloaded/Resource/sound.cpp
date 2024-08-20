@@ -309,10 +309,11 @@ CSound::CSound()
 
 	// ÉTÉEÉìÉhèÓïÒ
 	m_aSoundInfo[0] = { "Data\\BGM\\TADC_OPENING.wav", -1, 1.0f };
-	m_aSoundInfo[1] = { "Data\\BGM\\TADC_ENDING.wav", -1, 1.0f };
-	m_aSoundInfo[2] = { "Data\\SE\\SMG_BLACKHOLE.wav", 0, 1.0f };
-	m_aSoundInfo[3] = { "Data\\SE\\SMG_TWINKLING_00.wav", 0, 1.0f };
-	m_aSoundInfo[4] = { "Data\\SE\\SMG_TWINKLING_01.wav", 0, 1.0f };
+	m_aSoundInfo[1] = { "Data\\BGM\\SMG_HONEYHIVE.wav", -1, 1.0f };
+	m_aSoundInfo[2] = { "Data\\BGM\\TADC_ENDING.wav", -1, 1.0f };
+	m_aSoundInfo[3] = { "Data\\SE\\SMG_BLACKHOLE.wav", 0, 1.0f };
+	m_aSoundInfo[4] = { "Data\\SE\\SMG_TWINKLING_00.wav", 0, 1.0f };
+	m_aSoundInfo[5] = { "Data\\SE\\SMG_TWINKLING_01.wav", 0, 1.0f };
 }
 
 //=============================================================================
