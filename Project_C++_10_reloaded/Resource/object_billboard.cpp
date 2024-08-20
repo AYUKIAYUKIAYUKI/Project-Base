@@ -122,8 +122,8 @@ void CObject_billboard::Update()
 	}
 
 	// 必要な数値を計算
-	m_fAngle = atan2f(m_size.x, m_size.z);
-	m_fLength = sqrtf(m_size.x * m_size.x + m_size.z * m_size.z);
+	m_fAngle = atan2f(m_size.x, m_size.y);
+	m_fLength = sqrtf(m_size.x * m_size.x + m_size.y * m_size.y);
 
 	// 頂点情報へのポインタ
 	VERTEX_3D* pVtx;

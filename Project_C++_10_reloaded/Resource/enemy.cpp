@@ -18,13 +18,15 @@
 #include "block.h"
 #include "block_destructible.h"
 #include "block_spikes.h"
+#include "bullet.h"
 #include "explosion.h"
 
 //============================================================================
 // デフォルトコンストラクタ
 //============================================================================
 CEnemy::CEnemy() :
-	CObject_X{ static_cast<int>(LAYER::FRONT_MIDDLE) }	// 基底クラスのコンストラクタ
+	CObject_X{ static_cast<int>(LAYER::FRONT_MIDDLE) },	// 基底クラスのコンストラクタ
+	m_nCast{ 0 }										// 攻撃間隔
 {
 
 }
@@ -33,7 +35,8 @@ CEnemy::CEnemy() :
 // プライオリティ指定コンストラクタ
 //============================================================================
 CEnemy::CEnemy(LAYER priority) :
-	CObject_X{ static_cast<int>(priority) }	// 基底クラスのコンストラクタ
+	CObject_X{ static_cast<int>(priority) },	// 基底クラスのコンストラクタ
+	m_nCast{ 0 }								// 攻撃間隔
 {
 
 }
@@ -71,6 +74,17 @@ void CEnemy::Uninit()
 //============================================================================
 void CEnemy::Update()
 {
+	// 攻撃をキャスト
+	m_nCast++;
+
+	// 弾を発射
+	if (m_nCast > 60)
+	{
+		m_nCast = 0;
+
+		CBullet::Create(GetPos(), { 10.0f, 10.0f, 0.0f });
+	}
+
 	// 当たり判定
 	Collision();
 

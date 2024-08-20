@@ -26,6 +26,7 @@ public:
 		PLAYER,			// プレイヤー
 		DUMMY,			// ダミー
 		ENEMY,			// エネミー
+		BULLET,			// 弾
 		BLOCK,			// ブロック
 		DESTRUCTIBLE,	// 可壊ブロック
 		SPIKES,			// トゲブロック

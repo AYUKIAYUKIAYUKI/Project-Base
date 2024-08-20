@@ -192,7 +192,7 @@ void CFakeScreen::Draw()
 	// テクスチャの設定
 	pDev->SetTexture(0, m_pTex);
 
-	// メッシュフィールドの描画
+	// メッシュの描画
 	pDev->DrawIndexedPrimitive(D3DPT_TRIANGLESTRIP,
 		0,
 		0,

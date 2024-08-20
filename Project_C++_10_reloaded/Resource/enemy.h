@@ -31,6 +31,10 @@ public:
 	bool Collision();			// “–‚½‚è”»’è
 
 	static CEnemy* Create(D3DXVECTOR3 pos);		// ¶¬
+
+private:
+
+	int m_nCast;	// UŒ‚ŠÔŠu
 };
 
 #endif // _ENEMY_H_

@@ -98,7 +98,7 @@
 //	pExplosion->SetTexHeight(1.0f);			// 縦テクスチャ分縦幅
 //
 //	// テクスチャを設定
-//	pExplosion->BindTex(CTexture_Manager::GetInstance()->GetTexture(CTexture_Manager::TYPE::EXPLOSION_000));
+//	pExplosion->BindTex(CTexture_Manager::GetInstance()->GetTexture(CTexture_Manager::TYPE::BG_000));
 //
 //	return pExplosion;
 //}

@@ -21,6 +21,7 @@ class CBullet : public CObject_billboard
 public:
 
 	CBullet();				// デフォルトコンストラクタ
+	CBullet(int nDuration);	// 寿命設定コンストラクタ
 	~CBullet() override;	// デストラクタ
 
 	HRESULT Init() override;	// 初期設定
@@ -29,6 +30,13 @@ public:
 	void Draw() override;		// 描画処理
 
 	static CBullet* Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);	// 生成
+
+private:
+
+	void Translate();	// 移動
+
+	D3DXVECTOR3 m_velocity;	// 加速度
+	int m_nDuration;		// 寿命
 };
 
 #endif // _BULLET_H_
