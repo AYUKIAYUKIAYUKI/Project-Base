@@ -1,6 +1,6 @@
 //============================================================================
 // 
-// 数字 [number.cpp]
+// 弾 [bullet.cpp]
 // Author : 福田歩希
 // 
 //============================================================================
@@ -8,17 +8,16 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
-#include "number.h"
+#include "bullet.h"
 
-// テクスチャ設定用
+// テクスチャ取得用
 #include "texture_manager.h"
 
 //============================================================================
 // デフォルトコンストラクタ
 //============================================================================
-CNumber::CNumber() : 
-	CObject_2D{ static_cast<int>(LAYER::FRONT) },	// 基底クラスのコンストラクタ
-	m_nNum{ 0 }										// 数字の割り当て
+CBullet::CBullet() :
+	CObject_billboard{ static_cast<int>(LAYER::BACK_MIDDLE) }
 {
 
 }
@@ -26,7 +25,7 @@ CNumber::CNumber() :
 //============================================================================
 // デストラクタ
 //============================================================================
-CNumber::~CNumber()
+CBullet::~CBullet()
 {
 
 }
@@ -34,10 +33,10 @@ CNumber::~CNumber()
 //============================================================================
 // 初期設定
 //============================================================================
-HRESULT CNumber::Init()
+HRESULT CBullet::Init()
 {
 	// 基底クラスの初期設定
-	HRESULT hr = CObject_2D::Init();
+	HRESULT hr = CObject_billboard::Init();
 
 	return hr;
 }
@@ -45,80 +44,54 @@ HRESULT CNumber::Init()
 //============================================================================
 // 終了処理
 //============================================================================
-void CNumber::Uninit()
+void CBullet::Uninit()
 {
 	// 基底クラスの終了処理
-	CObject_2D::Uninit();
+	CObject_billboard::Uninit();
 }
 
 //============================================================================
 // 更新処理
 //============================================================================
-void CNumber::Update()
+void CBullet::Update()
 {
-	// アニメーション
-	Animation();
-
 	// 基底クラスの更新
-	CObject_2D::Update();
+	CObject_billboard::Update();
 }
 
 //============================================================================
 // 描画処理
 //============================================================================
-void CNumber::Draw()
+void CBullet::Draw()
 {
 	// 基底クラスの描画処理
-	CObject_2D::Draw();
+	CObject_billboard::Draw();
 }
 
 //============================================================================
 // 生成
 //============================================================================
-CNumber* CNumber::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
+CBullet* CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 {
 	// インスタンスを生成
-	CNumber* pNumber = DBG_NEW CNumber;
+	CBullet* pBullet = DBG_NEW CBullet;
 
-	if (pNumber == nullptr)
+	if (pBullet == nullptr)
 	{ // 生成失敗
 		assert(false);
 	}
 
-	pNumber->SetType(TYPE::NONE);	// タイプを設定
+	pBullet->SetType(TYPE::NONE);	// タイプを設定
 
-	pNumber->Init();		// 基底クラスの初期設定
-	pNumber->SetPos(pos);	// 位置の設定
-	pNumber->SetSize(size);	// サイズの設定
+	pBullet->Init();			// 基底クラスの初期設定
+	pBullet->SetPos(pos);	// 位置の設定
+	pBullet->SetSize(size);	// サイズの設定
 
-	pNumber->SetTexWidth(0.1f);		// 横テクスチャ分割幅
-	pNumber->SetTexHeight(1.0f);	// 縦テクスチャ分縦幅
+	pBullet->SetTexWidth(1.0f / 8.0f);	// 横テクスチャ分割幅
+	pBullet->SetTexHeight(1.0f);			// 縦テクスチャ分縦幅
 
 	// テクスチャを設定
-	pNumber->BindTex(CTexture_Manager::GetInstance()->GetTexture(CTexture_Manager::TYPE::NUMBER_00));
+	pBullet->BindTex(CTexture_Manager::GetInstance()->GetTexture(CTexture_Manager::TYPE::BULLET_00));
 
-	return pNumber;
-}
-
-//============================================================================
-// 数字を設定
-//============================================================================
-void CNumber::SetNumber(int nNum)
-{
-	m_nNum = nNum;
-}
-
-//============================================================================
-// アニメーション
-//============================================================================
-void CNumber::Animation()
-{
-	// 横テクスチャ種類情報取得
-	int nTexPatternU = GetNowPatternU();
-
-	// 横テクスチャ種類を割り当て
-	nTexPatternU = m_nNum;
-
-	// 横テクスチャ種類情報設定
-	SetNowPatternU(nTexPatternU);
+	return pBullet;
 }

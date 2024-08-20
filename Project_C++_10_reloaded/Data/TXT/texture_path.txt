@@ -1,4 +1,4 @@
 Data\\TEXTURE\\title.png
 Data\\TEXTURE\\result.png
-Data\\TEXTURE\\explosion000.png
-Data\\TEXTURE\\number000.png
+Data\\TEXTURE\\bullet00.jpg
+Data\\TEXTURE\\number00.png
