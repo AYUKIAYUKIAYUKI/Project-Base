@@ -10,6 +10,11 @@
 //****************************************************
 #include "utility.h"
 
+// オブジェクト情報用 
+#include "block.h"
+#include "block_destructible.h"
+#include "block_spikes.h"
+
 //****************************************************
 // 静的メンバ変数の初期化
 //****************************************************
@@ -65,7 +70,7 @@ void CUtility::Gravity(D3DXVECTOR3& vec)
 }
 
 //============================================================================
-// 球形の衝突判定
+// 球形同士の衝突判定
 //============================================================================
 bool CUtility::OnlySphere(const D3DXVECTOR3& posSelf, const float& fRadiusSelf, const D3DXVECTOR3& posTarget, const float& fRadiusTarget)
 {
@@ -101,7 +106,7 @@ bool CUtility::SphereAndCube(const D3DXVECTOR3& posSph, const float& fRadius, co
 }
 
 //============================================================================
-// 立方形の衝突判定
+// 立方形同士の衝突判定
 //============================================================================
 bool CUtility::OnlyCube(const D3DXVECTOR3& posSelf, const D3DXVECTOR3& sizeSelf, const D3DXVECTOR3& posTarget, const D3DXVECTOR3& sizeTarget)
 {
@@ -120,9 +125,9 @@ bool CUtility::OnlyCube(const D3DXVECTOR3& posSelf, const D3DXVECTOR3& sizeSelf,
 }
 
 //============================================================================
-// 押し出し処理
+// 立方体同士の押し出し処理
 //============================================================================
-bool CUtility::CubeResponse(D3DXVECTOR3& posDest, D3DXVECTOR3& velocity, const D3DXVECTOR3& posSelf, const D3DXVECTOR3& sizeSelf, const D3DXVECTOR3& posTarget, const D3DXVECTOR3& sizeTarget)
+bool CUtility::OnlyCube(D3DXVECTOR3& posDest, D3DXVECTOR3& velocity, const D3DXVECTOR3& posSelf, const D3DXVECTOR3& sizeSelf, const D3DXVECTOR3& posTarget, const D3DXVECTOR3& sizeTarget)
 {
 	// 過去の位置がどちらかの軸方向に重なっていたかで処理分岐
 	if (posSelf.x + sizeSelf.x > posTarget.x - sizeTarget.x &&
@@ -165,6 +170,135 @@ bool CUtility::CubeResponse(D3DXVECTOR3& posDest, D3DXVECTOR3& velocity, const D
 	}
 
 	return 0;
+}
+
+//============================================================================
+// 構造物との当たり判定
+//============================================================================
+const type_info& CUtility::CollisionToStructure()
+{
+	int i = 0;
+
+	//// ブロックタグを取得
+	//CObject** pObject = CObject::FindAllObject(CObject::TYPE::BLOCK);
+
+	//for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	//{
+	//	// ブロックタグの情報が無くなったら終了
+	//	if (pObject[nCntObj] == nullptr)
+	//	{
+	//		break;
+	//	}
+
+	//	// ブロッククラスへダウンキャスト
+	//	CBlock* pBlock = CUtility::GetInstance()->DownCast<CBlock, CObject>(pObject[nCntObj]);
+
+	//	// ブロックと衝突する場合
+	//	if (CUtility::GetInstance()->OnlyCube(pBlock->GetPos(), pBlock->GetSize(), m_posTarget, GetSize()))
+	//	{
+	//		// 押し出し処理
+	//		CUtility::GetInstance()->OnlyCube(m_posTarget, m_velocity, GetPos(), GetSize(), pBlock->GetPos(), pBlock->GetSize());
+
+	//		// 衝突判定を出す
+	//		bDetected = 1;
+	//	}
+	//}
+
+	//// 可壊タグを取得
+	//pObject = CObject::FindAllObject(CObject::TYPE::DESTRUCTIBLE);
+
+	//for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	//{
+	//	// 可壊タグの情報が無くなったら終了
+	//	if (pObject[nCntObj] == nullptr)
+	//	{
+	//		break;
+	//	}
+
+	//	// 可壊ブロックへダウンキャスト
+	//	CBlockDestructible* pDestructible = CUtility::GetInstance()->DownCast<CBlockDestructible, CObject>(pObject[nCntObj]);
+
+	//	// 可壊ブロックと衝突する場合
+	//	if (CUtility::GetInstance()->OnlyCube(pDestructible->GetPos(), pDestructible->GetSize(), m_posTarget, GetSize()))
+	//	{
+	//		// 押し出し処理
+	//		CUtility::GetInstance()->OnlyCube(m_posTarget, m_velocity, GetPos(), GetSize(), pDestructible->GetPos(), pDestructible->GetSize());
+
+	//		// 飛行状態の場合のみ
+	//		if (typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateFlying))
+	//		{
+	//			// 可壊ブロックを破棄
+	//			pDestructible->SetRelease();
+	//		}
+
+	//		// 衝突判定を出す
+	//		bDetected = 1;
+	//	}
+	//}
+
+	//// とげタグを取得
+	//pObject = CObject::FindAllObject(CObject::TYPE::SPIKES);
+
+	//for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	//{
+	//	// とげタグの情報が無くなったら終了
+	//	if (pObject[nCntObj] == nullptr)
+	//	{
+	//		break;
+	//	}
+
+	//	// とげブロックへダウンキャスト
+	//	CBlockSpikes* pBlockSpikes = CUtility::GetInstance()->DownCast<CBlockSpikes, CObject>(pObject[nCntObj]);
+
+	//	// とげブロックと衝突する場合
+	//	if (CUtility::GetInstance()->OnlyCube(pBlockSpikes->GetPos(), pBlockSpikes->GetSize(), m_posTarget, GetSize()))
+	//	{
+	//		// ミス状態に移行
+	//		m_pStateManager->SetPendingState(CPlayerState::STATE::MISS);
+
+	//		// 衝突判定を出す
+	//		bDetected = 1;
+	//	}
+	//}
+
+	//// エネミータグを取得
+	//pObject = CObject::FindAllObject(CObject::TYPE::ENEMY);
+
+	//for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	//{
+	//	// エネミータグの情報が無くなったら終了
+	//	if (pObject[nCntObj] == nullptr)
+	//	{
+	//		break;
+	//	}
+
+	//	// エネミーへダウンキャスト
+	//	CEnemy* pEnemy = CUtility::GetInstance()->DownCast<CEnemy, CObject>(pObject[nCntObj]);
+
+	//	// エネミーと衝突する場合
+	//	if (CUtility::GetInstance()->OnlyCube(pEnemy->GetPos(), pEnemy->GetSize(), m_posTarget, GetSize()))
+	//	{
+	//		if (typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateFlying))
+	//		{ // 飛行状態の場合
+
+	//			// 押し出し処理
+	//			CUtility::GetInstance()->OnlyCube(m_posTarget, m_velocity, GetPos(), GetSize(), pEnemy->GetPos(), pEnemy->GetSize());
+
+	//			// エネミーを破棄
+	//			pEnemy->SetRelease();
+	//		}
+	//		else
+	//		{
+	//			// ミス状態に移行
+	//			m_pStateManager->SetPendingState(CPlayerState::STATE::MISS);
+	//		}
+
+	//		// 衝突判定を出す
+	//		bDetected = 1;
+	//	}
+	//}
+
+	return typeid(nullptr);
 }
 
 //============================================================================

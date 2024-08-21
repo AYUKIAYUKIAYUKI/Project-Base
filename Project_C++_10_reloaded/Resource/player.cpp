@@ -162,7 +162,7 @@ bool CPlayer::Collision()
 		if (CUtility::GetInstance()->OnlyCube(pBlock->GetPos(), pBlock->GetSize(), m_posTarget, GetSize()))
 		{
 			// 押し出し処理
-			CUtility::GetInstance()->CubeResponse(m_posTarget, m_velocity, GetPos(), GetSize(), pBlock->GetPos(), pBlock->GetSize());
+			CUtility::GetInstance()->OnlyCube(m_posTarget, m_velocity, GetPos(), GetSize(), pBlock->GetPos(), pBlock->GetSize());
 
 			// 衝突判定を出す
 			bDetected = 1;
@@ -187,7 +187,7 @@ bool CPlayer::Collision()
 		if (CUtility::GetInstance()->OnlyCube(pDestructible->GetPos(), pDestructible->GetSize(), m_posTarget, GetSize()))
 		{
 			// 押し出し処理
-			CUtility::GetInstance()->CubeResponse(m_posTarget, m_velocity, GetPos(), GetSize(), pDestructible->GetPos(), pDestructible->GetSize());
+			CUtility::GetInstance()->OnlyCube(m_posTarget, m_velocity, GetPos(), GetSize(), pDestructible->GetPos(), pDestructible->GetSize());
 
 			// 飛行状態の場合のみ
 			if (typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateFlying))
@@ -247,7 +247,7 @@ bool CPlayer::Collision()
 			{ // 飛行状態の場合
 
 				// 押し出し処理
-				CUtility::GetInstance()->CubeResponse(m_posTarget, m_velocity, GetPos(), GetSize(), pEnemy->GetPos(), pEnemy->GetSize());
+				CUtility::GetInstance()->OnlyCube(m_posTarget, m_velocity, GetPos(), GetSize(), pEnemy->GetPos(), pEnemy->GetSize());
 
 				// エネミーを破棄
 				pEnemy->SetRelease();

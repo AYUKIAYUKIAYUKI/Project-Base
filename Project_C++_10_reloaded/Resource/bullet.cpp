@@ -16,6 +16,9 @@
 
 // オブジェクト用
 #include "player.h"
+#include "block.h"
+#include "block_destructible.h"
+#include "block_spikes.h"
 
 // デバッグ表示用
 #include "renderer.h"
@@ -167,7 +170,7 @@ void CBullet::Translate()
 	//// 目標座標を反映
 	//SetPos(posTarget);
 
-	m_posTarget += m_velocity;
+	m_posTarget += m_velocity * 2.0f;
 }
 
 //============================================================================
@@ -175,10 +178,86 @@ void CBullet::Translate()
 //============================================================================
 bool CBullet::Collision()
 {
-	// 衝突判定
-	bool bDetect = false;
+	// 衝突検出
+	bool bDetected = 0;
 
-	// いろんなタグ
+	// ブロックタグを取得
+	CObject** pObject = CObject::FindAllObject(CObject::TYPE::BLOCK);
 
-	return bDetect;
+	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	{
+		// ブロックタグの情報が無くなったら終了
+		if (pObject[nCntObj] == nullptr)
+		{
+			break;
+		}
+
+		// ブロッククラスへダウンキャスト
+		CBlock* pBlock = CUtility::GetInstance()->DownCast<CBlock, CObject>(pObject[nCntObj]);
+
+		// ブロックと衝突する場合
+		if (CUtility::GetInstance()->OnlyCube(pBlock->GetPos(), pBlock->GetSize(), m_posTarget, GetSize()))
+		{
+			// 破棄予約
+			SetRelease();
+
+			// 衝突判定を出す
+			bDetected = 1;
+		}
+	}
+
+	// 可壊タグを取得
+	pObject = CObject::FindAllObject(CObject::TYPE::DESTRUCTIBLE);
+
+	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	{
+		// 可壊タグの情報が無くなったら終了
+		if (pObject[nCntObj] == nullptr)
+		{
+			break;
+		}
+
+		// 可壊ブロックへダウンキャスト
+		CBlockDestructible* pDestructible = CUtility::GetInstance()->DownCast<CBlockDestructible, CObject>(pObject[nCntObj]);
+
+		// 可壊ブロックと衝突する場合
+		if (CUtility::GetInstance()->OnlyCube(pDestructible->GetPos(), pDestructible->GetSize(), m_posTarget, GetSize()))
+		{
+			// 破棄予約
+			SetRelease();
+
+			// 可壊ブロックを破棄
+			pDestructible->SetRelease();
+
+			// 衝突判定を出す
+			bDetected = 1;
+		}
+	}
+
+	// とげタグを取得
+	pObject = CObject::FindAllObject(CObject::TYPE::SPIKES);
+
+	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	{
+		// とげタグの情報が無くなったら終了
+		if (pObject[nCntObj] == nullptr)
+		{
+			break;
+		}
+
+		// とげブロックへダウンキャスト
+		CBlockSpikes* pBlockSpikes = CUtility::GetInstance()->DownCast<CBlockSpikes, CObject>(pObject[nCntObj]);
+
+		// とげブロックと衝突する場合
+		if (CUtility::GetInstance()->OnlyCube(pBlockSpikes->GetPos(), pBlockSpikes->GetSize(), m_posTarget, GetSize()))
+		{
+			// 破棄予約
+			SetRelease();
+
+			// 衝突判定を出す
+			bDetected = 1;
+		}
+	}
+
+	return bDetected;
 }

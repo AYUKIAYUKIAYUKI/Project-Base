@@ -35,17 +35,20 @@ public:
 	// 重力落下
 	void Gravity(D3DXVECTOR3& vec);
 
-	// 球体の衝突判定
+	// 球体同士の衝突判定
 	bool OnlySphere(const D3DXVECTOR3& posSelf, const float& fRadiusSelf, const D3DXVECTOR3& posTarget, const float& fRadiusTarget);
 
 	// 球体と立方体の衝突判定
 	bool SphereAndCube(const D3DXVECTOR3& posSph, const float& fRadius, const D3DXVECTOR3& posCube, const D3DXVECTOR3& size);
 
-	// 立方体の衝突判定
+	// 立方体同士の衝突判定
 	bool OnlyCube(const D3DXVECTOR3& posSelf, const D3DXVECTOR3& sizeSelf, const D3DXVECTOR3& posTarget, const D3DXVECTOR3& sizeTarget);
 
-	// 押し出し処理
-	bool CubeResponse(D3DXVECTOR3& posDest, D3DXVECTOR3& velocity, const D3DXVECTOR3& posSelf, const D3DXVECTOR3& sizeSelf, const D3DXVECTOR3& posTarget, const D3DXVECTOR3& sizeTarget);
+	// 立方体同士の押し出し処理
+	bool OnlyCube(D3DXVECTOR3& posDest, D3DXVECTOR3& velocity, const D3DXVECTOR3& posSelf, const D3DXVECTOR3& sizeSelf, const D3DXVECTOR3& posTarget, const D3DXVECTOR3& sizeTarget);
+
+	// 構造物との当たり判定
+	const type_info& CollisionToStructure();
 
 private:
 
