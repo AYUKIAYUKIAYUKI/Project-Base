@@ -97,7 +97,7 @@ CObject::CObject(int nPriority) :
 	m_nNumAll++;
 
 	// オブジェクトの生成限度を超えたら
-	if (m_nNumAll > MAX_OBJ)
+	if (m_nNumAll > 99999999)
 	{
 		assert(false);
 	}

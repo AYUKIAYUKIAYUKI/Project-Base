@@ -170,7 +170,7 @@ void CBullet::Translate()
 	//// 目標座標を反映
 	//SetPos(posTarget);
 
-	m_posTarget += m_velocity * 2.0f;
+	m_posTarget += m_velocity * 3.0f;
 }
 
 //============================================================================
@@ -198,9 +198,6 @@ bool CBullet::Collision()
 		// ブロックと衝突する場合
 		if (CUtility::GetInstance()->OnlyCube(pBlock->GetPos(), pBlock->GetSize(), m_posTarget, GetSize()))
 		{
-			// 破棄予約
-			SetRelease();
-
 			// 衝突判定を出す
 			bDetected = 1;
 		}
@@ -223,9 +220,6 @@ bool CBullet::Collision()
 		// 可壊ブロックと衝突する場合
 		if (CUtility::GetInstance()->OnlyCube(pDestructible->GetPos(), pDestructible->GetSize(), m_posTarget, GetSize()))
 		{
-			// 破棄予約
-			SetRelease();
-
 			// 可壊ブロックを破棄
 			pDestructible->SetRelease();
 
@@ -251,12 +245,19 @@ bool CBullet::Collision()
 		// とげブロックと衝突する場合
 		if (CUtility::GetInstance()->OnlyCube(pBlockSpikes->GetPos(), pBlockSpikes->GetSize(), m_posTarget, GetSize()))
 		{
-			// 破棄予約
-			SetRelease();
-
 			// 衝突判定を出す
 			bDetected = 1;
 		}
+	}
+
+	// プレイヤーを取得
+	CPlayer* pPlayer = CUtility::GetInstance()->DownCast<CPlayer, CObject>(CObject::FindObject(CObject::TYPE::PLAYER));
+
+	// プレイヤーと衝突する場合
+	if (CUtility::GetInstance()->OnlyCube(pPlayer->GetPos(), pPlayer->GetSize(), m_posTarget, GetSize()))
+	{
+		// 衝突判定を出す
+		bDetected = 1;
 	}
 
 	return bDetected;

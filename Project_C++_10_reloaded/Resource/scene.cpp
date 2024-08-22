@@ -22,7 +22,7 @@
 //============================================================================
 // コンストラクタ
 //============================================================================
-CScene::CScene() : m_mode(MODE::TITLE)
+CScene::CScene() : m_mode(MODE::NONE)
 {
 
 }
@@ -88,18 +88,22 @@ CScene* CScene::Create(MODE mode)
 	{
 	case CScene::MODE::TITLE:
 		pScene = DBG_NEW CTitle;
+		pScene->m_mode = MODE::TITLE;
 		break;
 
 	case CScene::MODE::GAME:
 		pScene = DBG_NEW CGame;
+		pScene->m_mode = MODE::GAME;
 		break;
 
 	case CScene::MODE::STAGE:
 		pScene = DBG_NEW CStage_Debug;
+		pScene->m_mode = MODE::STAGE;
 		break;
 
 	case CScene::MODE::RESULT:
 		pScene = DBG_NEW CResult;
+		pScene->m_mode = MODE::RESULT;
 		break;
 
 	default:

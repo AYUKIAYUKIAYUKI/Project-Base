@@ -11,8 +11,8 @@
 #include "enemy.h"
 #include "utility.h"
 
-// デバッグ表示用
-#include "renderer.h"
+// シーン取得用
+#include "manager.h"
 
 // オブジェクト情報用 
 #include "block.h"
@@ -20,6 +20,9 @@
 #include "block_spikes.h"
 #include "bullet.h"
 #include "explosion.h"
+
+// デバッグ表示用
+#include "renderer.h"
 
 //============================================================================
 // デフォルトコンストラクタ
@@ -74,19 +77,26 @@ void CEnemy::Uninit()
 //============================================================================
 void CEnemy::Update()
 {
-	// 攻撃をキャスト
-	m_nCast++;
+	// シーン情報を取得
+	CScene* pScene = CManager::GetScene();
 
-	// 弾を発射
-	if (m_nCast > 60)
+	// ステージデバッグモード時は処理を行わない
+	if (pScene->GetMode() != CScene::MODE::STAGE)
 	{
-		m_nCast = 0;
+		// 攻撃をキャスト
+		m_nCast++;
 
-		CBullet::Create(GetPos(), { 10.0f, 10.0f, 0.0f });
+		// 弾を発射
+		if (m_nCast > 60)
+		{
+			m_nCast = 0;
+
+			CBullet::Create(GetPos(), { 10.0f, 10.0f, 0.0f });
+		}
+
+		// 当たり判定
+		Collision();
 	}
-
-	// 当たり判定
-	Collision();
 
 	// 基底クラスの更新
 	CObject_X::Update();

@@ -9,6 +9,7 @@
 // インクルードファイル
 //****************************************************
 #include "model_X_manager.h"
+#include <cmath>
 
 // デバイス取得用
 #include "renderer.h"

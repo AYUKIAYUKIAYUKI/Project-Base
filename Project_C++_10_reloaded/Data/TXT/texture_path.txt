@@ -1,4 +1,9 @@
 Data\\TEXTURE\\title.png
 Data\\TEXTURE\\result.png
 Data\\TEXTURE\\bullet00.jpg
+Data\\TEXTURE\\leaf00.png
+Data\\TEXTURE\\leaf01.png
+Data\\TEXTURE\\leaf02.png
+Data\\TEXTURE\\leaf03.png
+Data\\TEXTURE\\leaf04.png
 Data\\TEXTURE\\number00.png

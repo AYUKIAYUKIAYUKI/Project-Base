@@ -20,6 +20,7 @@
 
 // オブジェクト生成用
 #include "block_destructible.h"
+#include "leaf.h"
 #include "player.h"
 #include "score.h"
 
@@ -134,6 +135,9 @@ void CGameManager::Update()
 	case PHASE::INGAME:
 
 		CRenderer::GetInstance()->SetDebugString("インゲーム");
+
+		// 葉っぱ生成の更新
+		CLeaf::UpdateToCreate();
 
 		break;
 
