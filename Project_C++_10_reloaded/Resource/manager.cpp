@@ -273,4 +273,13 @@ void CManager::SetScene(CScene::MODE mode)
 
 	// V‚½‚ÈƒV[ƒ“‚ðÝ’è
 	m_pScene = CScene::Create(mode);
+
+	// ¶¬Ž¸”s
+	if (!m_pScene)
+	{
+		assert(false);
+	}
+
+	// ‰ŠúÝ’è
+	m_pScene->Init();
 }

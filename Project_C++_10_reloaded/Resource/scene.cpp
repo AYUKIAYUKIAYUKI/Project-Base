@@ -117,7 +117,8 @@ CScene* CScene::Create(MODE mode)
 	}
 
 	// 初期設定
-	pScene->Init();
+	/* ここで初期化をする -> シーンのInitでモードに応じた生成のために、ダングリングしたシーンポインタにアクセスする -> エラー */
+	//pScene->Init();
 
 	return pScene;
 }

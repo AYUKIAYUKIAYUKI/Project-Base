@@ -17,9 +17,9 @@
 #include "renderer.h"
 
 //============================================================================
-// コンストラクタ
+// デフォルトコンストラクタ
 //============================================================================
-CDummy::CDummy(int& nPattern) : m_nPatternRef{ nPattern }
+CDummy::CDummy()
 {
 
 }
@@ -60,9 +60,6 @@ void CDummy::Update()
 	// 操作
 	Control();
 
-	// ダミーの種類を確認
-	CheckPattern();
-
 	// 位置をデバッグ表示
 	CRenderer::GetInstance()->SetDebugString("【ダミー位置】");
 	std::ostringstream oss;
@@ -83,12 +80,49 @@ void CDummy::Draw()
 }
 
 //============================================================================
+// モデルを変更
+//============================================================================
+void CDummy::ChangeModel(int nPattern)
+{
+	switch (nPattern)
+	{
+	case 0:
+		BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::BLOCK_000));
+		break;
+
+	case 1:
+		BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::DESTRUCTIBLE));
+		break;
+
+	case 2:
+		BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::SPIKES));
+		break;
+
+	case 3:
+		BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::ENEMY));
+		break;
+
+	case 4:
+		BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::START));
+		break;
+
+	case 5:
+		BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::GOAL));
+		break;
+
+	default:
+		assert(false);
+		break;
+	}
+}
+
+//============================================================================
 // 生成
 //============================================================================
-CDummy* CDummy::Create(D3DXVECTOR3 pos, int& nPattern)
+CDummy* CDummy::Create()
 {
 	// インスタンスを生成
-	CDummy* pDummy = DBG_NEW CDummy{ nPattern };
+	CDummy* pDummy = DBG_NEW CDummy{};
 
 	if (pDummy == nullptr)
 	{ // 生成失敗
@@ -101,17 +135,8 @@ CDummy* CDummy::Create(D3DXVECTOR3 pos, int& nPattern)
 	// 基底クラスの初期設定
 	pDummy->Init();
 	
-	// 位置の設定
-	pDummy->SetPos(pos);
-	
 	// アルファ値の設定
 	pDummy->SetAlpha(0.8f);
-
-	// モデルを取得
-	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::BLOCK_000);
-
-	// 仮のモデルを設定
-	pDummy->BindModel(model);
 
 	return pDummy;
 }
@@ -120,6 +145,15 @@ CDummy* CDummy::Create(D3DXVECTOR3 pos, int& nPattern)
 // 操作
 //============================================================================
 void CDummy::Control()
+{
+	// 移動
+	Translate();
+}
+
+//============================================================================
+// 移動
+//============================================================================
+void CDummy::Translate()
 {
 	// 位置を取得
 	D3DXVECTOR3 pos = GetPos();
@@ -171,80 +205,4 @@ void CDummy::Control()
 
 	// 最終的な位置を反映
 	SetPos(pos);
-}
-
-//============================================================================
-// ダミーの種類を確認
-//============================================================================
-void CDummy::CheckPattern()
-{
-	// 過去の種類を保持する
-	static int nOld = 0;
-
-	// 種類の変更を判別
-	if (nOld != m_nPatternRef)
-	{
-		nOld = m_nPatternRef;
-	}
-	else
-	{ // 変更が無ければリターン
-		return;
-	}
-
-	CModel_X_Manager::MODEL* model{};
-
-	switch (m_nPatternRef)
-	{
-	case 0:
-
-		// ブロックモデルに見た目を変更
-		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::BLOCK_000);
-		BindModel(model);
-
-		break;
-
-	case 1:
-
-		// 可壊ブロックモデルに見た目を変更
-		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::DESTRUCTIBLE);
-		BindModel(model);
-
-		break;
-
-	case 2:
-
-		// とげブロックモデルに見た目を変更
-		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::SPIKES);
-		BindModel(model);
-
-		break;
-
-	case 3:
-
-		// エネミーモデルに見た目を変更
-		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::ENEMY);
-		BindModel(model);
-
-		break;
-
-	case 4:
-
-		// スタートモデルに見た目を変更
-		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::START);
-		BindModel(model);
-
-		break;
-
-	case 5:
-
-		// ゴールモデルに見た目を変更
-		model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::GOAL);
-		BindModel(model);
-
-		break;
-
-	default:
-		assert(false);
-		break;
-	}
 }

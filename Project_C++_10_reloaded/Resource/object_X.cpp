@@ -79,7 +79,8 @@ void CObject_X::Draw()
 	// モデルが設定されていない
 	if (m_pModel == nullptr)
 	{
-		assert(false);
+		CRenderer::GetInstance()->SetDebugString(static_cast<std::string>("【") + typeid(*this).name() + static_cast<std::string>("にモデル情報がありません！】"));
+		return;
 	}
 
 	// デバイスを取得

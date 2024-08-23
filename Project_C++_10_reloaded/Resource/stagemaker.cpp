@@ -21,10 +21,11 @@
 #include "block.h"
 #include "block_destructible.h"
 #include "block_spikes.h"
-#include "enemy.h"
 #include "dummy.h"
-#include "start.h"
+#include "enemy.h"
 #include "goal.h"
+#include "line.h"
+#include "start.h"
 
 //****************************************************
 // 静的メンバ変数の初期化
@@ -86,6 +87,9 @@ void CStageMaker::Update()
 {
 	// 操作
 	Control();
+
+	// モデルを設定
+	m_pDummy->ChangeModel(m_nPattern);
 }
 
 //============================================================================
@@ -161,7 +165,6 @@ void CStageMaker::Import(std::string path)
 		else
 		{ // 不明
 			assert(false);
-			//CBlock::Create(pos);
 		}
 	}
 
@@ -193,9 +196,25 @@ CStageMaker* CStageMaker::GetInstance()
 //============================================================================
 // コンストラクタ
 //============================================================================
-CStageMaker::CStageMaker() : m_nPattern{ 0 }	// 配置物の種類識別
+CStageMaker::CStageMaker() :
+	m_nPattern{ 0 },	// 構造物の種類識別
+	m_pDummy{ nullptr }	// 構造物のダミー情報
 {
+	// ステージデバッグモードのみ
+	if (CManager::GetScene()->GetMode() == CScene::MODE::STAGE)
+	{
+		// 構造物のダミーを生成
+		m_pDummy = CDummy::Create();
 
+		// ダミー取得失敗
+		if (!m_pDummy)
+		{
+			assert(false);
+		}
+
+		// グリッドラインを生成
+		CLine::CreateGrid();
+	}
 }
 
 //============================================================================
@@ -259,26 +278,26 @@ void CStageMaker::Control()
 //============================================================================
 void CStageMaker::Register()
 {
-	// ダミーを取得
-	CDummy* pDummy = CUtility::GetInstance()->DownCast<CDummy, CObject>(CObject::FindObject(CObject::TYPE::DUMMY));
+	// ダミーの位置を取得
+	D3DXVECTOR3 pos = m_pDummy->GetPos();
 
 	// ダミーの位置にオブジェクト生成
 	switch (m_nPattern)
 	{
 	case 0:
-		CBlock::Create(pDummy->GetPos());
+		CBlock::Create(pos);
 		break;
 
 	case 1:
-		CBlockDestructible::Create(pDummy->GetPos());
+		CBlockDestructible::Create(pos);
 		break;
 
 	case 2:
-		CBlockSpikes::Create(pDummy->GetPos());
+		CBlockSpikes::Create(pos);
 		break;
 
 	case 3:
-		CEnemy::Create(pDummy->GetPos());
+		CEnemy::Create(pos);
 		break;
 
 	case 4:
@@ -286,7 +305,7 @@ void CStageMaker::Register()
 		// スタートタイプのオブジェクトを検索
 		if (!CObject::FindObject(CObject::TYPE::START))
 		{
-			CStart::Create(pDummy->GetPos());
+			CStart::Create(pos);
 		}
 		else
 		{
@@ -300,7 +319,7 @@ void CStageMaker::Register()
 		// スタートタイプのオブジェクトを検索
 		if (!CObject::FindObject(CObject::TYPE::GOAL))
 		{
-			CGoal::Create(pDummy->GetPos());
+			CGoal::Create(pos);
 		}
 		else
 		{
@@ -313,6 +332,14 @@ void CStageMaker::Register()
 		assert(false);
 		break;
 	}
+}
+
+//============================================================================
+// 編集
+//============================================================================
+void CStageMaker::Modify()
+{
+
 }
 
 //============================================================================

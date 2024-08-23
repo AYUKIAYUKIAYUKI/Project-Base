@@ -20,22 +20,21 @@ class CDummy : public CObject_X
 {
 public:
 
-	CDummy(int& nPattern);	// コンストラクタ
-	~CDummy();				// デストラクタ
+	CDummy();				// コンストラクタ
+	~CDummy() override;		// デストラクタ
 
-	HRESULT Init() override;	// 初期設定
-	void Uninit() override;		// 終了処理
-	void Update() override;		// 更新処理
-	void Draw() override;		// 描画処理
+	HRESULT Init() override;		// 初期設定
+	void Uninit() override;			// 終了処理
+	void Update() override;			// 更新処理
+	void Draw() override;			// 描画処理
+	void ChangeModel(int nPattern);	// モデルを変更
 
-	static CDummy* Create(D3DXVECTOR3 pos, int& nPattern);	// 生成
+	static CDummy* Create();	// 生成
 
 private:
 
-	void Control();			// 操作
-	void CheckPattern();	// ダミーの種類を確認
-
-	int& m_nPatternRef;	// 配置物の種類を参照
+	void Control();		// 操作
+	void Translate();	// 移動
 };
 
 #endif // _DUMMY_H_

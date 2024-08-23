@@ -15,12 +15,6 @@
 // インプット取得用
 #include "manager.h"
 
-// オブジェクト用
-#include "dummy.h"
-#include "goal.h"
-#include "line.h"
-#include "start.h"
-
 // テスト用
 #include "KARIHAIKEI.h"
 
@@ -50,12 +44,6 @@ HRESULT CStage_Debug::Init()
 
 	// KARIHAIKEIの生成
 	KARIHAIKEI::Create();
-
-	// グリッドライン生成
-	CLine::CreateGrid();
-
-	// ダミーの生成
-	CDummy::Create({ 0.0f, 0.0f, 0.0f }, CStageMaker::GetInstance()->GetPatternRef());
 
 	return S_OK;
 }
