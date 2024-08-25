@@ -45,6 +45,7 @@ public:
 		PARTICLE01,		// 粒子01
 		PARTICLE02,		// 粒子02
 		PARTICLE03,		// 粒子03
+		CURSOR,			// カーソル
 		MAX,
 	};
 

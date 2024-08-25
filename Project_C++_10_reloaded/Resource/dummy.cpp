@@ -57,15 +57,6 @@ void CDummy::Uninit()
 //============================================================================
 void CDummy::Update()
 {
-	//// 操作
-	//Control();
-
-	// 位置をデバッグ表示
-	CRenderer::GetInstance()->SetDebugString("【ダミー位置】");
-	std::ostringstream oss;
-	oss << std::fixed << std::setprecision(1) << "X:" << GetPos().x << "\nY:" << GetPos().y;
-	CRenderer::GetInstance()->SetDebugString(oss.str().c_str());
-
 	// 基底クラスの更新
 	CObject_X::Update();
 }
@@ -86,6 +77,12 @@ void CDummy::Control()
 {
 	// 移動
 	Translate();
+
+	// 位置をデバッグ表示
+	CRenderer::GetInstance()->SetDebugString("【ダミー位置】");
+	std::ostringstream oss;
+	oss << std::fixed << std::setprecision(1) << "X:" << GetPos().x << "\nY:" << GetPos().y;
+	CRenderer::GetInstance()->SetDebugString(oss.str().c_str());
 }
 
 //============================================================================
@@ -96,7 +93,7 @@ void CDummy::ChangeModel(int nPattern)
 	switch (nPattern)
 	{
 	case -1:
-		BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PARTICLE00));
+		BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::CURSOR));
 		break;
 
 	case 0:
@@ -149,7 +146,7 @@ CDummy* CDummy::Create()
 	pDummy->Init();
 	
 	// アルファ値の設定
-	pDummy->SetAlpha(0.8f);
+	pDummy->SetAlpha(0.5f);
 
 	return pDummy;
 }
