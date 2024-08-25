@@ -27,13 +27,13 @@ public:
 	void Uninit() override;			// 終了処理
 	void Update() override;			// 更新処理
 	void Draw() override;			// 描画処理
+	void Control();					// 操作
 	void ChangeModel(int nPattern);	// モデルを変更
 
 	static CDummy* Create();	// 生成
 
 private:
 
-	void Control();		// 操作
 	void Translate();	// 移動
 };
 

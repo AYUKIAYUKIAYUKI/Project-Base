@@ -273,17 +273,23 @@ void CStageMaker::Control()
 	{
 		CRenderer::GetInstance()->SetDebugString("現在のモード -> 配置");
 
+		// ダミー操作
+		m_pDummy->Control();
+
+		// 操作反映
+		m_pDummy->Update();
+
 		if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
 		{
 			// 設置
 			Register();
 		}
 
-		if (CManager::GetKeyboard()->GetTrigger(DIK_Q))
+		if (CManager::GetKeyboard()->GetTrigger(DIK_NUMPAD4))
 		{
 			m_nPattern > 0 ? m_nPattern-- : m_nPattern = 5;
 		}
-		else if (CManager::GetKeyboard()->GetTrigger(DIK_E))
+		else if (CManager::GetKeyboard()->GetTrigger(DIK_NUMPAD6))
 		{
 			m_nPattern < 5 ? m_nPattern++ : m_nPattern = 0;
 		}
@@ -294,11 +300,11 @@ void CStageMaker::Control()
 	{
 		CRenderer::GetInstance()->SetDebugString("現在のモード -> 編集");
 
-		if (CManager::GetKeyboard()->GetTrigger(DIK_Q))
+		if (CManager::GetKeyboard()->GetTrigger(DIK_NUMPAD4))
 		{
 			m_nID--;
 		}
-		else if (CManager::GetKeyboard()->GetTrigger(DIK_E))
+		else if (CManager::GetKeyboard()->GetTrigger(DIK_NUMPAD6))
 		{
 			m_nID++;
 		}
@@ -382,6 +388,12 @@ void CStageMaker::Modify()
 	// 編集するIDまでオブジェクトを検索する
 	for (int i = 0; i < m_nID; i++)
 	{
+		// オブジェクトが見つからなければ終了
+		if (!pObj)
+		{
+			return;
+		}
+
 		// 次のオブジェクトのポインタをコピー
 		CObject* pNext = pObj->GetNext();
 
@@ -398,10 +410,17 @@ void CStageMaker::Modify()
 	// オブジェクトをXオブジェクトにダウンキャスト
 	CObject_X* pX = CUtility::GetInstance()->DownCast<CObject_X, CObject>(pObj);
 
-	// このオブジェクトの座標をダミーの座標へ移動
-	pX->SetPos(m_pDummy->GetPos());
+	// ダミーの座標をオブジェクトの座標に同期
+	m_pDummy->SetPos(pX->GetPos());
+
+	// ダミー操作
+	m_pDummy->Control();
+
+	// 操作反映
+	m_pDummy->Update();
 
 	// 座標を反映
+	pX->SetPos(m_pDummy->GetPos());
 	pX->Update();
 }
 
