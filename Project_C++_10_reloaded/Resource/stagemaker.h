@@ -43,6 +43,8 @@ private:
 	void Output(std::ofstream& file, D3DXVECTOR3 pos, std::string str);	// 情報書き出し
 
 	int m_nPattern;		// 構造物の種類を識別
+	bool m_bModify;		// 編集切り替え
+	int m_nID;			// 編集する構造物を識別
 	CDummy* m_pDummy;	// 構造物のダミー情報
 
 	static CStageMaker* m_pInstance;	// ステージメーカー

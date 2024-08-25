@@ -86,6 +86,10 @@ void CDummy::ChangeModel(int nPattern)
 {
 	switch (nPattern)
 	{
+	case -1:
+		BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PARTICLE00));
+		break;
+
 	case 0:
 		BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::BLOCK_000));
 		break;

@@ -1,5 +1,5 @@
-X:-100.0,Y:0.0,Z:0.0,type:start,
-X:100.0,Y:0.0,Z:0.0,type:goal,
+X:-90.0,Y:15.0,Z:0.0,type:start,
+X:-30.0,Y:10.0,Z:0.0,type:goal,
 X:60.0,Y:-40.0,Z:0.0,type:block,
 X:80.0,Y:-40.0,Z:0.0,type:block,
 X:100.0,Y:-40.0,Z:0.0,type:block,

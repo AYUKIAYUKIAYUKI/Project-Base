@@ -88,8 +88,14 @@ void CStageMaker::Update()
 	// 操作
 	Control();
 
+	// モデルパターン譲渡用
+	int nPattern = 0;
+
+	// 配置モードなら現在のモデル、編集モードならそれ以外を指定
+	m_bModify ? nPattern = -1 : nPattern = m_nPattern;
+	
 	// モデルを設定
-	m_pDummy->ChangeModel(m_nPattern);
+	m_pDummy->ChangeModel(nPattern);
 }
 
 //============================================================================
@@ -198,6 +204,8 @@ CStageMaker* CStageMaker::GetInstance()
 //============================================================================
 CStageMaker::CStageMaker() :
 	m_nPattern{ 0 },	// 構造物の種類識別
+	m_bModify{ false },	// 編集切り替え
+	m_nID{ 0 },			// 編集する構造物を識別
 	m_pDummy{ nullptr }	// 構造物のダミー情報
 {
 	// ステージデバッグモードのみ
@@ -249,27 +257,56 @@ void CStageMaker::Control()
 		}
 	}
 
-	if (CManager::GetKeyboard()->GetTrigger(DIK_Q))
-	{
-		m_nPattern > 0 ? m_nPattern-- : m_nPattern = 5;
-	}
-	else if (CManager::GetKeyboard()->GetTrigger(DIK_E))
-	{
-		m_nPattern < 5 ? m_nPattern++ : m_nPattern = 0;
-	}
-
-	CRenderer::GetInstance()->SetDebugString("現在の配置物の種類:" + std::to_string(m_nPattern));
-
 	if (CManager::GetKeyboard()->GetTrigger(DIK_F3))
 	{
-		// ステージ読み込み
-		Import("Data\\TXT\\stage_01.txt");
+		// ステージ読み込み (仮)
+		Import("Data\\TXT\\stage01.txt");
 	}
 
-	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
+	if (CManager::GetKeyboard()->GetTrigger(DIK_SPACE))
 	{
-		// 設置
-		Register();
+		// 編集切り替え
+		m_bModify = !m_bModify;
+	}
+
+	if (!m_bModify)
+	{
+		CRenderer::GetInstance()->SetDebugString("現在のモード -> 配置");
+
+		if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
+		{
+			// 設置
+			Register();
+		}
+
+		if (CManager::GetKeyboard()->GetTrigger(DIK_Q))
+		{
+			m_nPattern > 0 ? m_nPattern-- : m_nPattern = 5;
+		}
+		else if (CManager::GetKeyboard()->GetTrigger(DIK_E))
+		{
+			m_nPattern < 5 ? m_nPattern++ : m_nPattern = 0;
+		}
+
+		CRenderer::GetInstance()->SetDebugString("現在の構造物の種類:" + std::to_string(m_nPattern));
+	}
+	else
+	{
+		CRenderer::GetInstance()->SetDebugString("現在のモード -> 編集");
+
+		if (CManager::GetKeyboard()->GetTrigger(DIK_Q))
+		{
+			m_nID--;
+		}
+		else if (CManager::GetKeyboard()->GetTrigger(DIK_E))
+		{
+			m_nID++;
+		}
+
+		CRenderer::GetInstance()->SetDebugString("現在の構造物のID:" + std::to_string(m_nID));
+	
+		// 編集
+		Modify();
 	}
 }
 
@@ -339,7 +376,33 @@ void CStageMaker::Register()
 //============================================================================
 void CStageMaker::Modify()
 {
+	// オブジェクトリストの先頭を取得
+	CObject* pObj = CObject::GetObject(static_cast<int>(CObject::LAYER::FRONT_MIDDLE));
 
+	// 編集するIDまでオブジェクトを検索する
+	for (int i = 0; i < m_nID; i++)
+	{
+		// 次のオブジェクトのポインタをコピー
+		CObject* pNext = pObj->GetNext();
+
+		// 次のオブジェクトを代入
+		pObj = pNext;
+	}
+
+	// オブジェクトが見つからなければ終了
+	if (pObj == nullptr)
+	{
+		return;
+	}
+
+	// オブジェクトをXオブジェクトにダウンキャスト
+	CObject_X* pX = CUtility::GetInstance()->DownCast<CObject_X, CObject>(pObj);
+
+	// このオブジェクトの座標をダミーの座標へ移動
+	pX->SetPos(m_pDummy->GetPos());
+
+	// 座標を反映
+	pX->Update();
 }
 
 //============================================================================

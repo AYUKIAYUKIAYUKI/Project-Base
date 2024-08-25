@@ -65,6 +65,9 @@ public:
 	TYPE GetType();				// タイプを取得
 	void SetType(TYPE type);	// タイプを設定
 
+	CObject* GetPrev();	// 前のオブジェクトのポインタを取得
+	CObject* GetNext();	// 次のオブジェクトのポインタを取得
+
 	static void ReleaseAll();		// 全オブジェクト解放処理
 	static void UpdateAll();		// 全オブジェクト更新処理
 	static void LateUpdateAll();	// 全オブジェクト後更新処理
