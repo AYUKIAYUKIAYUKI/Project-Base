@@ -52,7 +52,7 @@ HRESULT CFakeScreen::Init()
 
 	// サイズを設定
 	float fSize = 0.5f;
-	m_size = { SCREEN_WIDTH * fSize, SCREEN_HEIGHT * fSize, 0.0f };
+	m_size = { SCREEN_WIDTH * fSize * 1.1f, SCREEN_HEIGHT * fSize, 0.0f };
 
 	// メッシュ情報の計算
 	CalcMesh();
@@ -333,7 +333,7 @@ HRESULT CFakeScreen::CreateVtxBuff()
 
 		// テクスチャ座標の設定 (分割数関わらずサイズに合わせて均等に設定)
 		pVtx[i].tex = {
-			(fEachSizeX * nCntVtxX) / (m_size.x * 2.0f),
+			((fEachSizeX * nCntVtxX) / (m_size.x * 2.0f) * 1.1f) - ((1.1f - 1.0f) * 0.5f),
 			(fEachSizeY * nCntVtxY) / (m_size.y * 2.0f) };
 
 #if MESH_DBG
@@ -675,7 +675,7 @@ void CFakeScreen::SetVtx()
 		// 頂点座標の設定 (サイズ値をもとにした左上の頂点位置に、変動位置を加算してメッシュを形成)
 		pVtx[i].pos = {
 			m_pos.x - m_size.x + (fEachSizeX * nCntVtxX) + (sinf(m_fPosDistortion) * 30.0f),
-			m_pos.y - m_size.y + (fEachSizeY * nCntVtxY) + (sinf(m_fPosDistortion) * 5.0f),
+			m_pos.y - m_size.y + (fEachSizeY * nCntVtxY) + (sinf(m_fPosDistortion) * 1.0f),
 			0.0f };
 
 		// 頂点カラーの設定
