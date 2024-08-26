@@ -33,6 +33,7 @@ public:
 		ENEMY,			// エネミー
 		START,			// スタート
 		GOAL,			// ゴール
+		ACHIEVE,		// アチーブ
 		LINE_X,			// X軸
 		LINE_Y,			// Y軸
 		RIPPLE00,		// 波紋00

@@ -33,6 +33,7 @@ public:
 		ITEM,			// アイテム
 		START,			// スタート
 		GOAL,			// ゴール
+		ACHIEVE,		// アチーブ
 		SCORE,			// スコア
 		MAX,
 	};

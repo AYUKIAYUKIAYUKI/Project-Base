@@ -18,6 +18,7 @@
 #include "renderer.h"
 
 // オブジェクト配置用
+#include "achievement.h"
 #include "block.h"
 #include "block_destructible.h"
 #include "block_spikes.h"
@@ -168,6 +169,10 @@ void CStageMaker::Import(std::string path)
 		{ // ゴール
 			CGoal::Create(pos);
 		}
+		else if (str_type == "archieve")
+		{ // アチーブ
+			CAchieve::Create(pos);
+		}
 		else
 		{ // 不明
 			assert(false);
@@ -287,11 +292,11 @@ void CStageMaker::Control()
 
 		if (CManager::GetKeyboard()->GetTrigger(DIK_NUMPAD4))
 		{
-			m_nPattern > 0 ? m_nPattern-- : m_nPattern = 5;
+			m_nPattern > 0 ? m_nPattern-- : m_nPattern = 6;
 		}
 		else if (CManager::GetKeyboard()->GetTrigger(DIK_NUMPAD6))
 		{
-			m_nPattern < 5 ? m_nPattern++ : m_nPattern = 0;
+			m_nPattern < 6 ? m_nPattern++ : m_nPattern = 0;
 		}
 
 		CRenderer::GetInstance()->SetDebugString("現在の構造物の種類:" + std::to_string(m_nPattern));
@@ -359,7 +364,7 @@ void CStageMaker::Register()
 
 	case 5:
 
-		// スタートタイプのオブジェクトを検索
+		// ゴールタイプのオブジェクトを検索
 		if (!CObject::FindObject(CObject::TYPE::GOAL))
 		{
 			CGoal::Create(pos);
@@ -367,6 +372,18 @@ void CStageMaker::Register()
 		else
 		{
 			CRenderer::GetInstance()->SetTimeString("【ゴールはすでに配置されています】", 60);
+		}
+
+	case 6:
+
+		// アチーブタイプのオブジェクトを検索
+		if (!CObject::FindObject(CObject::TYPE::ACHIEVE))
+		{
+			CAchieve::Create(pos);
+		}
+		else
+		{
+			CRenderer::GetInstance()->SetTimeString("【アチーブはすでに配置されています】", 60);
 		}
 
 		break;
@@ -514,6 +531,24 @@ void CStageMaker::Export()
 
 		// 情報を書き出す
 		Output(Export, pEnemy->GetPos(), "enemy");
+	}
+
+	// アチーブタイプのオブジェクトをすべて取得
+	pObject = CObject::FindAllObject(CObject::TYPE::ACHIEVE);
+
+	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	{
+		// オブジェクトの情報が無くなったら終了
+		if (pObject[nCntObj] == nullptr)
+		{
+			break;
+		}
+
+		// アチーブクラスへダウンキャスト
+		CAchieve* pAchieve = CUtility::GetInstance()->DownCast<CAchieve, CObject>(pObject[nCntObj]);
+
+		// 情報を書き出す
+		Output(Export, pAchieve->GetPos(), "archieve");
 	}
 
 	Export.close();	// ファイルを閉じる

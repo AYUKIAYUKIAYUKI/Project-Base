@@ -120,6 +120,10 @@ void CDummy::ChangeModel(int nPattern)
 		BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::GOAL));
 		break;
 
+	case 6:
+		BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::ACHIEVE));
+		break;
+
 	default:
 		assert(false);
 		break;

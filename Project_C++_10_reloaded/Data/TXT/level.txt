@@ -1,3 +1,1 @@
-Data\\TXT\\stage00.txt
-Data\\TXT\\stage01.txt
-Data\\TXT\\stage02.txt
+Data\\TXT\\stage03.txt

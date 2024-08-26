@@ -195,10 +195,10 @@ public:
 	CPlayerStateManager();	// コンストラクタ
 	~CPlayerStateManager();	// デストラクタ
 
-	void CheckStateChange();						// 状態の変更を確認
-	void Init(CPlayer* pPlayer);					// 初期設定
-	void RegisterPlayer(CPlayer* pPlayer);			// プレイヤーを登録
-	void Uninit();									// 終了処理
+	void CheckStateChange();				// 状態の変更を確認
+	void Init(CPlayer* pPlayer);			// 初期設定
+	void RegisterPlayer(CPlayer* pPlayer);	// プレイヤーを登録
+	void Uninit();							// 終了処理
 
 	CPlayer* GetPlayer();								// プレイヤーを取得
 	CPlayerState* GetState();							// 状態を取得
