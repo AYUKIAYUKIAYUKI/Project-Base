@@ -32,7 +32,7 @@ const float CPlayerStateDefault::BRAKING_WALK_SPEED = 0.8f;	// 歩行時の制動力
 const int CPlayerStateBeginning::BEGIN_CNT_MAX = 20;		// 変身必要時間
 const float CPlayerStateBeginning::BEGIN_FLOATING = 1.25f;	// 変身時上昇量
 const float CPlayerStateBeginning::BEGIN_SPINNING = 0.5f;	// 変身時回転量
-const float CPlayerStateFlying::MAX_FLY_VELOCITY = 2.0f;	// 飛行時の最大加速度
+const float CPlayerStateFlying::MAX_FLY_VELOCITY =	10.0f;	// 飛行時の最大加速度 (飛行速度以上推奨)
 const float CPlayerStateFlying::FLY_SPEED = 3.0f;			// 飛行速度
 const int CPlayerStateStopping::STOP_CNT_MAX = 10;			// 変身停止必要時間
 const float CPlayerStateStopping::RECOIL_SPEED = 3.0f;		// 反動移動速度
@@ -435,6 +435,12 @@ void CPlayerStateFlying::Update()
 	// 制動調整
 	Braking();
 
+	// 最終加速度をデバッグ表示
+	CRenderer::GetInstance()->SetDebugString("【　最終加速度　】");
+	std::ostringstream oss1;
+	oss1 << std::fixed << std::setprecision(3) << "X:" << m_pPlayer->GetVelocity().x << "\nY:" << m_pPlayer->GetVelocity().y;
+	CRenderer::GetInstance()->SetDebugString(oss1.str().c_str());
+
 	// 加速度分、目標座標を変動
 	D3DXVECTOR3 posTarget = m_pPlayer->GetPosTarget();
 	posTarget += m_pPlayer->GetVelocity();
@@ -512,16 +518,28 @@ bool CPlayerStateFlying::Control()
 		m_pPlayer->SetAngleFlying(atan2f(X, Y));
 	}
 
-	// 元の加速度を取得
+	// 現在の加速度を取得
 	D3DXVECTOR3 velocity = m_pPlayer->GetVelocity();
 
 	// 目標加速度を設定
 	m_velocityTarget.x = sinf(m_pPlayer->GetAngleFlying()) * FLY_SPEED;
 	m_velocityTarget.y = cosf(m_pPlayer->GetAngleFlying()) * FLY_SPEED;
 
-	// 目標加速度へと補正していく
-	velocity += (m_velocityTarget - (velocity * 0.5f)) * 0.1f;
-	
+	// 目標加速度をデバッグ表示
+	CRenderer::GetInstance()->SetDebugString("【　目標加速度　】");
+	std::ostringstream oss;
+	oss << std::fixed << std::setprecision(3) << "X:" << m_velocityTarget.x << "\nY:" << m_velocityTarget.y;
+	CRenderer::GetInstance()->SetDebugString(oss.str().c_str());
+
+	// 現在の加速度を補正
+	velocity += (m_velocityTarget - velocity) * 0.1f;
+
+	// 現在の加速度をデバッグ表示
+	CRenderer::GetInstance()->SetDebugString("【　現在の加速度　】");
+	std::ostringstream oss1;
+	oss1 << std::fixed << std::setprecision(3) << "X:" << velocity.x << "\nY:" << velocity.y;
+	CRenderer::GetInstance()->SetDebugString(oss1.str().c_str());
+
 	// 変更した加速度を反映
 	m_pPlayer->SetVelocity(velocity);
 

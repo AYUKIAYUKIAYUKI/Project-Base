@@ -305,11 +305,19 @@ void CStageMaker::Control()
 	{
 		CRenderer::GetInstance()->SetDebugString("Œ»Ý‚Ìƒ‚[ƒh -> •ÒW");
 
-		if (CManager::GetKeyboard()->GetTrigger(DIK_NUMPAD4))
+		if (CManager::GetKeyboard()->GetTrigger(DIK_NUMPAD0))
+		{
+			m_nID = 0;
+		}
+		else if (CManager::GetKeyboard()->GetTrigger(DIK_NUMPAD4))
 		{
 			m_nID--;
 		}
 		else if (CManager::GetKeyboard()->GetTrigger(DIK_NUMPAD6))
+		{
+			m_nID++;
+		}
+		else if (CManager::GetKeyboard()->GetPress(DIK_NUMPAD8))
 		{
 			m_nID++;
 		}

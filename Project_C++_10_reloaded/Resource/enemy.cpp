@@ -89,7 +89,7 @@ void CEnemy::Update()
 		m_nCast++;
 
 		/* 弾丸のキャスト状態を表示 */
-		CRenderer::GetInstance()->SetDebugString("弾丸キャスト : " + std::to_string(m_nCast));
+		//CRenderer::GetInstance()->SetDebugString("弾丸キャスト : " + std::to_string(m_nCast));
 
 		// 弾を発射
 		if (m_nCast > 200)
