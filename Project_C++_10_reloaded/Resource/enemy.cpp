@@ -21,6 +21,7 @@
 #include "bullet.h"
 #include "explosion.h"
 
+
 // デバッグ表示用
 #include "renderer.h"
 
@@ -49,7 +50,8 @@ CEnemy::CEnemy(LAYER priority) :
 //============================================================================
 CEnemy::~CEnemy()
 {
-
+	// キラキラ
+	
 }
 
 //============================================================================
@@ -86,8 +88,11 @@ void CEnemy::Update()
 		// 攻撃をキャスト
 		m_nCast++;
 
+		/* 弾丸のキャスト状態を表示 */
+		CRenderer::GetInstance()->SetDebugString("弾丸キャスト : " + std::to_string(m_nCast));
+
 		// 弾を発射
-		if (m_nCast > 60)
+		if (m_nCast > 200)
 		{
 			m_nCast = 0;
 

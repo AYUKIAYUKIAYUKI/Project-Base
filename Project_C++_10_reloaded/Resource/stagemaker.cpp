@@ -265,7 +265,7 @@ void CStageMaker::Control()
 	if (CManager::GetKeyboard()->GetTrigger(DIK_F3))
 	{
 		// ステージ読み込み (仮)
-		Import("Data\\TXT\\stage01.txt");
+		Import("Data\\TXT\\stage.txt");
 	}
 
 	if (CManager::GetKeyboard()->GetTrigger(DIK_SPACE))

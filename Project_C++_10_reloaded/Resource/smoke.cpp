@@ -76,11 +76,11 @@ void CSmoke::Update()
 	// 加速度を減少
 	m_velocity *= 0.9f;
 
-	// 拡大
-	CUtility::GetInstance()->DecrementUntilGone(GetScale(), 0.01f);
+	// 上昇・回転ブレ
+	m_velocity.y += 0.025f;
 
-	// アルファ値を減少
-	if (CUtility::GetInstance()->DecrementUntilGone(GetAlpha(), -0.01f))
+	// 縮小
+	if (CUtility::GetInstance()->DecrementUntilGone(GetScale(), -0.01f))
 	{
 		// 自身を破棄
 		CObject::SetRelease();
@@ -98,13 +98,13 @@ void CSmoke::Draw()
 	pDev->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 
 	// 頂点法線の自動正規化を有効に
-	//pDev->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
+	pDev->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
 
 	// 基底クラスの描画処理
 	CObject_X::Draw();
 
 	// 頂点法線の自動正規化を無効に
-	//pDev->SetRenderState(D3DRS_NORMALIZENORMALS, FALSE);
+	pDev->SetRenderState(D3DRS_NORMALIZENORMALS, FALSE);
 
 	// 深度バッファへの書き込みを無効に
 	pDev->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);

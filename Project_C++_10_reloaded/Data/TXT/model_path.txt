@@ -23,6 +23,6 @@ data\\MODEL\\star00.x
 data\\MODEL\\star01.x
 data\\MODEL\\particle00.x
 data\\MODEL\\particle01.x
-data\\MODEL\\particle02.x
+data\\MODEL\\particle02_b.x
 data\\MODEL\\particle03.x
 data\\MODEL\\cursor.x

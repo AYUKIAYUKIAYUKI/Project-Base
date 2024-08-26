@@ -28,10 +28,10 @@
 // デフォルトコンストラクタ
 //============================================================================
 CBullet::CBullet() :
-	CObject_billboard{ static_cast<int>(LAYER::BACK_MIDDLE) },	// プライオリティ指定
-	m_posTarget{ 0.0f, 0.0f, 0.0f },							// 目標座標
-	m_velocity{ 0.0f, 0.0f, 0.0f },								// 加速度
-	m_nDuration{ 0 }											// 寿命
+	CObject_X{ static_cast<int>(LAYER::BACK_MIDDLE) },	// プライオリティ指定
+	m_posTarget{ 0.0f, 0.0f, 0.0f },					// 目標座標
+	m_velocity{ 0.0f, 0.0f, 0.0f },						// 加速度
+	m_nDuration{ 0 }									// 寿命
 {
 
 }
@@ -40,10 +40,10 @@ CBullet::CBullet() :
 // 寿命設定コンストラクタ
 //============================================================================
 CBullet::CBullet(int nDuration) :
-	CObject_billboard{ static_cast<int>(LAYER::BACK_MIDDLE) },	// プライオリティ指定
-	m_posTarget{ 0.0f, 0.0f, 0.0f },							// 目標座標
-	m_velocity{ 0.0f, 0.0f, 0.0f },								// 加速度
-	m_nDuration{ nDuration }									// 寿命
+	CObject_X{ static_cast<int>(LAYER::BACK_MIDDLE) },	// プライオリティ指定
+	m_posTarget{ 0.0f, 0.0f, 0.0f },					// 目標座標
+	m_velocity{ 0.0f, 0.0f, 0.0f },						// 加速度
+	m_nDuration{ nDuration }							// 寿命
 {
 
 }
@@ -62,7 +62,7 @@ CBullet::~CBullet()
 HRESULT CBullet::Init()
 {
 	// 基底クラスの初期設定
-	HRESULT hr = CObject_billboard::Init();
+	HRESULT hr = CObject_X::Init();
 
 	return hr;
 }
@@ -73,7 +73,7 @@ HRESULT CBullet::Init()
 void CBullet::Uninit()
 {
 	// 基底クラスの終了処理
-	CObject_billboard::Uninit();
+	CObject_X::Uninit();
 }
 
 //============================================================================
@@ -89,6 +89,13 @@ void CBullet::Update()
 		// 破棄予約
 		SetRelease();
 	}
+
+	// 回転
+	D3DXVECTOR3 rotTaget = GetRot();
+	rotTaget.x += CUtility::GetInstance()->GetRandomValue<float>() * 0.01f;
+	rotTaget.y += CUtility::GetInstance()->GetRandomValue<float>() * 0.01f;
+	rotTaget.z += CUtility::GetInstance()->GetRandomValue<float>() * 0.01f;
+	SetRot(rotTaget);
 
 	// 現在の座標を取得し、変更を加えていく
 	m_posTarget = GetPos();
@@ -107,7 +114,7 @@ void CBullet::Update()
 	SetPos(m_posTarget);
 
 	// 基底クラスの更新
-	CObject_billboard::Update();
+	CObject_X::Update();
 }
 
 //============================================================================
@@ -116,7 +123,7 @@ void CBullet::Update()
 void CBullet::Draw()
 {
 	// 基底クラスの描画処理
-	CObject_billboard::Draw();
+	CObject_X::Draw();
 }
 
 //============================================================================
@@ -144,8 +151,11 @@ CBullet* CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	// サイズの設定
 	pBullet->SetSize(size);
 
-	// テクスチャを設定
-	pBullet->BindTex(CTexture_Manager::GetInstance()->GetTexture(CTexture_Manager::TYPE::BULLET_00));
+	// モデルを取得
+	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::BULLET_CORE);
+
+	// モデルを設定
+	pBullet->BindModel(model);
 
 	// プレイヤーを取得
 	CPlayer* pPlayer = CUtility::GetInstance()->DownCast<CPlayer, CObject>(CObject::FindObject(TYPE::PLAYER));
@@ -153,6 +163,9 @@ CBullet* CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	// プレイヤーへのベクトル正規化し、加速度に設定
 	D3DXVECTOR3 pV{ (pPlayer->GetPos() - pos) };
 	D3DXVec3Normalize(&pBullet->m_velocity, &pV);
+
+	// 描画前に座標を反映
+	pBullet->Update();
 
 	return pBullet;
 }
@@ -171,7 +184,7 @@ void CBullet::Translate()
 	//// 目標座標を反映
 	//SetPos(posTarget);
 
-	m_posTarget += m_velocity * 3.0f;
+	m_posTarget += m_velocity * 2.0f;
 }
 
 //============================================================================

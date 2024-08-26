@@ -32,7 +32,7 @@ const float CPlayerStateDefault::BRAKING_WALK_SPEED = 0.8f;	// 歩行時の制動力
 const int CPlayerStateBeginning::BEGIN_CNT_MAX = 20;		// 変身必要時間
 const float CPlayerStateBeginning::BEGIN_FLOATING = 1.25f;	// 変身時上昇量
 const float CPlayerStateBeginning::BEGIN_SPINNING = 0.5f;	// 変身時回転量
-const float CPlayerStateFlying::MAX_FLY_VELOCITY = 3.0f;	// 飛行時の最大加速度
+const float CPlayerStateFlying::MAX_FLY_VELOCITY = 2.0f;	// 飛行時の最大加速度
 const float CPlayerStateFlying::FLY_SPEED = 3.0f;			// 飛行速度
 const int CPlayerStateStopping::STOP_CNT_MAX = 10;			// 変身停止必要時間
 const float CPlayerStateStopping::RECOIL_SPEED = 3.0f;		// 反動移動速度
@@ -322,7 +322,7 @@ void CPlayerStateBeginning::Enter()
 		// 煙を生成
 		CSmoke::Create(
 			m_pPlayer->GetPos(),	// 座標
-			velocity * 0.005f);		// 加速度
+			velocity * 0.0075f);	// 加速度
 	}
 
 	// 離陸SE
@@ -649,7 +649,7 @@ void CPlayerStateStopping::Enter()
 		// 煙を生成
 		CSmoke::Create(
 			m_pPlayer->GetPos(),	// 座標
-			velocity * 0.005f);		// 加速度
+			velocity * 0.0075f);	// 加速度
 	}
 
 	// 反動
