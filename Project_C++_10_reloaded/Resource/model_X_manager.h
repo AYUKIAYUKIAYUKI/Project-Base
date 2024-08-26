@@ -31,6 +31,7 @@ public:
 		DESTRUCTIBLE,	// 可壊ブロック
 		SPIKES,			// とげブロック
 		ENEMY,			// エネミー
+		BULLET_CORE,	// 弾 - 核
 		START,			// スタート
 		GOAL,			// ゴール
 		ACHIEVE,		// アチーブ
