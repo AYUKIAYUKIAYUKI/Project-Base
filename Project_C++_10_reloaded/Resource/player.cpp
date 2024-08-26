@@ -19,6 +19,7 @@
 #include "renderer.h"
 
 // オブジェクト情報用 
+#include "achievement.h"
 #include "block.h"
 #include "block_destructible.h"
 #include "block_spikes.h"
@@ -274,6 +275,19 @@ bool CPlayer::Collision()
 
 		// レベル終了フェーズへ移行
 		CFakeScreen::GetInstance()->SetWave(CGameManager::PHASE::FINISH);
+	}
+
+	// アチーブオブジェクトを取得
+	if (CObject::FindObject(CObject::TYPE::ACHIEVE))
+	{
+		CAchieve* pAchieve = CUtility::GetInstance()->DownCast<CAchieve, CObject>(CObject::FindObject(CObject::TYPE::ACHIEVE));
+
+		// アチーブと衝突する場合
+		if (CUtility::GetInstance()->SphereAndCube(pAchieve->GetPos(), pAchieve->GetSize().x, m_posTarget, GetSize()))
+		{
+			// 破棄予約
+			pAchieve->SetRelease();
+		}
 	}
 
 	return bDetected;

@@ -405,10 +405,10 @@ void CStageMaker::Modify()
 	// 編集するIDまでオブジェクトを検索する
 	for (int i = 0; i < m_nID; i++)
 	{
-		// オブジェクトが見つからなければ終了
+		// オブジェクトがなければ検索終了
 		if (!pObj)
 		{
-			return;
+			break;
 		}
 
 		// 次のオブジェクトのポインタをコピー
