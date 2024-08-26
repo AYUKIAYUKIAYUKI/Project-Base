@@ -73,6 +73,8 @@ public:
 	static void UpdateAll();		// 全オブジェクト更新処理
 	static void LateUpdateAll();	// 全オブジェクト後更新処理
 	static void DrawAll();			// 全オブジェクト描画処理
+	static void DrawScreen();		// スクリーン画面内の描画
+	static void DrawUI();			// UIオブジェクトのみ描画
 
 	static CObject* GetObject(int nPriority);	// 先頭オブジェクトのポインタ取得
 	static CObject* FindObject(TYPE type);		// 特定タイプのオブジェクト探す

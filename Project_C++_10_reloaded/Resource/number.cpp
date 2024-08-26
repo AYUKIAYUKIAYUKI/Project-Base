@@ -17,8 +17,8 @@
 // デフォルトコンストラクタ
 //============================================================================
 CNumber::CNumber() : 
-	CObject_2D{ static_cast<int>(LAYER::FRONT) },	// 基底クラスのコンストラクタ
-	m_nNum{ 0 }										// 数字の割り当て
+	CObject_2D{ static_cast<int>(LAYER::UI) },	// 描画優先度の指定
+	m_nNum{ 0 }									// 数字の割り当て
 {
 
 }

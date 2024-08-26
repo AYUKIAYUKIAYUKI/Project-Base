@@ -194,8 +194,8 @@ void CRenderer::Draw()
 		// カメラをセット
 		CManager::GetCamera()->SetCamera();
 
-		// 全オブジェクト描画処理
-		CObject::DrawAll();
+		// スクリーン画面内の描画
+		CObject::DrawScreen();
 
 		// シーンの専用描画
 		CManager::GetScene()->Draw();
@@ -213,7 +213,7 @@ void CRenderer::Draw()
 	// レンダリングターゲットをバックバッファに戻す
 	m_pD3DDevice->SetRenderTarget(0, oldRenderTarget);
 
-	// 保持していたレンダリングターゲット破棄
+	// 保持していたレンダリングターゲットの破棄
 	if (oldRenderTarget != nullptr)
 	{
 		oldRenderTarget->Release();
@@ -233,6 +233,9 @@ void CRenderer::Draw()
 
 		// 疑似スクリーンを描画
 		CFakeScreen::GetInstance()->Draw();
+
+		// UIの描画
+		CObject::DrawUI();
 
 		// デバッグ表示
 		PrintDebug();

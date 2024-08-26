@@ -640,7 +640,7 @@ void CFakeScreen::WaveIn()
 	if (m_fAddDistortion > 0.000001f)
 	{
 		// ‚ä‚ª‚Ý‚ðŒ¸‚ç‚µ‚Ä‚¢‚­
-		m_fAddDistortion *= 0.95f;
+		m_fAddDistortion *= 0.925f;
 	}
 	else
 	{
