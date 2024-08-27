@@ -408,7 +408,7 @@ void CStageMaker::Register()
 void CStageMaker::Modify()
 {
 	// オブジェクトリストの先頭を取得
-	CObject* pObj = CObject::GetObject(static_cast<int>(CObject::LAYER::FRONT_MIDDLE));
+	CObject* pObj = CObject::GetObject(static_cast<int>(CObject::LAYER::MIDDLE));
 
 	// 編集するIDまでオブジェクトを検索する
 	for (int i = 0; i < m_nID; i++)

@@ -33,12 +33,12 @@
 // コンストラクタ
 //============================================================================
 CPlayer::CPlayer() :
-	CObject_X(static_cast<int>(LAYER::FRONT_MIDDLE)),	// プライオリティの設定
-	m_pStateManager{ nullptr },							// 状態マネージャーの初期化
-	m_velocity{ 0.0f, 0.0f, 0.0f },						// 加速度の初期化
-	m_posTarget{ 0.0f, 0.0f, 0.0f },					// 目標位置の初期化
-	m_rotTarget{ 0.0f, 0.0f, 0.0f },					// 目標向きの初期化
-	m_fAngleFlying{ 0.0f }								// 飛行向きの初期化
+	CObject_X{ static_cast<int>(LAYER::MIDDLE) },	// 描画優先度を指定
+	m_pStateManager{ nullptr },						// 状態マネージャーの初期化
+	m_velocity{ 0.0f, 0.0f, 0.0f },					// 加速度の初期化
+	m_posTarget{ 0.0f, 0.0f, 0.0f },				// 目標位置の初期化
+	m_rotTarget{ 0.0f, 0.0f, 0.0f },				// 目標向きの初期化
+	m_fAngleFlying{ 0.0f }							// 飛行向きの初期化
 {
 	
 }

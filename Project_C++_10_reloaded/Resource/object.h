@@ -43,12 +43,12 @@ public:
 	//****************************************************
 	enum class LAYER
 	{
-		NONE = 0,		// –³‚µ
-		BACK,			// ”wŒi
-		BACK_MIDDLE,	// Œã‚ë‘¤
-		FRONT_MIDDLE,	// ‘O‘¤
-		FRONT,			// ‘OŒi
-		UI,				// UI
+		NONE = 0,	// –³‚µ
+		BG,			// ”wŒi
+		BACK,		// Œã•û
+		MIDDLE,		// ’†‰›
+		FRONT,		// ‘O•û
+		UI,			// UI
 		MAX,
 	};
 

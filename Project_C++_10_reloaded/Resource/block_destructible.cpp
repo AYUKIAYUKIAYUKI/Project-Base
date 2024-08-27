@@ -14,7 +14,7 @@
 // デフォルトコンストラクタ
 //============================================================================
 CBlockDestructible::CBlockDestructible() :
-	CObject_X{ static_cast<int>(LAYER::FRONT_MIDDLE) }	// 基底クラスのコンストラクタ
+	CObject_X{ static_cast<int>(LAYER::MIDDLE) }	// 描画優先度を指定
 {
 
 }
@@ -80,7 +80,7 @@ void CBlockDestructible::Draw()
 CBlockDestructible* CBlockDestructible::Create(D3DXVECTOR3 pos)
 {
 	// インスタンスを生成
-	CBlockDestructible* pBlockDestructible = DBG_NEW CBlockDestructible{ LAYER::FRONT_MIDDLE };
+	CBlockDestructible* pBlockDestructible = DBG_NEW CBlockDestructible{ LAYER::MIDDLE };
 
 	if (pBlockDestructible == nullptr)
 	{ // 生成失敗

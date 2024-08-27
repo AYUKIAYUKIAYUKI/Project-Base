@@ -29,8 +29,8 @@
 // デフォルトコンストラクタ
 //============================================================================
 CEnemy::CEnemy() :
-	CObject_X{ static_cast<int>(LAYER::FRONT_MIDDLE) },	// 基底クラスのコンストラクタ
-	m_nCast{ 0 }										// 攻撃間隔
+	CObject_X{ static_cast<int>(LAYER::MIDDLE) },	// 描画優先度を指定
+	m_nCast{ 0 }									// 攻撃間隔
 {
 
 }

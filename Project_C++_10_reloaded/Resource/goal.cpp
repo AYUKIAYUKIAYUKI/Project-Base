@@ -14,7 +14,7 @@
 // デフォルトコンストラクタ
 //============================================================================
 CGoal::CGoal() :
-	CObject_X{ static_cast<int>(LAYER::FRONT_MIDDLE) }	// 基底クラスのコンストラクタ
+	CObject_X{ static_cast<int>(LAYER::MIDDLE) }	// 描画優先度を指定
 {
 
 }

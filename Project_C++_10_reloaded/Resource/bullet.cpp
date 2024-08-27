@@ -28,10 +28,10 @@
 // デフォルトコンストラクタ
 //============================================================================
 CBullet::CBullet() :
-	CObject_X{ static_cast<int>(LAYER::BACK_MIDDLE) },	// プライオリティ指定
-	m_posTarget{ 0.0f, 0.0f, 0.0f },					// 目標座標
-	m_velocity{ 0.0f, 0.0f, 0.0f },						// 加速度
-	m_nDuration{ 0 }									// 寿命
+	CObject_X{ static_cast<int>(LAYER::BACK) },	// 描画優先度を指定
+	m_posTarget{ 0.0f, 0.0f, 0.0f },			// 目標座標
+	m_velocity{ 0.0f, 0.0f, 0.0f },				// 加速度
+	m_nDuration{ 0 }							// 寿命
 {
 
 }
@@ -40,10 +40,10 @@ CBullet::CBullet() :
 // 寿命設定コンストラクタ
 //============================================================================
 CBullet::CBullet(int nDuration) :
-	CObject_X{ static_cast<int>(LAYER::BACK_MIDDLE) },	// プライオリティ指定
-	m_posTarget{ 0.0f, 0.0f, 0.0f },					// 目標座標
-	m_velocity{ 0.0f, 0.0f, 0.0f },						// 加速度
-	m_nDuration{ nDuration }							// 寿命
+	CObject_X{ static_cast<int>(LAYER::BACK) },	// 描画優先度を指定
+	m_posTarget{ 0.0f, 0.0f, 0.0f },			// 目標座標
+	m_velocity{ 0.0f, 0.0f, 0.0f },				// 加速度
+	m_nDuration{ nDuration }					// 寿命
 {
 
 }

@@ -26,8 +26,9 @@ int CLeaf::m_nCntSpawn = 0;	// 生成間隔
 // デフォルトコンストラクタ
 //============================================================================
 CLeaf::CLeaf() :
-	m_type{ CLeaf::OSCILLATION::NONE },	// 振動の種類
-	m_velocity{ 0.0f, 0.0f, 0.0f }		// 加速度
+	CObject_billboard{ static_cast<int>(LAYER::MIDDLE) },	// 描画優先度を指定
+	m_type{ CLeaf::OSCILLATION::NONE },						// 振動の種類
+	m_velocity{ 0.0f, 0.0f, 0.0f }							// 加速度
 {
 	// ランダムなタイプを設定
 	m_type = GetRandomOscillation();

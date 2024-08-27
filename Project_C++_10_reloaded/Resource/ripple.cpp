@@ -18,8 +18,8 @@
 // コンストラクタ
 //============================================================================
 CRipple::CRipple() :
-	CObject_X(static_cast<int>(LAYER::FRONT_MIDDLE)),	// プライオリティの設定
-	m_velocity{ 0.0f, 0.0f, 0.0f }						// 加速度
+	CObject_X{ static_cast<int>(LAYER::MIDDLE) },	// 描画優先度を指定
+	m_velocity{ 0.0f, 0.0f, 0.0f }					// 加速度
 {
 
 }

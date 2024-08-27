@@ -21,7 +21,7 @@
 // デフォルトコンストラクタ
 //============================================================================
 CAchieve::CAchieve() :
-	CObject_X{ static_cast<int>(LAYER::FRONT_MIDDLE) }	// 基底クラスのコンストラクタ
+	CObject_X{ static_cast<int>(LAYER::MIDDLE) }	// 描画優先度を指定
 {
 
 }
@@ -30,7 +30,7 @@ CAchieve::CAchieve() :
 // プライオリティ指定コンストラクタ
 //============================================================================
 CAchieve::CAchieve(LAYER priority) :
-	CObject_X{ static_cast<int>(priority) }	// 基底クラスのコンストラクタ
+	CObject_X{ static_cast<int>(priority) }	// 描画優先度を指定
 {
 
 }

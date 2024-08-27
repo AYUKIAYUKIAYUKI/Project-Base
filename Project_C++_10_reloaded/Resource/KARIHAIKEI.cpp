@@ -13,7 +13,8 @@
 //============================================================================
 // デフォルトコンストラクタ
 //============================================================================
-KARIHAIKEI::KARIHAIKEI() : CObject_X(static_cast<int>(LAYER::BACK))
+KARIHAIKEI::KARIHAIKEI() :
+	CObject_X{ static_cast<int>(LAYER::BACK) }	// 描画優先度を指定
 {
 
 }

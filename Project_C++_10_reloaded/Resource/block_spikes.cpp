@@ -14,7 +14,7 @@
 // デフォルトコンストラクタ
 //============================================================================
 CBlockSpikes::CBlockSpikes() :
-	CObject_X{ static_cast<int>(LAYER::FRONT_MIDDLE) }	// 基底クラスのコンストラクタ
+	CObject_X{ static_cast<int>(LAYER::MIDDLE) }	// 描画優先度を指定
 {
 
 }
@@ -80,7 +80,7 @@ void CBlockSpikes::Draw()
 CBlockSpikes* CBlockSpikes::Create(D3DXVECTOR3 pos)
 {
 	// インスタンスを生成
-	CBlockSpikes* pBlockSpikes = DBG_NEW CBlockSpikes{ LAYER::FRONT_MIDDLE };
+	CBlockSpikes* pBlockSpikes = DBG_NEW CBlockSpikes{ LAYER::MIDDLE };
 
 	if (pBlockSpikes == nullptr)
 	{ // 生成失敗
