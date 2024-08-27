@@ -267,9 +267,6 @@ void CRenderer::Draw()
 		// ”wŒi‚Ì•`‰æ
 		CObject::DrawBG();
 
-		// ‹^Ž—ƒXƒNƒŠ[ƒ“‚ð•`‰æ
-		//CFakeScreen::GetInstance()->Draw();
-
 		// UI‚Ì•`‰æ
 		CObject::DrawUI();
 

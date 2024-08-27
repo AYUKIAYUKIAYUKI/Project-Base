@@ -203,22 +203,38 @@ void CCamera::SetCameraBG()
 	static D3DXVECTOR3 pos{ 0.0f, 0.0f, 0.0f };
 	pos = { 0.0f, 0.0f, 0.0f };
 
+	// 視点 -> 注視点間の距離
+	static float fDistance = 250.0f;
+
+	if (CManager::GetKeyboard()->GetPress(DIK_NUMPAD8))
+	{
+		fDistance--;
+	}
+	else if (CManager::GetKeyboard()->GetPress(DIK_NUMPAD2))
+	{
+		fDistance++;
+	}
+	else if(CManager::GetKeyboard()->GetTrigger(DIK_NUMPAD5))
+	{
+		fDistance = 250.0;
+	}
+
 	// 視点は対象物の後方に
 	static D3DXVECTOR3 posV{ 0.0f, 0.0f, 0.0f };
 	posV =
 	{
-		pos.x - (sinf(rot.y) * cosf(rot.x) * (m_fDistance)),
-		pos.y - (sinf(rot.x) * (m_fDistance)),
-		pos.z - (cosf(rot.y) * cosf(rot.x) * (m_fDistance))
+		pos.x - (sinf(rot.y) * cosf(rot.x) * (fDistance)),
+		pos.y - (sinf(rot.x) * (fDistance)),
+		pos.z - (cosf(rot.y) * cosf(rot.x) * (fDistance))
 	};
 
 	// 注視点を対象物の前方に
 	static D3DXVECTOR3 posR{ 0.0f, 0.0f, 0.0f };
 	posR =
 	{
-		pos.x + (sinf(rot.y) * cosf(rot.x) * m_fDistance),
-		pos.y + (sinf(rot.x) * m_fDistance),
-		pos.z + (cosf(rot.y) * cosf(rot.x) * m_fDistance)
+		pos.x + (sinf(rot.y) * cosf(rot.x) * fDistance),
+		pos.y + (sinf(rot.x) * fDistance),
+		pos.z + (cosf(rot.y) * cosf(rot.x) * fDistance)
 	};
 
 	/////////////////////////////////////////////////////////////
