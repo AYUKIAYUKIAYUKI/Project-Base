@@ -31,11 +31,13 @@ CRenderer* CRenderer::m_pRenderer = nullptr;	// レンダラー
 // コンストラクタ
 //============================================================================
 CRenderer::CRenderer() :
-	m_pD3D{ nullptr },			// Direct3D
-	m_pD3DDevice{ nullptr },	// デバイス
-	m_pFont{ nullptr },			// フォント
-	m_debugStr{},				// 表示用文字列
-	m_timeStr{}					// 時限式文字列
+	m_pD3D{ nullptr },				// Direct3D
+	m_pD3DDevice{ nullptr },		// デバイス
+	m_pFont{ nullptr },				// フォント
+	m_pMonitorTex{ nullptr },		// モニター用テクスチャポインタ
+	m_pMonitorSurface{ nullptr },	// モニター用サーフェイスポインタ
+	m_debugStr{},					// 表示用文字列
+	m_timeStr{}						// 時限式文字列
 {
 
 }
@@ -132,6 +134,12 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 		OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH,
 		"Terminal", &m_pFont);
 
+	// 疑似スクリーン用テクスチャの生成
+	if (FAILED(CreateTex()))
+	{
+		return E_FAIL;
+	}
+
 	// テクスチャマネージャー初期設定
 	if (FAILED(CTexture_Manager::GetInstance()->Load()))
 	{
@@ -200,10 +208,10 @@ void CRenderer::Draw()
 	// バックバッファの情報をコピー
 	m_pD3DDevice->GetRenderTarget(0, &oldRenderTarget);
 
-	// レンダリングターゲットに疑似スクリーン用のテクスチャを指定
+	// レンダリングターゲットに疑似スクリーンのサーフェイスを指定
 	m_pD3DDevice->SetRenderTarget(0, CFakeScreen::GetInstance()->GetSurface());
 
-	// 描画開始
+	// 疑似スクリーンのテクスチャ内へ描画開始
 	if (SUCCEEDED(m_pD3DDevice->BeginScene()))
 	{
 		// カメラをセット
@@ -219,6 +227,24 @@ void CRenderer::Draw()
 		m_pD3DDevice->EndScene();
 	}
 
+	// レンダリングターゲットにモニター用のサーフェイスを指定
+	m_pD3DDevice->SetRenderTarget(0, m_pMonitorSurface);
+
+	// 画面バッファクリア
+	m_pD3DDevice->Clear(0, nullptr,
+		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
+		D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
+
+	// モニター用のテクスチャ内へ描画開始
+	if (SUCCEEDED(m_pD3DDevice->BeginScene()))
+	{
+		// 疑似スクリーンを描画
+		CFakeScreen::GetInstance()->Draw();
+
+		// 描画終了
+		m_pD3DDevice->EndScene();
+	}
+
 	// レンダリングターゲットをバックバッファに戻す
 	m_pD3DDevice->SetRenderTarget(0, oldRenderTarget);
 
@@ -229,22 +255,20 @@ void CRenderer::Draw()
 		oldRenderTarget = nullptr;
 	}
 
-	// 画面クリア
-	m_pD3DDevice->Clear(0, nullptr,
-		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
-		D3DCOLOR_RGBA(255, 255, 255, 0), 1.0f, 0);
-
-	// 描画開始
+	// 通常の3D空間内へ描画開始
 	if (SUCCEEDED(m_pD3DDevice->BeginScene()))
 	{
 		/* ワイヤー描画 */
 		//m_pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
 
+		// カメラをセット
+		CManager::GetCamera()->SetCameraBG();
+
 		// 背景の描画
 		CObject::DrawBG();
 
 		// 疑似スクリーンを描画
-		CFakeScreen::GetInstance()->Draw();
+		//CFakeScreen::GetInstance()->Draw();
 
 		// UIの描画
 		CObject::DrawUI();
@@ -312,6 +336,22 @@ LPDIRECT3DDEVICE9 CRenderer::GetDeviece()
 }
 
 //============================================================================
+// テクスチャ情報を取得
+//============================================================================
+LPDIRECT3DTEXTURE9 CRenderer::GetTexture()
+{
+	return m_pMonitorTex;
+}
+
+//============================================================================
+// サーフェイス情報を取得
+//============================================================================
+LPDIRECT3DSURFACE9 CRenderer::GetSurface()
+{
+	return m_pMonitorSurface;
+}
+
+//============================================================================
 // デバッグ用文字列に追加
 //============================================================================
 void CRenderer::SetDebugString(std::string str)
@@ -342,6 +382,28 @@ void CRenderer::Create()
 }
 
 //============================================================================
+// 疑似スクリーン用テクスチャの生成
+//============================================================================
+HRESULT CRenderer::CreateTex()
+{
+	// テクスチャを作成
+	HRESULT hr =  CRenderer::GetInstance()->GetDeviece()->CreateTexture(
+		SCREEN_WIDTH,			// U
+		SCREEN_HEIGHT,			// V
+		0,						// ミップマップレベル
+		D3DUSAGE_RENDERTARGET,	// テクスチャの性質
+		D3DFMT_A8R8G8B8,		// ピクセルフォーマット
+		D3DPOOL_DEFAULT,		// メモリ管理フラグ
+		&m_pMonitorTex,			// テクスチャ保存先
+		nullptr);				// ハンドル
+
+	// テクスチャのサーフェイスを取得
+	m_pMonitorTex->GetSurfaceLevel(0, &m_pMonitorSurface);
+
+	return hr;
+}
+
+//============================================================================
 // 終了処理
 //============================================================================
 void CRenderer::Uninit()
@@ -357,6 +419,20 @@ void CRenderer::Uninit()
 
 	// テクスチャマネージャー破棄
 	CTexture_Manager::GetInstance()->Release();
+
+	// サーフェイス情報の破棄
+	if (m_pMonitorSurface != nullptr)
+	{
+		m_pMonitorSurface->Release();
+		m_pMonitorSurface = nullptr;
+	}
+
+	// テクスチャ情報の破棄
+	if (m_pMonitorTex != nullptr)
+	{
+		m_pMonitorTex->Release();
+		m_pMonitorTex = nullptr;
+	}
 
 	// フォントの破棄
 	if (m_pFont != nullptr)

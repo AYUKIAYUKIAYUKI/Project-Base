@@ -127,6 +127,129 @@ void CCamera::Update()
 }
 
 //============================================================================
+// 背景用カメラをセット
+//============================================================================
+void CCamera::SetCameraBG()
+{
+	// デバイスを取得
+	LPDIRECT3DDEVICE9 pDev = CRenderer::GetInstance()->GetDeviece();
+
+	// 画面バッファクリア
+	pDev->Clear(0, nullptr,
+		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
+		D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
+
+	/////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////
+
+	static D3DXVECTOR3 rotTarget{ 0.0f, 0.0f, 0.0f };
+
+	// 左右
+	if (CManager::GetKeyboard()->GetPress(DIK_RIGHT))
+	{
+		rotTarget.y += 0.02f;
+	}
+	else if (CManager::GetKeyboard()->GetPress(DIK_LEFT))
+	{
+		rotTarget.y -= 0.02f;
+	}
+
+	// 上下
+	if (CManager::GetKeyboard()->GetPress(DIK_UP))
+	{
+		rotTarget.x += 0.02f;
+	}
+	else if (CManager::GetKeyboard()->GetPress(DIK_DOWN))
+	{
+		rotTarget.x -= 0.02f;
+	}
+
+	/////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////
+
+	// 回転量減衰
+	rotTarget *= 0.8f;
+
+	// 回転量反映
+	static D3DXVECTOR3 rot{ 0.0f, 0.0f, 0.0f };
+	rot += rotTarget * 0.5f;
+
+	/////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////
+
+	// 回転の制限
+	if (rot.y > D3DX_PI)
+	{
+		rot.y = -D3DX_PI;
+	}
+	else if (rot.y < -D3DX_PI)
+	{
+		rot.y = D3DX_PI;
+	}
+
+	if (rot.x + m_rotTarget.x > D3DX_PI * 0.48f)
+	{
+		rot.x = D3DX_PI * 0.48f;
+	}
+	else if (m_rot.x + m_rotTarget.x < -D3DX_PI * 0.48f)
+	{
+		rot.x = -D3DX_PI * 0.48f;
+	}
+
+	/////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////
+
+	// 対象座標用
+	static D3DXVECTOR3 pos{ 0.0f, 0.0f, 0.0f };
+	pos = { 0.0f, 0.0f, 0.0f };
+
+	// 視点は対象物の後方に
+	static D3DXVECTOR3 posV{ 0.0f, 0.0f, 0.0f };
+	posV =
+	{
+		pos.x - (sinf(rot.y) * cosf(rot.x) * (m_fDistance)),
+		pos.y - (sinf(rot.x) * (m_fDistance)),
+		pos.z - (cosf(rot.y) * cosf(rot.x) * (m_fDistance))
+	};
+
+	// 注視点を対象物の前方に
+	static D3DXVECTOR3 posR{ 0.0f, 0.0f, 0.0f };
+	posR =
+	{
+		pos.x + (sinf(rot.y) * cosf(rot.x) * m_fDistance),
+		pos.y + (sinf(rot.x) * m_fDistance),
+		pos.z + (cosf(rot.y) * cosf(rot.x) * m_fDistance)
+	};
+
+	/////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////
+
+	/* 空のマトリックスを用意 */
+	D3DXMATRIX mtxView;
+
+	/* ビュー行列を計算 */
+
+	// ビューマトリックスの初期化
+	D3DXMatrixIdentity(&mtxView);
+
+	// 視点位置の調整用
+	//D3DXVECTOR3 posV = { 0.0f, 0.0f, -300.0f };
+	//D3DXVECTOR3 posR = { 0.0f, 0.0f, 300.0f };
+	//D3DXVECTOR3 posV = m_posV;
+	//D3DXVECTOR3 posR = m_posR;
+
+	// ビューマトリックスの生成
+	D3DXMatrixLookAtLH(&mtxView,
+		&posV,
+		&posR,
+		&m_vecU);
+
+	// ビューマトリックスの設定
+	pDev->SetTransform(D3DTS_VIEW,
+		&mtxView);
+}
+
+//============================================================================
 // カメラをセット
 //============================================================================
 void CCamera::SetCamera()
@@ -257,7 +380,6 @@ void CCamera::Translation()
 //============================================================================
 void CCamera::RestrictYaw()
 {
-	// 回転の制限
 	if (m_rot.y > D3DX_PI)
 	{
 		m_rot.y = -D3DX_PI;

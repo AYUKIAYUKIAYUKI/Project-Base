@@ -20,6 +20,7 @@ public:
 
 	HRESULT Init();		// 初期設定
 	void Update();		// 更新処理
+	void SetCameraBG();	// 背景用カメラをセット
 	void SetCamera();	// カメラをセット
 	
 	D3DXVECTOR3 GetPos();			// 位置を取得

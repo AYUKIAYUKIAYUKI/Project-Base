@@ -51,7 +51,7 @@ HRESULT CFakeScreen::Init()
 	m_pos = { SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f };
 
 	// サイズを設定
-	float fSize = 0.2f;
+	float fSize = 0.5f;
 	m_size = { SCREEN_WIDTH * fSize * 1.1f, SCREEN_HEIGHT * fSize, 0.0f };
 
 	// メッシュ情報の計算
@@ -122,7 +122,7 @@ void CFakeScreen::Uninit()
 		m_pTex = nullptr;
 	}
 
-	// サーフェス情報の破棄
+	// サーフェイス情報の破棄
 	if (m_pSurface != nullptr)
 	{
 		m_pSurface->Release();
@@ -435,7 +435,7 @@ HRESULT CFakeScreen::CreateTex()
 {
 #if 1
 	// テクスチャを作成
-	CRenderer::GetInstance()->GetDeviece()->CreateTexture(
+	HRESULT hr = CRenderer::GetInstance()->GetDeviece()->CreateTexture(
 		SCREEN_WIDTH,			// U
 		SCREEN_HEIGHT,			// V
 		0,						// ミップマップレベル
@@ -454,7 +454,7 @@ HRESULT CFakeScreen::CreateTex()
 	// テクスチャのサーフェイスを取得
 	m_pTex->GetSurfaceLevel(0, &m_pSurface);
 
-	return S_OK;
+	return hr;
 }
 
 //============================================================================

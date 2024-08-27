@@ -10,6 +10,10 @@
 //****************************************************
 #include "monitor.h"
 
+// モニター画面描画用
+//#include "fakescreen.h"
+#include "renderer.h"
+
 //============================================================================
 // デフォルトコンストラクタ
 //============================================================================
@@ -34,6 +38,13 @@ HRESULT CMonitor::Init()
 {
 	// 基底クラスの初期設定
 	HRESULT hr = CObject_X::Init();
+
+	// モデルを取得
+	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::MONITOR);
+
+	// モニターの画面部分に疑似スクリーンを描画する
+	//model->ppTex[1] = CFakeScreen::GetInstance()->GetTexture();
+	model->ppTex[1] = CRenderer::GetInstance()->GetTexture();
 
 	return hr;
 }
