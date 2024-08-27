@@ -20,7 +20,7 @@ class CObject_3D : public CObject
 {
 public:
 
-	CObject_3D(int nPriority = static_cast<int>(LAYER::FRONT));	// コンストラクタ
+	CObject_3D(int nPriority = static_cast<int>(LAYER::NONE));	// コンストラクタ
 	~CObject_3D() override;										// デストラクタ
 
 	HRESULT Init() override;	// 初期設定

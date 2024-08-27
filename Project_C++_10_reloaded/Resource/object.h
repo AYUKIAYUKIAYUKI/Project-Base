@@ -52,9 +52,9 @@ public:
 		MAX,
 	};
 
-	CObject();													// デフォルトコンストラクタ
-	CObject(int nPriority = static_cast<int>(LAYER::MAX) - 1);	// プライオリティ指定コンストラクタ
-	virtual ~CObject() = 0;										// デストラクタ
+	CObject();												// デフォルトコンストラクタ
+	CObject(int nPriority = static_cast<int>(LAYER::NONE));	// プライオリティ指定コンストラクタ
+	virtual ~CObject() = 0;									// デストラクタ
 
 	virtual HRESULT Init() = 0;	// 初期設定
 	virtual void Uninit() = 0;	// 終了処理
@@ -73,6 +73,7 @@ public:
 	static void UpdateAll();		// 全オブジェクト更新処理
 	static void LateUpdateAll();	// 全オブジェクト後更新処理
 	static void DrawAll();			// 全オブジェクト描画処理
+	static void DrawBG();			// 背景のみ描画
 	static void DrawScreen();		// スクリーン画面内の描画
 	static void DrawUI();			// UIオブジェクトのみ描画
 

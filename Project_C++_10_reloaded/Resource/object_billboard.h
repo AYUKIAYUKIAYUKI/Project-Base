@@ -20,7 +20,7 @@ class CObject_billboard : public CObject
 {
 public:
 
-	CObject_billboard(int nPriority = static_cast<int>(LAYER::FRONT));	// コンストラクタ
+	CObject_billboard(int nPriority = static_cast<int>(LAYER::NONE));	// コンストラクタ
 	~CObject_billboard() override;										// デストラクタ
 
 	HRESULT Init() override;	// 初期設定

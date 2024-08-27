@@ -183,11 +183,6 @@ void CRenderer::Draw()
 	// レンダリングターゲットに疑似スクリーン用のテクスチャを指定
 	m_pD3DDevice->SetRenderTarget(0, CFakeScreen::GetInstance()->GetSurface());
 
-	//// 画面クリア
-	//m_pD3DDevice->Clear(0, nullptr,
-	//	(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
-	//	D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
-
 	// 描画開始
 	if (SUCCEEDED(m_pD3DDevice->BeginScene()))
 	{
@@ -200,15 +195,9 @@ void CRenderer::Draw()
 		// シーンの専用描画
 		CManager::GetScene()->Draw();
 
-		// フェードの描画処理
-		//CManager::GetFade()->Draw();
-
 		// 描画終了
 		m_pD3DDevice->EndScene();
 	}
-
-	// バックバッファとフロントバッファの入れ替え
-	//m_pD3DDevice->Present(nullptr, nullptr, nullptr, nullptr);
 
 	// レンダリングターゲットをバックバッファに戻す
 	m_pD3DDevice->SetRenderTarget(0, oldRenderTarget);
@@ -228,8 +217,11 @@ void CRenderer::Draw()
 	// 描画開始
 	if (SUCCEEDED(m_pD3DDevice->BeginScene()))
 	{
-		// ワイヤー描画
+		/* ワイヤー描画 */
 		//m_pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+
+		// 背景の描画
+		CObject::DrawBG();
 
 		// 疑似スクリーンを描画
 		CFakeScreen::GetInstance()->Draw();

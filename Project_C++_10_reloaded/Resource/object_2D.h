@@ -20,8 +20,8 @@ class CObject_2D : public CObject
 {
 public:
 	
-	CObject_2D(int nPriority = static_cast<int>(LAYER::UI) - 1);	// コンストラクタ
-	~CObject_2D() override;											// デストラクタ
+	CObject_2D(int nPriority = static_cast<int>(LAYER::NONE));	// コンストラクタ
+	~CObject_2D() override;										// デストラクタ
 
 	HRESULT Init() override;	// 初期設定
 	void Uninit() override;		// 終了処理

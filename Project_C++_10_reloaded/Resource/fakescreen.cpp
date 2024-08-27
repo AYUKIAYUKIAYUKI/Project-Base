@@ -51,7 +51,7 @@ HRESULT CFakeScreen::Init()
 	m_pos = { SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f };
 
 	// サイズを設定
-	float fSize = 0.5f;
+	float fSize = 0.2f;
 	m_size = { SCREEN_WIDTH * fSize * 1.1f, SCREEN_HEIGHT * fSize, 0.0f };
 
 	// メッシュ情報の計算
@@ -460,7 +460,7 @@ HRESULT CFakeScreen::CreateTex()
 //============================================================================
 // デフォルトコンストラクタ
 //============================================================================
-CFakeScreen::CFakeScreen() : 
+CFakeScreen::CFakeScreen() :
 	m_pVtxBuff{ nullptr },						// 頂点バッファのポインタ
 	m_pIdxBuff{ nullptr },						// インデックスバッファのポインタ
 	m_pTex{ nullptr },							// テクスチャ情報のポインタ

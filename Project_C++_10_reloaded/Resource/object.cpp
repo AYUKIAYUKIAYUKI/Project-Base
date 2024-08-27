@@ -317,11 +317,36 @@ void CObject::DrawAll()
 }
 
 //============================================================================
+// 背景のみ描画
+//============================================================================
+void CObject::DrawBG()
+{
+	// 描画優先度は背景のみ
+	int nPriority = static_cast<int>(LAYER::BG);
+
+	// 先頭オブジェクトのポインタをコピー
+	CObject* pObj = m_pTop[nPriority];
+
+	// 次のオブジェクトが無くなるまで
+	while (pObj != nullptr)
+	{
+		// 次のオブジェクトのポインタをコピー
+		CObject* pNext = pObj->m_pNext;
+
+		// 描画処理
+		pObj->Draw();
+
+		// 次のオブジェクトのポインタをコピー
+		pObj = pNext;
+	}
+}
+
+//============================================================================
 // スクリーン画面内の描画
 //============================================================================
 void CObject::DrawScreen()
 {
-	for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::UI); nCntPriority++)
+	for (int nCntPriority = static_cast<int>(LAYER::BACK); nCntPriority < static_cast<int>(LAYER::UI); nCntPriority++)
 	{
 		// 先頭オブジェクトのポインタをコピー
 		CObject* pObj = m_pTop[nCntPriority];
