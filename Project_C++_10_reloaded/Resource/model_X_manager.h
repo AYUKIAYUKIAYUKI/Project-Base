@@ -21,6 +21,7 @@ public:
 	enum class TYPE
 	{
 		KARIHAIKEI = 0,	// 仮背景
+		MONITOR,		// モニター
 		PLAYER_000,		// プレイヤー000
 		PLAYER_001,		// プレイヤー001
 		PLAYER_002,		// プレイヤー002

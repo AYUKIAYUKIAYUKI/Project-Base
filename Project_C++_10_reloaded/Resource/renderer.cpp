@@ -13,9 +13,14 @@
 // 描画用
 #include "manager.h"
 
+// シングルトン管理用
+#include "texture_manager.h"
+#include "model_X_manager.h"
+
 // オブジェクト情報
 #include "object.h"
 #include "fakescreen.h"
+#include "monitor.h"
 
 //****************************************************
 // 静的メンバ変数の初期化
@@ -127,8 +132,23 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 		OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH,
 		"Terminal", &m_pFont);
 
+	// テクスチャマネージャー初期設定
+	if (FAILED(CTexture_Manager::GetInstance()->Load()))
+	{
+		return E_FAIL;
+	}
+
+	// Xモデルマネージャー初期設定
+	if (FAILED(CModel_X_Manager::GetInstance()->Load()))
+	{
+		return E_FAIL;
+	}
+
 	// 疑似スクリーンの初期設定
 	CFakeScreen::GetInstance()->Init();
+
+	// モニターの生成
+	CMonitor::Create({ 0.0f, 0.0f, 0.0f });
 
 	return S_OK;
 }
@@ -331,6 +351,12 @@ void CRenderer::Uninit()
 
 	// 疑似スクリーンの破棄
 	CFakeScreen::GetInstance()->Release();
+
+	// Xモデルマネージャー破棄
+	CModel_X_Manager::GetInstance()->Release();
+
+	// テクスチャマネージャー破棄
+	CTexture_Manager::GetInstance()->Release();
 
 	// フォントの破棄
 	if (m_pFont != nullptr)

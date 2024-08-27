@@ -105,8 +105,11 @@ void CGameManager::Update()
 
 	case PHASE::START:
 
-		// 全オブジェクト解放処理
-		CObject::ReleaseAll();
+		// スクリーン画面内の解放処理
+		CObject::ReleaseScreen();
+
+		// UIの解放処理
+		CObject::ReleaseUI();
 
 		// KARIHAIKEIの生成
 		KARIHAIKEI::Create();

@@ -1,6 +1,6 @@
 //============================================================================
 // 
-// シーン管理 [scene.cpp]
+// モニター [monitor.cpp]
 // Author : 福田歩希
 // 
 //============================================================================
@@ -8,21 +8,13 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
-#include "scene.h"
-
-// シーン用
-#include "title.h"
-#include "game.h"
-#include "stage_debug.h"
-#include "result.h"
-
-// オブジェクト管理用
-#include "object.h"
+#include "monitor.h"
 
 //============================================================================
-// コンストラクタ
+// デフォルトコンストラクタ
 //============================================================================
-CScene::CScene() : m_mode(MODE::NONE)
+CMonitor::CMonitor() :
+	CObject_X{ static_cast<int>(LAYER::BG) }	// 描画優先度を指定
 {
 
 }
@@ -30,7 +22,7 @@ CScene::CScene() : m_mode(MODE::NONE)
 //============================================================================
 // デストラクタ
 //============================================================================
-CScene::~CScene()
+CMonitor::~CMonitor()
 {
 
 }
@@ -38,87 +30,74 @@ CScene::~CScene()
 //============================================================================
 // 初期設定
 //============================================================================
-HRESULT CScene::Init()
+HRESULT CMonitor::Init()
 {
-	return S_OK;
+	// 基底クラスの初期設定
+	HRESULT hr = CObject_X::Init();
+
+	return hr;
 }
 
 //============================================================================
 // 終了処理
 //============================================================================
-void CScene::Uninit()
+void CMonitor::Uninit()
 {
-	// スクリーン画面内の解放処理
-	CObject::ReleaseScreen();
+	// 基底クラスの終了処理
+	CObject_X::Uninit();
 }
 
 //============================================================================
 // 更新処理
 //============================================================================
-void CScene::Update()
+void CMonitor::Update()
 {
-
+	// 基底クラスの更新
+	CObject_X::Update();
 }
 
 //============================================================================
 // 描画処理
 //============================================================================
-void CScene::Draw()
+void CMonitor::Draw()
 {
-
-}
-
-//============================================================================
-// モードを取得
-//============================================================================
-CScene::MODE CScene::GetMode()
-{
-	return m_mode;
+	// 基底クラスの描画処理
+	CObject_X::Draw();
 }
 
 //============================================================================
 // 生成
 //============================================================================
-CScene* CScene::Create(MODE mode)
+CMonitor* CMonitor::Create(D3DXVECTOR3 pos)
 {
-	// 基底クラスのポインタを用意
-	CScene* pScene = nullptr;
+	// インスタンスを生成
+	CMonitor* pMonitor = DBG_NEW CMonitor;
 
-	switch (mode)
-	{
-	case CScene::MODE::TITLE:
-		pScene = DBG_NEW CTitle;
-		pScene->m_mode = MODE::TITLE;
-		break;
-
-	case CScene::MODE::GAME:
-		pScene = DBG_NEW CGame;
-		pScene->m_mode = MODE::GAME;
-		break;
-
-	case CScene::MODE::STAGE:
-		pScene = DBG_NEW CStage_Debug;
-		pScene->m_mode = MODE::STAGE;
-		break;
-
-	case CScene::MODE::RESULT:
-		pScene = DBG_NEW CResult;
-		pScene->m_mode = MODE::RESULT;
-		break;
-
-	default:
-		assert(false);
-		break;
-	}
-
-	if (pScene == nullptr)
+	if (pMonitor == nullptr)
 	{ // 生成失敗
 		assert(false);
 	}
 
-	// 初期設定
-	/* ここで初期化をする -> シーンのInitでモードに応じた生成のために、ダングリングしたシーンポインタにアクセスする -> エラー */
-	//pScene->Init();
+	// タイプを設定
+	pMonitor->SetType(TYPE::NONE);
 
-	return pScene;
+	// 基底クラスの初期設定
+	pMonitor->Init();
+
+	// 座標の設定
+	pMonitor->SetPos(pos);
+
+	// モデルを取得
+	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::MONITOR);
+
+	// モデルを設定
+	pMonitor->BindModel(model);
+
+	// サイズを設定
+	pMonitor->SetSize(model->size);
+
+	// 描画される前に一度更新しておく
+	pMonitor->Update();
+
+	return pMonitor;
 }

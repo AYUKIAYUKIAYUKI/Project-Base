@@ -70,10 +70,13 @@ public:
 	CObject* GetNext();	// 次のオブジェクトのポインタを取得
 
 	static void ReleaseAll();		// 全オブジェクト解放処理
+	static void ReleaseBG();		// 背景オブジェクトのみ解放処理
+	static void ReleaseScreen();		// スクリーン画面内の解放処理
+	static void ReleaseUI();		// UIオブジェクトのみ解放処理
 	static void UpdateAll();		// 全オブジェクト更新処理
 	static void LateUpdateAll();	// 全オブジェクト後更新処理
 	static void DrawAll();			// 全オブジェクト描画処理
-	static void DrawBG();			// 背景のみ描画
+	static void DrawBG();			// 背景オブジェクトのみ描画
 	static void DrawScreen();		// スクリーン画面内の描画
 	static void DrawUI();			// UIオブジェクトのみ描画
 

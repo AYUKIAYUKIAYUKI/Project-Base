@@ -12,8 +12,6 @@
 
 // シングルトン管理用
 #include "renderer.h"
-#include "texture_manager.h"
-#include "model_X_manager.h"
 #include "sound.h"
 #include "utility.h"
 
@@ -54,18 +52,6 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {
 	// レンダラーの初期設定
 	CRenderer::GetInstance()->Init(hWnd, bWindow);
-
-	// テクスチャマネージャー初期設定
-	if (FAILED(CTexture_Manager::GetInstance()->Load()))
-	{
-		return E_FAIL;
-	}
-
-	// Xモデルマネージャー初期設定
-	if (FAILED(CModel_X_Manager::GetInstance()->Load()))
-	{
-		return E_FAIL;
-	}
 
 	// サウンド初期設定
 	if (FAILED(CSound::GetInstance()->Init(hWnd)))
@@ -174,12 +160,6 @@ void CManager::Uninit()
 
 	// サウンド破棄
 	CSound::GetInstance()->Release();
-
-	// Xモデルマネージャー破棄
-	CModel_X_Manager::GetInstance()->Release();
-
-	// テクスチャマネージャー破棄
-	CTexture_Manager::GetInstance()->Release();
 
 	// レンダラーの破棄
 	CRenderer::GetInstance()->Release();
