@@ -1,5 +1,5 @@
 data\\MODEL\\KARIHAIKEI.x
-data\\MODEL\\monitor.x
+data\\MODEL\\tv.x
 data\\MODEL\\player1_Y_0.x
 data\\MODEL\\player2_Y_0.x
 data\\MODEL\\player3_Y_0.x

@@ -44,7 +44,7 @@ HRESULT CMonitor::Init()
 
 	// モニターの画面部分に疑似スクリーンを描画する
 	//model->ppTex[1] = CFakeScreen::GetInstance()->GetTexture();
-	model->ppTex[1] = CRenderer::GetInstance()->GetTexture();
+	model->ppTex[0] = CRenderer::GetInstance()->GetTexture();
 
 	return hr;
 }

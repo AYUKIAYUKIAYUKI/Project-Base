@@ -200,24 +200,43 @@ void CCamera::SetCameraBG()
 	/////////////////////////////////////////////////////////////
 
 	// 対象座標用
-	static D3DXVECTOR3 pos{ 0.0f, 0.0f, 0.0f };
-	pos = { 0.0f, 0.0f, 0.0f };
+	static D3DXVECTOR3 pos{ 0.0f, 1.5f, 0.0f };
+
+	if (CManager::GetKeyboard()->GetPress(DIK_T))
+	{
+		pos.y += 0.5f;
+	}
+	else if (CManager::GetKeyboard()->GetPress(DIK_G))
+	{
+		pos.y += -0.5f;
+	}
+
+	if (CManager::GetKeyboard()->GetPress(DIK_H))
+	{
+		pos.x += 0.5f;
+	}
+	else if (CManager::GetKeyboard()->GetPress(DIK_F))
+	{
+		pos.x += -0.5f;
+	}
 
 	// 視点 -> 注視点間の距離
-	static float fDistance = 250.0f;
+	static float fDistance = 20.0f;
 
-	if (CManager::GetKeyboard()->GetPress(DIK_NUMPAD8))
+	if (CManager::GetKeyboard()->GetTrigger(DIK_NUMPAD8))
 	{
 		fDistance--;
 	}
-	else if (CManager::GetKeyboard()->GetPress(DIK_NUMPAD2))
+	else if (CManager::GetKeyboard()->GetTrigger(DIK_NUMPAD5))
 	{
 		fDistance++;
 	}
-	else if(CManager::GetKeyboard()->GetTrigger(DIK_NUMPAD5))
+	else if(CManager::GetKeyboard()->GetTrigger(DIK_NUMPAD2))
 	{
-		fDistance = 250.0;
+		fDistance = 20.0;
 	}
+
+	CRenderer::GetInstance()->SetDebugString("空間ズーム具合 : " + std::to_string(fDistance));
 
 	// 視点は対象物の後方に
 	static D3DXVECTOR3 posV{ 0.0f, 0.0f, 0.0f };
@@ -469,23 +488,23 @@ void CCamera::CalcMtxProjection()
 		10.0f,
 		5000.0f);
 
-	static float eiieei = 0.0f;
-	float f = 1.0f;
-	if (CManager::GetKeyboard()->GetPress(DIK_T))
-	{
-		eiieei += -f;
-	}
-	else if(CManager::GetKeyboard()->GetPress(DIK_Y))
-	{
-		eiieei += f;
-	}
-	else if (CManager::GetKeyboard()->GetPress(DIK_U))
-	{
-		eiieei = 0.0f;
-	}
-	std::string str = std::to_string(eiieei);
-	CRenderer::GetInstance()->SetDebugString(str);
-	m_mtxProjection._44 += eiieei;
+	//static float eiieei = 0.0f;
+	//float f = 1.0f;
+	//if (CManager::GetKeyboard()->GetPress(DIK_T))
+	//{
+	//	eiieei += -f;
+	//}
+	//else if(CManager::GetKeyboard()->GetPress(DIK_Y))
+	//{
+	//	eiieei += f;
+	//}
+	//else if (CManager::GetKeyboard()->GetPress(DIK_U))
+	//{
+	//	eiieei = 0.0f;
+	//}
+	//std::string str = std::to_string(eiieei);
+	//CRenderer::GetInstance()->SetDebugString(str);
+	//m_mtxProjection._44 += eiieei;
 	
 #else
 	// 平行投影
