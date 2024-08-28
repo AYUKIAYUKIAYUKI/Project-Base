@@ -21,7 +21,7 @@ CNumber* CScore::m_apNumber[MAX_DIGIT];	// 数字管理
 //============================================================================
 // コンストラクタ
 //============================================================================
-CScore::CScore() : CObject(static_cast<int>(LAYER::NONE))
+CScore::CScore() : CObject(static_cast<int>(LAYER::UI))
 {
 	m_nScore = 0;		// 現在のスコア
 	m_nScore_old = 0;	// 過去のスコア

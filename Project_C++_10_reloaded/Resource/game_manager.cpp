@@ -108,9 +108,6 @@ void CGameManager::Update()
 		// スクリーン画面内の解放処理
 		CObject::ReleaseScreen();
 
-		// UIの解放処理
-		CObject::ReleaseUI();
-
 		// KARIHAIKEIの生成
 		KARIHAIKEI::Create();
 
@@ -122,11 +119,6 @@ void CGameManager::Update()
 
 		// プレイヤーの生成
 		CPlayer::Create({ 0.0f, 0.0f, 0.0f });	// 位置
-
-		// スコアの生成
-		CScore::Create(
-			{ 25.0f, 30.0f, 0.0f },	// 位置
-			25.0f);					// 数列の配置間隔
 
 		// レベル進行フェーズへ
 		m_phase = PHASE::INGAME;
@@ -226,7 +218,10 @@ CGameManager::CGameManager() :
 	m_nCntGoal{ 0 },		// ゴール後カウント
 	m_stagePath{}			// ステージパス
 {
-
+	// スコアの生成
+	CScore::Create(
+		{ 25.0f, 30.0f, 0.0f },	// 位置
+		25.0f);					// 数列の配置間隔
 }
 
 //============================================================================
