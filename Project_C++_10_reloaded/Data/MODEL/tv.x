@@ -7369,7 +7369,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    1.000000;1.000000;1.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Downloads\\sky_image.png";
+    "test.jpg";
    }
   }
   Material {
@@ -7378,7 +7378,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    1.000000;1.000000;1.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Downloads\\レトロテレビ_MMD\\レトロテレビ_MMD\\textures\\1970_albedo.png";
+    "Data\\TEXTURE\\tv.jpg";
    }
   }
   Material {
@@ -7387,7 +7387,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.596078;0.596078;0.596078;;
    TextureFilename {
-    "C:\\Users\\student\\Downloads\\レトロテレビ_MMD\\レトロテレビ_MMD\\textures\\1970_albedo.png";
+    "Data\\TEXTURE\\tv.jpg";
    }
   }
   Material {
@@ -7396,7 +7396,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.768627;0.768627;0.768627;;
    TextureFilename {
-    "C:\\Users\\student\\Downloads\\レトロテレビ_MMD\\レトロテレビ_MMD\\textures\\1970_albedo.png";
+    "Data\\TEXTURE\\tv.jpg";
    }
   }
  }

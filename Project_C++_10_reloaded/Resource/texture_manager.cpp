@@ -49,11 +49,14 @@ HRESULT CTexture_Manager::Load()
 
 		if (FAILED(hr))
 		{ // テクスチャ生成失敗
-
+#if 0
 			// ファイルを閉じる
 			file.close();
 
 			assert(false);
+#else
+			CRenderer::GetInstance()->SetTimeString("【警告】テクスチャ[" + filename + "]は生成に失敗しました", 300);
+#endif
 		}
 	}
 

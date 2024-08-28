@@ -80,7 +80,13 @@ HRESULT CModel_X_Manager::Load()
 
 				if (FAILED(hr))
 				{ // ¶¬¸”s
+#if 0
 					assert(false);
+#else
+					std::string tex = pMat[nCntMat].pTextureFilename;
+					CRenderer::GetInstance()->SetTimeString("yŒxzƒeƒNƒXƒ`ƒƒ[" + tex + "]‚Í¶¬‚É¸”s‚µ‚Ü‚µ‚½", 300);
+					m_apModelTemp[nCntModel].ppTex[nCntMat] = nullptr;
+#endif
 				}
 			}
 			else
