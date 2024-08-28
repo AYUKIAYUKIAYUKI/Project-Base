@@ -29,6 +29,14 @@ public:
 	void Draw() override;		// 描画処理
 
 	static CMonitor* Create(D3DXVECTOR3 pos);	// 生成
+
+private:
+
+	bool Appear();			// 出現
+	D3DXVECTOR3 Recoil();	// 反動
+
+	D3DXVECTOR3 m_velocity;	// 加速度
+	bool m_bAppear;			// 出現フラグ
 };
 
 #endif // _MONITOR_H_

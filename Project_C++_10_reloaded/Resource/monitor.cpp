@@ -9,6 +9,7 @@
 // インクルードファイル
 //****************************************************
 #include "monitor.h"
+#include "utility.h"
 
 // モニター画面描画用
 //#include "fakescreen.h"
@@ -18,7 +19,9 @@
 // デフォルトコンストラクタ
 //============================================================================
 CMonitor::CMonitor() :
-	CObject_X{ static_cast<int>(LAYER::BG) }	// 描画優先度を指定
+	CObject_X{ static_cast<int>(LAYER::BG) },	// 描画優先度を指定
+	m_velocity{ 0.0f, 0.0f, 0.0f },				// 加速度
+	m_bAppear{ false }							// 出現フラグ
 {
 
 }
@@ -63,6 +66,12 @@ void CMonitor::Uninit()
 //============================================================================
 void CMonitor::Update()
 {
+	//if (!m_bAppear)
+	//{
+	//	// 出現
+	//	m_bAppear = Appear();
+	//}
+
 	// 基底クラスの更新
 	CObject_X::Update();
 }
@@ -96,7 +105,7 @@ CMonitor* CMonitor::Create(D3DXVECTOR3 pos)
 	pMonitor->Init();
 
 	// 座標の設定
-	pMonitor->SetPos(pos);
+	pMonitor->SetPos({ 0.0f, 0.0f, 0.0f });
 
 	// モデルを取得
 	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::MONITOR);
@@ -111,4 +120,56 @@ CMonitor* CMonitor::Create(D3DXVECTOR3 pos)
 	pMonitor->Update();
 
 	return pMonitor;
+}
+
+//============================================================================
+// 出現
+//============================================================================
+bool CMonitor::Appear()
+{
+	// 重力加速
+	m_velocity.y += -0.2f;
+	//m_velocity.y *= 1.01f;
+	
+	// 座標を変更
+	D3DXVECTOR3 posTarget = GetPos();
+	posTarget += m_velocity;
+	SetPos(posTarget);
+
+	if (posTarget.y < 0.0f)
+	{
+		// 座標と加速度をリセット
+		m_velocity = Recoil();
+		//posTarget.y = 0.0f;
+
+		// 座標を反映
+		//SetPos(posTarget);
+	
+		// 出現終了
+		//return true;
+	}
+
+	return false;
+}
+
+//============================================================================
+// 反動
+//============================================================================
+D3DXVECTOR3 CMonitor::Recoil()
+{
+	// 落下方向の角度を算出
+	float fDropAngle = atan2f(m_velocity.x, m_velocity.y);
+	CRenderer::GetInstance()->SetTimeString("まんこ" + std::to_string(fDropAngle), 800);
+
+	// 反動の加速度を保持
+	D3DXVECTOR3 recoilVelocity{ 0.0f, 0.0f, 0.0f };
+
+	// 反動の加速度を算出
+	//recoilVelocity.x = -sinf(fDropAngle) * 2.0f;
+	recoilVelocity.y = -cosf(fDropAngle) * 4.0f;
+
+	//CRenderer::GetInstance()->SetTimeString("さいん" + std::to_string(recoilVelocity.x), 800);
+	CRenderer::GetInstance()->SetTimeString("こさいん" + std::to_string(recoilVelocity.y), 800);
+
+	return recoilVelocity;
 }

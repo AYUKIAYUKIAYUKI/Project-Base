@@ -200,7 +200,7 @@ void CCamera::SetCameraBG()
 	/////////////////////////////////////////////////////////////
 
 	// 対象座標用
-	static D3DXVECTOR3 pos{ 0.0f, 1.5f, 0.0f };
+	static D3DXVECTOR3 pos{ -3.0f, 0.0f, 0.0f };
 
 	if (CManager::GetKeyboard()->GetPress(DIK_T))
 	{
@@ -221,19 +221,19 @@ void CCamera::SetCameraBG()
 	}
 
 	// 視点 -> 注視点間の距離
-	static float fDistance = 20.0f;
+	static float fDistance = 30.0f;
 
-	if (CManager::GetKeyboard()->GetTrigger(DIK_NUMPAD8))
+	if (CManager::GetKeyboard()->GetPress(DIK_NUMPAD8))
 	{
 		fDistance--;
 	}
-	else if (CManager::GetKeyboard()->GetTrigger(DIK_NUMPAD5))
+	else if (CManager::GetKeyboard()->GetPress(DIK_NUMPAD5))
 	{
 		fDistance++;
 	}
 	else if(CManager::GetKeyboard()->GetTrigger(DIK_NUMPAD2))
 	{
-		fDistance = 20.0;
+		fDistance = 30.0f;
 	}
 
 	CRenderer::GetInstance()->SetDebugString("空間ズーム具合 : " + std::to_string(fDistance));
