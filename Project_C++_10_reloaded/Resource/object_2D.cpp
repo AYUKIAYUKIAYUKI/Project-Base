@@ -30,6 +30,7 @@ CObject_2D::CObject_2D(int nPriority) : CObject(nPriority)
 	m_fTexHeight = 1.0f;			// 縦テクスチャ分縦幅
 	m_nNowPatternU = 0;				// 現在の横テクスチャ種類
 	m_nNowPatternV = 0;				// 現在の縦テクスチャ種類
+	m_fAlpah = 1.0f;				// アルファ値
 }
 
 //============================================================================
@@ -154,6 +155,12 @@ void CObject_2D::Update()
 		m_pos.y + cosf(m_rot.z + m_fAngle) * m_fLength,
 		0.0f
 	};
+
+	// 色の設定
+	pVtx[0].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, m_fAlpah);
+	pVtx[1].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, m_fAlpah);
+	pVtx[2].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, m_fAlpah);
+	pVtx[3].col = D3DXCOLOR(1.0f, 1.0f, 1.0f, m_fAlpah);
 
 	// テクスチャの設定
 	pVtx[0].tex = { m_fTexWidth * m_nNowPatternU, m_fTexHeight * m_nNowPatternV };
@@ -298,6 +305,22 @@ int CObject_2D::GetNowPatternV()
 void CObject_2D::SetNowPatternV(int nNowPatternV)
 {
 	m_nNowPatternV = nNowPatternV;
+}
+
+//============================================================================
+// アルファ値を取得
+//============================================================================
+float& CObject_2D::GetAlpha()
+{
+	return m_fAlpah;
+}
+
+//============================================================================
+// アルファ値を設定
+//============================================================================
+void CObject_2D::SetAlpha(float fAlpha)
+{
+	m_fAlpah = fAlpha;
 }
 
 //============================================================================

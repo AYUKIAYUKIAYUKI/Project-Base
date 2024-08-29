@@ -177,9 +177,6 @@ void CGameManager::Update()
 			CSquare::Create({ 0.0f, 0.0f, 0.0f });
 		}
 
-		// マス目を並べる
-		CSquare::LineUpAll(m_nSelectLevel);
-
 		// レベル選択フェーズへ
 		m_phase = PHASE::SELECT;
 		

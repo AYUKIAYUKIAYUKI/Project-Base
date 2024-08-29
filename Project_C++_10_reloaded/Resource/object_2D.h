@@ -50,6 +50,9 @@ public:
 	int GetNowPatternV();					// 現在のテクスチャ縦分割幅取得
 	void SetNowPatternV(int nNowPatternV);	// 現在のテクスチャ縦分割幅設定
 
+	float& GetAlpha();				// アルファ値取得
+	void SetAlpha(float fAlpha);	// アルファ値設定
+
 	static CObject_2D* Create();	// 生成
 
 private:
@@ -66,6 +69,7 @@ private:
 	float m_fTexHeight;	// 縦テクスチャ分縦幅
 	int m_nNowPatternU;	// 現在の横テクスチャ種類
 	int m_nNowPatternV;	// 現在の縦テクスチャ種類
+	float m_fAlpah;		// アルファ値
 };
 
 #endif // _OBJECT_2D_H_

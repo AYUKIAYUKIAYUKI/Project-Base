@@ -29,8 +29,17 @@ public:
 	void Draw() override;		// 描画処理
 
 	static void ControlAll(int nSelect);		// マス目を動作
-	static void LineUpAll(int nSelect);			// マス目を並べる 
+	static void LineUpAll(int nSelect);			// マス目を並べる (不必要)
 	static CSquare* Create(D3DXVECTOR3 pos);	// 生成
+
+private:
+
+	void Appear();		// 出現
+	void Disappear();	// 消滅
+
+	bool m_bAppear;				// 出現フラグ
+	bool m_bDisappear;			// 消滅フラグ
+	D3DXVECTOR3 m_posTarget;	// 目標座標
 };
 
 #endif // _SQUARE_H_
