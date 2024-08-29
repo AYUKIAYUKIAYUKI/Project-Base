@@ -9,6 +9,7 @@
 // インクルードファイル
 //****************************************************
 #include "square.h"
+#include "utility.h"
 
 // テクスチャ取得用
 #include "texture_manager.h"
@@ -69,6 +70,56 @@ void CSquare::Draw()
 }
 
 //============================================================================
+// マス目を動作
+//============================================================================
+void CSquare::ControlAll(int nSelect)
+{
+	// マス目タグのオブジェクトを全て取得
+	CObject** pObj = CObject::FindAllObject(CObject::TYPE::SQUARE);
+
+	// マス数カウント
+	int nSquareCnt{ 0 };
+
+	// オブジェクトがなくなるまで
+	while (pObj[nSquareCnt])
+	{
+		// 2Dオブジェクトにダウンキャスト
+		CObject_2D* pObj2D = CUtility::GetInstance()->DownCast<CObject_2D, CObject>(pObj[nSquareCnt]);
+
+		// 座標を反映させていく
+		pObj2D->SetPos({ (SCREEN_WIDTH * 0.5f) + (150.0f * nSquareCnt) - (nSelect * 150.0f), SCREEN_HEIGHT * 0.5f, 0.0f });
+
+		// 次へ進める
+		nSquareCnt++;
+	}
+}
+
+//============================================================================
+// マス目を並べる
+//============================================================================
+void CSquare::LineUpAll(int nSelect)
+{
+	// マス目タグのオブジェクトを全て取得
+	CObject** pObj = CObject::FindAllObject(CObject::TYPE::SQUARE);
+
+	// マス数カウント
+	int nSquareCnt{ 0 };
+
+	// オブジェクトがなくなるまで
+	while (pObj[nSquareCnt])
+	{
+		// 2Dオブジェクトにダウンキャスト
+		CObject_2D* pObj2D = CUtility::GetInstance()->DownCast<CObject_2D, CObject>(pObj[nSquareCnt]);
+
+		// 座標を反映させていく
+		pObj2D->SetPos({ (SCREEN_WIDTH * 0.5f) + (150.0f * nSquareCnt) - (nSelect * 150.0f), SCREEN_HEIGHT * 0.5f, 0.0f });
+
+		// 次へ進める
+		nSquareCnt++;
+	}
+}
+
+//============================================================================
 // 生成
 //============================================================================
 CSquare* CSquare::Create(D3DXVECTOR3 pos)
@@ -82,7 +133,7 @@ CSquare* CSquare::Create(D3DXVECTOR3 pos)
 	}
 
 	// タイプを設定
-	pSquare->SetType(TYPE::NONE);
+	pSquare->SetType(TYPE::SQUARE);
 
 	// 基底クラスの初期設定
 	pSquare->Init();

@@ -34,6 +34,7 @@ public:
 		START,			// スタート
 		GOAL,			// ゴール
 		ACHIEVE,		// アチーブ
+		SQUARE,			// マス目
 		SCORE,			// スコア
 		MAX,
 	};

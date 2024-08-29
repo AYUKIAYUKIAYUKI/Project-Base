@@ -115,6 +115,9 @@ void CGameManager::Update()
 			m_nSelectLevel++;
 		}
 
+		// マス目を動作
+		CSquare::ControlAll(m_nSelectLevel);
+
 		if (CManager::GetKeyboard()->GetTrigger(DIK_SPACE))
 		{
 			CFakeScreen::GetInstance()->StopWave(PHASE::START);
@@ -144,7 +147,7 @@ void CGameManager::Update()
 
 		// スコアの生成
 		CScore::Create(
-			{ 25.0f, 30.0f, 0.0f },	// 位置
+			{ 0.0f, 0.0f, 0.0f },	// 位置
 			25.0f);					// 数列の配置間隔
 
 		// レベル進行フェーズへ
@@ -168,8 +171,14 @@ void CGameManager::Update()
 		// UIのみの解放処理
 		CObject::ReleaseUI();
 
-		// マス目を生成
-		CSquare::Create({ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f , 0.0f });
+		// マス目をステージ分生成
+		for (int i = 0; i < m_nMaxStage; i++)
+		{
+			CSquare::Create({ 0.0f, 0.0f, 0.0f });
+		}
+
+		// マス目を並べる
+		CSquare::LineUpAll(m_nSelectLevel);
 
 		// レベル選択フェーズへ
 		m_phase = PHASE::SELECT;

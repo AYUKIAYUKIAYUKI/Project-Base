@@ -28,6 +28,8 @@ public:
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
 
+	static void ControlAll(int nSelect);		// マス目を動作
+	static void LineUpAll(int nSelect);			// マス目を並べる 
 	static CSquare* Create(D3DXVECTOR3 pos);	// 生成
 };
 
