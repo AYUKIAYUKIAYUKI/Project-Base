@@ -261,10 +261,13 @@ void CFakeScreen::StopWave(CGameManager::PHASE phase)
 //============================================================================
 void CFakeScreen::StopWave()
 {
-	if (m_bWaveOut || m_bWaveIn)
+	if (m_bWaveOut || m_bWaving || m_bWaveIn)
 	{
 		// ウェーブアウトを終了
 		m_bWaveOut = false;
+
+		// ウェーブ継続を終了
+		m_bWaving = false;
 
 		// ウェーブインを終了
 		m_bWaveIn = false;

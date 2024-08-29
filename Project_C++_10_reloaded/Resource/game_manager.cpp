@@ -115,7 +115,7 @@ void CGameManager::Update()
 		// ƒ}ƒX–Ú‚ð“®ì
 		CSquare::ControlAll(m_nSelectLevel);
 
-		if (CManager::GetKeyboard()->GetTrigger(DIK_SPACE))
+		if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
 		{
 			CFakeScreen::GetInstance()->StopWave(PHASE::START);
 		}

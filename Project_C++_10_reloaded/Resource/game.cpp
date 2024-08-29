@@ -78,7 +78,7 @@ void CGame::Update()
 		// ステージデバッグ画面へ
 		CFakeScreen::GetInstance()->SetFade(MODE::STAGE);
 	}
-	else if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
+	else if (CManager::GetKeyboard()->GetTrigger(DIK_SPACE))
 	{
 		// リザルト画面へ
 		CFakeScreen::GetInstance()->SetFade(MODE::RESULT);
