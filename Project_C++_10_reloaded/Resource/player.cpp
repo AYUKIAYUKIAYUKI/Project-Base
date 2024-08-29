@@ -273,9 +273,11 @@ bool CPlayer::Collision()
 		// ゴール状態に移行
 		m_pStateManager->SetPendingState(CPlayerState::STATE::GOAL);
 
+		// ウェーブを強制終了
+		CFakeScreen::GetInstance()->StopWave();
+
 		// レベル終了フェーズへ移行
 		CFakeScreen::GetInstance()->SetWave(CGameManager::PHASE::FINISH);
-		//CGameManager::GetInstance()->SetPhase(CGameManager::PHASE::FINISH);
 	}
 
 	// アチーブオブジェクトを取得

@@ -113,7 +113,7 @@ void CLeaf::UpdateToCreate()
 {
 	m_nCntSpawn++;
 
-	if (m_nCntSpawn > 15)
+	if (m_nCntSpawn > 10)
 	{
 		m_nCntSpawn = 0;
 
@@ -132,7 +132,7 @@ void CLeaf::UpdateToCreate()
 			posTarget.x = pPlayer->GetPos().x + - 100.0f - (rand() % 50);
 		}
 
-		posTarget.y = pPlayer->GetPos().y + 200.0f;
+		posTarget.y = pPlayer->GetPos().y + 250.0f;
 
 
 		// ê∂ê¨

@@ -96,15 +96,12 @@ void CGameManager::Update()
 
 	switch (m_phase)
 	{
-	case PHASE::NONE:
-
-		CRenderer::GetInstance()->SetDebugString("無し");
-
-		break;
-
 	case PHASE::SELECT:
 	
 		CRenderer::GetInstance()->SetDebugString("レベル選択 : " + std::to_string(m_nSelectLevel));
+
+		// 葉っぱ生成の更新
+		CLeaf::UpdateToCreate();
 
 		if (CManager::GetKeyboard()->GetTrigger(DIK_A) && m_nSelectLevel > 0)
 		{
@@ -181,10 +178,6 @@ void CGameManager::Update()
 		m_phase = PHASE::SELECT;
 		
 		CRenderer::GetInstance()->SetDebugString("レベル終了");
-
-		break;
-
-	case PHASE::END:
 
 		break;
 

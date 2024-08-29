@@ -11,10 +11,11 @@
 #include "scene.h"
 
 // シーン用
-#include "title.h"
+#include "fakescreen.h"
 #include "game.h"
-#include "stage_debug.h"
 #include "result.h"
+#include "stage_debug.h"
+#include "title.h"
 
 // オブジェクト管理用
 #include "object.h"
@@ -48,6 +49,9 @@ HRESULT CScene::Init()
 //============================================================================
 void CScene::Uninit()
 {
+	// ウェーブの強制終了
+	CFakeScreen::GetInstance()->StopWave();
+
 	// スクリーン画面内の解放処理
 	CObject::ReleaseScreen();
 
