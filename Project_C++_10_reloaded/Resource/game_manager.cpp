@@ -104,7 +104,16 @@ void CGameManager::Update()
 
 	case PHASE::SELECT:
 	
-		CRenderer::GetInstance()->SetDebugString("レベル選択");
+		CRenderer::GetInstance()->SetDebugString("レベル選択 : " + std::to_string(m_nSelectLevel));
+
+		if (CManager::GetKeyboard()->GetTrigger(DIK_A) && m_nSelectLevel > 0)
+		{
+			m_nSelectLevel--;
+		}
+		else if (CManager::GetKeyboard()->GetTrigger(DIK_D) && m_nSelectLevel < m_nMaxStage - 1)
+		{
+			m_nSelectLevel++;
+		}
 
 		if (CManager::GetKeyboard()->GetTrigger(DIK_SPACE))
 		{
@@ -128,10 +137,7 @@ void CGameManager::Update()
 		KARIHAIKEI::Create();
 
 		// ステージを読み込む
-		CStageMaker::GetInstance()->Import(m_stagePath[0]);
-
-		// 先頭要素を削除する
-		m_stagePath.erase(m_stagePath.begin());
+		CStageMaker::GetInstance()->Import(m_stagePath[m_nSelectLevel]);
 
 		// プレイヤーの生成
 		CPlayer::Create({ 0.0f, 0.0f, 0.0f });	// 位置
