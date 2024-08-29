@@ -275,6 +275,7 @@ bool CPlayer::Collision()
 
 		// レベル終了フェーズへ移行
 		CFakeScreen::GetInstance()->SetWave(CGameManager::PHASE::FINISH);
+		//CGameManager::GetInstance()->SetPhase(CGameManager::PHASE::FINISH);
 	}
 
 	// アチーブオブジェクトを取得

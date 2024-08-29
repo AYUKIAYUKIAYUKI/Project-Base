@@ -21,6 +21,7 @@ public:
 	enum class PHASE
 	{
 		NONE = 0,	// 無し
+		SELECT,		// レベル選択
 		START,		// レベル開始
 		INGAME,		// レベル進行
 		FINISH,		// レベル終了
@@ -48,7 +49,7 @@ private:
 
 	PHASE m_phase;							// フェーズ識別
 	int m_nMaxStage;						// ステージ数
-	int m_nCntGoal;							// ゴール後カウント
+	int m_nSelectLevel;						// レベル選択
 	std::vector<std::string> m_stagePath;	// ステージパス
 
 	static CGameManager* m_pInstance;	// ゲームマネージャー

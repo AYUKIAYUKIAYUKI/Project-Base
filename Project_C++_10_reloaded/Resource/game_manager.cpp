@@ -23,6 +23,7 @@
 #include "leaf.h"
 #include "player.h"
 #include "score.h"
+#include "square.h"
 
 // テスト用
 #include "KARIHAIKEI.h"
@@ -97,9 +98,18 @@ void CGameManager::Update()
 	{
 	case PHASE::NONE:
 
-		// ここデバッグ
-
 		CRenderer::GetInstance()->SetDebugString("無し");
+
+		break;
+
+	case PHASE::SELECT:
+	
+		CRenderer::GetInstance()->SetDebugString("レベル選択");
+
+		if (CManager::GetKeyboard()->GetTrigger(DIK_SPACE))
+		{
+			CFakeScreen::GetInstance()->StopWave(PHASE::START);
+		}
 
 		break;
 
@@ -107,6 +117,12 @@ void CGameManager::Update()
 
 		// スクリーン画面内の解放処理
 		CObject::ReleaseScreen();
+
+		// UIのみの解放処理
+		CObject::ReleaseUI();
+
+		////////////////////////////////////////////////////////////////////
+		////////////////////////////////////////////////////////////////////
 
 		// KARIHAIKEIの生成
 		KARIHAIKEI::Create();
@@ -120,6 +136,11 @@ void CGameManager::Update()
 		// プレイヤーの生成
 		CPlayer::Create({ 0.0f, 0.0f, 0.0f });	// 位置
 
+		// スコアの生成
+		CScore::Create(
+			{ 25.0f, 30.0f, 0.0f },	// 位置
+			25.0f);					// 数列の配置間隔
+
 		// レベル進行フェーズへ
 		m_phase = PHASE::INGAME;
 
@@ -129,43 +150,29 @@ void CGameManager::Update()
 
 	case PHASE::INGAME:
 
-		CRenderer::GetInstance()->SetDebugString("インゲーム");
-
 		// 葉っぱ生成の更新
 		CLeaf::UpdateToCreate();
+
+		CRenderer::GetInstance()->SetDebugString("インゲーム");
 
 		break;
 
 	case PHASE::FINISH:
 
-		// 読み込むステージがなくなったら
-		if (!m_stagePath.size())
-		{
-			// ゲーム終了フェーズへ
-			m_phase = PHASE::END;
-		}
-		else
-		{
-			// レベル開始フェーズへ戻る
-			m_phase = PHASE::START;
-		}
+		// UIのみの解放処理
+		CObject::ReleaseUI();
+
+		// マス目を生成
+		CSquare::Create({ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f , 0.0f });
+
+		// レベル選択フェーズへ
+		m_phase = PHASE::SELECT;
 		
 		CRenderer::GetInstance()->SetDebugString("レベル終了");
 
 		break;
 
 	case PHASE::END:
-
-		// ウェーブ停止
-		CFakeScreen::GetInstance()->StopWave();
-
-		// フェーズ情報を初期化
-		m_phase = PHASE::NONE;
-
-		// リザルト画面へ遷移
-		CFakeScreen::GetInstance()->SetFade(CScene::MODE::RESULT);
-
-		CRenderer::GetInstance()->SetDebugString("ゲーム終了");
 
 		break;
 
@@ -215,13 +222,10 @@ CGameManager* CGameManager::GetInstance()
 CGameManager::CGameManager() : 
 	m_phase{ PHASE::NONE },	// フェーズ識別
 	m_nMaxStage{ 0 },		// ステージ数
-	m_nCntGoal{ 0 },		// ゴール後カウント
+	m_nSelectLevel{ 0 },	// レベル選択
 	m_stagePath{}			// ステージパス
 {
-	// スコアの生成
-	CScore::Create(
-		{ 25.0f, 30.0f, 0.0f },	// 位置
-		25.0f);					// 数列の配置間隔
+
 }
 
 //============================================================================

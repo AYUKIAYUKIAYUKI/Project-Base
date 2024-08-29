@@ -26,7 +26,7 @@
 //****************************************************
 CFakeScreen* CFakeScreen::m_pInstance = nullptr;	// 疑似スクリーンのポインタ
 const int CFakeScreen::SPLIT_ALONG_X_AXIS = 50;		// X軸方向の分割数
-const int CFakeScreen::SPLIT_ALONG_Y_AXIS = 50;		// Y軸方向の分割数
+const int CFakeScreen::SPLIT_ALONG_Y_AXIS = 50;	// Y軸方向の分割数
 
 //============================================================================
 // 生成
@@ -147,6 +147,9 @@ void CFakeScreen::Update()
 	// ウェーブイン処理
 	WaveIn();
 
+	// ウェーブ継続処理
+	Waving();
+
 	// ウェーブアウト処理
 	WaveOut();
 
@@ -219,7 +222,7 @@ void CFakeScreen::SetFade(CScene::MODE mode)
 }
 
 //============================================================================
-// 波打ち設定
+// ウェーブ設定
 //============================================================================
 void CFakeScreen::SetWave(CGameManager::PHASE phase)
 {
@@ -231,6 +234,25 @@ void CFakeScreen::SetWave(CGameManager::PHASE phase)
 
 		// 次のフェーズの情報を保持しておく
 		m_NextPhase = phase;
+	}
+}
+
+//============================================================================
+// ウェーブ停止&移行
+//============================================================================
+void CFakeScreen::StopWave(CGameManager::PHASE phase)
+{
+	// (すでにウェーブ継続下にあり、ウェーブインはしていないとき)
+	if (m_bWaving && !m_bWaveIn)
+	{
+		// ウェーブ継続を終了
+		m_bWaving = false;
+
+		// ウェーブインを開始
+		m_bWaveIn = true;
+
+		// 次のフェーズへ移行
+		CGameManager::GetInstance()->SetPhase(phase);
 	}
 }
 
@@ -476,6 +498,7 @@ CFakeScreen::CFakeScreen() :
 	m_bFadeOut{ false },						// フェードアウト判定
 	m_bFadeIn{ false },							// フェードイン判定
 	m_bWaveOut{ false },						// 波打ちアウト判定
+	m_bWaving{ false },							// 波打ち継続判定
 	m_bWaveIn{ false },							// 波打ちイン判定
 	m_fBrightness{ 1.0f },						// 明度
 	m_fPosDistortion{ 0.0f },					// 座標変動用
@@ -504,6 +527,7 @@ CFakeScreen::~CFakeScreen()
 	m_bFadeOut = false;							// フェードアウト判定
 	m_bFadeIn = false;							// フェードイン判定
 	m_bWaveOut = false;							// 波打ちアウト判定
+	m_bWaving = false;							// 波打ち継続判定
 	m_bWaveIn = false;							// 波打ちイン判定
 	m_fBrightness = 1.0f;						// 明度
 	m_fPosDistortion = 0.0f;					// 座標変動用
@@ -603,27 +627,46 @@ void CFakeScreen::WaveOut()
 		return;
 	}
 
-	if (m_fAddDistortion < 1.0f)
-	{
-		// ゆがみを増やしていく
-		m_fAddDistortion += 0.01f;
-	}
-	else
-	{
-		// ゆがみが最大値を上回れば固定
-		m_fAddDistortion = 1.0f;
+	// ゆがみを増やしていく
+	m_fAddDistortion += 0.01f;
 
-		// ウェーブアウトを終了する
+	// ある程度でウェーブ継続モードへ移行
+	if (m_fAddDistortion > D3DX_PI * 0.2f)
+	{
+		// ウェーブアウト終了
 		m_bWaveOut = false;
 
-		// フェーズを切り替える
+		// 次のフェーズへ移行
 		CGameManager::GetInstance()->SetPhase(m_NextPhase);
 
-		// 保持していたフェーズ情報を初期化
+		// 保持していたフェーズ情報をリセット
 		m_NextPhase = CGameManager::PHASE::NONE;
 
-		// ウェーブインを開始する
-		m_bWaveIn = true;
+		// ウェーブ継続開始
+		m_bWaving = true;
+	}
+}
+
+//============================================================================
+// ウェーブ継続
+//============================================================================
+void CFakeScreen::Waving()
+{
+	if (!m_bWaving)
+	{
+		return;
+	}
+
+	// 変化量
+	static float fAdder{ 0.03f };
+
+	// ゆがみを増減
+	m_fAddDistortion += fAdder;
+
+	if (m_fAddDistortion < D3DX_PI * 0.1f || m_fAddDistortion > D3DX_PI * 0.3f)
+	{
+		// 増減反転
+		fAdder *= -1.0f;
 	}
 }
 
@@ -640,7 +683,7 @@ void CFakeScreen::WaveIn()
 	if (m_fAddDistortion > 0.000001f)
 	{
 		// ゆがみを減らしていく
-		m_fAddDistortion *= 0.925f;
+		m_fAddDistortion *= 0.95f;
 	}
 	else
 	{

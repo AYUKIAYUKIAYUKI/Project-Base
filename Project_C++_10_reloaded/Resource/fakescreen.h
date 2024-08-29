@@ -29,6 +29,7 @@ public:
 	void Draw();								// 描画処理
 	void SetFade(CScene::MODE mode);			// モード設定
 	void SetWave(CGameManager::PHASE phase);	// ウェーブ設定
+	void StopWave(CGameManager::PHASE phase);	// ウェーブ停止&フェーズ移行
 	void StopWave();							// ウェーブ停止
 
 	LPDIRECT3DTEXTURE9 GetTexture();	// テクスチャ情報を取得
@@ -51,6 +52,7 @@ private:
 	void FadeOut();				// フェードアウト
 	void FadeIn();				// フェードイン
 	void WaveOut();				// ウェーブアウト
+	void Waving();				// ウェーブ継続
 	void WaveIn();				// ウェーブイン
 	void SetVtx();				// 頂点情報の設定
 
@@ -69,6 +71,7 @@ private:
 	bool m_bFadeOut;					// フェードアウト判定
 	bool m_bFadeIn;						// フェードイン判定
 	bool m_bWaveOut;					// ウェーブアウト判定
+	bool m_bWaving;						// ウェーブ継続判定
 	bool m_bWaveIn;						// ウェーブイン判定
 	float m_fBrightness;				// 明度
 	float m_fPosDistortion;				// 座標変動用

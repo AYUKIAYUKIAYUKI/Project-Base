@@ -246,6 +246,9 @@ void CRenderer::Draw()
 		// ‹^Ž—ƒXƒNƒŠ[ƒ“‚ð•`‰æ
 		CFakeScreen::GetInstance()->Draw();
 
+		// UI‚Ì•`‰æ
+		CObject::DrawUI();
+
 		// •`‰æI—¹
 		m_pD3DDevice->EndScene();
 	}
@@ -271,9 +274,6 @@ void CRenderer::Draw()
 
 		// ”wŒi‚Ì•`‰æ
 		CObject::DrawBG();
-
-		// UI‚Ì•`‰æ
-		CObject::DrawUI();
 
 		// ƒfƒoƒbƒO•\Ž¦
 		PrintDebug();
