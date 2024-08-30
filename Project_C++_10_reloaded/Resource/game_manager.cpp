@@ -22,8 +22,8 @@
 #include "block_destructible.h"
 #include "leaf.h"
 #include "player.h"
-#include "score.h"
 #include "square.h"
+#include "timer.h"
 
 // テスト用
 #include "KARIHAIKEI.h"
@@ -120,6 +120,9 @@ void CGameManager::Update()
 			CFakeScreen::GetInstance()->StopWave(PHASE::START);
 		}
 
+		// タイムの動作
+		CTimer::SwitchControlByPahse(m_nSelectLevel);
+
 		break;
 
 	case PHASE::START:
@@ -142,10 +145,8 @@ void CGameManager::Update()
 		// プレイヤーの生成
 		CPlayer::Create({ 0.0f, 0.0f, 0.0f });	// 位置
 
-		// スコアの生成
-		CScore::Create(
-			{ 0.0f, 0.0f, 0.0f },	// 位置
-			25.0f);					// 数列の配置間隔
+		// タイムの生成
+		CTimer::Create();
 
 		// レベル進行フェーズへ
 		m_phase = PHASE::INGAME;
@@ -158,6 +159,9 @@ void CGameManager::Update()
 
 		// 葉っぱ生成の更新
 		CLeaf::UpdateToCreate();
+
+		// タイムの動作
+		CTimer::SwitchControlByPahse(m_nSelectLevel);
 
 		CRenderer::GetInstance()->SetDebugString("インゲーム");
 
@@ -173,6 +177,9 @@ void CGameManager::Update()
 		{
 			CSquare::Create({ 0.0f, 0.0f, 0.0f });
 		}
+
+		// タイムの生成
+		CTimer::Create();
 
 		// レベル選択フェーズへ
 		m_phase = PHASE::SELECT;
@@ -224,7 +231,7 @@ CGameManager* CGameManager::GetInstance()
 //============================================================================
 // デフォルトコンストラクタ
 //============================================================================
-CGameManager::CGameManager() : 
+CGameManager::CGameManager() :
 	m_phase{ PHASE::NONE },	// フェーズ識別
 	m_nMaxStage{ 0 },		// ステージ数
 	m_nSelectLevel{ 0 },	// レベル選択

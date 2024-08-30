@@ -1,6 +1,6 @@
 //=============================================================================
 //
-// マス目 [square.cpp]
+// タイム [timer.cpp]
 // Author : 福田歩希
 //
 //=============================================================================
@@ -8,27 +8,36 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
-#include "square.h"
+#include "timer.h"
 #include "utility.h"
+
+// デバッグ表示用
+#include "renderer.h"
 
 // テクスチャ取得用
 #include "texture_manager.h"
 
+// プレイヤーの状態取得用
+#include "player.h"
+#include "player_state.h"
+
 //============================================================================
 // デフォルトコンストラクタ
 //============================================================================
-CSquare::CSquare() :
+CTimer::CTimer() :
 	CObject_2D{ static_cast<int>(LAYER::UI) },
 	m_bAppear{ false },
 	m_bDisappear{ false },
+	m_nCntFrame{ 0 },
+	m_nTimer{ 0 },
 	m_posTarget{ 0.0f, 0.0f, 0.0f }
 {
-	// 数字を生成
 	for (int i = 0; i < MAX_DIGIT; i++)
 	{
-		// 数字のポインタを初期化
+		// 数字情報のポインタを初期化
 		m_apNumber[i] = nullptr;
-	
+
+		// 数字を生成
 		m_apNumber[i] = CNumber::Create(
 			{ 0.0f, 0.0f, 0.0f },		// 座標
 			{ 25.0f, 20.0f, 0.0f });	// サイズ
@@ -41,7 +50,7 @@ CSquare::CSquare() :
 //============================================================================
 // デストラクタ
 //============================================================================
-CSquare::~CSquare()
+CTimer::~CTimer()
 {
 
 }
@@ -49,7 +58,7 @@ CSquare::~CSquare()
 //============================================================================
 // 初期設定
 //============================================================================
-HRESULT CSquare::Init()
+HRESULT CTimer::Init()
 {
 	// 基底クラスの初期設定
 	HRESULT hr = CObject_2D::Init();
@@ -60,7 +69,7 @@ HRESULT CSquare::Init()
 //============================================================================
 // 終了処理
 //============================================================================
-void CSquare::Uninit()
+void CTimer::Uninit()
 {
 	// 基底クラスの終了処理
 	CObject_2D::Uninit();
@@ -69,7 +78,7 @@ void CSquare::Uninit()
 //============================================================================
 // 更新処理
 //============================================================================
-void CSquare::Update()
+void CTimer::Update()
 {
 	// 目標座標へ迫る
 	D3DXVECTOR3 pos{ GetPos() };
@@ -87,12 +96,6 @@ void CSquare::Update()
 		m_apNumber[i]->SetPos(pos);
 	}
 
-	// 出現
-	Appear();
-
-	// 消滅
-	Disappear();
-
 	// 基底クラスの更新
 	CObject_2D::Update();
 }
@@ -100,139 +103,138 @@ void CSquare::Update()
 //============================================================================
 // 描画処理
 //============================================================================
-void CSquare::Draw()
+void CTimer::Draw()
 {
 	// 基底クラスの描画処理
 	CObject_2D::Draw();
 }
 
 //============================================================================
-// マス目を動作
+// フェーズによるモード切替
 //============================================================================
-void CSquare::ControlAll(int nSelect)
+void CTimer::SwitchControlByPahse(int nSelect)
 {
-	// マス目タグのオブジェクトを全て取得
-	CObject** pObj = CObject::FindAllObject(CObject::TYPE::SQUARE);
+	// タイムを検索
+	CObject* pObj = CObject::FindObject(CObject::TYPE::TIMER);
+	CTimer* pTimer = CUtility::GetInstance()->DownCast<CTimer, CObject>(pObj);
 
-	// マス数カウント
-	int nSquareCnt{ 0 };
-
-	// オブジェクトがなくなるまで
-	while (pObj[nSquareCnt])
+	// 目標座標を設定し、震わす
+	pTimer->m_posTarget = { SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.25f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f, };
+	
+	if (CGameManager::GetInstance()->GetPhase() == CGameManager::PHASE::SELECT)
 	{
-		// マス目クラスへダウンキャスト
-		CSquare* pSquare = CUtility::GetInstance()->DownCast<CSquare, CObject>(pObj[nSquareCnt]);
+		// タイムの読み込み
+		pTimer->m_nTimer = pTimer->ImportTimer(nSelect);
+	}
+	else if (CGameManager::GetInstance()->GetPhase() == CGameManager::PHASE::INGAME)
+	{
+		// プレイヤーを検索
+		CObject* pFind = CObject::FindObject(CObject::TYPE::PLAYER);
+		CPlayer* pPlayer = CUtility::GetInstance()->DownCast<CPlayer, CObject>(pFind);
 
-		// 新規座標情報
-		D3DXVECTOR3 posNew{ 0.0f, 0.0f, 0.0f };
-
-		// 選択しているマスを揺らす
-		if (nSquareCnt == nSelect)
+		// ゴール状態でなければ
+		if (typeid(*pPlayer->GetStateManager()->GetState()) != typeid(CPlayerState::STATE::GOAL))
 		{
-			posNew = {
-				(SCREEN_WIDTH * 0.5f),
-				(SCREEN_HEIGHT * 0.5f) + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f,
-				0.0f };
+			// フレームカウント
+			pTimer->m_nCntFrame++;
+
+			if (pTimer->m_nCntFrame > 60)
+			{
+				// カウントリセット
+				pTimer->m_nCntFrame = 0;
+			
+				// タイマー進行
+				pTimer->m_nTimer++;
+			}
 		}
-		else
-		{
-			posNew = { 
-				(SCREEN_WIDTH * 0.5f) + (150.0f * nSquareCnt) - (nSelect * 150.0f),
-				SCREEN_HEIGHT * 0.75f + +CUtility::GetInstance()->GetRandomValue<float>() * 0.2f,
-				0.0f };
-		}
+	}
 
-		// 目標座標を新しいものに
-		pSquare->m_posTarget = posNew;
-		
-		///////////////////////////////////////////////////////////////////////
-		///////////////////////////////////////////////////////////////////////
+	// カウント数のコピー
+	int nCopy{ pTimer->m_nTimer };
 
-		// カウント数のコピー
-		int nCopy{ nSquareCnt };
+	for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
+	{
+		// 数字を設定
+		pTimer->m_apNumber[nCntNum]->SetNumber(nCopy % 10);
 
-		for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
-		{
-			// 数字を設定
-			pSquare->m_apNumber[nCntNum]->SetNumber(nCopy % 10);
-
-			// 桁を減らす
-			nCopy /= 10;
-		}
-
-		// 次へ進める
-		nSquareCnt++;
+		// 桁を減らす
+		nCopy /= 10;
 	}
 }
 
 //============================================================================
-// マス目を並べる (不必要)
+// タイムの書き出し
 //============================================================================
-void CSquare::LineUpAll(int nSelect)
+void CTimer::ExportTimer(int nTimer)
 {
-	// マス目タグのオブジェクトを全て取得
-	CObject** pObj = CObject::FindAllObject(CObject::TYPE::SQUARE);
-
-	// マス数カウント
-	int nSquareCnt{ 0 };
-
-	// オブジェクトがなくなるまで
-	while (pObj[nSquareCnt])
-	{
-		// マス目クラスにダウンキャスト
-		CSquare* pSquare = CUtility::GetInstance()->DownCast<CSquare, CObject>(pObj[nSquareCnt]);
-
-		// 目標座標を設定
-		pSquare->m_posTarget = { (SCREEN_WIDTH * 0.5f) + (150.0f * nSquareCnt) - (nSelect * 150.0f), SCREEN_HEIGHT * 0.5f, 0.0f };
-
-		// 次へ進める
-		nSquareCnt++;
-	}
+	// ステージごとにテキストにタイムを保存
 }
 
 //============================================================================
 // 生成
 //============================================================================
-CSquare* CSquare::Create(D3DXVECTOR3 pos)
+CTimer* CTimer::Create()
 {
 	// インスタンスを生成
-	CSquare* pSquare = DBG_NEW CSquare;
+	CTimer* pTimer = DBG_NEW CTimer;
 
-	if (pSquare == nullptr)
+	if (pTimer == nullptr)
 	{ // 生成失敗
 		assert(false);
 	}
 
 	// タイプを設定
-	pSquare->SetType(TYPE::SQUARE);
+	pTimer->SetType(TYPE::TIMER);
 
 	// 基底クラスの初期設定
-	pSquare->Init();
+	pTimer->Init();
 
 	// ランダムな座標を設定
-	pSquare->SetPos({ (SCREEN_WIDTH * 0.5f) + CUtility::GetInstance()->GetRandomValue<float>() * 10.0f,
+	pTimer->SetPos({ (SCREEN_WIDTH * 0.5f) + CUtility::GetInstance()->GetRandomValue<float>() * 10.0f,
 					(SCREEN_HEIGHT * 0.5f) + CUtility::GetInstance()->GetRandomValue<float>() * 10.0f,
 					0.0f });
 
 	// サイズの設定
-	pSquare->SetSize({ 50.0f, 50.0f, 0.0f });
+	pTimer->SetSize({ 0.0f, 0.0f, 0.0f });
 
-	// テクスチャを設定
-	pSquare->BindTex(CTexture_Manager::GetInstance()->GetTexture(CTexture_Manager::TYPE::SQUARE_00));
+	return pTimer;
+}
 
-	// 2Dオブジェクトにダウンキャスト
-	CObject_2D* pObj2D = CUtility::GetInstance()->DownCast<CObject_2D, CObject>(pSquare);
+//============================================================================
+// タイムの読み込み
+//============================================================================
+int CTimer::ImportTimer(int nSelect)
+{
+	std::ifstream Import("Data\\TXT\\timer.txt");
 
-	// アルファ値を設定
-	pObj2D->SetAlpha(0.0f);
+	if (!Import)
+	{ // 展開失敗
+#if 0
+		assert(false);
+#else
+		CRenderer::GetInstance()->SetDebugString("【警告】タイム情報の読み込みに失敗しました");
+		return 0;
+#endif
+	}
+	else
+	{
+		// 文章格納先
+		std::string str{};
 
-	return pSquare;
+		// テキストを読み取る
+		for (int i = 0; i < nSelect + 1; i++)
+		{
+			std::getline(Import, str);
+		}
+
+		return std::stoi(str);
+	}
 }
 
 //============================================================================
 // 出現
 //============================================================================
-void CSquare::Appear()
+void CTimer::Appear()
 {
 	if (!m_bAppear)
 	{
@@ -258,7 +260,7 @@ void CSquare::Appear()
 //============================================================================
 // 消滅
 //============================================================================
-void CSquare::Disappear()
+void CTimer::Disappear()
 {
 	if (!m_bDisappear)
 	{

@@ -35,7 +35,7 @@ public:
 		GOAL,			// ゴール
 		ACHIEVE,		// アチーブ
 		SQUARE,			// マス目
-		SCORE,			// スコア
+		TIMER,			// タイム
 		MAX,
 	};
 
