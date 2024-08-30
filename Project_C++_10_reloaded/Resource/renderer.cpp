@@ -203,87 +203,119 @@ void CRenderer::Update()
 //============================================================================
 void CRenderer::Draw()
 {
-	// レンダリングターゲット保持用
-	LPDIRECT3DSURFACE9 oldRenderTarget = nullptr;
-
-	// バックバッファの情報をコピー
-	m_pD3DDevice->GetRenderTarget(0, &oldRenderTarget);
-
-	// レンダリングターゲットに疑似スクリーンのサーフェイスを指定
-	m_pD3DDevice->SetRenderTarget(0, CFakeScreen::GetInstance()->GetSurface());
-
-	// 疑似スクリーンのテクスチャ内へ描画開始
-	if (SUCCEEDED(m_pD3DDevice->BeginScene()))
+	if (CManager::GetScene()->GetMode() != CScene::MODE::STAGE)
 	{
-		// カメラをセット
-		CManager::GetCamera()->SetCamera();
+		// レンダリングターゲット保持用
+		LPDIRECT3DSURFACE9 oldRenderTarget = nullptr;
 
-		// スクリーン画面内の描画
-		CObject::DrawScreen();
+		// バックバッファの情報をコピー
+		m_pD3DDevice->GetRenderTarget(0, &oldRenderTarget);
 
-		// シーンの専用描画
-		CManager::GetScene()->Draw();
+		// レンダリングターゲットに疑似スクリーンのサーフェイスを指定
+		m_pD3DDevice->SetRenderTarget(0, CFakeScreen::GetInstance()->GetSurface());
 
-		// 描画終了
-		m_pD3DDevice->EndScene();
+		// 疑似スクリーンのテクスチャ内へ描画開始
+		if (SUCCEEDED(m_pD3DDevice->BeginScene()))
+		{
+			// カメラをセット
+			CManager::GetCamera()->SetCamera();
+
+			// スクリーン画面内の描画
+			CObject::DrawScreen();
+
+			// シーンの専用描画
+			CManager::GetScene()->Draw();
+
+			// 描画終了
+			m_pD3DDevice->EndScene();
+		}
+
+		// レンダリングターゲットにモニター用のサーフェイスを指定
+		m_pD3DDevice->SetRenderTarget(0, m_pMonitorSurface);
+
+		// 色情報をランダムに設定
+		auto p{ CUtility::GetInstance() };
+		D3DXCOLOR col{ p->GetRandomValue<float>(), p->GetRandomValue<float>(), p->GetRandomValue<float>(), 0 };
+
+		// 画面バッファクリア
+		m_pD3DDevice->Clear(0, nullptr,
+			(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
+			col, 1.0f, 0);
+
+		// モニター用のテクスチャ内へ描画開始
+		if (SUCCEEDED(m_pD3DDevice->BeginScene()))
+		{
+			// 疑似スクリーンを描画
+			CFakeScreen::GetInstance()->Draw();
+
+			// UIの描画
+			CObject::DrawUI();
+
+			// 描画終了
+			m_pD3DDevice->EndScene();
+		}
+
+		// レンダリングターゲットをバックバッファに戻す
+		m_pD3DDevice->SetRenderTarget(0, oldRenderTarget);
+
+		// 保持していたレンダリングターゲットの破棄
+		if (oldRenderTarget != nullptr)
+		{
+			oldRenderTarget->Release();
+			oldRenderTarget = nullptr;
+		}
+
+		// 通常の3D空間内へ描画開始
+		if (SUCCEEDED(m_pD3DDevice->BeginScene()))
+		{
+			/* ワイヤー描画 */
+			//m_pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
+
+			// カメラをセット
+			CManager::GetCamera()->SetCameraBG();
+
+			// 背景の描画
+			CObject::DrawBG();
+
+			// デバッグ表示
+			PrintDebug();
+
+			// 描画終了
+			m_pD3DDevice->EndScene();
+		}
+
+		// バックバッファとフロントバッファの入れ替え
+		m_pD3DDevice->Present(nullptr, nullptr, nullptr, nullptr);
 	}
-
-	// レンダリングターゲットにモニター用のサーフェイスを指定
-	m_pD3DDevice->SetRenderTarget(0, m_pMonitorSurface);
-
-	// 色情報をランダムに設定
-	auto p{ CUtility::GetInstance() };
-	D3DXCOLOR col{ p->GetRandomValue<float>(), p->GetRandomValue<float>(), p->GetRandomValue<float>(), 0 };
-
-	// 画面バッファクリア
-	m_pD3DDevice->Clear(0, nullptr,
-		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
-		col, 1.0f, 0);
-
-	// モニター用のテクスチャ内へ描画開始
-	if (SUCCEEDED(m_pD3DDevice->BeginScene()))
+	else
 	{
-		// 疑似スクリーンを描画
-		CFakeScreen::GetInstance()->Draw();
+		// 画面バッファクリア
+		m_pD3DDevice->Clear(0, nullptr,
+			(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
+			D3DXCOLOR(1.0f, 1.0f, 1.0f, 0), 1.0f, 0);
 
-		// UIの描画
-		CObject::DrawUI();
+		// 疑似スクリーンのテクスチャ内へ描画開始
+		if (SUCCEEDED(m_pD3DDevice->BeginScene()))
+		{
+			// カメラをセット
+			CManager::GetCamera()->SetCamera();
 
-		// 描画終了
-		m_pD3DDevice->EndScene();
+			// スクリーン画面内の描画
+			CObject::DrawScreen();
+
+			// シーンの専用描画
+			CManager::GetScene()->Draw();
+
+			// デバッグ表示
+			PrintDebug();
+
+			// 描画終了
+			m_pD3DDevice->EndScene();
+		}
+
+		// バックバッファとフロントバッファの入れ替え
+		m_pD3DDevice->Present(nullptr, nullptr, nullptr, nullptr);
 	}
-
-	// レンダリングターゲットをバックバッファに戻す
-	m_pD3DDevice->SetRenderTarget(0, oldRenderTarget);
-
-	// 保持していたレンダリングターゲットの破棄
-	if (oldRenderTarget != nullptr)
-	{
-		oldRenderTarget->Release();
-		oldRenderTarget = nullptr;
-	}
-
-	// 通常の3D空間内へ描画開始
-	if (SUCCEEDED(m_pD3DDevice->BeginScene()))
-	{
-		/* ワイヤー描画 */
-		//m_pD3DDevice->SetRenderState(D3DRS_FILLMODE, D3DFILL_WIREFRAME);
-
-		// カメラをセット
-		CManager::GetCamera()->SetCameraBG();
-
-		// 背景の描画
-		CObject::DrawBG();
-
-		// デバッグ表示
-		PrintDebug();
-
-		// 描画終了
-		m_pD3DDevice->EndScene();
-	}
-	
-	// バックバッファとフロントバッファの入れ替え
-	m_pD3DDevice->Present(nullptr, nullptr, nullptr, nullptr);
 }
 
 //============================================================================
