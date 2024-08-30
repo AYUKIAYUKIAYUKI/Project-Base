@@ -324,7 +324,7 @@ void CRenderer::Draw()
 void CRenderer::PrintDebug()
 {
 	// •\Ž¦ˆÊ’u
-	RECT rect = { 0, 50, SCREEN_WIDTH, SCREEN_HEIGHT };
+	RECT rect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 
 	for (unsigned int i = 0; i < m_timeStr.size(); i++)
 	{

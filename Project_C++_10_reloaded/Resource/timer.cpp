@@ -85,17 +85,6 @@ void CTimer::Update()
 	pos += (m_posTarget - pos) * 0.05f;
 	SetPos(pos);
 
-	// 数字を並べる
-	for (int i = 0; i < MAX_DIGIT; i++)
-	{
-		// 中心座標から、相対的な先頭の位置を設定
-		pos.x = GetPos().x + (25.0f * MAX_DIGIT * 0.5f) - (25.0f * 0.5f);
-
-		// 桁ごとに所定の座標へ補正
-		pos.x += -25.0f * i;
-		m_apNumber[i]->SetPos(pos);
-	}
-
 	// 基底クラスの更新
 	CObject_2D::Update();
 }
@@ -118,16 +107,49 @@ void CTimer::SwitchControlByPahse(int nSelect)
 	CObject* pObj = CObject::FindObject(CObject::TYPE::TIMER);
 	CTimer* pTimer = CUtility::GetInstance()->DownCast<CTimer, CObject>(pObj);
 
-	// 目標座標を設定し、震わす
-	pTimer->m_posTarget = { SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.25f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f, };
-	
 	if (CGameManager::GetInstance()->GetPhase() == CGameManager::PHASE::SELECT)
 	{
+		// 目標座標を設定し、震わす
+		pTimer->m_posTarget = { SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.25f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f, };
+		
+		// 数字を並べる
+		for (int i = 0; i < MAX_DIGIT; i++)
+		{
+			// 中心座標から、相対的な先頭の位置を設定
+			D3DXVECTOR3 pos = pTimer->GetPos();
+			pos.x = pTimer->GetPos().x + (25.0f * MAX_DIGIT * 0.5f) - (25.0f * 0.5f);
+
+			// 桁ごとに所定の座標へ補正
+			pos.x += -25.0f * i;
+			pTimer->m_apNumber[i]->SetPos(pos);
+		}
+
 		// タイムの読み込み
 		pTimer->m_nTimer = pTimer->ImportTimer(nSelect);
 	}
 	else if (CGameManager::GetInstance()->GetPhase() == CGameManager::PHASE::INGAME)
 	{
+		// 目標座標を設定し、震わす
+		pTimer->m_posTarget = { SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.15f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f, };
+
+		// 数字を並べる
+		for (int i = 0; i < MAX_DIGIT; i++)
+		{
+			// 中心座標から、相対的な先頭の位置を設定
+			D3DXVECTOR3 pos = pTimer->GetPos();
+			pos.x = pTimer->GetPos().x + (37.5f * MAX_DIGIT * 0.5f) - (37.5f * 0.5f);
+
+			// 桁ごとに所定の座標へ補正
+			pos.x += -37.5f * i;
+			pTimer->m_apNumber[i]->SetPos(pos);
+		}
+
+		for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
+		{
+			// 数字を設定
+			pTimer->m_apNumber[nCntNum]->SetSize({37.5f, 30.0f, 0.0f});
+		}
+
 		// プレイヤーを検索
 		CObject* pFind = CObject::FindObject(CObject::TYPE::PLAYER);
 		CPlayer* pPlayer = CUtility::GetInstance()->DownCast<CPlayer, CObject>(pFind);
