@@ -128,7 +128,7 @@ void CLine::CreateGrid()
 		pLine->Init();
 
 		// ˆÊ’u‚ðÝ’è
-		pLine->SetPos({ 0.0f, (-fLineSize * (nMaxLine / 2)) + (fLineSize * i), fLineSize * 0.5f });
+		pLine->SetPos({ 0.0f, (-fLineSize * (nMaxLine * 0.5f)) + (fLineSize * i), fLineSize * 0.5f });
 
 		// ƒ‚ƒfƒ‹‚ðŽæ“¾
 		auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::LINE_Y);

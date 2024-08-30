@@ -23,6 +23,17 @@ CSquare::CSquare() :
 	m_bDisappear{ false },
 	m_posTarget{ 0.0f, 0.0f, 0.0f }
 {
+	// 数字を生成
+	for (int i = 0; i < MAX_DIGIT; i++)
+	{
+		// 数字のポインタを初期化
+		m_apNumber[i] = nullptr;
+	
+		m_apNumber[i] = CNumber::Create(
+			{ 0.0f, 0.0f, 0.0f },		// 座標
+			{ 25.0f, 20.0f, 0.0f });	// サイズ
+	}
+
 	// 出現
 	m_bAppear = true;
 }
@@ -60,11 +71,6 @@ void CSquare::Uninit()
 //============================================================================
 void CSquare::Update()
 {
-	// 目標座標へ迫る
-	D3DXVECTOR3 pos{ GetPos() };
-	pos += (m_posTarget - pos) * 0.05f;
-	SetPos(pos);
-
 	// 出現
 	Appear();
 
@@ -120,8 +126,40 @@ void CSquare::ControlAll(int nSelect)
 				0.0f };
 		}
 
-		// 目標座標へ反映させていく
+		// 目標座標を新しいものに
 		pSquare->m_posTarget = posNew;
+		
+		// 目標座標へ迫る
+		D3DXVECTOR3 pos{ pSquare->GetPos() };
+		pos += (pSquare->m_posTarget - pos) * 0.05f;
+		pSquare->SetPos(pos);
+
+
+		///////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////////////
+
+		// 数字を並べる
+		for (int i = 0; i < MAX_DIGIT; i++)
+		{
+			// 中心座標から、相対的な先頭の位置を設定
+			pos.x = pSquare->GetPos().x + (25.0f * 0.5f) * (MAX_DIGIT * 0.5f);
+
+			// 桁ごとに所定の座標へ補正
+			pos.x +=  -25.0f * i;
+			pSquare->m_apNumber[i]->SetPos(pos);
+		}
+
+		// カウント数のコピー
+		int nCopy{ nSquareCnt };
+
+		for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
+		{
+			// 数字を設定
+			pSquare->m_apNumber[nCntNum]->SetNumber(nCopy % 10);
+
+			// 桁を減らす
+			nCopy /= 10;
+		}
 
 		// 次へ進める
 		nSquareCnt++;

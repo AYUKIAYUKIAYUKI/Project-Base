@@ -12,6 +12,7 @@
 // インクルードファイル
 //****************************************************
 #include "object_2D.h"
+#include "number.h"
 
 //****************************************************
 // マス目クラス
@@ -34,12 +35,15 @@ public:
 
 private:
 
+	static const int MAX_DIGIT = 2;	// 最大桁数
+
 	void Appear();		// 出現
 	void Disappear();	// 消滅
 
-	bool m_bAppear;				// 出現フラグ
-	bool m_bDisappear;			// 消滅フラグ
-	D3DXVECTOR3 m_posTarget;	// 目標座標
+	bool m_bAppear;					// 出現フラグ
+	bool m_bDisappear;				// 消滅フラグ
+	D3DXVECTOR3 m_posTarget;		// 目標座標
+	CNumber* m_apNumber[MAX_DIGIT];	// 数字
 };
 
 #endif // _SQUARE_H_
