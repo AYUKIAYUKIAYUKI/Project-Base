@@ -382,6 +382,8 @@ void CStageMaker::Register()
 			CRenderer::GetInstance()->SetTimeString("【ゴールはすでに配置されています】", 60);
 		}
 
+		break;
+
 	case 6:
 
 		// アチーブタイプのオブジェクトを検索

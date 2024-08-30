@@ -147,6 +147,11 @@ void CTimer::SwitchControlByPahse(int nSelect)
 				pTimer->m_nTimer++;
 			}
 		}
+		//else
+		//{
+		//	// タイムを書き出す
+		//	ExportTimer(pTimer->m_nTimer);
+		//}
 	}
 
 	// カウント数のコピー
@@ -167,7 +172,8 @@ void CTimer::SwitchControlByPahse(int nSelect)
 //============================================================================
 void CTimer::ExportTimer(int nTimer)
 {
-	// ステージごとにテキストにタイムを保存
+	//// ステージ配置情報を書き出し展開
+	//std::ofstream Export("Data\\TXT\\stage.txt");
 }
 
 //============================================================================

@@ -17,7 +17,7 @@
 // デフォルトコンストラクタ
 //============================================================================
 CBlock::CBlock() :
-	CObject_X{ static_cast<int>(LAYER::BACK) }	// 描画優先度を指定
+	CObject_X{ static_cast<int>(LAYER::MIDDLE) }	// 描画優先度を指定
 {
 
 }
