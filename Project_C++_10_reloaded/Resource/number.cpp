@@ -9,6 +9,7 @@
 // インクルードファイル
 //****************************************************
 #include "number.h"
+#include "utility.h"
 
 // テクスチャ設定用
 #include "texture_manager.h"
@@ -70,6 +71,49 @@ void CNumber::Draw()
 {
 	// 基底クラスの描画処理
 	CObject_UI::Draw();
+}
+
+//============================================================================
+// 生成
+//============================================================================
+CNumber* CNumber::Create()
+{
+	// インスタンスを生成
+	CNumber* pNumber = DBG_NEW CNumber;
+
+	if (pNumber == nullptr)
+	{ // 生成失敗
+		assert(false);
+	}
+
+	// タイプを設定
+	pNumber->SetType(TYPE::NONE);
+
+	// 初期設定
+	pNumber->Init();
+
+	// ランダムな座標
+	D3DXVECTOR3 pos{ (SCREEN_WIDTH * 0.5f) + CUtility::GetInstance()->GetRandomValue<float>() * 5.0f, (SCREEN_HEIGHT * 0.5f) + CUtility::GetInstance()->GetRandomValue<float>() * 5.0f, 0.0f };
+
+	// 位置の設定
+	pNumber->SetPos(pos);
+
+	// サイズの設定
+	//pNumber->SetSize({ 0.0f, 0.0f, 0.0f });
+
+	// アルファ値の設定
+	pNumber->SetAlpha(0.0f);
+
+	// 横テクスチャ分割幅
+	pNumber->SetTexWidth(0.1f);
+
+	// 縦テクスチャ分縦幅
+	pNumber->SetTexHeight(1.0f);
+
+	// テクスチャを設定
+	pNumber->BindTex(CTexture_Manager::GetInstance()->GetTexture(CTexture_Manager::TYPE::NUMBER_00));
+
+	return pNumber;
 }
 
 //============================================================================

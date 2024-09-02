@@ -25,26 +25,29 @@
 // デフォルトコンストラクタ
 //============================================================================
 CTimer::CTimer() :
-	CObject_2D{ static_cast<int>(LAYER::UI) },
-	m_bAppear{ false },
-	m_bDisappear{ false },
+	CObject_UI{ static_cast<int>(LAYER::UI) },
 	m_nCntFrame{ 0 },
-	m_nTimer{ 0 },
-	m_posTarget{ 0.0f, 0.0f, 0.0f }
+	m_nTimer{ 0 }
 {
-	for (int i = 0; i < MAX_DIGIT; i++)
+	for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
 	{
 		// 数字情報のポインタを初期化
-		m_apNumber[i] = nullptr;
+		m_apNumber[nCntNum] = nullptr;
 
 		// 数字を生成
-		m_apNumber[i] = CNumber::Create(
-			{ 0.0f, 0.0f, 0.0f },		// 座標
-			{ 25.0f, 20.0f, 0.0f });	// サイズ
+		m_apNumber[nCntNum] = CNumber::Create(
+			{ 0.0f, 0.0f, 0.0f },	// 座標
+			{ 5.0f, 0.0f, 0.0f });	// サイズ
+
+		// 目標サイズの設定
+		m_apNumber[nCntNum]->SetSizeTarget({ 25.0f, 20.0f, 0.0f });
+
+		// 数字の出現予約
+		m_apNumber[nCntNum]->SetAppear(true);
 	}
 
-	// 出現
-	m_bAppear = true;
+	// 出現予約
+	SetAppear(true);
 }
 
 //============================================================================
@@ -61,7 +64,7 @@ CTimer::~CTimer()
 HRESULT CTimer::Init()
 {
 	// 基底クラスの初期設定
-	HRESULT hr = CObject_2D::Init();
+	HRESULT hr = CObject_UI::Init();
 
 	return hr;
 }
@@ -72,7 +75,7 @@ HRESULT CTimer::Init()
 void CTimer::Uninit()
 {
 	// 基底クラスの終了処理
-	CObject_2D::Uninit();
+	CObject_UI::Uninit();
 }
 
 //============================================================================
@@ -80,13 +83,11 @@ void CTimer::Uninit()
 //============================================================================
 void CTimer::Update()
 {
-	// 目標座標へ迫る
-	D3DXVECTOR3 pos{ GetPos() };
-	pos += (m_posTarget - pos) * 0.05f;
-	SetPos(pos);
+	// 目標座標へ
+	SetPos(CUtility::GetInstance()->AdjustToTarget(GetPos(), GetPosTarget(), 0.05f));
 
 	// 基底クラスの更新
-	CObject_2D::Update();
+	CObject_UI::Update();
 }
 
 //============================================================================
@@ -95,7 +96,7 @@ void CTimer::Update()
 void CTimer::Draw()
 {
 	// 基底クラスの描画処理
-	CObject_2D::Draw();
+	CObject_UI::Draw();
 }
 
 //============================================================================
@@ -110,7 +111,7 @@ void CTimer::SwitchControlByPahse(int nSelect)
 	if (CGameManager::GetInstance()->GetPhase() == CGameManager::PHASE::SELECT)
 	{
 		// 目標座標を設定し、震わす
-		pTimer->m_posTarget = { SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.25f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f, };
+		pTimer->SetPosTarget({ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.25f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f, });
 		
 		// 数字を並べる
 		for (int i = 0; i < MAX_DIGIT; i++)
@@ -130,7 +131,7 @@ void CTimer::SwitchControlByPahse(int nSelect)
 	else if (CGameManager::GetInstance()->GetPhase() == CGameManager::PHASE::INGAME)
 	{
 		// 目標座標を設定し、震わす
-		pTimer->m_posTarget = { SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.15f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f, };
+		pTimer->SetPosTarget({ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.15f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f, });
 
 		// 数字を並べる
 		for (int i = 0; i < MAX_DIGIT; i++)
@@ -264,7 +265,7 @@ int CTimer::ImportTimer(int nSelect)
 //============================================================================
 void CTimer::Appear()
 {
-	if (!m_bAppear)
+	if (!GetAppear())
 	{
 		return;
 	}
@@ -281,7 +282,7 @@ void CTimer::Appear()
 		fAlpha = 1.0f;
 
 		// 出現終了
-		m_bAppear = false;
+		SetAppear(false);
 	}
 }
 
@@ -290,7 +291,7 @@ void CTimer::Appear()
 //============================================================================
 void CTimer::Disappear()
 {
-	if (!m_bDisappear)
+	if (!GetDisappear())
 	{
 		return;
 	}
@@ -307,7 +308,7 @@ void CTimer::Disappear()
 		fAlpha = 0.0f;
 
 		// 出現終了
-		m_bDisappear = false;
+		SetDisappear(false);
 
 		// 破棄予約
 		SetRelease();

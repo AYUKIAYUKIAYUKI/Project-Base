@@ -11,14 +11,14 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
-#include "object_2D.h"
+#include "object_UI.h"
 #include "number.h"
 #include "game_manager.h"
 
 //****************************************************
 // タイムクラス
 //****************************************************
-class CTimer : public CObject_2D
+class CTimer : public CObject_UI
 {
 public:
 
@@ -38,15 +38,12 @@ private:
 
 	static const int MAX_DIGIT = 4;	// 最大桁数
 
+	void Appear() override;			// 出現
+	void Disappear() override;		// 消滅
 	int ImportTimer(int nSelect);	// タイムの読み込み
-	void Appear();					// 出現
-	void Disappear();				// 消滅
 
-	bool m_bAppear;					// 出現フラグ
-	bool m_bDisappear;				// 消滅フラグ
 	int m_nCntFrame;				// フレームカウント
 	int m_nTimer;					// タイム情報
-	D3DXVECTOR3 m_posTarget;		// 目標座標
 	CNumber* m_apNumber[MAX_DIGIT];	// 数字情報
 };
 

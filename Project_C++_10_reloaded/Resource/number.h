@@ -30,6 +30,7 @@ public:
 	
 	void SetNumber(int nNum);	// ”š‚ğİ’è
 
+	static CNumber* Create();									// ¶¬
 	static CNumber* Create(D3DXVECTOR3 pos, D3DXVECTOR3 size);	// ¶¬
 
 private:

@@ -26,9 +26,10 @@ CSquare::CSquare() :
 		// 数字のポインタを初期化
 		m_apNumber[nCntNum] = nullptr;
 	
-		m_apNumber[nCntNum] = CNumber::Create(
-			{ 0.0f, 0.0f, 0.0f },		// 座標
-			{ 0.0f, 0.0f, 0.0f });	// サイズ
+		m_apNumber[nCntNum] = CNumber::Create();
+
+		// 向きの設定
+		m_apNumber[nCntNum]->SetRot({ 0.0f, 0.0f, D3DX_PI * 2.0f });
 
 		// 目標サイズの設定
 		m_apNumber[nCntNum]->SetSizeTarget({ 25.0f, 20.0f, 0.0f });
@@ -96,8 +97,8 @@ void CSquare::Update()
 		m_apNumber[nCntNum]->SetPos(CUtility::GetInstance()->AdjustToTarget(m_apNumber[nCntNum]->GetPos(), m_apNumber[nCntNum]->GetPosTarget(), 0.05f));
 	
 		// 目標向きへ
-		m_apNumber[nCntNum]->SetRot(CUtility::GetInstance()->AdjustToTarget(m_apNumber[nCntNum]->GetRot(), m_apNumber[nCntNum]->GetRotTarget(), 0.05f));
-	
+		m_apNumber[nCntNum]->SetRot(CUtility::GetInstance()->AdjustToTarget(m_apNumber[nCntNum]->GetRot(), m_apNumber[nCntNum]->GetRotTarget(), 0.075f));
+
 		// 目標サイズへ
 		m_apNumber[nCntNum]->SetSize(CUtility::GetInstance()->AdjustToTarget(m_apNumber[nCntNum]->GetSize(), m_apNumber[nCntNum]->GetSizeTarget(), 0.05f));
 	}
@@ -242,6 +243,15 @@ void CSquare::DisappearAll()
 
 		for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
 		{
+			// ランダムな座標
+			D3DXVECTOR3 pos{ (SCREEN_WIDTH * 0.5f) + CUtility::GetInstance()->GetRandomValue<float>() * 1.5f, (SCREEN_HEIGHT * 0.5f) + CUtility::GetInstance()->GetRandomValue<float>() * 1.5f, 0.0f };
+			
+			// 数字の目標座標を設定
+			pSquare->m_apNumber[nCntNum]->SetPosTarget(pos);
+
+			// 数字の目標向きを設定
+			pSquare->m_apNumber[nCntNum]->SetRotTarget({ 0.0f, 0.0f, -D3DX_PI * 2.0f });
+
 			// 数字の目標サイズを設定
 			pSquare->m_apNumber[nCntNum]->SetSizeTarget({ 0.0f, 0.0f, 0.0f });
 		}
