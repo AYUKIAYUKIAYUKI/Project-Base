@@ -19,7 +19,7 @@ CObject_UI::CObject_UI() :
 	m_bDisappear{ false },
 	m_posTarget{ 0.0f, 0.0f, 0.0f },
 	m_rotTarget{ 0.0f, 0.0f, 0.0f },
-	m_sizeTarget{ 50.0f, 0.0f, 0.0f },
+	m_sizeTarget{ 0.0f, 0.0f, 0.0f },
 	m_colTarget{ 1.0f, 1.0f, 1.0f, 1.0f }
 {
 
@@ -78,9 +78,6 @@ void CObject_UI::Update()
 
 	// 消滅
 	Disappear();
-
-	// 目標へ補正
-	AdjustToTarget();
 
 	// 基底クラスの更新処理
 	CObject_2D::Update();
@@ -243,34 +240,5 @@ void CObject_UI::Disappear()
 
 		// 破棄予約
 		SetRelease();
-	}
-}
-
-//============================================================================
-// 目標へ補正
-//============================================================================
-void CObject_UI::AdjustToTarget(float fCoeff)
-{
-	// 目標座標へ迫る
-	D3DXVECTOR3 pos{ GetPos() };
-	pos += (m_posTarget - pos) * 0.05f;
-	SetPos(pos);
-
-	// 目標向きへ迫る
-	D3DXVECTOR3 rot{ GetRot() };
-	rot += (m_rotTarget - rot) * 0.05f;
-	SetRot(rot);
-
-	// 目標サイズへ迫る
-	D3DXVECTOR3 size{ GetSize() };
-	size += (m_sizeTarget - size) * 0.05f;
-	SetSize(size);
-
-	// 目標色へ迫る
-	if (!m_bAppear && !m_bDisappear)
-	{
-		D3DXCOLOR col{ GetCol() };
-		col += (m_colTarget - col) * 0.05f;
-		SetCol(col);
 	}
 }

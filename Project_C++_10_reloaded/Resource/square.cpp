@@ -21,14 +21,20 @@ CSquare::CSquare() :
 	CObject_UI{ static_cast<int>(LAYER::UI) }
 {
 	// 数字を生成
-	for (int i = 0; i < MAX_DIGIT; i++)
+	for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
 	{
 		// 数字のポインタを初期化
-		m_apNumber[i] = nullptr;
+		m_apNumber[nCntNum] = nullptr;
 	
-		m_apNumber[i] = CNumber::Create(
+		m_apNumber[nCntNum] = CNumber::Create(
 			{ 0.0f, 0.0f, 0.0f },		// 座標
-			{ 25.0f, 20.0f, 0.0f });	// サイズ
+			{ 0.0f, 0.0f, 0.0f });	// サイズ
+
+		// 目標サイズの設定
+		m_apNumber[nCntNum]->SetSizeTarget({ 25.0f, 20.0f, 0.0f });
+
+		// 数字の出現予約
+		m_apNumber[nCntNum]->SetAppear(true);
 	}
 
 	// 出現予約
@@ -68,8 +74,33 @@ void CSquare::Uninit()
 //============================================================================
 void CSquare::Update()
 {
+	// 目標座標へ
+	SetPos(CUtility::GetInstance()->AdjustToTarget(GetPos(), GetPosTarget(), 0.05f));
+
+	// 目標向きへ
+	SetRot(CUtility::GetInstance()->AdjustToTarget(GetRot(), GetRotTarget(), 0.05f));
+
+	// 目標サイズへ
+	SetSize(CUtility::GetInstance()->AdjustToTarget(GetSize(), GetSizeTarget(), 0.05f));
+
 	// 基底クラスの更新
 	CObject_UI::Update();
+
+	//////////////////////////////////////////////////
+	//////////////////////////////////////////////////
+
+	// 数字を生成
+	for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
+	{
+		// 目標座標へ
+		m_apNumber[nCntNum]->SetPos(CUtility::GetInstance()->AdjustToTarget(m_apNumber[nCntNum]->GetPos(), m_apNumber[nCntNum]->GetPosTarget(), 0.05f));
+	
+		// 目標向きへ
+		m_apNumber[nCntNum]->SetRot(CUtility::GetInstance()->AdjustToTarget(m_apNumber[nCntNum]->GetRot(), m_apNumber[nCntNum]->GetRotTarget(), 0.05f));
+	
+		// 目標サイズへ
+		m_apNumber[nCntNum]->SetSize(CUtility::GetInstance()->AdjustToTarget(m_apNumber[nCntNum]->GetSize(), m_apNumber[nCntNum]->GetSizeTarget(), 0.05f));
+	}
 }
 
 //============================================================================
@@ -146,13 +177,27 @@ void CSquare::ControlAll(int nSelect)
 
 		for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
 		{
-			// 中心座標から、相対的な先頭の位置を設定
-			posNew = pSquare->GetPos();
-			posNew.x = pSquare->GetPos().x + (25.0f * MAX_DIGIT * 0.5f) - (25.0f * 0.5f);
+			D3DXVECTOR3 size{ 0.0f, 0.0f, 0.0f };
 
-			// 桁ごとに所定の座標へ補正
-			posNew.x += -25.0f * nCntNum;
-			pSquare->m_apNumber[nCntNum]->SetPos(posNew);
+			// 選択しているマスの数字のみ拡大
+			if (nSquareCnt == nSelect)
+			{	
+				size = { 37.5f, 30.0f, 0.0f };
+			}
+			else
+			{
+				size = { 25.0f, 20.0f, 0.0f };
+			}
+
+			// 中心座標から、相対的な先頭の位置を設定
+			posNew.x = pSquare->GetPosTarget().x + (size.x * MAX_DIGIT * 0.5f) - (size.x * 0.5f);
+
+			// 先頭座標から数字が並ぶように調整
+			posNew.x += -size.x * nCntNum;
+			pSquare->m_apNumber[nCntNum]->SetPosTarget(posNew);
+
+			// 目標サイズを反映
+			pSquare->m_apNumber[nCntNum]->SetSizeTarget(size);
 
 			// 数字を設定
 			pSquare->m_apNumber[nCntNum]->SetNumber(nCopy % 10);
@@ -183,20 +228,26 @@ void CSquare::DisappearAll()
 		// マス目クラスへダウンキャスト
 		CSquare* pSquare = CUtility::GetInstance()->DownCast<CSquare, CObject>(pObj[nSquareCnt]);
 
-		// 新規向き情報
-		D3DXVECTOR3 rotNew{ 0.0f, 0.0f, -D3DX_PI };
+		// 目標向きを設定
+		pSquare->SetRotTarget({ 0.0f, 0.0f, -D3DX_PI * 2.0f });
 
-		// 新規サイズ情報
-		D3DXVECTOR3 sizeNew{ 100.0f, 100.0f, 0.0f };
-
-		// 目標向きを新しいものに
-		pSquare->SetRotTarget(rotNew);
-
-		// 目標サイズを新しいものに
-		pSquare->SetSizeTarget(sizeNew);
+		// 目標サイズを設定
+		pSquare->SetSizeTarget(pSquare->GetSize() * 2.0f);
 
 		// 消去予約
 		pSquare->SetDisappear(true);
+
+		/////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////
+
+		for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
+		{
+			// 数字の目標サイズを設定
+			pSquare->m_apNumber[nCntNum]->SetSizeTarget({ 0.0f, 0.0f, 0.0f });
+		}
+
+		// 数字を消去予約
+		pSquare->DisappearNumber();
 
 		nSquareCnt++;
 	}
@@ -252,7 +303,7 @@ CSquare* CSquare::Create(D3DXVECTOR3 pos)
 					0.0f });
 
 	// サイズの設定
-	pSquare->SetSize({ 50.0f, 50.0f, 0.0f });
+	pSquare->SetSize({ 0.0f, 0.0f, 0.0f });
 
 	// テクスチャを設定
 	pSquare->BindTex(CTexture_Manager::GetInstance()->GetTexture(CTexture_Manager::TYPE::SQUARE_00));
@@ -318,5 +369,16 @@ void CSquare::Disappear()
 
 		// 破棄予約
 		SetRelease();
+	}
+}
+
+//============================================================================
+// 数字を消去
+//============================================================================
+void CSquare::DisappearNumber()
+{
+	for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
+	{
+		m_apNumber[nCntNum]->SetDisappear(true);
 	}
 }

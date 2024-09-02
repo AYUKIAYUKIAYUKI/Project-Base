@@ -50,9 +50,8 @@ public:
 
 private:
 
-	virtual void Appear();						// 出現
-	virtual void Disappear();					// 消滅
-	void AdjustToTarget(float fCoeff = 0.05f);	// 目標へ補正
+	virtual void Appear();		// 出現
+	virtual void Disappear();	// 消滅
 
 	bool m_bAppear;				// 出現フラグ
 	bool m_bDisappear;			// 消滅フラグ

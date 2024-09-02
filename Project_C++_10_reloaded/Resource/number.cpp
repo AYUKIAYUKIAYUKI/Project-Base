@@ -17,7 +17,7 @@
 // デフォルトコンストラクタ
 //============================================================================
 CNumber::CNumber() : 
-	CObject_2D{ static_cast<int>(LAYER::UI) },	// 描画優先度の指定
+	CObject_UI{ static_cast<int>(LAYER::UI) },	// 描画優先度の指定
 	m_nNum{ 0 }									// 数字の割り当て
 {
 
@@ -37,7 +37,7 @@ CNumber::~CNumber()
 HRESULT CNumber::Init()
 {
 	// 基底クラスの初期設定
-	HRESULT hr = CObject_2D::Init();
+	HRESULT hr = CObject_UI::Init();
 
 	return hr;
 }
@@ -48,7 +48,7 @@ HRESULT CNumber::Init()
 void CNumber::Uninit()
 {
 	// 基底クラスの終了処理
-	CObject_2D::Uninit();
+	CObject_UI::Uninit();
 }
 
 //============================================================================
@@ -60,7 +60,7 @@ void CNumber::Update()
 	Animation();
 
 	// 基底クラスの更新
-	CObject_2D::Update();
+	CObject_UI::Update();
 }
 
 //============================================================================
@@ -69,7 +69,7 @@ void CNumber::Update()
 void CNumber::Draw()
 {
 	// 基底クラスの描画処理
-	CObject_2D::Draw();
+	CObject_UI::Draw();
 }
 
 //============================================================================
@@ -85,14 +85,23 @@ CNumber* CNumber::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 		assert(false);
 	}
 
-	pNumber->SetType(TYPE::NONE);	// タイプを設定
+	// タイプを設定
+	pNumber->SetType(TYPE::NONE);
 
-	pNumber->Init();		// 基底クラスの初期設定
-	pNumber->SetPos(pos);	// 位置の設定
-	pNumber->SetSize(size);	// サイズの設定
+	// 初期設定
+	pNumber->Init();
 
-	pNumber->SetTexWidth(0.1f);		// 横テクスチャ分割幅
-	pNumber->SetTexHeight(1.0f);	// 縦テクスチャ分縦幅
+	// 位置の設定
+	pNumber->SetPos(pos);
+
+	// サイズの設定
+	pNumber->SetSize(size);
+
+	// 横テクスチャ分割幅
+	pNumber->SetTexWidth(0.1f);
+
+	// 縦テクスチャ分縦幅
+	pNumber->SetTexHeight(1.0f);
 
 	// テクスチャを設定
 	pNumber->BindTex(CTexture_Manager::GetInstance()->GetTexture(CTexture_Manager::TYPE::NUMBER_00));

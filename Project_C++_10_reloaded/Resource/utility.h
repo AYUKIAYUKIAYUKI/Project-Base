@@ -32,6 +32,9 @@ public:
 	// ダウンキャスト
 	template <typename T1, typename T2> T1* DownCast(T2* pBase);
 
+	// 目標数値へ補正
+	template <typename T> T AdjustToTarget(T base, T target, float fCoeff);
+
 	// 重力落下
 	void Gravity(D3DXVECTOR3& vec);
 
@@ -115,6 +118,16 @@ template <typename T1, typename T2> T1* CUtility::DownCast(T2* pBase)
 	}
 
 	return pObj;
+}
+
+//============================================================================
+// 目標数値へ補正
+//============================================================================
+template <typename T> T CUtility::AdjustToTarget(T base, T target, float fCoeff)
+{
+	base += (target - base) * fCoeff;
+
+	return base;
 }
 
 #endif // _UTILITY_H_
