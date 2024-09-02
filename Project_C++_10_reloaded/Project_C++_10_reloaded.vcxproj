@@ -48,6 +48,7 @@
     <ClCompile Include="resource\object_2D.cpp" />
     <ClCompile Include="resource\object_3D.cpp" />
     <ClCompile Include="Resource\object_billboard.cpp" />
+    <ClCompile Include="Resource\object_UI.cpp" />
     <ClCompile Include="resource\object_X.cpp" />
     <ClCompile Include="resource\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -107,6 +108,7 @@
     <ClInclude Include="resource\object_2D.h" />
     <ClInclude Include="resource\object_3D.h" />
     <ClInclude Include="Resource\object_billboard.h" />
+    <ClInclude Include="Resource\object_UI.h" />
     <ClInclude Include="resource\object_X.h" />
     <ClInclude Include="resource\pch.h" />
     <ClInclude Include="Resource\ripple.h" />
