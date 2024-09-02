@@ -30,8 +30,11 @@ public:
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
 
-	void SetAppear();		// 出現予約
-	void SetDisappear();	// 消滅予約
+	bool GetAppear();				// 出現フラグ取得
+	void SetAppear(bool bAppear);	// 出現フラグ設定
+
+	bool GetDisappear();				// 消滅フラグ取得
+	void SetDisappear(bool bDisappear);	// 消滅フラグ設定
 
 	D3DXVECTOR3 GetPosTarget();					// 目標座標を取得
 	void SetPosTarget(D3DXVECTOR3 posTarget);	// 目標座標を設定
@@ -47,8 +50,9 @@ public:
 
 private:
 
-	virtual void Appear();		// 出現
-	virtual void Disappear();	// 消滅
+	virtual void Appear();						// 出現
+	virtual void Disappear();					// 消滅
+	void AdjustToTarget(float fCoeff = 0.05f);	// 目標へ補正
 
 	bool m_bAppear;				// 出現フラグ
 	bool m_bDisappear;			// 消滅フラグ

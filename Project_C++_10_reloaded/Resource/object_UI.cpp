@@ -13,7 +13,14 @@
 //============================================================================
 // デフォルトコンストラクタ
 //============================================================================
-CObject_UI::CObject_UI() : CObject_2D(static_cast<int>(CObject::LAYER::UI))
+CObject_UI::CObject_UI() :
+	CObject_2D(static_cast<int>(CObject::LAYER::UI)),
+	m_bAppear{ false },
+	m_bDisappear{ false },
+	m_posTarget{ 0.0f, 0.0f, 0.0f },
+	m_rotTarget{ 0.0f, 0.0f, 0.0f },
+	m_sizeTarget{ 50.0f, 0.0f, 0.0f },
+	m_colTarget{ 1.0f, 1.0f, 1.0f, 1.0f }
 {
 
 }
@@ -21,7 +28,14 @@ CObject_UI::CObject_UI() : CObject_2D(static_cast<int>(CObject::LAYER::UI))
 //============================================================================
 // 描画優先度指定コンストラクタ
 //============================================================================
-CObject_UI::CObject_UI(int nPriority) : CObject_2D(nPriority)
+CObject_UI::CObject_UI(int nPriority) :
+	CObject_2D(nPriority),
+	m_bAppear{ false },
+	m_bDisappear{ false },
+	m_posTarget{ 0.0f, 0.0f, 0.0f },
+	m_rotTarget{ 0.0f, 0.0f, 0.0f },
+	m_sizeTarget{ 0.0f, 0.0f, 0.0f },
+	m_colTarget{ 1.0f, 1.0f, 1.0f, 1.0f }
 {
 
 }
@@ -40,12 +54,9 @@ CObject_UI::~CObject_UI()
 HRESULT CObject_UI::Init()
 {
 	// 基底クラスの初期設定
-	if (FAILED(CObject_2D::Init()))
-	{
-		return E_FAIL;
-	}
+	HRESULT hr = CObject_2D::Init();
 
-	return S_OK;
+	return hr;
 }
 
 //============================================================================
@@ -68,6 +79,9 @@ void CObject_UI::Update()
 	// 消滅
 	Disappear();
 
+	// 目標へ補正
+	AdjustToTarget();
+
 	// 基底クラスの更新処理
 	CObject_2D::Update();
 }
@@ -82,25 +96,35 @@ void CObject_UI::Draw()
 }
 
 //============================================================================
-// 出現予約
+// 出現フラグ取得
 //============================================================================
-void CObject_UI::SetAppear()
+bool CObject_UI::GetAppear()
 {
-	if (!m_bAppear && !m_bDisappear)
-	{
-		m_bAppear = true;
-	}
+	return m_bAppear;
 }
 
 //============================================================================
-// 消滅予約
+// 出現フラグ設定
 //============================================================================
-void CObject_UI::SetDisappear()
+void CObject_UI::SetAppear(bool bAppear)
 {
-	if (!m_bAppear && !m_bDisappear)
-	{
-		m_bDisappear = true;
-	}
+	m_bAppear = bAppear;
+}
+
+//============================================================================
+// 消滅フラグ取得
+//============================================================================
+bool CObject_UI::GetDisappear()
+{
+	return m_bDisappear;
+}
+
+///============================================================================
+// 消滅フラグ設定
+//============================================================================
+void CObject_UI::SetDisappear(bool bDisappear)
+{
+	m_bDisappear = bDisappear;
 }
 
 //============================================================================
@@ -219,5 +243,34 @@ void CObject_UI::Disappear()
 
 		// 破棄予約
 		SetRelease();
+	}
+}
+
+//============================================================================
+// 目標へ補正
+//============================================================================
+void CObject_UI::AdjustToTarget(float fCoeff)
+{
+	// 目標座標へ迫る
+	D3DXVECTOR3 pos{ GetPos() };
+	pos += (m_posTarget - pos) * 0.05f;
+	SetPos(pos);
+
+	// 目標向きへ迫る
+	D3DXVECTOR3 rot{ GetRot() };
+	rot += (m_rotTarget - rot) * 0.05f;
+	SetRot(rot);
+
+	// 目標サイズへ迫る
+	D3DXVECTOR3 size{ GetSize() };
+	size += (m_sizeTarget - size) * 0.05f;
+	SetSize(size);
+
+	// 目標色へ迫る
+	if (!m_bAppear && !m_bDisappear)
+	{
+		D3DXCOLOR col{ GetCol() };
+		col += (m_colTarget - col) * 0.05f;
+		SetCol(col);
 	}
 }

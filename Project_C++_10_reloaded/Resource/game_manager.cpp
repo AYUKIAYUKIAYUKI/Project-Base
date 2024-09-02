@@ -115,13 +115,17 @@ void CGameManager::Update()
 		// マス目を動作
 		CSquare::ControlAll(m_nSelectLevel);
 
+		// タイムを動作
+		CTimer::SwitchControlByPahse(m_nSelectLevel);
+
 		if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
 		{
+			// ウェーブを停止し、スタートフェーズへ移行
 			CFakeScreen::GetInstance()->StopWave(PHASE::START);
-		}
 
-		// タイムの動作
-		CTimer::SwitchControlByPahse(m_nSelectLevel);
+			// マス目を全消去
+			CSquare::DisappearAll();
+		}
 
 		break;
 
@@ -131,7 +135,7 @@ void CGameManager::Update()
 		CObject::ReleaseScreen();
 
 		// UIのみの解放処理
-		CObject::ReleaseUI();
+		//CObject::ReleaseUI();
 
 		////////////////////////////////////////////////////////////////////
 		////////////////////////////////////////////////////////////////////
