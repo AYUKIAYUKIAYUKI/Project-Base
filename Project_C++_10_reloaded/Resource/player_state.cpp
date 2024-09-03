@@ -34,7 +34,7 @@ const float CPlayerStateBeginning::BEGIN_FLOATING = 1.25f;	// 変身時上昇量
 const float CPlayerStateBeginning::BEGIN_SPINNING = 0.5f;	// 変身時回転量
 const float CPlayerStateFlying::MAX_FLY_VELOCITY =	10.0f;	// 飛行時の最大加速度 (飛行速度以上推奨)
 const float CPlayerStateFlying::FLY_SPEED = 3.0f;			// 飛行速度
-const int CPlayerStateStopping::STOP_CNT_MAX = 10;			// 変身停止必要時間
+const int CPlayerStateStopping::STOP_CNT_MAX = 15;			// 変身停止必要時間
 const float CPlayerStateStopping::RECOIL_SPEED = 3.0f;		// 反動移動速度
 const float CPlayerStateMistook::MAX_WARP_SPEED = 15.0f;	// 強制移動速度の上限
 
@@ -443,6 +443,12 @@ void CPlayerStateFlying::Update()
 	// 当たり判定
 	if (m_pPlayer->Collision())
 	{
+		// この時、判定により死亡状態に移行するなら強制終了
+		if (m_pPlayer->GetStateManager()->GetPendingState() == CPlayerState::STATE::MISS)
+		{
+			return;
+		}
+
 		// 何かに衝突で変身停止へ
 		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::STOPPING);
 
@@ -767,13 +773,9 @@ void CPlayerStateStopping::Recoil()
 {
 	// 衝突寸前の加速度を取得
 	D3DXVECTOR3 newVelocity{ m_pPlayer->GetVelocity() };
-	 
-#ifdef _DEBUG
 
 	CRenderer::GetInstance()->SetTimeString("\n衝突時の加速度X : " + std::to_string(newVelocity.x), 300);
 	CRenderer::GetInstance()->SetTimeString("衝突時の加速度Y : " + std::to_string(newVelocity.y), 300);
-
-#endif	// _DEBUG
 
 	// 寸前の向きの真逆の角度を算出
 	float fNewFlyingAngle{ atan2f(newVelocity.x, newVelocity.y) };
@@ -782,12 +784,8 @@ void CPlayerStateStopping::Recoil()
 	newVelocity.x = -sinf(fNewFlyingAngle) * RECOIL_SPEED;
 	newVelocity.y = -cosf(fNewFlyingAngle) * RECOIL_SPEED;
 
-#ifdef _DEBUG
-
 	CRenderer::GetInstance()->SetTimeString("衝突後の加速度X : " + std::to_string(newVelocity.x), 300);
 	CRenderer::GetInstance()->SetTimeString("衝突後の加速度Y : " + std::to_string(newVelocity.y), 300);
-
-#endif	// _DEBUG
 
 	m_pPlayer->SetVelocity(newVelocity);
 }

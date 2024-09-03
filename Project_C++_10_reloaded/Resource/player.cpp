@@ -128,6 +128,9 @@ void CPlayer::Update()
 	oss << std::fixed << std::setprecision(1) << "X:" << GetPos().x << "\nY:" << GetPos().y;
 	CRenderer::GetInstance()->SetDebugString(oss.str().c_str());
 
+	CRenderer::GetInstance()->SetDebugString("現在の加速度X : " + std::to_string(m_velocity.x));
+	CRenderer::GetInstance()->SetDebugString("現在の加速度Y : " + std::to_string(m_velocity.y));
+
 #endif	// _DEBUG
 
 	// 基底クラスの更新
