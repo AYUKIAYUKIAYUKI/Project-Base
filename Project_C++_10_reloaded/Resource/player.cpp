@@ -36,6 +36,7 @@ CPlayer::CPlayer() :
 	CObject_X{ static_cast<int>(LAYER::MIDDLE) },	// 描画優先度を指定
 	m_pStateManager{ nullptr },						// 状態マネージャーの初期化
 	m_velocity{ 0.0f, 0.0f, 0.0f },					// 加速度の初期化
+	m_velocityTarget{ 0.0f, 0.0f, 0.0f },			// 目標加速度の初期化
 	m_posTarget{ 0.0f, 0.0f, 0.0f },				// 目標位置の初期化
 	m_rotTarget{ 0.0f, 0.0f, 0.0f },				// 目標向きの初期化
 	m_fAngleFlying{ 0.0f }							// 飛行向きの初期化
@@ -48,11 +49,12 @@ CPlayer::CPlayer() :
 //============================================================================
 CPlayer::~CPlayer()
 {
-	m_pStateManager = nullptr;				// 状態マネージャーの初期化
-	m_velocity = { 0.0f, 0.0f, 0.0f };		// 加速度の初期化
-	m_posTarget = { 0.0f, 0.0f, 0.0f };		// 目標位置の初期化
-	m_rotTarget = { 0.0f, 0.0f, 0.0f };		// 目標向きの初期化
-	m_fAngleFlying = 0.0f;					// 飛行向きの初期化
+	m_pStateManager = nullptr;					// 状態マネージャーの初期化
+	m_velocity = { 0.0f, 0.0f, 0.0f };			// 加速度の初期化
+	m_velocityTarget = { 0.0f, 0.0f, 0.0f };	// 目標加速度の初期化
+	m_posTarget = { 0.0f, 0.0f, 0.0f };			// 目標位置の初期化
+	m_rotTarget = { 0.0f, 0.0f, 0.0f };			// 目標向きの初期化
+	m_fAngleFlying = 0.0f;						// 飛行向きの初期化
 }
 
 //============================================================================
@@ -118,11 +120,15 @@ void CPlayer::Update()
 	// 目標座標を反映
 	SetPos(m_posTarget);
 
+#ifdef _DEBUG
+
 	// 座標をデバッグ表示
 	CRenderer::GetInstance()->SetDebugString("【プレイヤー座標】");
 	std::ostringstream oss;
 	oss << std::fixed << std::setprecision(1) << "X:" << GetPos().x << "\nY:" << GetPos().y;
 	CRenderer::GetInstance()->SetDebugString(oss.str().c_str());
+
+#endif	// _DEBUG
 
 	// 基底クラスの更新
 	CObject_X::Update();
@@ -310,6 +316,22 @@ D3DXVECTOR3 CPlayer::GetVelocity()
 void CPlayer::SetVelocity(D3DXVECTOR3 velocity)
 {
 	m_velocity = velocity;
+}
+
+//============================================================================
+// 目標加速度を取得
+//============================================================================
+D3DXVECTOR3 CPlayer::GetVelocityTarget()
+{
+	return m_velocityTarget;
+}
+
+//============================================================================
+// 目標加速度を設定
+//============================================================================
+void CPlayer::SetVelocityTarget(D3DXVECTOR3 velocityTarget)
+{
+	m_velocityTarget = velocityTarget;
 }
 
 //============================================================================

@@ -117,8 +117,6 @@ private:
 	bool Control();		// ‘€c
 	void Rotation();	// ‰ñ“]
 	void Braking();		// §“®’²®
-
-	D3DXVECTOR3 m_velocityTarget;	// –Ú•W‰Á‘¬“x
 };
 
 //****************************************************

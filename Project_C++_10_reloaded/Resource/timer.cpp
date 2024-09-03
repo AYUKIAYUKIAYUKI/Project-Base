@@ -38,13 +38,13 @@ CTimer::CTimer() :
 		m_apNumber[nCntNum] = CNumber::Create();
 
 		// ランダムな座標
-		D3DXVECTOR3 pos{ (SCREEN_WIDTH * 0.5f), 0.0f, 0.0f };
+		D3DXVECTOR3 pos{ (SCREEN_WIDTH * 0.5f), -100.0f, 0.0f };
 
 		// 初期座標の設定
 		m_apNumber[nCntNum]->SetPos(pos);
 
 		// 初期向きの設定
-		m_apNumber[nCntNum]->SetRot({ 0.0f, 0.0f, D3DX_PI * 2.0f });
+		//m_apNumber[nCntNum]->SetRot({ 0.0f, 0.0f, D3DX_PI * 2.0f });
 
 		// 数字の出現予約
 		m_apNumber[nCntNum]->SetAppear(true);

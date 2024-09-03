@@ -37,6 +37,9 @@ public:
 	D3DXVECTOR3 GetVelocity();				// 加速度を取得
 	void SetVelocity(D3DXVECTOR3 velocity);	// 加速度を設定
 
+	D3DXVECTOR3 GetVelocityTarget();					// 目標加速度を取得
+	void SetVelocityTarget(D3DXVECTOR3 velocityTarget);	// 目標加速度を設定
+
 	float GetAngleFlying();						// 飛行方向を取得
 	void SetAngleFlying(float fAngleFlying);	// 飛行方向を設定
 
@@ -54,6 +57,7 @@ private:
 
 	CPlayerStateManager* m_pStateManager;	// 状態マネージャー
 	D3DXVECTOR3 m_velocity;					// 加速度
+	D3DXVECTOR3 m_velocityTarget;			// 目標加速度
 	D3DXVECTOR3 m_posTarget;				// 目標位置
 	D3DXVECTOR3 m_rotTarget;				// 目標向き
 	float m_fAngleFlying;					// 飛行方向

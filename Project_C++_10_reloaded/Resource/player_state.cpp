@@ -150,12 +150,6 @@ void CPlayerStateDefault::Update()
 //============================================================================
 void CPlayerStateDefault::Exit()
 {
-	// 加速度を初期化
-	m_pPlayer->SetVelocity({ 0.0f, 0.0f, 0.0f });
-
-	// 飛行方向を初期化
-	m_pPlayer->SetAngleFlying(0.0f);
-
 	// Z軸回転を初期化
 	D3DXVECTOR3 rot = m_pPlayer->GetRot();
 	rot.z = 0.0f;
@@ -365,6 +359,9 @@ void CPlayerStateBeginning::Exit()
 	// 加速度を初期化
 	m_pPlayer->SetVelocity({ 0.0f, 0.0f, 0.0f });
 
+	// 目標加速度を初期化
+	m_pPlayer->SetVelocityTarget({ 0.0f, 0.0f, 0.0f });
+
 	// 飛行方向を初期化
 	m_pPlayer->SetAngleFlying(0.0f);
 
@@ -392,7 +389,7 @@ void CPlayerStateBeginning::Exit()
 //============================================================================
 CPlayerStateFlying::CPlayerStateFlying()
 {
-	m_velocityTarget = { 0.0f, 0.0f, 0.0f };	// 目標加速度を初期化
+
 }
 
 //============================================================================
@@ -400,7 +397,7 @@ CPlayerStateFlying::CPlayerStateFlying()
 //============================================================================
 CPlayerStateFlying::~CPlayerStateFlying()
 {
-	m_velocityTarget = { 0.0f, 0.0f, 0.0f };	// 目標加速度を初期化
+
 }
 
 //============================================================================
@@ -435,22 +432,22 @@ void CPlayerStateFlying::Update()
 	// 制動調整
 	Braking();
 
-	// 最終加速度をデバッグ表示
-	CRenderer::GetInstance()->SetDebugString("【　最終加速度　】");
-	std::ostringstream oss1;
-	oss1 << std::fixed << std::setprecision(3) << "X:" << m_pPlayer->GetVelocity().x << "\nY:" << m_pPlayer->GetVelocity().y;
-	CRenderer::GetInstance()->SetDebugString(oss1.str().c_str());
-
 	// 加速度分、目標座標を変動
 	D3DXVECTOR3 posTarget = m_pPlayer->GetPosTarget();
 	posTarget += m_pPlayer->GetVelocity();
 	m_pPlayer->SetPosTarget(posTarget);
+	
+	// この時点での加速度を保持
+	D3DXVECTOR3 oldVelocity{ m_pPlayer->GetVelocity() };
 
 	// 当たり判定
 	if (m_pPlayer->Collision())
 	{
 		// 何かに衝突で変身停止へ
 		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::STOPPING);
+
+		// 当たり判定により消失した加速度を戻す
+		m_pPlayer->SetVelocity(oldVelocity);
 	}
 }
 
@@ -459,13 +456,7 @@ void CPlayerStateFlying::Update()
 //============================================================================
 void CPlayerStateFlying::Exit()
 {
-	// 飛行方向に、最終的な加速度の方向を代入しておく
-	//m_pPlayer->SetAngleFlying(atan2f(m_pPlayer->GetVelocity().y, m_pPlayer->GetVelocity().x));
 
-	// 衝突時点での加速度と、加速度ベクトルの方向を表示
-	//CRenderer::GetInstance()->SetTimeString("X:" + std::to_string(m_pPlayer->GetVelocity().x), 240);
-	//CRenderer::GetInstance()->SetTimeString("Y:" + std::to_string(m_pPlayer->GetVelocity().y), 240);
-	//CRenderer::GetInstance()->SetTimeString(std::to_string(atan2f(m_pPlayer->GetVelocity().y, m_pPlayer->GetVelocity().x)), 240);
 }
 
 //============================================================================
@@ -518,27 +509,37 @@ bool CPlayerStateFlying::Control()
 		m_pPlayer->SetAngleFlying(atan2f(X, Y));
 	}
 
-	// 現在の加速度を取得
-	D3DXVECTOR3 velocity = m_pPlayer->GetVelocity();
-
 	// 目標加速度を設定
-	m_velocityTarget.x = sinf(m_pPlayer->GetAngleFlying()) * FLY_SPEED;
-	m_velocityTarget.y = cosf(m_pPlayer->GetAngleFlying()) * FLY_SPEED;
+	D3DXVECTOR3 velocityTarget{ 0.0f, 0.0f, 0.0f };
+	velocityTarget.x = sinf(m_pPlayer->GetAngleFlying()) * FLY_SPEED;
+	velocityTarget.y = cosf(m_pPlayer->GetAngleFlying()) * FLY_SPEED;
+	m_pPlayer->SetVelocityTarget(velocityTarget);
+
+#ifdef _DEBUG
 
 	// 目標加速度をデバッグ表示
 	CRenderer::GetInstance()->SetDebugString("【　目標加速度　】");
 	std::ostringstream oss;
-	oss << std::fixed << std::setprecision(3) << "X:" << m_velocityTarget.x << "\nY:" << m_velocityTarget.y;
+	oss << std::fixed << std::setprecision(3) << "X:" << m_pPlayer->GetVelocityTarget().x << "\nY:" << m_pPlayer->GetVelocityTarget().y;
 	CRenderer::GetInstance()->SetDebugString(oss.str().c_str());
 
-	// 現在の加速度を補正
-	velocity += (m_velocityTarget - velocity) * 0.1f;
+#endif // _DEBUG
+
+	// 現在の加速度を取得
+	D3DXVECTOR3 velocity = m_pPlayer->GetVelocity();
+
+#ifdef _DEBUG
 
 	// 現在の加速度をデバッグ表示
 	CRenderer::GetInstance()->SetDebugString("【　現在の加速度　】");
 	std::ostringstream oss1;
 	oss1 << std::fixed << std::setprecision(3) << "X:" << velocity.x << "\nY:" << velocity.y;
 	CRenderer::GetInstance()->SetDebugString(oss1.str().c_str());
+
+#endif // _DEBUG
+
+	// 現在の加速度を補正
+	velocity += (m_pPlayer->GetVelocityTarget() - velocity) * 0.1f;
 
 	// 変更した加速度を反映
 	m_pPlayer->SetVelocity(velocity);
@@ -764,13 +765,31 @@ void CPlayerStateStopping::Rolling()
 //============================================================================
 void CPlayerStateStopping::Recoil()
 {
-	D3DXVECTOR3 velocity = m_pPlayer->GetVelocity();
+	// 衝突寸前の加速度を取得
+	D3DXVECTOR3 newVelocity{ m_pPlayer->GetVelocity() };
+	 
+#ifdef _DEBUG
 
-	// 飛行方向
-	velocity.x += -sinf(m_pPlayer->GetAngleFlying()) * RECOIL_SPEED;
-	velocity.y += -cosf(m_pPlayer->GetAngleFlying()) * RECOIL_SPEED;
+	CRenderer::GetInstance()->SetTimeString("\n衝突時の加速度X : " + std::to_string(newVelocity.x), 300);
+	CRenderer::GetInstance()->SetTimeString("衝突時の加速度Y : " + std::to_string(newVelocity.y), 300);
 
-	m_pPlayer->SetVelocity(velocity);
+#endif	// _DEBUG
+
+	// 寸前の向きの真逆の角度を算出
+	float fNewFlyingAngle{ atan2f(newVelocity.x, newVelocity.y) };
+
+	// 真逆の角度方向に加速度を設定
+	newVelocity.x = -sinf(fNewFlyingAngle) * RECOIL_SPEED;
+	newVelocity.y = -cosf(fNewFlyingAngle) * RECOIL_SPEED;
+
+#ifdef _DEBUG
+
+	CRenderer::GetInstance()->SetTimeString("衝突後の加速度X : " + std::to_string(newVelocity.x), 300);
+	CRenderer::GetInstance()->SetTimeString("衝突後の加速度Y : " + std::to_string(newVelocity.y), 300);
+
+#endif	// _DEBUG
+
+	m_pPlayer->SetVelocity(newVelocity);
 }
 
 
@@ -832,7 +851,8 @@ void CPlayerStateMistook::Update()
 //============================================================================
 void CPlayerStateMistook::Exit()
 {
-
+	// 加速度を初期化
+	m_pPlayer->SetVelocity({ 0.0f, 0.0f, 0.0f });
 }
 
 //============================================================================
