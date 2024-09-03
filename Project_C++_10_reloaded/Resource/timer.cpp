@@ -35,12 +35,16 @@ CTimer::CTimer() :
 		m_apNumber[nCntNum] = nullptr;
 
 		// 数字を生成
-		m_apNumber[nCntNum] = CNumber::Create(
-			{ 0.0f, 0.0f, 0.0f },	// 座標
-			{ 5.0f, 0.0f, 0.0f });	// サイズ
+		m_apNumber[nCntNum] = CNumber::Create();
 
-		// 目標サイズの設定
-		m_apNumber[nCntNum]->SetSizeTarget({ 25.0f, 20.0f, 0.0f });
+		// ランダムな座標
+		D3DXVECTOR3 pos{ (SCREEN_WIDTH * 0.5f), 0.0f, 0.0f };
+
+		// 初期座標の設定
+		m_apNumber[nCntNum]->SetPos(pos);
+
+		// 初期向きの設定
+		m_apNumber[nCntNum]->SetRot({ 0.0f, 0.0f, D3DX_PI * 2.0f });
 
 		// 数字の出現予約
 		m_apNumber[nCntNum]->SetAppear(true);
@@ -88,6 +92,22 @@ void CTimer::Update()
 
 	// 基底クラスの更新
 	CObject_UI::Update();
+
+	///////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////
+
+	// 数字のみ
+	for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
+	{
+		// 目標座標へ
+		m_apNumber[nCntNum]->SetPos(CUtility::GetInstance()->AdjustToTarget(m_apNumber[nCntNum]->GetPos(), m_apNumber[nCntNum]->GetPosTarget(), 0.075f));
+
+		// 目標向きへ
+		m_apNumber[nCntNum]->SetRot(CUtility::GetInstance()->AdjustToTarget(m_apNumber[nCntNum]->GetRot(), m_apNumber[nCntNum]->GetRotTarget(), 0.075f));
+
+		// 目標サイズへ
+		m_apNumber[nCntNum]->SetSize(CUtility::GetInstance()->AdjustToTarget(m_apNumber[nCntNum]->GetSize(), m_apNumber[nCntNum]->GetSizeTarget(), 0.05f));
+	}
 }
 
 //============================================================================
@@ -114,15 +134,18 @@ void CTimer::SwitchControlByPahse(int nSelect)
 		pTimer->SetPosTarget({ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.25f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f, });
 		
 		// 数字を並べる
-		for (int i = 0; i < MAX_DIGIT; i++)
+		for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
 		{
 			// 中心座標から、相対的な先頭の位置を設定
-			D3DXVECTOR3 pos = pTimer->GetPos();
-			pos.x = pTimer->GetPos().x + (25.0f * MAX_DIGIT * 0.5f) - (25.0f * 0.5f);
+			D3DXVECTOR3 pos = pTimer->GetPosTarget();
+			pos.x = pTimer->GetPosTarget().x + (25.0f * MAX_DIGIT * 0.5f) - (25.0f * 0.5f);
 
-			// 桁ごとに所定の座標へ補正
-			pos.x += -25.0f * i;
-			pTimer->m_apNumber[i]->SetPos(pos);
+			// 先頭座標から数字が並ぶように調整
+			pos.x += -25.0f * nCntNum;
+			pTimer->m_apNumber[nCntNum]->SetPosTarget(pos);
+
+			// 数字の目標サイズを設定
+			pTimer->m_apNumber[nCntNum]->SetSizeTarget({ 25.0f, 20.0f, 0.0f });
 		}
 
 		// タイムの読み込み
@@ -134,21 +157,18 @@ void CTimer::SwitchControlByPahse(int nSelect)
 		pTimer->SetPosTarget({ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.15f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f, });
 
 		// 数字を並べる
-		for (int i = 0; i < MAX_DIGIT; i++)
-		{
-			// 中心座標から、相対的な先頭の位置を設定
-			D3DXVECTOR3 pos = pTimer->GetPos();
-			pos.x = pTimer->GetPos().x + (37.5f * MAX_DIGIT * 0.5f) - (37.5f * 0.5f);
-
-			// 桁ごとに所定の座標へ補正
-			pos.x += -37.5f * i;
-			pTimer->m_apNumber[i]->SetPos(pos);
-		}
-
 		for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
 		{
-			// 数字を設定
-			pTimer->m_apNumber[nCntNum]->SetSize({37.5f, 30.0f, 0.0f});
+			// 中心座標から、相対的な先頭の位置を設定
+			D3DXVECTOR3 pos = pTimer->GetPosTarget();
+			pos.x = pTimer->GetPosTarget().x + (37.5f * MAX_DIGIT * 0.5f) - (37.5f * 0.5f);
+
+			// 先頭座標から数字が並ぶように調整
+			pos.x += -37.5f * nCntNum;
+			pTimer->m_apNumber[nCntNum]->SetPosTarget(pos);
+
+			// 数字の目標サイズを設定
+			pTimer->m_apNumber[nCntNum]->SetSizeTarget({ 37.5f, 30.0f, 0.0f });
 		}
 
 		// プレイヤーを検索
@@ -188,6 +208,20 @@ void CTimer::SwitchControlByPahse(int nSelect)
 		// 桁を減らす
 		nCopy /= 10;
 	}
+}
+
+//============================================================================
+// 時間リセット (仮)
+//============================================================================
+void CTimer::TimerReset()
+{
+	// タイムを検索
+	CObject* pObj = CObject::FindObject(CObject::TYPE::TIMER);
+	CTimer* pTimer = CUtility::GetInstance()->DownCast<CTimer, CObject>(pObj);
+
+	// 時間をリセット
+	pTimer->m_nCntFrame = 0;
+	pTimer->m_nTimer = 0;
 }
 
 //============================================================================

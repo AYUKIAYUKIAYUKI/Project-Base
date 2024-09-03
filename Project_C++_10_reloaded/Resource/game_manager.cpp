@@ -123,8 +123,11 @@ void CGameManager::Update()
 			// ウェーブを停止し、スタートフェーズへ移行
 			CFakeScreen::GetInstance()->StopWave(PHASE::START);
 
-			// マス目を全消去
+			// マス目を全消去予約
 			CSquare::DisappearAll();
+
+			// タイマーリセット
+			CTimer::TimerReset();
 		}
 
 		break;
@@ -133,9 +136,6 @@ void CGameManager::Update()
 
 		// スクリーン画面内の解放処理
 		CObject::ReleaseScreen();
-
-		// UIのみの解放処理
-		//CObject::ReleaseUI();
 
 		////////////////////////////////////////////////////////////////////
 		////////////////////////////////////////////////////////////////////
@@ -173,17 +173,11 @@ void CGameManager::Update()
 
 	case PHASE::FINISH:
 
-		// UIのみの解放処理
-		CObject::ReleaseUI();
-
 		// マス目をステージ分生成
 		for (int i = 0; i < m_nMaxStage; i++)
 		{
 			CSquare::Create({ 0.0f, 0.0f, 0.0f });
 		}
-
-		// タイムの生成
-		CTimer::Create();
 
 		// レベル選択フェーズへ
 		m_phase = PHASE::SELECT;
@@ -241,7 +235,8 @@ CGameManager::CGameManager() :
 	m_nSelectLevel{ 0 },	// レベル選択
 	m_stagePath{}			// ステージパス
 {
-
+	// タイムを生成
+	CTimer::Create();
 }
 
 //============================================================================
