@@ -101,7 +101,7 @@ void CGameManager::Update()
 		CRenderer::GetInstance()->SetDebugString("レベル選択 : " + std::to_string(m_nSelectLevel));
 
 		// 葉っぱ生成の更新
-		CLeaf::UpdateToCreate();
+		//CLeaf::UpdateToCreate();
 
 		if (CManager::GetKeyboard()->GetTrigger(DIK_A) && m_nSelectLevel > 0)
 		{
@@ -149,9 +149,6 @@ void CGameManager::Update()
 		// プレイヤーの生成
 		CPlayer::Create({ 0.0f, 0.0f, 0.0f });	// 位置
 
-		// タイムの生成
-		CTimer::Create();
-
 		// レベル進行フェーズへ
 		m_phase = PHASE::INGAME;
 
@@ -162,7 +159,7 @@ void CGameManager::Update()
 	case PHASE::INGAME:
 
 		// 葉っぱ生成の更新
-		CLeaf::UpdateToCreate();
+		//CLeaf::UpdateToCreate();
 
 		// タイムの動作
 		CTimer::SwitchControlByPahse(m_nSelectLevel);
