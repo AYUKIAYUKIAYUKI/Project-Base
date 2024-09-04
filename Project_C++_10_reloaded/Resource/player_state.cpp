@@ -774,8 +774,8 @@ void CPlayerStateStopping::Recoil()
 	// 衝突寸前の加速度を取得
 	D3DXVECTOR3 newVelocity{ m_pPlayer->GetVelocity() };
 
-	CRenderer::GetInstance()->SetTimeString("\n衝突時の加速度X : " + std::to_string(newVelocity.x), 300);
-	CRenderer::GetInstance()->SetTimeString("衝突時の加速度Y : " + std::to_string(newVelocity.y), 300);
+	CRenderer::GetInstance()->SetTimeString("\n衝突時の加速度X : " + std::to_string(newVelocity.x), 120);
+	CRenderer::GetInstance()->SetTimeString("衝突時の加速度Y : " + std::to_string(newVelocity.y), 120);
 
 	// 寸前の向きの真逆の角度を算出
 	float fNewFlyingAngle{ atan2f(newVelocity.x, newVelocity.y) };
@@ -784,8 +784,8 @@ void CPlayerStateStopping::Recoil()
 	newVelocity.x = -sinf(fNewFlyingAngle) * RECOIL_SPEED;
 	newVelocity.y = -cosf(fNewFlyingAngle) * RECOIL_SPEED;
 
-	CRenderer::GetInstance()->SetTimeString("衝突後の加速度X : " + std::to_string(newVelocity.x), 300);
-	CRenderer::GetInstance()->SetTimeString("衝突後の加速度Y : " + std::to_string(newVelocity.y), 300);
+	CRenderer::GetInstance()->SetTimeString("衝突後の加速度X : " + std::to_string(newVelocity.x), 120);
+	CRenderer::GetInstance()->SetTimeString("衝突後の加速度Y : " + std::to_string(newVelocity.y), 120);
 
 	m_pPlayer->SetVelocity(newVelocity);
 }

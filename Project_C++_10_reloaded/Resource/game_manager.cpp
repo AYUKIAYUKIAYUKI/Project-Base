@@ -176,6 +176,9 @@ void CGameManager::Update()
 			CSquare::Create({ 0.0f, 0.0f, 0.0f });
 		}
 
+		// タイムを書き出す
+		CTimer::ExportTimer(m_nSelectLevel);
+
 		// レベル選択フェーズへ
 		m_phase = PHASE::SELECT;
 		
@@ -265,8 +268,11 @@ void CGameManager::ImportLevel()
 	// テキストを読み取る
 	while (std::getline(Import, str))
 	{
-		// ステージのパスを保持
-		m_stagePath.push_back(str);
+		// ステージファイルのパス部分を抽出し
+		std::string path = str.substr(0, str.find(","));
+
+		// パスを保持しておく
+		m_stagePath.push_back(path);
 
 		// ステージ数をカウントアップ
 		nCntStage++;

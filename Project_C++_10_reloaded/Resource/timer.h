@@ -33,7 +33,7 @@ public:
 	static CTimer* Create();						// 生成
 	static void SwitchControlByPahse(int nSelect);	// フェーズによる動作切替
 	static void TimerReset();						// 時間リセット
-	static void ExportTimer(int nTimer);			// タイムの書き出し
+	static void ExportTimer(int nSelect);			// タイムの書き出し
 
 private:
 

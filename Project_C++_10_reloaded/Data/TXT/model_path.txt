@@ -13,7 +13,7 @@ data\\MODEL\\enemy.x
 data\\MODEL\\bullet_core.x
 data\\MODEL\\start.x
 data\\MODEL\\goal.x
-data\\MODEL\\achievement.x
+data\\MODEL\\halo.x
 data\\MODEL\\LINE_X.x
 data\\MODEL\\LINE_Y.x
 data\\MODEL\\ripple00.x

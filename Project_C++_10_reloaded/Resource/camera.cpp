@@ -536,7 +536,7 @@ void CCamera::CalcMtxView()
 	D3DXVECTOR3 posR = m_posR;
 
 	// カメラを俯瞰気味に
-	posV.y += m_fAdjust;
+	//posV.y += m_fAdjust;
 
 	// ビューマトリックスの生成
 	D3DXMatrixLookAtLH(&m_mtxView,

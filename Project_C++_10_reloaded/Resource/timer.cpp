@@ -190,11 +190,6 @@ void CTimer::SwitchControlByPahse(int nSelect)
 				pTimer->m_nTimer++;
 			}
 		}
-		//else
-		//{
-		//	// タイムを書き出す
-		//	ExportTimer(pTimer->m_nTimer);
-		//}
 	}
 
 	// カウント数のコピー
@@ -227,10 +222,65 @@ void CTimer::TimerReset()
 //============================================================================
 // タイムの書き出し
 //============================================================================
-void CTimer::ExportTimer(int nTimer)
+void CTimer::ExportTimer(int nSelect)
 {
-	//// ステージ配置情報を書き出し展開
-	//std::ofstream Export("Data\\TXT\\stage.txt");
+	// テキストを行ごとに保持する
+	std::vector<std::string> vStr;
+	//vStr.reserve(1);
+
+	// レベルファイルを展開
+	std::ifstream Import{ "Data\\TXT\\level.txt" };
+
+	if (!Import)
+	{ // 展開失敗
+#if 0
+		assert(false);
+#else
+		CRenderer::GetInstance()->SetTimeString("【警告】レベル情報・タイムの読み込み(2)に失敗しました", 300);
+		return;
+#endif
+	}
+
+	// テキストを格納
+	std::string str;
+
+	// ファイルを一行ずつ、情報を全て取得する
+	while (std::getline(Import, str))
+	{
+		vStr.push_back(str);
+	}
+
+	// ファイルを閉じる
+	Import.close();
+
+	// タイムを検索
+	CObject* pObj = CObject::FindObject(CObject::TYPE::TIMER);
+	CTimer* pTimer = CUtility::GetInstance()->DownCast<CTimer, CObject>(pObj);
+
+	// 遊んでいたレベルのタイム情報を書き換える
+	vStr[nSelect] = vStr[nSelect].substr(0, vStr[nSelect].find(",") + 1) + std::to_string(pTimer->m_nTimer) + ",";
+
+	// レベルファイルを展開
+	std::ofstream Export{ "Data\\TXT\\level.txt" };
+
+	if (!Export)
+	{ // 展開失敗
+#if 0
+		assert(false);
+#else
+		CRenderer::GetInstance()->SetTimeString("【警告】レベル情報・タイムの書き出しに失敗しました", 300);
+		return;
+#endif
+	}
+
+	// 変更を加えた情報でもとのファイルを更新する
+	for (auto&& it : vStr)
+	{
+		Export << it.c_str() << std::endl;
+	}
+
+	// ファイルを閉じる
+	Export.close();
 }
 
 //============================================================================
@@ -268,30 +318,34 @@ CTimer* CTimer::Create()
 //============================================================================
 int CTimer::ImportTimer(int nSelect)
 {
-	std::ifstream Import("Data\\TXT\\timer.txt");
+	// レベルファイルを展開
+	std::ifstream Import{ "Data\\TXT\\level.txt" };
 
 	if (!Import)
 	{ // 展開失敗
 #if 0
 		assert(false);
 #else
-		CRenderer::GetInstance()->SetDebugString("【警告】タイム情報の読み込みに失敗しました");
+		CRenderer::GetInstance()->SetTimeString("【警告】レベル情報・タイムの読み込み(1)に失敗しました", 300);
 		return 0;
 #endif
 	}
-	else
+
+	// 文章格納先
+	std::string str{ };
+
+	// テキストを読み取る
+	for (int i = 0; i <= nSelect; i++)
 	{
-		// 文章格納先
-		std::string str{};
-
-		// テキストを読み取る
-		for (int i = 0; i < nSelect + 1; i++)
-		{
-			std::getline(Import, str);
-		}
-
-		return std::stoi(str);
+		// 指定番号の行へ進める
+		std::getline(Import, str);
 	}
+
+	// ステージファイルのタイム部分を抽出
+	std::string timer = str.substr(str.find(",") + 1, str.find(",") - 1);
+
+	// 整数値に変換
+	return std::stoi(timer);
 }
 
 //============================================================================
