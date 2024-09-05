@@ -28,7 +28,7 @@ public:
 	void Update() override;		// XVˆ—
 	void Draw() override;		// •`‰æˆ—
 
-	static CFurniture* Create(D3DXVECTOR3 pos, CModel_X_Manager::TYPE type);	// ¶¬
+	static CFurniture* Create(D3DXVECTOR3 pos, float fScale, CModel_X_Manager::TYPE type);	// ¶¬
 };
 
 #endif // _FURNITURE_H_

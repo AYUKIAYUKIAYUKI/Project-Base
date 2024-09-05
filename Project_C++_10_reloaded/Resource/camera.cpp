@@ -66,6 +66,9 @@ HRESULT CCamera::Init()
 	// アンカーポイントを読み込む
 	ImportAnchorPoint();
 
+	/* 仮 */
+	m_posBG = { -3.0f, 0.0f, -25.0f };
+
 	return S_OK;
 }
 
@@ -78,9 +81,7 @@ void CCamera::Update()
 	UpdateScreen();
 
 	// 背景用の更新
-	//UpdateBG();
-
-	m_posBG = { -3.0f, 0.0f, -25.0f };
+	UpdateBG();
 }
 
 //============================================================================
@@ -102,21 +103,21 @@ void CCamera::SetCameraBG()
 	// 左右
 	if (CManager::GetKeyboard()->GetPress(DIK_RIGHT))
 	{
-		m_rotBG.y += 0.001f;
+		m_rotBG.y += 0.01f;
 	}
 	else if (CManager::GetKeyboard()->GetPress(DIK_LEFT))
 	{
-		m_rotBG.y -= 0.001f;
+		m_rotBG.y -= 0.01f;
 	}
 
 	// 上下
 	if (CManager::GetKeyboard()->GetPress(DIK_UP))
 	{
-		m_rotBG.x += 0.001f;
+		m_rotBG.x += 0.01f;
 	}
 	else if (CManager::GetKeyboard()->GetPress(DIK_DOWN))
 	{
-		m_rotBG.x -= 0.001f;
+		m_rotBG.x -= 0.01f;
 	}
 
 	/////////////////////////////////////////////////////////////
@@ -155,20 +156,29 @@ void CCamera::SetCameraBG()
 
 	if (CManager::GetKeyboard()->GetPress(DIK_T))
 	{
-		m_posBG.y += 0.001f;
+		m_posBG.y += 0.1f;
 	}
 	else if (CManager::GetKeyboard()->GetPress(DIK_G))
 	{
-		m_posBG.y += -0.001f;
+		m_posBG.y += -0.1f;
 	}
 
 	if (CManager::GetKeyboard()->GetPress(DIK_H))
 	{
-		m_posBG.x += 0.001f;
+		m_posBG.x += 0.1f;
 	}
 	else if (CManager::GetKeyboard()->GetPress(DIK_F))
 	{
-		m_posBG.x += -0.001f;
+		m_posBG.x += -0.1f;
+	}
+
+	if (CManager::GetKeyboard()->GetPress(DIK_U))
+	{
+		m_posBG.z += 0.1f;
+	}
+	else if (CManager::GetKeyboard()->GetPress(DIK_J))
+	{
+		m_posBG.z += -0.1f;
 	}
 
 	if (CManager::GetKeyboard()->GetPress(DIK_NUMPAD8))

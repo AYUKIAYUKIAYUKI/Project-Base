@@ -22,6 +22,7 @@
 #include "object.h"
 #include "fakescreen.h"
 #include "monitor.h"
+#include "furniture.h"
 
 //****************************************************
 // 静的メンバ変数の初期化
@@ -158,6 +159,9 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 
 	// モニターの生成
 	CMonitor::Create({ 0.0f, 0.0f, 0.0f });
+
+	// VHSの生成
+	CFurniture::Create({ 0.0f, -14.75f, 3.0f }, 2.0f, CModel_X_Manager::TYPE::VHS);
 
 	return S_OK;
 }

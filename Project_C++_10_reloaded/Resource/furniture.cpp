@@ -1,6 +1,6 @@
 //============================================================================
 // 
-// モニター [monitor.cpp]
+// 家具 [furniture.cpp]
 // Author : 福田歩希
 // 
 //============================================================================
@@ -68,7 +68,7 @@ void CFurniture::Draw()
 //============================================================================
 // 生成
 //============================================================================
-CFurniture* CFurniture::Create(D3DXVECTOR3 pos, CModel_X_Manager::TYPE type)
+CFurniture* CFurniture::Create(D3DXVECTOR3 pos, float fScale, CModel_X_Manager::TYPE type)
 {
 	// インスタンスを生成
 	CFurniture* pFurniture = DBG_NEW CFurniture;
@@ -86,6 +86,9 @@ CFurniture* CFurniture::Create(D3DXVECTOR3 pos, CModel_X_Manager::TYPE type)
 
 	// 座標の設定
 	pFurniture->SetPos(pos);
+
+	// 縮尺の設定
+	pFurniture->SetScale(fScale);
 
 	// モデルを取得
 	auto model = CModel_X_Manager::GetInstance()->GetModel(type);
