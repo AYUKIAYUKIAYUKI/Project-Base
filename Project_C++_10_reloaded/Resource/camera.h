@@ -33,6 +33,17 @@ public:
 
 private:
 
+	//****************************************************
+	// アンカーポイント構造体を定義
+	//****************************************************
+	struct AnchorPoint
+	{
+		D3DXVECTOR3 pos;	// 位置
+		D3DXVECTOR3 rot;	// 向き
+	};
+
+	void ImportAnchorPoint();	// アンカーポイントを読み込む
+	void UpdateScreen();		// スクリーン用の更新
 	void Control();				// カメラ操作
 	void Rotation();			// 回転
 	void Translation();			// 移動
@@ -40,22 +51,31 @@ private:
 	void RestrictPitch();		// ピッチ角の範囲を制限
 	void CalcPosV();			// 視点位置を算出
 	void CalcPosR();			// 注視点位置を算出
+	void UpdateBG();			// 背景用の更新
 	void CalcMtxProjection();	// プロジェクション行列計算
 	void CalcMtxView();			// ビュー行列計算
 
-	D3DXVECTOR3 m_pos;			// 位置
-	D3DXVECTOR3 m_posTarget;	// 目標位置
-	D3DXVECTOR3 m_posV;			// 視点位置
-	D3DXVECTOR3 m_posTargetV;	// 目標視点位置
-	D3DXVECTOR3 m_posR;			// 注視点位置
-	D3DXVECTOR3 m_posTargetR;	// 目標注視点位置
-	D3DXVECTOR3 m_rot;			// 向き
-	D3DXVECTOR3 m_rotTarget;	// 目標向き
-	float m_fDistance;			// 視点 -> 注視点間の距離
-	D3DXVECTOR3 m_vecU;			// 上方向ベクトル
-	D3DXMATRIX m_mtxProjection;	// プロジェクションマトリックス
-	D3DXMATRIX m_mtxView;		// ビューマトリックス
-	float m_fAdjust;			// 俯瞰度合
+	D3DXVECTOR3 m_pos;							// 位置
+	D3DXVECTOR3 m_posTarget;					// 目標位置
+	D3DXVECTOR3 m_posV;							// 視点位置
+	D3DXVECTOR3 m_posTargetV;					// 目標視点位置
+	D3DXVECTOR3 m_posR;							// 注視点位置
+	D3DXVECTOR3 m_posTargetR;					// 目標注視点位置
+	D3DXVECTOR3 m_rot;							// 向き
+	D3DXVECTOR3 m_rotTarget;					// 目標向き
+	float m_fDistance;							// 視点 -> 注視点間の距離
+	std::vector<AnchorPoint> m_vAnchorPoint;	// アンカーポイント
+	D3DXVECTOR3 m_posBG;						// 背景位置
+	D3DXVECTOR3 m_posTargetBG;					// 背景目標位置
+	D3DXVECTOR3 m_posVBG;						// 背景視点位置
+	D3DXVECTOR3 m_posRBG;						// 背景注視点位置
+	D3DXVECTOR3 m_rotBG;						// 背景向き
+	D3DXVECTOR3 m_rotTargetBG;					// 背景目標向き
+	float m_fDistanceBG;						// 背景視点 -> 注視点間の距離
+	D3DXVECTOR3 m_vecU;							// 上方向ベクトル
+	D3DXMATRIX m_mtxProjection;					// プロジェクションマトリックス
+	D3DXMATRIX m_mtxView;						// ビューマトリックス
+	float m_fAdjust;							// 俯瞰度合
 };
 
 #endif // _CAMERA_H_
