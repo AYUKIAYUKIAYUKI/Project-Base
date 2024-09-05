@@ -38,8 +38,12 @@ private:
 	//****************************************************
 	struct AnchorPoint
 	{
-		D3DXVECTOR3 pos;	// 位置
-		D3DXVECTOR3 rot;	// 向き
+		D3DXVECTOR3 pos;		// 座標
+		D3DXVECTOR3 rot;		// 向き
+		D3DXVECTOR3 stepRot;	// 向き増加量
+		D3DXVECTOR3 stepPos;	// 座標増加量
+		int nNumStep;			// ステップ数
+		bool bSet;				// 増加量のセットフラグ
 	};
 
 	void ImportAnchorPoint();	// アンカーポイントを読み込む

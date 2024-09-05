@@ -65,8 +65,6 @@ HRESULT CCamera::Init()
 {
 	// アンカーポイントを読み込む
 	ImportAnchorPoint();
-	ImportAnchorPoint();
-	ImportAnchorPoint();
 
 	return S_OK;
 }
@@ -99,25 +97,25 @@ void CCamera::SetCameraBG()
 	/////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////
 
-	//// 左右
-	//if (CManager::GetKeyboard()->GetPress(DIK_RIGHT))
-	//{
-	//	m_rotTargetBG.y += 0.02f;
-	//}
-	//else if (CManager::GetKeyboard()->GetPress(DIK_LEFT))
-	//{
-	//	m_rotTargetBG.y -= 0.02f;
-	//}
+	// 左右
+	if (CManager::GetKeyboard()->GetPress(DIK_RIGHT))
+	{
+		m_rotBG.y += 0.001f;
+	}
+	else if (CManager::GetKeyboard()->GetPress(DIK_LEFT))
+	{
+		m_rotBG.y -= 0.001f;
+	}
 
-	//// 上下
-	//if (CManager::GetKeyboard()->GetPress(DIK_UP))
-	//{
-	//	m_rotTargetBG.x += 0.02f;
-	//}
-	//else if (CManager::GetKeyboard()->GetPress(DIK_DOWN))
-	//{
-	//	m_rotTargetBG.x -= 0.02f;
-	//}
+	// 上下
+	if (CManager::GetKeyboard()->GetPress(DIK_UP))
+	{
+		m_rotBG.x += 0.001f;
+	}
+	else if (CManager::GetKeyboard()->GetPress(DIK_DOWN))
+	{
+		m_rotBG.x -= 0.001f;
+	}
 
 	/////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////
@@ -153,23 +151,23 @@ void CCamera::SetCameraBG()
 	/////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////
 
-	//if (CManager::GetKeyboard()->GetPress(DIK_T))
-	//{
-	//	m_posBG.y += 0.5f;
-	//}
-	//else if (CManager::GetKeyboard()->GetPress(DIK_G))
-	//{
-	//	m_posBG.y += -0.5f;
-	//}
+	if (CManager::GetKeyboard()->GetPress(DIK_T))
+	{
+		m_posBG.y += 0.001f;
+	}
+	else if (CManager::GetKeyboard()->GetPress(DIK_G))
+	{
+		m_posBG.y += -0.001f;
+	}
 
-	//if (CManager::GetKeyboard()->GetPress(DIK_H))
-	//{
-	//	m_posBG.x += 0.5f;
-	//}
-	//else if (CManager::GetKeyboard()->GetPress(DIK_F))
-	//{
-	//	m_posBG.x += -0.5f;
-	//}
+	if (CManager::GetKeyboard()->GetPress(DIK_H))
+	{
+		m_posBG.x += 0.001f;
+	}
+	else if (CManager::GetKeyboard()->GetPress(DIK_F))
+	{
+		m_posBG.x += -0.001f;
+	}
 
 	if (CManager::GetKeyboard()->GetPress(DIK_NUMPAD8))
 	{
@@ -289,12 +287,18 @@ D3DXVECTOR3 CCamera::GetRot()
 //============================================================================
 void CCamera::ImportAnchorPoint()
 {
-	D3DXVECTOR3 newPos = { CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>() , CUtility::GetInstance()->GetRandomValue<float>() };
-	D3DXVECTOR3 newRot = { 0.0f, 0.0f, 0.0f };
+	for (int i = 0; i < 3; i++)
+	{
+		/* 仮にランダムな数値を設定 */
+		D3DXVECTOR3 newPos = { CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>() , -300.0f };
+		D3DXVECTOR3 newRot = { 0.0f, 0.0f, 0.0f };
 
-	AnchorPoint newAP = { newPos, newRot };
+		// 数値情報を1つにまとめる
+		AnchorPoint newAP = { newPos, newRot, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, 120, false };
 
-	m_vAnchorPoint.push_back(newAP);
+		// アンカーポインタ情報を追加
+		m_vAnchorPoint.push_back(newAP);
+	}
 }
 
 //============================================================================
@@ -496,17 +500,20 @@ void CCamera::UpdateBG()
 	// 現在のモードを取得
 	CScene::MODE mode{ CManager::GetScene()->GetMode() };
 
-	// 補間速度格納
-	float fCoeff{ 0.0f };
-
 	if (mode == CScene::MODE::GAME)
 	{
 		// 背景用カメラの目標座標・目標向きを固定する
-		m_posTargetBG = { -3.0f, 0.0f, 0.0f };
-		m_rotTargetBG = { 0.0f, 0.0f, 0.0f };
+		D3DXVECTOR3 posTarget = { -3.0f, 0.0f, 0.0f };
+		D3DXVECTOR3 rotTarget = { 0.0f, 0.0f, 0.0f };
 
 		// 補間速度を設定
-		fCoeff = 0.1f;
+		float fCoeff{ 0.1f };
+
+		// 目標座標へ迫る
+		m_posBG = CUtility::GetInstance()->AdjustToTarget(m_posBG, posTarget, fCoeff);
+
+		// 目標向きへ迫る
+		m_rotBG = CUtility::GetInstance()->AdjustToTarget(m_rotBG, rotTarget, fCoeff);
 	}
 	else if (mode == CScene::MODE::STAGE)
 	{
@@ -515,19 +522,46 @@ void CCamera::UpdateBG()
 	}
 	else
 	{
-		// アンカーポイントを順番にめぐる用
-		m_posTargetBG = { 0.0f, 0.0f, -100.0f };
-		m_rotTargetBG = { 0.0f, 0.0f, 0.0f };
+		static int nNumElement{ 0 };
 
-		// 補間速度を設定
-		fCoeff = 0.005f;
+		// アンカーポイントが増加量設定を終えていなければ
+		if (!m_vAnchorPoint[nNumElement].bSet)
+		{
+			// 割る数
+			float nDivider{ static_cast<float>(m_vAnchorPoint[nNumElement].nNumStep) };
+
+			// 増加量の設定を行う
+			m_vAnchorPoint[nNumElement].stepPos = (m_vAnchorPoint[nNumElement].pos - m_posBG) / nDivider;
+			m_vAnchorPoint[nNumElement].stepRot = (m_vAnchorPoint[nNumElement].rot - m_rotBG) / nDivider;
+
+			// 設定を終了する
+			m_vAnchorPoint[nNumElement].bSet = true;
+		}
+
+		// 補間が終わりがけると
+		if (fabsf(m_vAnchorPoint[nNumElement].pos.x - m_posBG.x) >= 0.01f)
+		{
+			// 補間していく
+			m_posBG += m_vAnchorPoint[nNumElement].stepPos;
+			m_rotBG += m_vAnchorPoint[nNumElement].stepRot;
+		}
+		else
+		{
+			// このポイントでの増加量設定をリセットする
+			m_vAnchorPoint[nNumElement].bSet = false;
+			
+			// 次のポイントへ進める
+			nNumElement++;
+
+			// 最後のポイントに到達したら最初へ戻る
+			if (nNumElement >= m_vAnchorPoint.size())
+			{
+				nNumElement = 0;
+			}
+
+			CRenderer::GetInstance()->SetTimeString("次の安価 : " + std::to_string(nNumElement), 120);
+		}
 	}
-
-	// 目標座標へ迫る
-	m_posBG = CUtility::GetInstance()->AdjustToTarget(m_posBG, m_posTargetBG, fCoeff);
-
-	// 目標向きへ迫る
-	m_rotBG = CUtility::GetInstance()->AdjustToTarget(m_rotBG, m_rotTargetBG, fCoeff);
 
 #ifdef _DEBUG
 
