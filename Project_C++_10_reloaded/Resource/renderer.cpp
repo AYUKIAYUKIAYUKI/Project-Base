@@ -163,6 +163,9 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 	// VHSÇÃê∂ê¨
 	CFurniture::Create({ 0.0f, -14.75f, 3.0f }, 2.0f, CModel_X_Manager::TYPE::VHS);
 
+	// VHSÇÃê∂ê¨
+	CFurniture::Create({ -38.5f, 0.0f, 8.0f }, 5.0f, CModel_X_Manager::TYPE::BOOKSELF);
+
 	return S_OK;
 }
 

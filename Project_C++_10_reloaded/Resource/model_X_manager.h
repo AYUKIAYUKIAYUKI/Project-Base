@@ -23,6 +23,7 @@ public:
 		KARIHAIKEI = 0,	// 仮背景
 		MONITOR,		// モニター
 		VHS,			// VHS
+		BOOKSELF,		// 本棚
 		PLAYER_000,		// プレイヤー000
 		PLAYER_001,		// プレイヤー001
 		PLAYER_002,		// プレイヤー002

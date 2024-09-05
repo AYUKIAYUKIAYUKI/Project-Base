@@ -156,29 +156,29 @@ void CCamera::SetCameraBG()
 
 	if (CManager::GetKeyboard()->GetPress(DIK_T))
 	{
-		m_posBG.y += 0.1f;
+		m_posBG.y += 0.25f;
 	}
 	else if (CManager::GetKeyboard()->GetPress(DIK_G))
 	{
-		m_posBG.y += -0.1f;
+		m_posBG.y += -0.25f;
 	}
 
 	if (CManager::GetKeyboard()->GetPress(DIK_H))
 	{
-		m_posBG.x += 0.1f;
+		m_posBG.x += 0.25f;
 	}
 	else if (CManager::GetKeyboard()->GetPress(DIK_F))
 	{
-		m_posBG.x += -0.1f;
+		m_posBG.x += -0.25f;
 	}
 
 	if (CManager::GetKeyboard()->GetPress(DIK_U))
 	{
-		m_posBG.z += 0.1f;
+		m_posBG.z += 0.25f;
 	}
 	else if (CManager::GetKeyboard()->GetPress(DIK_J))
 	{
-		m_posBG.z += -0.1f;
+		m_posBG.z += -0.25f;
 	}
 
 	if (CManager::GetKeyboard()->GetPress(DIK_NUMPAD8))
@@ -299,14 +299,14 @@ D3DXVECTOR3 CCamera::GetRot()
 //============================================================================
 void CCamera::ImportAnchorPoint()
 {
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 10; i++)
 	{
 		/* 仮にランダムな数値を設定 */
-		D3DXVECTOR3 newPos = { CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>() , -300.0f };
+		D3DXVECTOR3 newPos = { CUtility::GetInstance()->GetRandomValue<float>() * 0.25f, CUtility::GetInstance()->GetRandomValue<float>() * 0.25f, -50.0f };
 		D3DXVECTOR3 newRot = { 0.0f, 0.0f, 0.0f };
 
 		// 数値情報を1つにまとめる
-		AnchorPoint newAP = { newPos, newRot, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, 120, false };
+		AnchorPoint newAP = { newPos, newRot, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, 180, false };
 
 		// アンカーポインタ情報を追加
 		m_vAnchorPoint.push_back(newAP);
