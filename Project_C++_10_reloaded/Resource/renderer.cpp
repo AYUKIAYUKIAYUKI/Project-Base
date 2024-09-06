@@ -414,13 +414,19 @@ void CRenderer::LayoutFurniture()
 	CFurniture::Create({ 0.0f, -14.75f, 3.0f }, 2.0f, CModel_X_Manager::TYPE::VHS);
 
 	// 本棚の生成
-	CFurniture::Create({ -38.5f, 5.0f, 8.0f }, 5.0f, CModel_X_Manager::TYPE::BOOKSELF);
+	CFurniture::Create({ -38.5f, 7.5f, 8.0f }, 5.0f, CModel_X_Manager::TYPE::BOOKSELF);
 
 	// スピーカーの生成
 	CFurniture::Create({ 30.0f, -10.0f, 4.0f }, 1.25f, CModel_X_Manager::TYPE::SPEAKER);
 
 	// でかスピーカーの生成
 	CFurniture::Create({ 51.0f, -17.5f, 0.0f }, 2.5f, CModel_X_Manager::TYPE::SPEAKER_BIG);
+
+	// 蓄音機の生成
+	CFurniture::Create({ -29.f, -10.0f, -5.0f }, 1.0f, CModel_X_Manager::TYPE::GRAMOPHONE);
+
+	// 観葉植物の生成
+	CFurniture::Create({ -52.5f, -22.5f, -8.0f }, 2.0f, CModel_X_Manager::TYPE::INDOOR_PLANTS);
 
 	// ポスターの生成
 	CFurniture::Create({ 0.0f, 30.0f, 10.0f }, 1.75f, CModel_X_Manager::TYPE::POSTER);

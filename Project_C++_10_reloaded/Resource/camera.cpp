@@ -78,7 +78,7 @@ void CCamera::Update()
 	UpdateScreen();
 
 	// 背景用の更新
-	UpdateBG();
+	//UpdateBG();
 
 		// 座標をデバッグ表示
 	CRenderer::GetInstance()->SetDebugString("【背景カメラ座標】");

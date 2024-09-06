@@ -4,6 +4,8 @@ data\\MODEL\\vhs.x
 data\\MODEL\\bookself.x
 data\\MODEL\\speaker.x
 data\\MODEL\\speaker_big.x
+data\\MODEL\\gramophone.x
+data\\MODEL\\indoor_plants.x
 data\\MODEL\\poster.x
 data\\MODEL\\paper.x
 data\\MODEL\\lamp.x

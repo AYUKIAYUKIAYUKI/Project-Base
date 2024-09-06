@@ -26,6 +26,8 @@ public:
 		BOOKSELF,		// 本棚
 		SPEAKER,		// スピーカー
 		SPEAKER_BIG,	// でかスピーカー
+		GRAMOPHONE,		// 蓄音機
+		INDOOR_PLANTS,	// 観葉植物
 		POSTER,			// ポスター
 		MEMO,			// メモ
 		LAMP,			// ランプ

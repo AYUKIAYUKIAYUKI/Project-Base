@@ -10,6 +10,9 @@
 //****************************************************
 #include "furniture.h"
 
+// デバイス取得用
+#include "renderer.h"
+
 //============================================================================
 // デフォルトコンストラクタ
 //============================================================================
@@ -61,8 +64,19 @@ void CFurniture::Update()
 //============================================================================
 void CFurniture::Draw()
 {
+	// デバイスを取得
+	auto pDev = CRenderer::GetInstance()->GetDeviece();
+
+	// アルファテストを有効にする
+	pDev->SetRenderState(D3DRS_ALPHATESTENABLE, TRUE);
+	pDev->SetRenderState(D3DRS_ALPHAREF, 0);
+	pDev->SetRenderState(D3DRS_ALPHAFUNC, D3DCMP_GREATER);
+
 	// 基底クラスの描画処理
 	CObject_X::Draw();
+
+	// アルファテストを無効にする
+	pDev->SetRenderState(D3DRS_ALPHATESTENABLE, FALSE);
 }
 
 //============================================================================
