@@ -160,23 +160,8 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 	// モニターの生成
 	CMonitor::Create({ 0.0f, 0.0f, 0.0f });
 
-	// VHSの生成
-	CFurniture::Create({ 0.0f, -14.75f, 3.0f }, 2.0f, CModel_X_Manager::TYPE::VHS);
-
-	// 本棚の生成
-	CFurniture::Create({ -38.5f, 5.0f, 8.0f }, 5.0f, CModel_X_Manager::TYPE::BOOKSELF);
-
-	// スピーカーの生成
-	CFurniture::Create({ 30.0f, -10.0f, 0.0f }, 1.0f, CModel_X_Manager::TYPE::SPEAKER);
-
-	// ポスターの生成
-	CFurniture::Create({ 10.0f, 25.0f, 10.0f }, 1.0f, CModel_X_Manager::TYPE::POSTER);
-
-	// ランプの生成
-	CFurniture::Create({ 0.0f, 55.0f, -10.0f }, 2.0f, CModel_X_Manager::TYPE::LAMP);
-
-	// テレビ台の生成
-	CFurniture::Create({ 0.0f, -31.0f, 0.0f }, 4.0f, CModel_X_Manager::TYPE::TV_STAND);
+	// 家具の配置
+	LayoutFurniture();
 
 	return S_OK;
 }
@@ -418,6 +403,36 @@ void CRenderer::SetDebugString(std::string str)
 void CRenderer::SetTimeString(std::string str, int nCnt)
 {
 	m_timeStr.push_back({ str, nCnt });
+}
+
+//============================================================================
+// 家具の配置
+//============================================================================
+void CRenderer::LayoutFurniture()
+{
+	// VHSの生成
+	CFurniture::Create({ 0.0f, -14.75f, 3.0f }, 2.0f, CModel_X_Manager::TYPE::VHS);
+
+	// 本棚の生成
+	CFurniture::Create({ -38.5f, 5.0f, 8.0f }, 5.0f, CModel_X_Manager::TYPE::BOOKSELF);
+
+	// スピーカーの生成
+	CFurniture::Create({ 30.0f, -10.0f, 4.0f }, 1.25f, CModel_X_Manager::TYPE::SPEAKER);
+
+	// でかスピーカーの生成
+	CFurniture::Create({ 51.0f, -17.5f, 0.0f }, 2.5f, CModel_X_Manager::TYPE::SPEAKER_BIG);
+
+	// ポスターの生成
+	CFurniture::Create({ 0.0f, 30.0f, 10.0f }, 1.75f, CModel_X_Manager::TYPE::POSTER);
+
+	// メモの生成
+	CFurniture::Create({ 32.5f, 20.0f, 10.0f }, 1.0f, CModel_X_Manager::TYPE::MEMO);
+
+	// ランプの生成
+	CFurniture::Create({ 0.0f, 55.0f, -10.0f }, 2.0f, CModel_X_Manager::TYPE::LAMP);
+
+	// テレビ台の生成
+	CFurniture::Create({ 0.0f, -31.0f, 0.0f }, 4.0f, CModel_X_Manager::TYPE::TV_STAND);
 }
 
 //============================================================================

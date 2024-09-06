@@ -3,6 +3,8 @@ data\\MODEL\\tv_.x
 data\\MODEL\\vhs.x
 data\\MODEL\\bookself.x
 data\\MODEL\\speaker.x
+data\\MODEL\\speaker_big.x
+data\\MODEL\\poster.x
 data\\MODEL\\paper.x
 data\\MODEL\\lamp.x
 data\\MODEL\\tv_stand.x

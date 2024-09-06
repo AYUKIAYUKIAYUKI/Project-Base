@@ -35,6 +35,7 @@ public:
 
 private:
 
+	void LayoutFurniture();	// 家具の配置
 	void Create();			// 生成
 	HRESULT CreateTex();	// モニター用テクスチャの生成
 	void Uninit();			// 終了処理
