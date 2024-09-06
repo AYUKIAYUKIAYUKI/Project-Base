@@ -169,6 +169,12 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 	// スピーカーの生成
 	CFurniture::Create({ 30.0f, -10.0f, 0.0f }, 1.0f, CModel_X_Manager::TYPE::SPEAKER);
 
+	// ポスターの生成
+	CFurniture::Create({ 10.0f, 25.0f, 10.0f }, 1.0f, CModel_X_Manager::TYPE::POSTER);
+
+	// ランプの生成
+	CFurniture::Create({ 0.0f, 55.0f, -10.0f }, 2.0f, CModel_X_Manager::TYPE::LAMP);
+
 	// テレビ台の生成
 	CFurniture::Create({ 0.0f, -31.0f, 0.0f }, 4.0f, CModel_X_Manager::TYPE::TV_STAND);
 

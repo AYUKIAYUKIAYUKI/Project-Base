@@ -25,6 +25,8 @@ public:
 		VHS,			// VHS
 		BOOKSELF,		// 本棚
 		SPEAKER,		// スピーカー
+		POSTER,			// ポスター
+		LAMP,			// ランプ
 		TV_STAND,		// テレビ台
 		PLAYER_000,		// プレイヤー000
 		PLAYER_001,		// プレイヤー001

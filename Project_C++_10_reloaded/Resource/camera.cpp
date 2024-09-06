@@ -67,7 +67,7 @@ HRESULT CCamera::Init()
 	ImportAnchorPoint();
 
 	/* ‰¼ */
-	m_posBG = { -3.0f, 0.0f, -25.0f };
+	m_posBG = { 0.0f, 0.0f, -100.0f };
 
 	return S_OK;
 }

@@ -177,8 +177,6 @@ bool CUtility::OnlyCube(D3DXVECTOR3& posDest, D3DXVECTOR3& velocity, const D3DXV
 //============================================================================
 const type_info& CUtility::CollisionToStructure()
 {
-	int i = 0;
-
 	//// ブロックタグを取得
 	//CObject** pObject = CObject::FindAllObject(CObject::TYPE::BLOCK);
 
