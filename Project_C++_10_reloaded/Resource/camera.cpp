@@ -66,9 +66,6 @@ HRESULT CCamera::Init()
 	// アンカーポイントを読み込む
 	ImportAnchorPoint();
 
-	/* 仮 */
-	m_posBG = { 0.0f, 0.0f, -100.0f };
-
 	return S_OK;
 }
 
@@ -82,6 +79,18 @@ void CCamera::Update()
 
 	// 背景用の更新
 	UpdateBG();
+
+		// 座標をデバッグ表示
+	CRenderer::GetInstance()->SetDebugString("【背景カメラ座標】");
+	std::ostringstream oss1;
+	oss1 << std::fixed << std::setprecision(3) << "X:" << m_posBG.x << "\nY:" << m_posBG.y << "\nZ:" << m_posBG.z;
+	CRenderer::GetInstance()->SetDebugString(oss1.str().c_str());
+
+	// 向きをデバッグ表示
+	CRenderer::GetInstance()->SetDebugString("【背景カメラ向き】");
+	std::ostringstream oss3;
+	oss3 << std::fixed << std::setprecision(3) << "X:" << m_rotBG.x << "\nY:" << m_rotBG.y << "\nZ:" << m_rotBG.z;
+	CRenderer::GetInstance()->SetDebugString(oss3.str().c_str());
 }
 
 //============================================================================
@@ -95,7 +104,7 @@ void CCamera::SetCameraBG()
 	// 画面バッファクリア
 	pDev->Clear(0, nullptr,
 		(D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER),
-		D3DCOLOR_RGBA(175, 175, 175, 0), 1.0f, 0);
+		D3DCOLOR_RGBA(0, 0, 0, 0), 1.0f, 0);
 
 	/////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////
@@ -299,16 +308,69 @@ D3DXVECTOR3 CCamera::GetRot()
 //============================================================================
 void CCamera::ImportAnchorPoint()
 {
-	for (int i = 0; i < 10; i++)
+	//for (int i = 0; i < 10; i++)
+	//{
+	//	/* 仮にランダムな数値を設定 */
+	//	D3DXVECTOR3 newPos = { CUtility::GetInstance()->GetRandomValue<float>() * 0.25f, CUtility::GetInstance()->GetRandomValue<float>() * 0.25f, -50.0f };
+	//	D3DXVECTOR3 newRot = { 0.0f, 0.0f, 0.0f };
+
+	//	// 数値情報を1つにまとめる
+	//	AnchorPoint newAP = { newPos, newRot, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, 180, false };
+
+	//	// アンカーポインタ情報を追加
+	//	m_vAnchorPoint.push_back(newAP);
+	//}
+
+	// アンカーポイント情報を展開
+	std::ifstream Import{ "Data\\TXT\\AnchorPoint.txt" };
+
+	if (!Import)
+	{ // 展開失敗
+#if 0
+		assert(false);
+#else
+		CRenderer::GetInstance()->SetTimeString("【警告】アンカーポイント情報の読み込みに失敗しました", 300);
+		return;
+#endif
+	}
+
+	// テキストを格納
+	std::string str;
+
+	// ファイルを一行ずつ、情報を全て取得する
+	while (std::getline(Import, str))
 	{
-		/* 仮にランダムな数値を設定 */
-		D3DXVECTOR3 newPos = { CUtility::GetInstance()->GetRandomValue<float>() * 0.25f, CUtility::GetInstance()->GetRandomValue<float>() * 0.25f, -50.0f };
+		// 数値格納用
+		D3DXVECTOR3 newPos = { 0.0f, 0.0f, 0.0f };
 		D3DXVECTOR3 newRot = { 0.0f, 0.0f, 0.0f };
+		int nNewNumStep{ 0 };
+
+		// テキストの情報を分離して取得する
+		std::string strToValue = str.substr(0, str.find(","));
+		newPos.x = std::stof(strToValue);
+		strToValue = str.substr(str.find(",") + 1, str.find(","));
+		str.erase(0, str.find(",") + 1);
+		newPos.y = std::stof(strToValue);
+		strToValue = str.substr(str.find(",") + 1, str.find(","));
+		str.erase(0, str.find(",") + 1);
+		newPos.z = std::stof(strToValue);
+		strToValue = str.substr(str.find(",") + 1, str.find(","));
+		str.erase(0, str.find(",") + 1);
+		newRot.x = std::stof(strToValue);
+		strToValue = str.substr(str.find(",") + 1, str.find(","));
+		str.erase(0, str.find(",") + 1);
+		newRot.y = std::stof(strToValue);
+		strToValue = str.substr(str.find(",") + 1, str.find(","));
+		str.erase(0, str.find(",") + 1);
+		newRot.z = std::stof(strToValue);
+		strToValue = str.substr(str.find(",") + 1, str.find(","));
+		str.erase(0, str.find(",") + 1);
+		nNewNumStep = std::stoi(strToValue);
 
 		// 数値情報を1つにまとめる
-		AnchorPoint newAP = { newPos, newRot, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, 180, false };
+		AnchorPoint newAP = { newPos, newRot, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, nNewNumStep, false };
 
-		// アンカーポインタ情報を追加
+		// アンカーポイントに追加
 		m_vAnchorPoint.push_back(newAP);
 	}
 }
@@ -351,12 +413,6 @@ void CCamera::UpdateScreen()
 			m_fAdjust = 0.0f;
 		}
 	}
-
-	// 位置をデバッグ表示
-	//CRenderer::GetInstance()->SetDebugString("【カメラ位置】");
-	//std::ostringstream oss;
-	//oss << std::fixed << std::setprecision(1) << "X:" << GetPos().x << "\nY:" << GetPos().y;
-	//CRenderer::GetInstance()->SetDebugString(oss.str().c_str());
 
 	// カメラ操作
 	Control();
@@ -581,7 +637,7 @@ void CCamera::UpdateBG()
 				nNumElement = 0;
 			}
 
-			CRenderer::GetInstance()->SetTimeString("次の安価 : " + std::to_string(nNumElement), 120);
+			CRenderer::GetInstance()->SetTimeString("次のアンカーポイント : " + std::to_string(nNumElement), 240);
 		}
 	}
 
@@ -638,26 +694,7 @@ void CCamera::CalcMtxProjection()
 		D3DXToRadian(45.0f),
 		(float)SCREEN_WIDTH / (float)SCREEN_HEIGHT,
 		10.0f,
-		5000.0f);
-
-	//static float eiieei = 0.0f;
-	//float f = 1.0f;
-	//if (CManager::GetKeyboard()->GetPress(DIK_T))
-	//{
-	//	eiieei += -f;
-	//}
-	//else if(CManager::GetKeyboard()->GetPress(DIK_Y))
-	//{
-	//	eiieei += f;
-	//}
-	//else if (CManager::GetKeyboard()->GetPress(DIK_U))
-	//{
-	//	eiieei = 0.0f;
-	//}
-	//std::string str = std::to_string(eiieei);
-	//CRenderer::GetInstance()->SetDebugString(str);
-	//m_mtxProjection._44 += eiieei;
-	
+		5000.0f);	
 #else
 	// 平行投影
 	D3DXMatrixOrthoLH(&m_mtxProjection,
