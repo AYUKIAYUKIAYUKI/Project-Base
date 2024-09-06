@@ -24,6 +24,8 @@ public:
 		MONITOR,		// モニター
 		VHS,			// VHS
 		BOOKSELF,		// 本棚
+		SPEAKER,		// スピーカー
+		TV_STAND,		// テレビ台
 		PLAYER_000,		// プレイヤー000
 		PLAYER_001,		// プレイヤー001
 		PLAYER_002,		// プレイヤー002

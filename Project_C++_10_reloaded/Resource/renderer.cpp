@@ -163,8 +163,14 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 	// VHSの生成
 	CFurniture::Create({ 0.0f, -14.75f, 3.0f }, 2.0f, CModel_X_Manager::TYPE::VHS);
 
-	// VHSの生成
-	CFurniture::Create({ -38.5f, 0.0f, 8.0f }, 5.0f, CModel_X_Manager::TYPE::BOOKSELF);
+	// 本棚の生成
+	CFurniture::Create({ -38.5f, 5.0f, 8.0f }, 5.0f, CModel_X_Manager::TYPE::BOOKSELF);
+
+	// スピーカーの生成
+	CFurniture::Create({ 30.0f, -10.0f, 0.0f }, 1.0f, CModel_X_Manager::TYPE::SPEAKER);
+
+	// テレビ台の生成
+	CFurniture::Create({ 0.0f, -31.0f, 0.0f }, 4.0f, CModel_X_Manager::TYPE::TV_STAND);
 
 	return S_OK;
 }
