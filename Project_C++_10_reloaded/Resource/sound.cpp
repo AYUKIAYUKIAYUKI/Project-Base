@@ -308,12 +308,21 @@ CSound::CSound()
 	m_aSizeAudio[static_cast<int>(LABEL::MAX)] = {};	// オーディオデータサイズ
 
 	// サウンド情報
-	m_aSoundInfo[0] = { "Data\\BGM\\TADC_OPENING.wav", -1, 1.0f };
-	m_aSoundInfo[1] = { "Data\\BGM\\SMG_HONEYHIVE.wav", -1, 1.0f };
-	m_aSoundInfo[2] = { "Data\\BGM\\TADC_ENDING.wav", -1, 1.0f };
-	m_aSoundInfo[3] = { "Data\\SE\\SMG_BLACKHOLE.wav", 0, 1.0f };
-	m_aSoundInfo[4] = { "Data\\SE\\SMG_TWINKLING_00.wav", 0, 1.0f };
-	m_aSoundInfo[5] = { "Data\\SE\\SMG_TWINKLING_01.wav", 0, 1.0f };
+	m_aSoundInfo[0] = { "Data\\BGM\\Pixel_time.wav", -1, 1.0f };
+	m_aSoundInfo[1] = { "Data\\SE\\display.wav", 0, 0.5f };
+	m_aSoundInfo[2] = { "Data\\SE\\select.wav", 0, 1.0f };
+	m_aSoundInfo[3] = { "Data\\SE\\define.wav", 0, 1.0f };
+	m_aSoundInfo[4] = { "Data\\SE\\explosion.wav", 0, 0.5f };
+	m_aSoundInfo[5] = { "Data\\SE\\metamorphose.wav", 0, 0.5f };
+	m_aSoundInfo[6] = { "Data\\SE\\twinkling.wav", 0, 2.0f };
+	m_aSoundInfo[7] = { "Data\\SE\\stop.wav", 0, 0.5f };
+	m_aSoundInfo[8] = { "Data\\SE\\bound.wav", 0, 0.5f };
+	m_aSoundInfo[9] = { "Data\\SE\\break.wav", 0, 1.5f };
+	m_aSoundInfo[10] = { "Data\\SE\\die.wav", 0, 1.5f };
+	m_aSoundInfo[11] = { "Data\\SE\\shot.wav", 0, 0.75f };
+	m_aSoundInfo[12] = { "Data\\SE\\miss.wav", 0, 0.75f };
+	m_aSoundInfo[13] = { "Data\\SE\\goal.wav", 0, 1.0f };
+	m_aSoundInfo[14] = { "Data\\SE\\get.wav", 0, 1.0f };
 }
 
 //=============================================================================

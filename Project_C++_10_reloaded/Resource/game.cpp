@@ -12,7 +12,6 @@
 #include "game_manager.h"
 #include "stagemaker.h"
 #include "fakescreen.h"
-#include "sound.h"
 
 // インプット取得用
 #include "manager.h"
@@ -38,14 +37,8 @@ CGame::~CGame()
 //============================================================================
 HRESULT CGame::Init()
 {
-	// 全てのサウンドを停止
-	CSound::GetInstance()->Stop();
-
 	// ゲームマネージャーの初期設定
 	CGameManager::GetInstance()->Init();
-
-	// BGMをかける
-	CSound::GetInstance()->Play(CSound::LABEL::INGAME);
 
 	return S_OK;
 }

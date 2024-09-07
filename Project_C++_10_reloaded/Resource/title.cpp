@@ -43,7 +43,7 @@ CTitle::~CTitle()
 HRESULT CTitle::Init()
 {
 	// 全てのサウンドを停止
-	CSound::GetInstance()->Stop();
+	//CSound::GetInstance()->Stop();
 
 	// 背景の生成
 	CBg::Create(
@@ -52,7 +52,7 @@ HRESULT CTitle::Init()
 		CTexture_Manager::TYPE::BG_000);						// テクスチャ
 
 	// BGMをかける
-	CSound::GetInstance()->Play(CSound::LABEL::OPENING);
+	CSound::GetInstance()->Play(CSound::LABEL::BGM);
 
 	return S_OK;
 }

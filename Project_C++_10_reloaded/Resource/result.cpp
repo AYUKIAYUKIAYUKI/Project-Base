@@ -10,7 +10,6 @@
 //****************************************************
 #include "result.h"
 #include "fakescreen.h"
-#include "sound.h"
 
 // 仮リザルト表示用
 #include "bg.h"
@@ -42,17 +41,11 @@ CResult::~CResult()
 //============================================================================
 HRESULT CResult::Init()
 {
-	// 全てのサウンドを停止
-	CSound::GetInstance()->Stop();
-
 	// 背景の生成
 	CBg::Create(
 		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// 位置
 		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// サイズ
 		CTexture_Manager::TYPE::BG_001);						// テクスチャ
-
-	// BGMをかける
-	CSound::GetInstance()->Play(CSound::LABEL::ENDING);
 
 	return S_OK;
 }

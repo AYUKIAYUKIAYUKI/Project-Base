@@ -10,6 +10,7 @@
 //****************************************************
 #include "enemy.h"
 #include "utility.h"
+#include "sound.h"
 
 // シーン取得用
 #include "manager.h"
@@ -50,8 +51,7 @@ CEnemy::CEnemy(LAYER priority) :
 //============================================================================
 CEnemy::~CEnemy()
 {
-	// キラキラ
-	
+
 }
 
 //============================================================================
@@ -97,6 +97,9 @@ void CEnemy::Update()
 			m_nCast = 0;
 
 			CBullet::Create(GetPos(), { 10.0f, 10.0f, 0.0f });
+
+			// 発射音
+			CSound::GetInstance()->Play(CSound::LABEL::SHOT);
 		}
 
 		// 当たり判定

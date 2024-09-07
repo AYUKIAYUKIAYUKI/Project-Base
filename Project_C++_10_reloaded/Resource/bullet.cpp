@@ -10,6 +10,7 @@
 //****************************************************
 #include "bullet.h"
 #include "utility.h"
+#include "sound.h"
 
 // テクスチャ取得用
 #include "texture_manager.h"
@@ -239,6 +240,9 @@ bool CBullet::Collision()
 
 			// 衝突判定を出す
 			bDetected = 1;
+
+			// 破壊音
+			CSound::GetInstance()->Play(CSound::LABEL::BREAK);
 		}
 	}
 

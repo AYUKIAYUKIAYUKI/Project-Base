@@ -19,12 +19,21 @@ public:
 	//****************************************************
 	enum class LABEL
 	{
-		OPENING = 0,	// オープニング
-		INGAME,			// インゲーム
-		ENDING,			// エンディング
-		TAKEOFF,		// 離陸
-		TWINKLING_00,	// キラキラ00
-		TWINKLING_01,	// キラキラ01
+		BGM = 0,		// オープニング
+		DISPLAY,		// 表示音
+		SELECT,			// 選択音
+		DEFINE,			// 決定音
+		EXPLOSION,		// 爆発音
+		METAMORPHOSE,	// 変身音
+		TWINKLING,		// きらきら音
+		STOP,			// 衝突音
+		BOUND,			// バウンド音
+		BREAK,			// 破壊音
+		DIE,			// 死亡音
+		SHOT,			// 発射音
+		MISS,			// ミス音
+		GOAL,			// ゴール音
+		GET,			// 取得音
 		MAX,
 	};
 

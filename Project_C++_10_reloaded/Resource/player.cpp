@@ -11,6 +11,7 @@
 #include "player.h"
 #include "player_state.h"
 #include "utility.h"
+#include "sound.h"
 
 // フェーズ情報用
 #include "game_manager.h"
@@ -204,6 +205,9 @@ bool CPlayer::Collision()
 			{
 				// 可壊ブロックを破棄
 				pDestructible->SetRelease();
+
+				// 破壊音
+				CSound::GetInstance()->Play(CSound::LABEL::BREAK);
 			}
 
 			// 衝突判定を出す
@@ -233,6 +237,9 @@ bool CPlayer::Collision()
 
 			// 衝突判定を出す
 			bDetected = 1;
+
+			// 死亡音
+			CSound::GetInstance()->Play(CSound::LABEL::DIE);
 		}
 	}
 	
@@ -270,6 +277,9 @@ bool CPlayer::Collision()
 
 			// 衝突判定を出す
 			bDetected = 1;
+
+			// 死亡音
+			CSound::GetInstance()->Play(CSound::LABEL::DIE);
 		}
 	}
 
@@ -287,6 +297,9 @@ bool CPlayer::Collision()
 
 		// レベル終了フェーズへ移行
 		CFakeScreen::GetInstance()->SetWave(CGameManager::PHASE::FINISH);
+
+		// ゴール音
+		CSound::GetInstance()->Play(CSound::LABEL::GOAL);
 	}
 
 	// アチーブオブジェクトを取得
@@ -299,6 +312,9 @@ bool CPlayer::Collision()
 		{
 			// 破棄予約
 			pAchieve->SetRelease();
+
+			// 取得音
+			CSound::GetInstance()->Play(CSound::LABEL::GET);
 		}
 	}
 

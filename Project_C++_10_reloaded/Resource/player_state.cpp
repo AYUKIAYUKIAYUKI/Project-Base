@@ -319,8 +319,11 @@ void CPlayerStateBeginning::Enter()
 			velocity * 0.0075f);	// 加速度
 	}
 
-	// 離陸SE
-	CSound::GetInstance()->Play(CSound::LABEL::TAKEOFF);
+	// 爆発音
+	CSound::GetInstance()->Play(CSound::LABEL::EXPLOSION);
+
+	// 変身音
+	CSound::GetInstance()->Play(CSound::LABEL::METAMORPHOSE);
 }
 
 //============================================================================
@@ -454,6 +457,12 @@ void CPlayerStateFlying::Update()
 
 		// 当たり判定により消失した加速度を戻す
 		m_pPlayer->SetVelocity(oldVelocity);
+
+		// 衝突音
+		CSound::GetInstance()->Play(CSound::LABEL::STOP);
+
+		// バウンド音
+		CSound::GetInstance()->Play(CSound::LABEL::BOUND);
 	}
 }
 
@@ -562,8 +571,8 @@ bool CPlayerStateFlying::Control()
 			m_pPlayer->GetPos(),	// 座標
 			-velocity);				// 加速度 (飛行方向の逆)
 
-		// キラキラSE
-		CSound::GetInstance()->Play(CSound::LABEL::TWINKLING_00);
+		// きらきら音
+		//CSound::GetInstance()->Play(CSound::LABEL::TWINKLING);
 	}
 
 	return true;
@@ -833,6 +842,9 @@ void CPlayerStateMistook::Enter()
 
 	// スタートオブジェクトの位置情報を取得
 	FindStartObject();
+
+	// ミス音
+	CSound::GetInstance()->Play(CSound::LABEL::MISS);
 }
 
 //============================================================================

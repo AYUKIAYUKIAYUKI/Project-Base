@@ -83,7 +83,7 @@ void CCamera::Update()
 	// 座標をデバッグ表示
 	CRenderer::GetInstance()->SetDebugString("【背景カメラポイント】");
 	std::ostringstream oss;
-	oss << std::fixed << std::setprecision(2) << "X:" << m_posBG.x << "\nY:" << m_posBG.y << "\nZ:" << m_posBG.z << "X:" << m_rotBG.x << "\nY:" << m_rotBG.y << "\nZ:" << m_rotBG.z;
+	oss << std::fixed << std::setprecision(2) << "p X:" << m_posBG.x << "\np Y:" << m_posBG.y << "\np Z:" << m_posBG.z << "\nr X:" << m_rotBG.x << "\nr Y:" << m_rotBG.y << "\nr Z:" << m_rotBG.z;
 	CRenderer::GetInstance()->SetDebugString(oss.str().c_str());
 }
 

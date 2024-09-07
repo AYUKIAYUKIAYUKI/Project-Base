@@ -11,6 +11,7 @@
 #include "game_manager.h"
 #include "stagemaker.h"
 #include "fakescreen.h"
+#include "sound.h"
 
 // フェード取得用
 #include "manager.h"
@@ -101,15 +102,21 @@ void CGameManager::Update()
 		CRenderer::GetInstance()->SetDebugString("レベル選択 : " + std::to_string(m_nSelectLevel));
 
 		// 葉っぱ生成の更新
-		//CLeaf::UpdateToCreate();
+		CLeaf::UpdateToCreate();
 
 		if (CManager::GetKeyboard()->GetTrigger(DIK_A) && m_nSelectLevel > 0)
 		{
 			m_nSelectLevel--;
+
+			// 選択音
+			CSound::GetInstance()->Play(CSound::LABEL::SELECT);
 		}
 		else if (CManager::GetKeyboard()->GetTrigger(DIK_D) && m_nSelectLevel < m_nMaxStage - 1)
 		{
 			m_nSelectLevel++;
+
+			// 選択音
+			CSound::GetInstance()->Play(CSound::LABEL::SELECT);
 		}
 
 		// マス目を動作
@@ -128,6 +135,9 @@ void CGameManager::Update()
 
 			// タイマーリセット
 			CTimer::TimerReset();
+
+			// 決定音
+			CSound::GetInstance()->Play(CSound::LABEL::DEFINE);
 		}
 
 		break;
@@ -159,7 +169,7 @@ void CGameManager::Update()
 	case PHASE::INGAME:
 
 		// 葉っぱ生成の更新
-		//CLeaf::UpdateToCreate();
+		CLeaf::UpdateToCreate();
 
 		// タイムの動作
 		CTimer::SwitchControlByPahse(m_nSelectLevel);
@@ -183,6 +193,9 @@ void CGameManager::Update()
 		m_phase = PHASE::SELECT;
 		
 		CRenderer::GetInstance()->SetDebugString("レベル終了");
+
+		// 表示音
+		CSound::GetInstance()->Play(CSound::LABEL::DISPLAY);
 
 		break;
 
