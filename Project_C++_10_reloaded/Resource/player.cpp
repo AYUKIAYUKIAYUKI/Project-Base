@@ -25,7 +25,6 @@
 #include "block_destructible.h"
 #include "block_spikes.h"
 #include "enemy.h"
-#include "explosion.h"
 #include "fakescreen.h"
 #include "goal.h"
 #include "start.h"

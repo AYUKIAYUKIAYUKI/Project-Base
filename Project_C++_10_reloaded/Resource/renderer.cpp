@@ -19,7 +19,6 @@
 #include "model_X_manager.h"
 
 // オブジェクト情報
-#include "object.h"
 #include "fakescreen.h"
 #include "monitor.h"
 #include "furniture.h"

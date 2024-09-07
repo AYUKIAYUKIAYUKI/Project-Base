@@ -11,9 +11,9 @@
 #include "utility.h"
 
 // オブジェクト情報用 
-#include "block.h"
-#include "block_destructible.h"
-#include "block_spikes.h"
+//#include "block.h"
+//#include "block_destructible.h"
+//#include "block_spikes.h"
 
 //****************************************************
 // 静的メンバ変数の初期化

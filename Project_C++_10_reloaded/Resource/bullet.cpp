@@ -56,7 +56,7 @@ CBullet::~CBullet()
 
 		// ‰Œ‚ğ¶¬
 		CSmoke::Create(
-			GetPos(),			// À•W
+			GetPos(),				// À•W
 			velocity * 0.0025f);	// ‰Á‘¬“x
 	}
 }

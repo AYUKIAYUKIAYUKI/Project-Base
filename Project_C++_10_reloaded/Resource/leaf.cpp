@@ -11,9 +11,6 @@
 #include "leaf.h"
 #include "utility.h"
 
-// デバッグ表示用
-#include "renderer.h"
-
 // オブジェクト用
 #include "player.h"
 
