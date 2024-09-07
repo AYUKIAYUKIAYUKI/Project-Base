@@ -9,7 +9,11 @@
 // インクルードファイル
 //****************************************************
 #include "block_destructible.h"
+#include "utility.h"
 #include "sound.h"
+
+// オブジェクト取得用
+#include "smoke.h"
 
 //============================================================================
 // デフォルトコンストラクタ
@@ -34,7 +38,16 @@ CBlockDestructible::CBlockDestructible(LAYER priority) :
 //============================================================================
 CBlockDestructible::~CBlockDestructible()
 {
+	for (int i = 0; i < 5; i++)
+	{
+		// ランダムな加速度を生成
+		D3DXVECTOR3 velocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>() };
 
+		// 煙を生成
+		CSmoke::Create(
+			GetPos(),			// 座標
+			velocity * 0.005f);	// 加速度
+	}
 }
 
 //============================================================================

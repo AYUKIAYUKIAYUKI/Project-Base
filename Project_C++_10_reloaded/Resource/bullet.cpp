@@ -12,18 +12,13 @@
 #include "utility.h"
 #include "sound.h"
 
-// テクスチャ取得用
-#include "texture_manager.h"
-
 // オブジェクト用
 #include "player.h"
 #include "player_state.h"
 #include "block.h"
 #include "block_destructible.h"
 #include "block_spikes.h"
-
-// デバッグ表示用
-#include "renderer.h"
+#include "smoke.h"
 
 //============================================================================
 // デフォルトコンストラクタ
@@ -54,7 +49,16 @@ CBullet::CBullet(int nDuration) :
 //============================================================================
 CBullet::~CBullet()
 {
+	for (int i = 0; i < 3; i++)
+	{
+		// ランダムな加速度を生成
+		D3DXVECTOR3 velocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>() };
 
+		// 煙を生成
+		CSmoke::Create(
+			GetPos(),			// 座標
+			velocity * 0.0025f);	// 加速度
+	}
 }
 
 //============================================================================
