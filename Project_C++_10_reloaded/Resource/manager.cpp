@@ -109,6 +109,9 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// •Ö—˜ŠÖ”ŒQ‚Ì‰ŠúÝ’è
 	CUtility::GetInstance()->Init();
 
+	// BGM‚ð‚©‚¯‚é
+	CSound::GetInstance()->Play(CSound::LABEL::BGM);
+
 	return S_OK;
 }
 

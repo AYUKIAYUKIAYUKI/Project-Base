@@ -91,7 +91,11 @@ LPDIRECT3DTEXTURE9 CTexture_Manager::GetTexture(TYPE type)
 {
 	if (m_apTexTemp[static_cast<int>(type)] == nullptr)
 	{ // テクスチャ取得不能
+#if 0
 		assert(false);
+#else
+		CRenderer::GetInstance()->SetTimeString("【警告】テクスチャ取得エラー", 300);
+#endif
 	}
 
 	return m_apTexTemp[static_cast<int>(type)];

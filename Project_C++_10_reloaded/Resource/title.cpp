@@ -10,7 +10,6 @@
 //****************************************************
 #include "title.h"
 #include "fakescreen.h"
-#include "sound.h"
 
 // 仮タイトル表示用
 #include "bg.h"
@@ -52,7 +51,7 @@ HRESULT CTitle::Init()
 		CTexture_Manager::TYPE::BG_000);						// テクスチャ
 
 	// BGMをかける
-	CSound::GetInstance()->Play(CSound::LABEL::BGM);
+	//CSound::GetInstance()->Play(CSound::LABEL::BGM);
 
 	return S_OK;
 }
