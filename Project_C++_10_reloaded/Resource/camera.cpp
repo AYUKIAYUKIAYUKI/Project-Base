@@ -81,16 +81,10 @@ void CCamera::Update()
 	UpdateBG();
 
 	// 座標をデバッグ表示
-	CRenderer::GetInstance()->SetDebugString("【背景カメラ座標】");
-	std::ostringstream oss1;
-	oss1 << std::fixed << std::setprecision(3) << "X:" << m_posBG.x << "\nY:" << m_posBG.y << "\nZ:" << m_posBG.z;
-	CRenderer::GetInstance()->SetDebugString(oss1.str().c_str());
-
-	// 向きをデバッグ表示
-	CRenderer::GetInstance()->SetDebugString("【背景カメラ向き】");
-	std::ostringstream oss3;
-	oss3 << std::fixed << std::setprecision(3) << "X:" << m_rotBG.x << "\nY:" << m_rotBG.y << "\nZ:" << m_rotBG.z;
-	CRenderer::GetInstance()->SetDebugString(oss3.str().c_str());
+	CRenderer::GetInstance()->SetDebugString("【背景カメラポイント】");
+	std::ostringstream oss;
+	oss << std::fixed << std::setprecision(2) << "X:" << m_posBG.x << "\nY:" << m_posBG.y << "\nZ:" << m_posBG.z << "X:" << m_rotBG.x << "\nY:" << m_rotBG.y << "\nZ:" << m_rotBG.z;
+	CRenderer::GetInstance()->SetDebugString(oss.str().c_str());
 }
 
 //============================================================================
@@ -570,14 +564,22 @@ void CCamera::UpdateBG()
 	// アンカーポイントの番号
 	static int nNumElement{ 0 };
 
-	if (mode == CScene::MODE::GAME)
+	// 実数値 -> 目標数値への補間速度を格納
+	float fCoeff{ 0.0f };
+
+	if (mode == CScene::MODE::STAGE)
 	{
-		// 背景用カメラの目標座標・目標向きを固定する
+		// 処理を行わない
+		return;
+	}
+	else if (mode == CScene::MODE::GAME)
+	{
+		// 背景用カメラの目標座標・目標向きを、保持している目標数値とは別途で固定する
 		D3DXVECTOR3 posTarget = { -3.0f, 0.0f, 0.0f };
 		D3DXVECTOR3 rotTarget = { 0.0f, 0.0f, 0.0f };
 
 		// 補間速度を設定
-		float fCoeff{ 0.1f };
+		fCoeff = 0.1f;
 
 		// 目標座標へ迫る
 		m_posBG = CUtility::GetInstance()->AdjustToTarget(m_posBG, posTarget, fCoeff);
@@ -586,18 +588,15 @@ void CCamera::UpdateBG()
 		m_rotBG = CUtility::GetInstance()->AdjustToTarget(m_rotBG, rotTarget, fCoeff);
 
 		// アンカーポイントの番号をリセット
-		nNumElement = 0;
+		/* コメントアウトでゲーム開始時のポイントから続くように見える */
+		//nNumElement = 0;
 
-		// アンカーポイントへの増加量を、この座標から再計算する
-		for (auto&& it : m_vAnchorPoint)
-		{
-			it.bSet = false;
-		}
-	}
-	else if (mode == CScene::MODE::STAGE)
-	{
-		// 処理を行わない
-		return;
+		//// アンカーポイントへの増加量を、この座標から再計算する
+		///* 実数値と目標数値が分かれている場合不要 */
+		//for (auto&& it : m_vAnchorPoint)
+		//{
+		//	it.bSet = false;
+		//}
 	}
 	else
 	{
@@ -608,26 +607,28 @@ void CCamera::UpdateBG()
 			float nDivider{ static_cast<float>(m_vAnchorPoint[nNumElement].nNumStep) };
 
 			// 増加量の設定を行う
-			m_vAnchorPoint[nNumElement].stepPos = (m_vAnchorPoint[nNumElement].pos - m_posBG) / nDivider;
-			m_vAnchorPoint[nNumElement].stepRot = (m_vAnchorPoint[nNumElement].rot - m_rotBG) / nDivider;
+			m_vAnchorPoint[nNumElement].stepPos = (m_vAnchorPoint[nNumElement].pos - m_posTargetBG) / nDivider;
+			m_vAnchorPoint[nNumElement].stepRot = (m_vAnchorPoint[nNumElement].rot - m_rotTargetBG) / nDivider;
 
 			// 設定を終了する
 			m_vAnchorPoint[nNumElement].bSet = true;
 		}
 
-		// 補間が終わりがけると
-		if (fabsf(m_vAnchorPoint[nNumElement].pos.x - m_posBG.x) >= 0.01f)
-		{
+		if (fabsf(m_vAnchorPoint[nNumElement].pos.x - m_posTargetBG.x) >= 0.01f)
+		{ // 目標地点との差がある程度あると
+
 			// 補間していく
-			m_posBG += m_vAnchorPoint[nNumElement].stepPos;
-			m_rotBG += m_vAnchorPoint[nNumElement].stepRot;
+			m_posTargetBG += m_vAnchorPoint[nNumElement].stepPos;
+			m_rotTargetBG += m_vAnchorPoint[nNumElement].stepRot;
 		}
 		else
-		{
+		{ // ほとんど目標地点に到達で
+
 			// このポイントでの増加量設定をリセットする
+			/* アンカーポイントのリセットを有効にしている場合必須 */
 			m_vAnchorPoint[nNumElement].bSet = false;
 			
-			// 次のポイントへ進める
+			// 次のポイントへ進む
 			nNumElement++;
 
 			// 最後のポイントに到達したら最初へ戻る
@@ -636,8 +637,17 @@ void CCamera::UpdateBG()
 				nNumElement = 0;
 			}
 
-			CRenderer::GetInstance()->SetTimeString("次のアンカーポイント : " + std::to_string(nNumElement), 240);
+			CRenderer::GetInstance()->SetTimeString("次のアンカーポイント : " + std::to_string(nNumElement), 300);
 		}
+
+		// 補間速度を設定する
+		fCoeff = 0.01f;
+
+		// 目標座標へ迫る
+		m_posBG = CUtility::GetInstance()->AdjustToTarget(m_posBG, m_posTargetBG, fCoeff);
+
+		// 目標向きへ迫る
+		m_rotBG = CUtility::GetInstance()->AdjustToTarget(m_rotBG, m_rotTargetBG, fCoeff);
 	}
 
 #ifdef _DEBUG
@@ -645,32 +655,14 @@ void CCamera::UpdateBG()
 	// 次のアンカーポイントをデバッグ表示
 	CRenderer::GetInstance()->SetDebugString("【安価ポイント】");
 	std::ostringstream oss0;
-	oss0 << std::fixed << std::setprecision(1) << "p X:" << m_vAnchorPoint[nNumElement].pos.x << "\np Y:" << m_vAnchorPoint[nNumElement].pos.y << "\np Z:" << m_vAnchorPoint[nNumElement].pos.z << "\nr X:" << m_vAnchorPoint[nNumElement].rot.x << "\nr Y:" << m_vAnchorPoint[nNumElement].rot.y << "\nr Z:" << m_vAnchorPoint[nNumElement].rot.z;
+	oss0 << std::fixed << std::setprecision(2) << "p X:" << m_vAnchorPoint[nNumElement].pos.x << "\np Y:" << m_vAnchorPoint[nNumElement].pos.y << "\np Z:" << m_vAnchorPoint[nNumElement].pos.z << "\nr X:" << m_vAnchorPoint[nNumElement].rot.x << "\nr Y:" << m_vAnchorPoint[nNumElement].rot.y << "\nr Z:" << m_vAnchorPoint[nNumElement].rot.z;
 	CRenderer::GetInstance()->SetDebugString(oss0.str().c_str());
 
-	// 座標をデバッグ表示
-	CRenderer::GetInstance()->SetDebugString("【背景カメラ座標】");
+	// 目標座標をデバッグ表示
+	CRenderer::GetInstance()->SetDebugString("【背景カメラ目標ポイント");
 	std::ostringstream oss1;
-	oss1 << std::fixed << std::setprecision(1) << "X:" << m_posBG.x << "\nY:" << m_posBG.y << "\nZ:" << m_posBG.z;
+	oss1 << std::fixed << std::setprecision(2) << "p X:" << m_posTargetBG.x << "\np Y:" << m_posTargetBG.y << "\np Z:" << m_posTargetBG.z << "\nr X:" << m_rotTargetBG.x << "\nr Y:" << m_rotTargetBG.y << "\nr Z:" << m_rotTargetBG.z;
 	CRenderer::GetInstance()->SetDebugString(oss1.str().c_str());
-
-	//// 目標座標をデバッグ表示
-	//CRenderer::GetInstance()->SetDebugString("【背景カメラ目標座標 (使ってない)】");
-	//std::ostringstream oss2;
-	//oss2 << std::fixed << std::setprecision(1) << "X:" << m_posTargetBG.x << "\nY:" << m_posTargetBG.y << "\nZ:" << m_posTargetBG.z;
-	//CRenderer::GetInstance()->SetDebugString(oss2.str().c_str());
-
-	// 向きをデバッグ表示
-	CRenderer::GetInstance()->SetDebugString("【背景カメラ向き】");
-	std::ostringstream oss3;
-	oss3 << std::fixed << std::setprecision(1) << "X:" << m_rotBG.x << "\nY:" << m_rotBG.y << "\nZ:" << m_rotBG.z;
-	CRenderer::GetInstance()->SetDebugString(oss3.str().c_str());
-
-	//// 目標向きをデバッグ表示
-	//CRenderer::GetInstance()->SetDebugString("【背景カメラ目標向き (使ってない)】");
-	//std::ostringstream oss4;
-	//oss4 << std::fixed << std::setprecision(1) << "X:" << m_rotTargetBG.x << "\nY:" << m_rotTargetBG.y << "\nZ:" << m_rotTargetBG.z;
-	//CRenderer::GetInstance()->SetDebugString(oss4.str().c_str());
 
 #endif
 }
