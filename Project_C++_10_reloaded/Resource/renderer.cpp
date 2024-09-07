@@ -432,7 +432,10 @@ void CRenderer::LayoutFurniture()
 	CFurniture::Create({ 0.0f, 30.0f, 10.0f }, 1.75f, CModel_X_Manager::TYPE::POSTER);
 
 	// ƒƒ‚‚Ì¶¬
-	CFurniture::Create({ 32.5f, 20.0f, 10.0f }, 1.0f, CModel_X_Manager::TYPE::MEMO);
+	CFurniture::Create({ 30.0f, 42.5f, 10.0f }, 1.0f, CModel_X_Manager::TYPE::MEMO);
+
+	// ƒƒ‚‚Ì¶¬
+	CFurniture::Create({ 52.5f, 32.5f, 10.0f }, 1.0f, CModel_X_Manager::TYPE::MEMO);
 
 	// ƒ‰ƒ“ƒv‚Ì¶¬
 	CFurniture::Create({ 0.0f, 55.0f, -10.0f }, 2.0f, CModel_X_Manager::TYPE::LAMP);

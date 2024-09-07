@@ -78,9 +78,9 @@ void CCamera::Update()
 	UpdateScreen();
 
 	// 背景用の更新
-	//UpdateBG();
+	UpdateBG();
 
-		// 座標をデバッグ表示
+	// 座標をデバッグ表示
 	CRenderer::GetInstance()->SetDebugString("【背景カメラ座標】");
 	std::ostringstream oss1;
 	oss1 << std::fixed << std::setprecision(3) << "X:" << m_posBG.x << "\nY:" << m_posBG.y << "\nZ:" << m_posBG.z;
@@ -345,27 +345,26 @@ void CCamera::ImportAnchorPoint()
 		D3DXVECTOR3 newRot = { 0.0f, 0.0f, 0.0f };
 		int nNewNumStep{ 0 };
 
-		// テキストの情報を分離して取得する
-		std::string strToValue = str.substr(0, str.find(","));
-		newPos.x = std::stof(strToValue);
-		strToValue = str.substr(str.find(",") + 1, str.find(","));
-		str.erase(0, str.find(",") + 1);
-		newPos.y = std::stof(strToValue);
-		strToValue = str.substr(str.find(",") + 1, str.find(","));
-		str.erase(0, str.find(",") + 1);
-		newPos.z = std::stof(strToValue);
-		strToValue = str.substr(str.find(",") + 1, str.find(","));
-		str.erase(0, str.find(",") + 1);
-		newRot.x = std::stof(strToValue);
-		strToValue = str.substr(str.find(",") + 1, str.find(","));
-		str.erase(0, str.find(",") + 1);
-		newRot.y = std::stof(strToValue);
-		strToValue = str.substr(str.find(",") + 1, str.find(","));
-		str.erase(0, str.find(",") + 1);
-		newRot.z = std::stof(strToValue);
-		strToValue = str.substr(str.find(",") + 1, str.find(","));
-		str.erase(0, str.find(",") + 1);
-		nNewNumStep = std::stoi(strToValue);
+		// 数値となる文字列分離用
+		std::string value[7];
+
+		for (int i = 0; i < 7; i++)
+		{
+			// 数値部分のみ抽出する
+			value[i] = str.substr(str.find(":") + 1, str.find(",") - (str.find(":") + 1));
+
+			// 不必要になった部分を削除する
+			str.erase(0, str.find(",") + 1);
+		}
+
+		// 抽出した数値を座標に変換
+		newPos.x = std::stof(value[0]);
+		newPos.y = std::stof(value[1]);
+		newPos.z = std::stof(value[2]);
+		newRot.x = std::stof(value[3]);
+		newRot.y = std::stof(value[4]);
+		newRot.z = std::stof(value[5]);
+		nNewNumStep = std::stoi(value[6]);
 
 		// 数値情報を1つにまとめる
 		AnchorPoint newAP = { newPos, newRot, { 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, nNewNumStep, false };
