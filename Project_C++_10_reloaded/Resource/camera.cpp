@@ -66,6 +66,8 @@ HRESULT CCamera::Init()
 	// アンカーポイントを読み込む
 	ImportAnchorPoint();
 
+	//m_posBG = { 0.0f, -30.0f, -30.0f };
+
 	return S_OK;
 }
 
@@ -78,7 +80,7 @@ void CCamera::Update()
 	UpdateScreen();
 
 	// 背景用の更新
-	//UpdateBG();
+	UpdateBG();
 
 #ifdef _DEBUG
 	// 座標をデバッグ表示
@@ -161,29 +163,29 @@ void CCamera::SetCameraBG()
 
 	if (CManager::GetKeyboard()->GetPress(DIK_T))
 	{
-		m_posBG.y += 0.25f;
+		m_posBG.y += 0.5f;
 	}
 	else if (CManager::GetKeyboard()->GetPress(DIK_G))
 	{
-		m_posBG.y += -0.25f;
+		m_posBG.y += -0.5f;
 	}
 
 	if (CManager::GetKeyboard()->GetPress(DIK_H))
 	{
-		m_posBG.x += 0.25f;
+		m_posBG.x += 0.5f;
 	}
 	else if (CManager::GetKeyboard()->GetPress(DIK_F))
 	{
-		m_posBG.x += -0.25f;
+		m_posBG.x += -0.5f;
 	}
 
 	if (CManager::GetKeyboard()->GetPress(DIK_U))
 	{
-		m_posBG.z += 0.25f;
+		m_posBG.z += 0.5f;
 	}
 	else if (CManager::GetKeyboard()->GetPress(DIK_J))
 	{
-		m_posBG.z += -0.25f;
+		m_posBG.z += -0.5f;
 	}
 
 	if (CManager::GetKeyboard()->GetPress(DIK_NUMPAD8))

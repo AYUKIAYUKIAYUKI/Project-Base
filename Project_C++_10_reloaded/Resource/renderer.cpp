@@ -410,7 +410,8 @@ void CRenderer::SetTimeString(std::string str, int nCnt)
 void CRenderer::LayoutFurniture()
 {
 	// ROOMの生成
-	CFurniture::Create({ 0.0f, 157.5f, -189.0f }, 20.0f, CModel_X_Manager::TYPE::ROOM);
+	//CFurniture::Create({ 0.0f, 157.5f, -189.0f }, 20.0f, CModel_X_Manager::TYPE::ROOM);
+	CFurniture::Create({ 0.0f, 57.5f, -89.0f }, 10.0f, CModel_X_Manager::TYPE::ROOM);
 
 	// VHSの生成
 	CFurniture::Create({ 0.0f, -14.75f, 3.0f }, 2.0f, CModel_X_Manager::TYPE::VHS);
@@ -431,13 +432,13 @@ void CRenderer::LayoutFurniture()
 	CFurniture::Create({ -52.5f, -22.5f, -8.0f }, 2.0f, CModel_X_Manager::TYPE::INDOOR_PLANTS);
 
 	// ポスターの生成
-	CFurniture::Create({ 0.0f, 30.0f, 10.0f }, 1.75f, CModel_X_Manager::TYPE::POSTER);
+	CFurniture::Create({ 0.0f, 35.0f, 10.0f }, 1.75f, CModel_X_Manager::TYPE::POSTER);
 
 	// メモの生成
-	CFurniture::Create({ 30.0f, 42.5f, 10.0f }, 1.0f, CModel_X_Manager::TYPE::MEMO);
+	CFurniture::Create({ 30.0f, 40.0f, 10.0f }, 1.0f, CModel_X_Manager::TYPE::MEMO);
 
 	// メモの生成
-	CFurniture::Create({ 52.5f, 32.5f, 10.0f }, 1.0f, CModel_X_Manager::TYPE::MEMO);
+	CFurniture::Create({ 52.5f, 30.0f, 10.0f }, 1.0f, CModel_X_Manager::TYPE::MEMO);
 
 	// ランプの生成
 	CFurniture::Create({ 0.0f, 55.0f, -10.0f }, 2.0f, CModel_X_Manager::TYPE::LAMP);
