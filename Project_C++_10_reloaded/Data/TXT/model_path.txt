@@ -1,4 +1,5 @@
 data\\MODEL\\KARIHAIKEI.x
+data\\MODEL\\ROOM.x
 data\\MODEL\\tv_adjusted.x
 data\\MODEL\\vhs.x
 data\\MODEL\\bookself.x

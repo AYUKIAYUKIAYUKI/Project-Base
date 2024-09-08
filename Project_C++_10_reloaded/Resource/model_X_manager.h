@@ -21,6 +21,7 @@ public:
 	enum class TYPE
 	{
 		KARIHAIKEI = 0,	// âºîwåi
+		ROOM,			// ROOM
 		MONITOR,		// ÉÇÉjÉ^Å[
 		VHS,			// VHS
 		BOOKSELF,		// ñ{íI

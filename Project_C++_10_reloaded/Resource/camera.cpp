@@ -78,7 +78,7 @@ void CCamera::Update()
 	UpdateScreen();
 
 	// 背景用の更新
-	UpdateBG();
+	//UpdateBG();
 
 #ifdef _DEBUG
 	// 座標をデバッグ表示

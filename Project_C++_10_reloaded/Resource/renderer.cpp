@@ -409,6 +409,9 @@ void CRenderer::SetTimeString(std::string str, int nCnt)
 //============================================================================
 void CRenderer::LayoutFurniture()
 {
+	// ROOMの生成
+	CFurniture::Create({ 0.0f, 157.5f, -189.0f }, 20.0f, CModel_X_Manager::TYPE::ROOM);
+
 	// VHSの生成
 	CFurniture::Create({ 0.0f, -14.75f, 3.0f }, 2.0f, CModel_X_Manager::TYPE::VHS);
 
@@ -419,7 +422,7 @@ void CRenderer::LayoutFurniture()
 	CFurniture::Create({ 30.0f, -10.0f, 4.0f }, 1.25f, CModel_X_Manager::TYPE::SPEAKER);
 
 	// でかスピーカーの生成
-	CFurniture::Create({ 51.0f, -17.5f, 0.0f }, 2.5f, CModel_X_Manager::TYPE::SPEAKER_BIG);
+	CFurniture::Create({ 51.0f, -18.0f, 0.0f }, 2.5f, CModel_X_Manager::TYPE::SPEAKER_BIG);
 
 	// 蓄音機の生成
 	CFurniture::Create({ -29.f, -10.0f, -5.0f }, 1.0f, CModel_X_Manager::TYPE::GRAMOPHONE);
