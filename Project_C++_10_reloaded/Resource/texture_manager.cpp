@@ -55,7 +55,11 @@ HRESULT CTexture_Manager::Load()
 
 			assert(false);
 #else
+
+#ifdef _DEBUG
 			CRenderer::GetInstance()->SetTimeString("【警告】テクスチャ[" + filename + "]は生成に失敗しました", 300);
+#endif	// _DEBUG
+
 #endif
 		}
 	}
@@ -94,7 +98,11 @@ LPDIRECT3DTEXTURE9 CTexture_Manager::GetTexture(TYPE type)
 #if 0
 		assert(false);
 #else
+
+#ifdef _DEBUG
 		CRenderer::GetInstance()->SetTimeString("【警告】テクスチャ取得エラー", 300);
+#endif	// _DEBUG
+
 #endif
 	}
 

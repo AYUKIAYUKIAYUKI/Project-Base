@@ -90,8 +90,10 @@ void CEnemy::Update()
 		// 攻撃をキャスト
 		m_nCast++;
 
+#ifdef _DEBUG
 		/* 弾丸のキャスト状態を表示 */
 		//CRenderer::GetInstance()->SetDebugString("弾丸キャスト : " + std::to_string(m_nCast));
+#endif	// _DEBUG
 
 		// 弾を発射
 		if (m_nCast > 200)

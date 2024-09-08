@@ -79,11 +79,13 @@ void CDummy::Control()
 	// 移動
 	Translate();
 
+#ifdef _DEBUG
 	// 位置をデバッグ表示
 	CRenderer::GetInstance()->SetDebugString("【ダミー位置】");
 	std::ostringstream oss;
 	oss << std::fixed << std::setprecision(1) << "X:" << GetPos().x << "\nY:" << GetPos().y;
 	CRenderer::GetInstance()->SetDebugString(oss.str().c_str());
+#endif	// _DEBUG
 }
 
 //============================================================================

@@ -84,7 +84,11 @@ HRESULT CModel_X_Manager::Load()
 					assert(false);
 #else
 					std::string tex = pMat[nCntMat].pTextureFilename;
+
+#ifdef _DEBUG
 					CRenderer::GetInstance()->SetTimeString("【警告】テクスチャ[" + tex + "]は生成に失敗しました", 300);
+#endif	// _DEBUG
+
 					m_apModelTemp[nCntModel].ppTex[nCntMat] = nullptr;
 #endif
 				}

@@ -135,8 +135,10 @@ void CFakeScreen::Uninit()
 //============================================================================
 void CFakeScreen::Update()
 {
+#ifdef _DEBUG
 	// ゆがみの強度を表示
 	CRenderer::GetInstance()->SetDebugString("ゆがみの強度:" + std::to_string(m_fAddDistortion));
+#endif	// _DEBUG
 
 	// フェードイン処理
 	FadeIn();
@@ -344,10 +346,8 @@ HRESULT CFakeScreen::CreateVtxBuff()
 			0.0f };
 
 #if MESH_DBG
-
 		// 各頂点座標のデバッグ表示
 		CRenderer::GetInstance()->SetTimeString(std::to_string(i + 1) + "頂点:" + std::to_string(pVtx[i].pos.x) + ":" + std::to_string(pVtx[i].pos.y) + ":" + std::to_string(pVtx[i].pos.z), 30);
-
 #endif	// MESH_DBG
 
 		// 除算数の設定
@@ -362,10 +362,8 @@ HRESULT CFakeScreen::CreateVtxBuff()
 			(fEachSizeY * nCntVtxY) / (m_size.y * 2.0f) };
 
 #if MESH_DBG
-
 		// 各UV座標のデバッグ表示
 		CRenderer::GetInstance()->SetTimeString(std::to_string(i + 1) + "UV:" + std::to_string(pVtx[i].tex.x) + " : " + std::to_string(pVtx[i].tex.y), 30);
-
 #endif	// MESH_DBG
 
 		// X方向頂点数のカウントを行う

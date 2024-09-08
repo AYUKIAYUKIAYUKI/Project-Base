@@ -158,7 +158,10 @@ D3DXVECTOR3 CMonitor::Recoil()
 {
 	// —Ž‰º•ûŒü‚ÌŠp“x‚ðŽZo
 	float fDropAngle = atan2f(m_velocity.x, m_velocity.y);
-	CRenderer::GetInstance()->SetTimeString("‚Ü‚ñ‚±" + std::to_string(fDropAngle), 800);
+
+#ifdef _DEBUG
+	CRenderer::GetInstance()->SetTimeString("‚Ä‚·‚Æ" + std::to_string(fDropAngle), 800);
+#endif	// _DEBUG
 
 	// ”½“®‚Ì‰Á‘¬“x‚ð•ÛŽ
 	D3DXVECTOR3 recoilVelocity{ 0.0f, 0.0f, 0.0f };
@@ -167,8 +170,10 @@ D3DXVECTOR3 CMonitor::Recoil()
 	//recoilVelocity.x = -sinf(fDropAngle) * 2.0f;
 	recoilVelocity.y = -cosf(fDropAngle) * 4.0f;
 
+#ifdef _DEBUG
 	//CRenderer::GetInstance()->SetTimeString("‚³‚¢‚ñ" + std::to_string(recoilVelocity.x), 800);
 	CRenderer::GetInstance()->SetTimeString("‚±‚³‚¢‚ñ" + std::to_string(recoilVelocity.y), 800);
+#endif	// _DEBUG
 
 	return recoilVelocity;
 }

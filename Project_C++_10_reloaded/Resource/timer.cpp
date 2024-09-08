@@ -236,7 +236,11 @@ void CTimer::ExportTimer(int nSelect)
 #if 0
 		assert(false);
 #else
+
+#ifdef _DEBUG
 		CRenderer::GetInstance()->SetTimeString("【警告】レベル情報・タイムの読み込み(2)に失敗しました", 300);
+#endif	// _DEBUG
+
 		return;
 #endif
 	}
@@ -268,7 +272,11 @@ void CTimer::ExportTimer(int nSelect)
 #if 0
 		assert(false);
 #else
+
+#ifdef _DEBUG
 		CRenderer::GetInstance()->SetTimeString("【警告】レベル情報・タイムの書き出しに失敗しました", 300);
+#endif	// _DEBUG
+
 		return;
 #endif
 	}
@@ -326,7 +334,11 @@ int CTimer::ImportTimer(int nSelect)
 #if 0
 		assert(false);
 #else
+
+#ifdef _DEBUG
 		CRenderer::GetInstance()->SetTimeString("【警告】レベル情報・タイムの読み込み(1)に失敗しました", 300);
+#endif	// _DEBUG
+
 		return 0;
 #endif
 	}

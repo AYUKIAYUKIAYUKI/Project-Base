@@ -158,8 +158,10 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 				// XVˆ—
 				g_pManager->Update();
 
+#ifdef _DEBUG
 				// FPS•\Ž¦
 				CRenderer::GetInstance()->SetDebugString("FPS:" + std::to_string(nCountFPS));
+#endif	// _DEBUG
 
 				// •`‰æˆ—
 				g_pManager->Draw();

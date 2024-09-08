@@ -314,8 +314,10 @@ void CObject::ReleaseUI()
 //============================================================================
 void CObject::UpdateAll()
 {
+#ifdef _DEBUG
 	// オブジェクト数を表示
 	CRenderer::GetInstance()->SetDebugString("現在のオブジェクト数:" + std::to_string(m_nNumAll));
+#endif	// _DEBUG
 
 	for (int nCntPriority = 0; nCntPriority < static_cast<int>(LAYER::MAX); nCntPriority++)
 	{

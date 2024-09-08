@@ -91,16 +91,16 @@ void CGameManager::Uninit()
 //============================================================================
 void CGameManager::Update()
 {
+#ifdef _DEBUG
 	// ステージ数を表示
 	std::string str = "【現在のステージ:" + std::to_string(m_nMaxStage - m_stagePath.size()) + "/" + std::to_string(m_nMaxStage) + "】";
 	CRenderer::GetInstance()->SetDebugString(str);
+#endif	// _DEBUG
 
 	switch (m_phase)
 	{
 	case PHASE::SELECT:
 	
-		CRenderer::GetInstance()->SetDebugString("レベル選択 : " + std::to_string(m_nSelectLevel));
-
 		// 葉っぱ生成の更新
 		CLeaf::UpdateToCreate();
 
@@ -140,6 +140,10 @@ void CGameManager::Update()
 			CSound::GetInstance()->Play(CSound::LABEL::DEFINE);
 		}
 
+#ifdef _DEBUG
+		CRenderer::GetInstance()->SetDebugString("レベル選択 : " + std::to_string(m_nSelectLevel));
+#endif	// _DEBUG
+
 		break;
 
 	case PHASE::START:
@@ -162,7 +166,9 @@ void CGameManager::Update()
 		// レベル進行フェーズへ
 		m_phase = PHASE::INGAME;
 
+#ifdef _DEBUG
 		CRenderer::GetInstance()->SetDebugString("レベル開始");
+#endif	// _DEBUG
 
 		break;
 
@@ -174,7 +180,9 @@ void CGameManager::Update()
 		// タイムの動作
 		CTimer::SwitchControlByPahse(m_nSelectLevel);
 
+#ifdef _DEBUG
 		CRenderer::GetInstance()->SetDebugString("インゲーム");
+#endif	// _DEBUG
 
 		break;
 
@@ -191,11 +199,13 @@ void CGameManager::Update()
 
 		// レベル選択フェーズへ
 		m_phase = PHASE::SELECT;
-		
-		CRenderer::GetInstance()->SetDebugString("レベル終了");
 
 		// 表示音
 		CSound::GetInstance()->Play(CSound::LABEL::DISPLAY);
+		
+#ifdef _DEBUG
+		CRenderer::GetInstance()->SetDebugString("レベル終了");
+#endif	// _DEBUG
 
 		break;
 

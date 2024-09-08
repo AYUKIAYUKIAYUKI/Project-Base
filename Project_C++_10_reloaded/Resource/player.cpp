@@ -121,7 +121,6 @@ void CPlayer::Update()
 	SetPos(m_posTarget);
 
 #ifdef _DEBUG
-
 	// 座標をデバッグ表示
 	CRenderer::GetInstance()->SetDebugString("【プレイヤー座標】");
 	std::ostringstream oss;
@@ -130,7 +129,6 @@ void CPlayer::Update()
 
 	CRenderer::GetInstance()->SetDebugString("現在の加速度X : " + std::to_string(m_velocity.x));
 	CRenderer::GetInstance()->SetDebugString("現在の加速度Y : " + std::to_string(m_velocity.y));
-
 #endif	// _DEBUG
 
 	// 基底クラスの更新

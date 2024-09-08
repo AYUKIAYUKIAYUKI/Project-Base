@@ -80,11 +80,13 @@ void CCamera::Update()
 	// 背景用の更新
 	UpdateBG();
 
+#ifdef _DEBUG
 	// 座標をデバッグ表示
 	CRenderer::GetInstance()->SetDebugString("【背景カメラポイント】");
 	std::ostringstream oss;
 	oss << std::fixed << std::setprecision(2) << "p X:" << m_posBG.x << "\np Y:" << m_posBG.y << "\np Z:" << m_posBG.z << "\nr X:" << m_rotBG.x << "\nr Y:" << m_rotBG.y << "\nr Z:" << m_rotBG.z;
 	CRenderer::GetInstance()->SetDebugString(oss.str().c_str());
+#endif	// _DEBUG
 }
 
 //============================================================================
@@ -197,7 +199,9 @@ void CCamera::SetCameraBG()
 		m_fDistanceBG = 25.0f;
 	}
 
+#ifdef _DEBUG
 	CRenderer::GetInstance()->SetDebugString("空間ズーム具合 : " + std::to_string(m_fDistanceBG));
+#endif	// _DEBUG
 
 	// 視点は対象物の後方に
 	m_posVBG =
@@ -323,7 +327,11 @@ void CCamera::ImportAnchorPoint()
 #if 0
 		assert(false);
 #else
+
+#ifdef _DEBUG
 		CRenderer::GetInstance()->SetTimeString("【警告】アンカーポイント情報の読み込みに失敗しました", 300);
+#endif	// _DEBUG
+
 		return;
 #endif
 	}
@@ -636,7 +644,9 @@ void CCamera::UpdateBG()
 				nNumElement = 0;
 			}
 
+#ifdef _DEBUG
 			CRenderer::GetInstance()->SetTimeString("次のアンカーポイント : " + std::to_string(nNumElement), 300);
+#endif	// _DEBUG
 		}
 
 		// 補間速度を設定する
@@ -650,7 +660,6 @@ void CCamera::UpdateBG()
 	}
 
 #ifdef _DEBUG
-
 	// 次のアンカーポイントをデバッグ表示
 	CRenderer::GetInstance()->SetDebugString("【安価ポイント】");
 	std::ostringstream oss0;
@@ -662,8 +671,7 @@ void CCamera::UpdateBG()
 	std::ostringstream oss1;
 	oss1 << std::fixed << std::setprecision(2) << "p X:" << m_posTargetBG.x << "\np Y:" << m_posTargetBG.y << "\np Z:" << m_posTargetBG.z << "\nr X:" << m_rotTargetBG.x << "\nr Y:" << m_rotTargetBG.y << "\nr Z:" << m_rotTargetBG.z;
 	CRenderer::GetInstance()->SetDebugString(oss1.str().c_str());
-
-#endif
+#endif	// _DEBUG
 }
 
 //============================================================================

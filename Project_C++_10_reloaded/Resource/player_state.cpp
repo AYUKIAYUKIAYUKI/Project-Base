@@ -531,26 +531,22 @@ bool CPlayerStateFlying::Control()
 	m_pPlayer->SetVelocityTarget(velocityTarget);
 
 #ifdef _DEBUG
-
 	// 目標加速度をデバッグ表示
 	CRenderer::GetInstance()->SetDebugString("【　目標加速度　】");
 	std::ostringstream oss;
 	oss << std::fixed << std::setprecision(3) << "X:" << m_pPlayer->GetVelocityTarget().x << "\nY:" << m_pPlayer->GetVelocityTarget().y;
 	CRenderer::GetInstance()->SetDebugString(oss.str().c_str());
-
 #endif // _DEBUG
 
 	// 現在の加速度を取得
 	D3DXVECTOR3 velocity = m_pPlayer->GetVelocity();
 
 #ifdef _DEBUG
-
 	// 現在の加速度をデバッグ表示
 	CRenderer::GetInstance()->SetDebugString("【　現在の加速度　】");
 	std::ostringstream oss1;
 	oss1 << std::fixed << std::setprecision(3) << "X:" << velocity.x << "\nY:" << velocity.y;
 	CRenderer::GetInstance()->SetDebugString(oss1.str().c_str());
-
 #endif // _DEBUG
 
 	// 現在の加速度を補正
@@ -783,8 +779,10 @@ void CPlayerStateStopping::Recoil()
 	// 衝突寸前の加速度を取得
 	D3DXVECTOR3 newVelocity{ m_pPlayer->GetVelocity() };
 
+#ifdef _DEBUG
 	CRenderer::GetInstance()->SetTimeString("\n衝突時の加速度X : " + std::to_string(newVelocity.x), 120);
 	CRenderer::GetInstance()->SetTimeString("衝突時の加速度Y : " + std::to_string(newVelocity.y), 120);
+#endif	// _DEBUG
 
 	// 寸前の向きの真逆の角度を算出
 	float fNewFlyingAngle{ atan2f(newVelocity.x, newVelocity.y) };
@@ -793,8 +791,10 @@ void CPlayerStateStopping::Recoil()
 	newVelocity.x = -sinf(fNewFlyingAngle) * RECOIL_SPEED;
 	newVelocity.y = -cosf(fNewFlyingAngle) * RECOIL_SPEED;
 
+#ifdef _DEBUG
 	CRenderer::GetInstance()->SetTimeString("衝突後の加速度X : " + std::to_string(newVelocity.x), 120);
 	CRenderer::GetInstance()->SetTimeString("衝突後の加速度Y : " + std::to_string(newVelocity.y), 120);
+#endif	// _DEBUG
 
 	m_pPlayer->SetVelocity(newVelocity);
 }
@@ -1032,11 +1032,13 @@ CPlayerStateManager::~CPlayerStateManager()
 //============================================================================
 void CPlayerStateManager::CheckStateChange()
 {
+#ifdef _DEBUG
 	if (m_pState)
 	{
 		// 型名のデバッグ表示
 		CRenderer::GetInstance()->SetDebugString(typeid(*m_pState).name());
 	}
+#endif	// _DEBUG
 
 	// 変更予定の状態が無ければリターン
 	if (m_PendingState == CPlayerState::STATE::NONE)
