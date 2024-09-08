@@ -29,7 +29,7 @@ CSquare::CSquare() :
 		m_apNumber[nCntNum] = CNumber::Create();
 
 		// 向きの設定
-		m_apNumber[nCntNum]->SetRot({ 0.0f, 0.0f, D3DX_PI * 2.0f });
+		m_apNumber[nCntNum]->SetRot({ 0.0f, 0.0f, D3DX_PI * 10.0f });
 
 		// 目標サイズの設定
 		m_apNumber[nCntNum]->SetSizeTarget({ 25.0f, 20.0f, 0.0f });
@@ -76,13 +76,13 @@ void CSquare::Uninit()
 void CSquare::Update()
 {
 	// 目標座標へ
-	SetPos(CUtility::GetInstance()->AdjustToTarget(GetPos(), GetPosTarget(), 0.05f));
+	SetPos(CUtility::GetInstance()->AdjustToTarget(GetPos(), GetPosTarget(), 0.065f));
 
 	// 目標向きへ
 	SetRot(CUtility::GetInstance()->AdjustToTarget(GetRot(), GetRotTarget(), 0.05f));
 
 	// 目標サイズへ
-	SetSize(CUtility::GetInstance()->AdjustToTarget(GetSize(), GetSizeTarget(), 0.05f));
+	SetSize(CUtility::GetInstance()->AdjustToTarget(GetSize(), GetSizeTarget(), 0.03f));
 
 	// 基底クラスの更新
 	CObject_UI::Update();
@@ -94,13 +94,13 @@ void CSquare::Update()
 	for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
 	{
 		// 目標座標へ
-		m_apNumber[nCntNum]->SetPos(CUtility::GetInstance()->AdjustToTarget(m_apNumber[nCntNum]->GetPos(), m_apNumber[nCntNum]->GetPosTarget(), 0.05f));
+		m_apNumber[nCntNum]->SetPos(CUtility::GetInstance()->AdjustToTarget(m_apNumber[nCntNum]->GetPos(), m_apNumber[nCntNum]->GetPosTarget(), 0.065f));
 	
 		// 目標向きへ
-		m_apNumber[nCntNum]->SetRot(CUtility::GetInstance()->AdjustToTarget(m_apNumber[nCntNum]->GetRot(), m_apNumber[nCntNum]->GetRotTarget(), 0.075f));
+		m_apNumber[nCntNum]->SetRot(CUtility::GetInstance()->AdjustToTarget(m_apNumber[nCntNum]->GetRot(), m_apNumber[nCntNum]->GetRotTarget(), 0.1f));
 
 		// 目標サイズへ
-		m_apNumber[nCntNum]->SetSize(CUtility::GetInstance()->AdjustToTarget(m_apNumber[nCntNum]->GetSize(), m_apNumber[nCntNum]->GetSizeTarget(), 0.05f));
+		m_apNumber[nCntNum]->SetSize(CUtility::GetInstance()->AdjustToTarget(m_apNumber[nCntNum]->GetSize(), m_apNumber[nCntNum]->GetSizeTarget(), 0.03f));
 	}
 }
 
