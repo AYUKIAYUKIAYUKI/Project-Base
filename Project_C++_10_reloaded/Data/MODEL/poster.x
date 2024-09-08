@@ -341,7 +341,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.639216;0.639216;0.639216;;
    TextureFilename {
-    "Data\\TEXTURE\\satou.jpg";
+    "Data\\TEXTURE\\blank.jpg";
    }
   }
   Material {

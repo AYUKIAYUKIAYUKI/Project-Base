@@ -19134,7 +19134,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.800000;0.800000;0.800000;;
    TextureFilename {
-    "Data\\TEXTURE\\speaker_big.jpg";
+    "Data\\TEXTURE\\speaker_big_1024.jpg";
    }
   }
  }

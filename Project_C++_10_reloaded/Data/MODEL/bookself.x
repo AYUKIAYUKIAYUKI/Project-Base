@@ -2243,7 +2243,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.900000;0.900000;0.900000;;
    TextureFilename {
-    "Data\\TEXTURE\\book_2.jpg";
+    "Data\\TEXTURE\\book_256.jpg";
    }
   }
   Material {
@@ -2252,7 +2252,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.900000;0.900000;0.900000;;
    TextureFilename {
-    "Data\\TEXTURE\\bookself.jpg";
+    "Data\\TEXTURE\\bookself_256.jpg";
    }
   }
  }

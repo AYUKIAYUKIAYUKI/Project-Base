@@ -2759,7 +2759,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.800000;0.800000;0.800000;;
    TextureFilename {
-    "Data\\\\TEXTURE\\\\lamp.png";
+    "Data\\TEXTURE\\lamp_256.jpg";
    }
   }
  }

@@ -1108,7 +1108,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.800000;0.800000;0.800000;;
    TextureFilename {
-    "blank.png";
+    "Data\\TEXTURE\\blank.jpg";
    }
   }
   Material {

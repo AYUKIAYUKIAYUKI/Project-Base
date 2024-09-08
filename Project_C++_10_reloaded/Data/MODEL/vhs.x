@@ -2677,7 +2677,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.125490;0.125490;0.125490;;
    TextureFilename {
-    "Data\\TEXTURE\\vhs.png";
+    "Data\\TEXTURE\\vhs_1024.jpg";
    }
   }
  }

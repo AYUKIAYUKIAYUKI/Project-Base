@@ -3935,7 +3935,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    1.000000;1.000000;1.000000;;
    TextureFilename {
-    "Data\\\\TEXTURE\\\\leaf.png";
+    "Data\\TEXTURE\\leaf_256.png";
    }
   }
   Material {
@@ -3944,7 +3944,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    1.000000;1.000000;1.000000;;
    TextureFilename {
-    "Data\\\\TEXTURE\\\\plant.png";
+    "Data\\TEXTURE\\plant_512.jpg";
    }
   }
  }
