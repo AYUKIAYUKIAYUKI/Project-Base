@@ -50,8 +50,17 @@ CManager::~CManager()
 //============================================================================
 HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 {
+	// •Ö—˜ŠÖ”ŒQ‚Ì‰ŠúÝ’è
+	if (FAILED(CUtility::GetInstance()->Init()))
+	{
+		return E_FAIL;
+	}
+
 	// ƒŒƒ“ƒ_ƒ‰[‚Ì‰ŠúÝ’è
-	CRenderer::GetInstance()->Init(hWnd, bWindow);
+	if (FAILED(CRenderer::GetInstance()->Init(hWnd, bWindow)))
+	{
+		return E_FAIL;
+	}
 
 	// ƒTƒEƒ“ƒh‰ŠúÝ’è
 	if (FAILED(CSound::GetInstance()->Init(hWnd)))
@@ -106,9 +115,6 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// Å‰‚ÌƒV[ƒ“Ý’è
 	SetScene(CScene::MODE::TITLE);
 
-	// •Ö—˜ŠÖ”ŒQ‚Ì‰ŠúÝ’è
-	CUtility::GetInstance()->Init();
-
 	// BGM‚ð‚©‚¯‚é
 	CSound::GetInstance()->Play(CSound::LABEL::BGM);
 
@@ -120,9 +126,6 @@ HRESULT CManager::Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 //============================================================================
 void CManager::Uninit()
 {
-	// •Ö—˜ŠÖ”ŒQ‚Ì”jŠü
-	CUtility::GetInstance()->Release();
-
 	// ƒV[ƒ“‚Ì”jŠü
 	if (m_pScene != nullptr)
 	{
@@ -166,6 +169,9 @@ void CManager::Uninit()
 
 	// ƒŒƒ“ƒ_ƒ‰[‚Ì”jŠü
 	CRenderer::GetInstance()->Release();
+
+	// •Ö—˜ŠÖ”ŒQ‚Ì”jŠü
+	CUtility::GetInstance()->Release();
 }
 
 //============================================================================
