@@ -38,7 +38,7 @@ public:
 
 private:
 
-	static const int MAX_DIGIT = 4;	// Å‘åŒ…”
+	static const int MAX_DIGIT = 3;	// Å‘åŒ…”
 
 	void Appear() override;			// oŒ»
 	void Disappear() override;		// Á–Å

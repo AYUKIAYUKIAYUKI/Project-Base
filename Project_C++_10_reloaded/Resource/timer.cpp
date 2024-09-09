@@ -141,30 +141,33 @@ void CTimer::SwitchControlByPahse(int nSelect)
 		}
 
 		// 目標座標を設定し、震わす
-		pTimer->SetPosTarget({ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.25f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f, });
+		pTimer->SetPosTarget({ SCREEN_WIDTH * 0.4f, SCREEN_HEIGHT * 0.25f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f, });
 		
 		// 目標座標のコピーを作成
 		D3DXVECTOR3 CopyPosTarget{ pTimer->GetPosTarget() };
+
+		// 共通横サイズを設定
+		float fSizeX{ 24.75 };
 
 		// 数字を並べる
 		for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
 		{
 			// 中心座標から、相対的な先頭の位置を設定
-			CopyPosTarget.x = pTimer->GetPosTarget().x + (25.0f * MAX_DIGIT * 0.5f) - (25.0f * 0.5f);
+			CopyPosTarget.x = pTimer->GetPosTarget().x + (fSizeX * MAX_DIGIT * 0.5f) - (fSizeX * 0.5f);
 
 			// 先頭座標から数字が並ぶように調整
-			CopyPosTarget.x += -25.0f * nCntNum;
+			CopyPosTarget.x += -fSizeX * nCntNum;
 			pTimer->m_apNumber[nCntNum]->SetPosTarget(CopyPosTarget);
 
 			// 数字の目標サイズを設定
-			pTimer->m_apNumber[nCntNum]->SetSizeTarget({ 25.0f, 20.0f, 0.0f });
+			pTimer->m_apNumber[nCntNum]->SetSizeTarget({ fSizeX, 17.5f, 0.0f });
 		}
 
 		// タイムの読み込み
 		pTimer->m_nTimer = pTimer->ImportTimer(nSelect);
 
 		// テキストを横に付ける
-		CopyPosTarget.x += -200.0f;
+		CopyPosTarget.x += -195.0f;
 		pTimer->m_pText->SetPosTarget(CopyPosTarget);
 	}
 	else if (CGameManager::GetInstance()->GetPhase() == CGameManager::PHASE::INGAME)
@@ -177,29 +180,31 @@ void CTimer::SwitchControlByPahse(int nSelect)
 			// 目標座標を設定
 			pTimer->m_pText->SetPosTarget({ 0.0f, 0.0f, 0.0f });
 
-			//// 目標サイズを設定
-			//pTimer->m_pText->SetSizeTarget({ 0.0f, 0.0f, 0.0f });
-
 			// ポインタを初期化
 			pTimer->m_pText = nullptr;
 		}
 
 		// 目標座標を設定し、震わす
 		pTimer->SetPosTarget({ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.15f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f, });
+		
+		// 目標座標のコピーを作成
+		D3DXVECTOR3 CopyPosTarget{ pTimer->GetPosTarget() };
+
+		// 共通横サイズを設定
+		float fSizeX{ 42.5f };
 
 		// 数字を並べる
 		for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
 		{
 			// 中心座標から、相対的な先頭の位置を設定
-			D3DXVECTOR3 pos = pTimer->GetPosTarget();
-			pos.x = pTimer->GetPosTarget().x + (37.5f * MAX_DIGIT * 0.5f) - (37.5f * 0.5f);
+			CopyPosTarget.x = pTimer->GetPosTarget().x + (fSizeX * MAX_DIGIT * 0.5f) - (fSizeX * 0.5f);
 
 			// 先頭座標から数字が並ぶように調整
-			pos.x += -37.5f * nCntNum;
-			pTimer->m_apNumber[nCntNum]->SetPosTarget(pos);
+			CopyPosTarget.x += -fSizeX * nCntNum;
+			pTimer->m_apNumber[nCntNum]->SetPosTarget(CopyPosTarget);
 
 			// 数字の目標サイズを設定
-			pTimer->m_apNumber[nCntNum]->SetSizeTarget({ 37.5f, 30.0f, 0.0f });
+			pTimer->m_apNumber[nCntNum]->SetSizeTarget({ fSizeX, 30.0f, 0.0f });
 		}
 
 		// プレイヤーを検索
