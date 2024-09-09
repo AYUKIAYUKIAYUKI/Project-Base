@@ -13,6 +13,7 @@
 //****************************************************
 #include "object_UI.h"
 #include "number.h"
+#include "text.h"
 #include "game_manager.h"
 
 //****************************************************
@@ -45,6 +46,7 @@ private:
 
 	int m_nCntFrame;				// フレームカウント
 	int m_nTimer;					// タイム情報
+	CText* m_pText;					// テキスト情報
 	CNumber* m_apNumber[MAX_DIGIT];	// 数字情報
 };
 

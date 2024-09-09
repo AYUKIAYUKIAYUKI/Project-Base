@@ -29,6 +29,8 @@ public:
 		LEAF_03,		// 葉っぱ03
 		LEAF_04,		// 葉っぱ04
 		NUMBER_00,		// 数字00
+		LASTTIME,		// ラストタイム
+		BESTTIME,		// ベストタイム
 		MAX,
 	};
 

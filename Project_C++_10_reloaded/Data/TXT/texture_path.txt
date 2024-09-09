@@ -7,3 +7,5 @@ Data\\TEXTURE\\leaf02.png
 Data\\TEXTURE\\leaf03.png
 Data\\TEXTURE\\leaf04.png
 Data\\TEXTURE\\number00.png
+Data\\TEXTURE\\lasttime.png
+Data\\TEXTURE\\besttime.png

@@ -59,6 +59,7 @@
     <ClCompile Include="Resource\square.cpp" />
     <ClCompile Include="Resource\star.cpp" />
     <ClCompile Include="Resource\structure.cpp" />
+    <ClCompile Include="Resource\text.cpp" />
     <ClCompile Include="Resource\timer.cpp" />
     <ClCompile Include="Resource\utility.cpp" />
     <ClCompile Include="resource\player.cpp" />
@@ -117,6 +118,7 @@
     <ClInclude Include="Resource\square.h" />
     <ClInclude Include="Resource\star.h" />
     <ClInclude Include="Resource\structure.h" />
+    <ClInclude Include="Resource\text.h" />
     <ClInclude Include="Resource\timer.h" />
     <ClInclude Include="Resource\utility.h" />
     <ClInclude Include="resource\player.h" />

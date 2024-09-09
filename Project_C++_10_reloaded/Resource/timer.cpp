@@ -27,7 +27,8 @@
 CTimer::CTimer() :
 	CObject_UI{ static_cast<int>(LAYER::UI) },
 	m_nCntFrame{ 0 },
-	m_nTimer{ 0 }
+	m_nTimer{ 0 },
+	m_pText{ nullptr }
 {
 	for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
 	{
@@ -130,19 +131,30 @@ void CTimer::SwitchControlByPahse(int nSelect)
 
 	if (CGameManager::GetInstance()->GetPhase() == CGameManager::PHASE::SELECT)
 	{
+		if (!pTimer->m_pText)
+		{
+			// テキストが生成されていなければ生成
+			pTimer->m_pText = CText::Create(CTexture_Manager::TYPE::LASTTIME);
+
+			// 目標サイズを設定
+			pTimer->m_pText->SetSizeTarget({ 159.75, 22.5f, 0.0f });
+		}
+
 		// 目標座標を設定し、震わす
 		pTimer->SetPosTarget({ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.25f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f, });
 		
+		// 目標座標のコピーを作成
+		D3DXVECTOR3 CopyPosTarget{ pTimer->GetPosTarget() };
+
 		// 数字を並べる
 		for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
 		{
 			// 中心座標から、相対的な先頭の位置を設定
-			D3DXVECTOR3 pos = pTimer->GetPosTarget();
-			pos.x = pTimer->GetPosTarget().x + (25.0f * MAX_DIGIT * 0.5f) - (25.0f * 0.5f);
+			CopyPosTarget.x = pTimer->GetPosTarget().x + (25.0f * MAX_DIGIT * 0.5f) - (25.0f * 0.5f);
 
 			// 先頭座標から数字が並ぶように調整
-			pos.x += -25.0f * nCntNum;
-			pTimer->m_apNumber[nCntNum]->SetPosTarget(pos);
+			CopyPosTarget.x += -25.0f * nCntNum;
+			pTimer->m_apNumber[nCntNum]->SetPosTarget(CopyPosTarget);
 
 			// 数字の目標サイズを設定
 			pTimer->m_apNumber[nCntNum]->SetSizeTarget({ 25.0f, 20.0f, 0.0f });
@@ -150,9 +162,28 @@ void CTimer::SwitchControlByPahse(int nSelect)
 
 		// タイムの読み込み
 		pTimer->m_nTimer = pTimer->ImportTimer(nSelect);
+
+		// テキストを横に付ける
+		CopyPosTarget.x += -200.0f;
+		pTimer->m_pText->SetPosTarget(CopyPosTarget);
 	}
 	else if (CGameManager::GetInstance()->GetPhase() == CGameManager::PHASE::INGAME)
 	{
+		if (pTimer->m_pText)
+		{
+			// テキストが生成されていれば消滅
+			pTimer->m_pText->SetDisappear(true);
+
+			// 目標座標を設定
+			pTimer->m_pText->SetPosTarget({ 0.0f, 0.0f, 0.0f });
+
+			//// 目標サイズを設定
+			//pTimer->m_pText->SetSizeTarget({ 0.0f, 0.0f, 0.0f });
+
+			// ポインタを初期化
+			pTimer->m_pText = nullptr;
+		}
+
 		// 目標座標を設定し、震わす
 		pTimer->SetPosTarget({ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.15f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f, });
 
