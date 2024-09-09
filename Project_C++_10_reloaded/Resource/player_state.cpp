@@ -559,13 +559,13 @@ bool CPlayerStateFlying::Control()
 	{
 		// 波紋を生成
 		CRipple::Create(
-			m_pPlayer->GetPos(),	// 座標
-			-velocity);				// 加速度 (飛行方向の逆)
+			m_pPlayer->GetPos() + (-velocity * 5.0f),	// 座標
+			-velocity);									// 加速度 (飛行方向の逆)
 
 		// 星を生成
 		CStar::Create(
-			m_pPlayer->GetPos(),	// 座標
-			-velocity);				// 加速度 (飛行方向の逆)
+			m_pPlayer->GetPos() + (-velocity * 5.0f),	// 座標
+			-velocity);									// 加速度 (飛行方向の逆)
 
 		// きらきら音
 		//CSound::GetInstance()->Play(CSound::LABEL::TWINKLING);
