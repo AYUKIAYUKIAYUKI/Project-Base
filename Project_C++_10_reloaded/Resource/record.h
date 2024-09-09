@@ -30,6 +30,7 @@ public:
 	void Uninit() override;		// I—¹ˆ—
 	void Update() override;		// XVˆ—
 	void Draw() override;		// •`‰æˆ—
+	void SetDisappearExtra();	// “ÁêÁ‹—\–ñ
 
 	static CRecord* Create();	// ¶¬
 

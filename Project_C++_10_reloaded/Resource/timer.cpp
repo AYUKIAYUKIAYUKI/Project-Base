@@ -137,11 +137,11 @@ void CTimer::SwitchControlByPahse(int nSelect)
 			pTimer->m_pText = CText::Create(CTexture_Manager::TYPE::LASTTIME);
 
 			// 目標サイズを設定
-			pTimer->m_pText->SetSizeTarget({ 159.75, 22.5f, 0.0f });
+			pTimer->m_pText->SetSizeTarget({ 159.75f, 22.5f, 0.0f });
 		}
 
 		// 目標座標を設定し、震わす
-		pTimer->SetPosTarget({ SCREEN_WIDTH * 0.4f, SCREEN_HEIGHT * 0.25f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f, });
+		pTimer->SetPosTarget({ SCREEN_WIDTH * 0.45f, SCREEN_HEIGHT * 0.25f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f, });
 		
 		// 目標座標のコピーを作成
 		D3DXVECTOR3 CopyPosTarget{ pTimer->GetPosTarget() };

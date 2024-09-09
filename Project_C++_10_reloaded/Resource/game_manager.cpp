@@ -11,6 +11,7 @@
 #include "game_manager.h"
 #include "stagemaker.h"
 #include "fakescreen.h"
+#include "utility.h"
 #include "sound.h"
 
 // フェード取得用
@@ -23,6 +24,7 @@
 #include "block_destructible.h"
 #include "leaf.h"
 #include "player.h"
+#include "record.h"
 #include "square.h"
 #include "timer.h"
 
@@ -102,7 +104,7 @@ void CGameManager::Update()
 	case PHASE::SELECT:
 	
 		// 葉っぱ生成の更新
-		CLeaf::UpdateToCreate();
+		//CLeaf::UpdateToCreate();
 
 		if (CManager::GetKeyboard()->GetTrigger(DIK_A) && m_nSelectLevel > 0)
 		{
@@ -129,6 +131,11 @@ void CGameManager::Update()
 		{
 			// ウェーブを停止し、スタートフェーズへ移行
 			CFakeScreen::GetInstance()->StopWave(PHASE::START);
+
+			// レコードを消去予約
+			CObject* pObj = CObject::FindObject(CObject::TYPE::RECORD);
+			CRecord* pRecord = CUtility::GetInstance()->DownCast<CRecord, CObject>(pObj);
+			pRecord->SetDisappearExtra();
 
 			// マス目を全消去予約
 			CSquare::DisappearAll();
@@ -175,7 +182,7 @@ void CGameManager::Update()
 	case PHASE::INGAME:
 
 		// 葉っぱ生成の更新
-		CLeaf::UpdateToCreate();
+		//CLeaf::UpdateToCreate();
 
 		// タイムの動作
 		CTimer::SwitchControlByPahse(m_nSelectLevel);
@@ -187,6 +194,9 @@ void CGameManager::Update()
 		break;
 
 	case PHASE::FINISH:
+
+		// レコードを生成
+		CRecord::Create();
 
 		// マス目をステージ分生成
 		for (int i = 0; i < m_nMaxStage; i++)

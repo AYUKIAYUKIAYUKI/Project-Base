@@ -33,13 +33,13 @@ CRecord::CRecord() :
 		m_apNumber[nCntNum] = CNumber::Create();
 
 		// ランダムな座標
-		D3DXVECTOR3 pos{ (SCREEN_WIDTH * 0.5f), -100.0f, 0.0f };
+		D3DXVECTOR3 pos{ (SCREEN_WIDTH * 0.5f) + CUtility::GetInstance()->GetRandomValue<float>() * 5.0f, (SCREEN_HEIGHT * 0.5f) + CUtility::GetInstance()->GetRandomValue<float>() * 5.0f, 0.0f };
 
 		// 初期座標の設定
 		m_apNumber[nCntNum]->SetPos(pos);
 
 		// 初期向きの設定
-		//m_apNumber[nCntNum]->SetRot({ 0.0f, 0.0f, D3DX_PI * 2.0f });
+		m_apNumber[nCntNum]->SetRot({ 0.0f, 0.0f, CUtility::GetInstance()->GetRandomValue<float>() * 0.5f });
 
 		// 数字の出現予約
 		m_apNumber[nCntNum]->SetAppear(true);
@@ -82,6 +82,9 @@ void CRecord::Uninit()
 //============================================================================
 void CRecord::Update()
 {
+	// 目標座標を設定し、震わす
+	SetPosTarget({ SCREEN_WIDTH * 0.8f, SCREEN_HEIGHT * 0.25f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f, });
+
 	// 目標座標へ
 	SetPos(CUtility::GetInstance()->AdjustToTarget(GetPos(), GetPosTarget(), 0.05f));
 
@@ -91,9 +94,25 @@ void CRecord::Update()
 	///////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////
 
+	// 目標座標のコピーを作成
+	D3DXVECTOR3 CopyPosTarget{ GetPosTarget() };
+
+	// 共通横サイズを設定
+	float fSizeX{ 24.75f };
+
 	// 数字のみ
 	for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
-	{
+	{		
+		// 中心座標から、相対的な先頭の位置を設定
+		CopyPosTarget.x = GetPosTarget().x + (fSizeX * MAX_DIGIT * 0.5f) - (fSizeX * 0.5f);
+
+		// 先頭座標から数字が並ぶように調整
+		CopyPosTarget.x += -fSizeX * nCntNum;
+		m_apNumber[nCntNum]->SetPosTarget(CopyPosTarget);
+
+		// 数字の目標サイズを設定
+		m_apNumber[nCntNum]->SetSizeTarget({ fSizeX, 17.5f, 0.0f });
+
 		// 目標座標へ
 		m_apNumber[nCntNum]->SetPos(CUtility::GetInstance()->AdjustToTarget(m_apNumber[nCntNum]->GetPos(), m_apNumber[nCntNum]->GetPosTarget(), 0.075f));
 
@@ -103,6 +122,22 @@ void CRecord::Update()
 		// 目標サイズへ
 		m_apNumber[nCntNum]->SetSize(CUtility::GetInstance()->AdjustToTarget(m_apNumber[nCntNum]->GetSize(), m_apNumber[nCntNum]->GetSizeTarget(), 0.05f));
 	}
+
+	///////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////
+
+	if (!m_pText)
+	{
+		// テキストが生成されていなければ生成
+		m_pText = CText::Create(CTexture_Manager::TYPE::BESTTIME);
+
+		// 目標サイズを設定
+		m_pText->SetSizeTarget({ 159.75f, 22.5f, 0.0f });
+	}
+
+	// テキストを横に付ける
+	CopyPosTarget.x += -195.0f;
+	m_pText->SetPosTarget(CopyPosTarget);
 }
 
 //============================================================================
@@ -112,6 +147,40 @@ void CRecord::Draw()
 {
 	// 基底クラスの描画処理
 	CObject_UI::Draw();
+}
+
+//============================================================================
+// 特殊消去予約
+//============================================================================
+void CRecord::SetDisappearExtra()
+{
+	// 本体の消去予約
+	SetDisappear(true);
+
+	// 数字の消去予約
+	for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
+	{
+		// ランダムな座標
+		D3DXVECTOR3 pos{ (SCREEN_WIDTH * 0.5f) + CUtility::GetInstance()->GetRandomValue<float>() * 5.0f, (SCREEN_HEIGHT * 0.5f) + CUtility::GetInstance()->GetRandomValue<float>() * 5.0f, 0.0f };
+
+		// 目標座標の設定
+		m_apNumber[nCntNum]->SetPosTarget(pos);
+
+		// 目標向きの設定
+		m_apNumber[nCntNum]->SetRotTarget({ 0.0f, 0.0f, CUtility::GetInstance()->GetRandomValue<float>() * 0.5f });
+
+		// 消去予約
+		m_apNumber[nCntNum]->SetDisappear(true);
+	}
+
+	// 目標座標の設定
+	m_pText->SetPosTarget({ SCREEN_WIDTH, 0.0f, 0.0f });
+
+	// 目標サイズの設定
+	m_pText->SetPosTarget({ 0.0f, 0.0f, 0.0f });
+
+	// テキストの消去予約
+	m_pText->SetDisappear(true);
 }
 
 //============================================================================
@@ -128,7 +197,7 @@ CRecord* CRecord::Create()
 	}
 
 	// タイプを設定
-	pRecord->SetType(TYPE::TIMER);
+	pRecord->SetType(TYPE::RECORD);
 
 	// 基底クラスの初期設定
 	pRecord->Init();
