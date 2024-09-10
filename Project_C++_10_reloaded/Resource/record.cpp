@@ -100,6 +100,9 @@ void CRecord::Update()
 	// 共通横サイズを設定
 	float fSizeX{ 24.75f };
 
+	// ベストタイムの読み込み
+	int nBestTime{ ImportRecord(CGameManager::GetInstance()->GetSelectLevel()) };
+
 	// 数字のみ
 	for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
 	{		
@@ -121,6 +124,12 @@ void CRecord::Update()
 
 		// 目標サイズへ
 		m_apNumber[nCntNum]->SetSize(CUtility::GetInstance()->AdjustToTarget(m_apNumber[nCntNum]->GetSize(), m_apNumber[nCntNum]->GetSizeTarget(), 0.05f));
+	
+		// 数字を設定
+		m_apNumber[nCntNum]->SetNumber(nBestTime % 10);
+
+		// 桁を減らす
+		nBestTime /= 10;
 	}
 
 	///////////////////////////////////////////////////////////////
@@ -216,9 +225,44 @@ CRecord* CRecord::Create()
 //============================================================================
 // タイムの読み込み
 //============================================================================
-int CRecord::ImportTimer(int nSelect)
+int CRecord::ImportRecord(int nSelect)
 {
-	return nSelect;
+	// テキストを行ごとに保持する
+	std::vector<std::string> vStr;
+
+	// レベルファイルを展開
+	std::ifstream Import{ "Data\\TXT\\level.txt" };
+
+	if (!Import)
+	{ // 展開失敗
+#if 0
+		assert(false);
+#else
+
+#ifdef _DEBUG
+		CRenderer::GetInstance()->SetTimeString("【警告】レベル情報・タイムの読み込み(3)に失敗しました", 300);
+#endif	// _DEBUG
+
+		return 0;
+#endif
+	}
+
+	// テキストを格納
+	std::string str;
+
+	// ファイルを一行ずつ、情報を全て取得する
+	while (std::getline(Import, str))
+	{
+		vStr.push_back(str);
+	}
+
+	// ファイルを閉じる
+	Import.close();
+
+	// ベストタイム情報を抜き出す
+	int nBestTime{ std::stoi(vStr[nSelect].substr(vStr[nSelect].find("b") + 2, vStr[nSelect].find(","))) };
+
+	return nBestTime;
 }
 
 //============================================================================

@@ -40,7 +40,7 @@ private:
 
 	void Appear() override;			// 出現
 	void Disappear() override;		// 消滅
-	int ImportTimer(int nSelect);	// タイムの読み込み
+	int ImportRecord(int nSelect);	// ベストタイムの読み込み
 
 	CText* m_pText;					// テキスト情報
 	CNumber* m_apNumber[MAX_DIGIT];	// 数字情報

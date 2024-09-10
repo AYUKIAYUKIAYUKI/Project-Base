@@ -262,7 +262,6 @@ void CTimer::ExportTimer(int nSelect)
 {
 	// テキストを行ごとに保持する
 	std::vector<std::string> vStr;
-	//vStr.reserve(1);
 
 	// レベルファイルを展開
 	std::ifstream Import{ "Data\\TXT\\level.txt" };
@@ -293,12 +292,25 @@ void CTimer::ExportTimer(int nSelect)
 	// ファイルを閉じる
 	Import.close();
 
+	///////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////
+
 	// タイムを検索
 	CObject* pObj = CObject::FindObject(CObject::TYPE::TIMER);
 	CTimer* pTimer = CUtility::GetInstance()->DownCast<CTimer, CObject>(pObj);
 
+	// ベストタイム情報を抜き出す
+	int nBestTime{ std::stoi(vStr[nSelect].substr(vStr[nSelect].find("b") + 2, vStr[nSelect].find(","))) };
+
+	// ベストタイム情報とラストタイム情報を比べる
+	if (pTimer->m_nTimer < nBestTime)
+	{
+		// ベストタイムを下回っていたなら更新
+		nBestTime = pTimer->m_nTimer;
+	}
+
 	// 遊んでいたレベルのタイム情報を書き換える
-	vStr[nSelect] = vStr[nSelect].substr(0, vStr[nSelect].find(",") + 1) + std::to_string(pTimer->m_nTimer) + ",";
+	vStr[nSelect] = vStr[nSelect].substr(0, vStr[nSelect].find(",") + 1) + ("l:" + std::to_string(pTimer->m_nTimer) + ",") + ("b:" + std::to_string(nBestTime) + ",");
 
 	// レベルファイルを展開
 	std::ofstream Export{ "Data\\TXT\\level.txt" };
@@ -389,8 +401,8 @@ int CTimer::ImportTimer(int nSelect)
 		std::getline(Import, str);
 	}
 
-	// ステージファイルのタイム部分を抽出
-	std::string timer = str.substr(str.find(",") + 1, str.find(",") - 1);
+	// ステージファイルのラストタイム部分を抽出
+	std::string timer = str.substr(str.find("l") + 2, str.find(","));
 
 	// 整数値に変換
 	return std::stoi(timer);
