@@ -24,6 +24,7 @@
 #include "block_destructible.h"
 #include "leaf.h"
 #include "player.h"
+#include "player_state.h"
 #include "record.h"
 #include "square.h"
 #include "timer.h"
@@ -187,6 +188,31 @@ void CGameManager::Update()
 		// タイムの動作
 		CTimer::SwitchControlByPahse(m_nSelectLevel);
 
+		// ステージセレクトに戻る
+		if (CManager::GetKeyboard()->GetTrigger(DIK_BACK))
+		{
+			// プレイヤーを検索
+			CObject* pFind = CObject::FindObject(CObject::TYPE::PLAYER);
+			CPlayer* pPlayer = CUtility::GetInstance()->DownCast<CPlayer, CObject>(pFind);
+
+			// ゴール状態でなければ
+			if (typeid(*pPlayer->GetStateManager()->GetState()) != typeid(CPlayerStateGoal))
+			{
+				// ウェーブを強制終了
+				CFakeScreen::GetInstance()->StopWave();
+
+				// レベル終了フェーズへ移行
+				/* ウェーブを経由しないとバグります */
+				CFakeScreen::GetInstance()->SetWave(CGameManager::PHASE::RETIRE);
+
+				// プレイヤーをゴール後状態へ
+				pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::GOAL);
+
+				// タイマーリセット
+				CTimer::TimerReset();
+			}
+		}
+
 #ifdef _DEBUG
 		CRenderer::GetInstance()->SetDebugString("インゲーム");
 #endif	// _DEBUG
@@ -215,6 +241,29 @@ void CGameManager::Update()
 		
 #ifdef _DEBUG
 		CRenderer::GetInstance()->SetDebugString("レベル終了");
+#endif	// _DEBUG
+
+		break;
+
+	case PHASE::RETIRE:
+
+		// レコードを生成
+		CRecord::Create();
+
+		// マス目をステージ分生成
+		for (int i = 0; i < m_nMaxStage; i++)
+		{
+			CSquare::Create({ 0.0f, 0.0f, 0.0f });
+		}
+
+		// レベル選択フェーズへ
+		m_phase = PHASE::SELECT;
+
+		// 死亡音
+		CSound::GetInstance()->Play(CSound::LABEL::DIE);
+
+#ifdef _DEBUG
+		CRenderer::GetInstance()->SetDebugString("リタイア");
 #endif	// _DEBUG
 
 		break;

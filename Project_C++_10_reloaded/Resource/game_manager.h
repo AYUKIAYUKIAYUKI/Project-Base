@@ -25,6 +25,7 @@ public:
 		START,		// レベル開始
 		INGAME,		// レベル進行
 		FINISH,		// レベル終了
+		RETIRE,		// リタイア
 		MAX,
 	};
 

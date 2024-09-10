@@ -177,7 +177,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.000000;0.000000;0.000000;;
    TextureFilename {
-    "Data\\TEXTURE\\62ki_Bikini.png";
+    "Data\\TEXTURE\\goal.jpg";
    }
   }
  }

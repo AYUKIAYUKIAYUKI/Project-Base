@@ -151,7 +151,7 @@ Mesh {
    0.500000;0.500000;0.500000;;
    0.250000;0.250000;0.250000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\virtual\\‰æ‘œ\\Christ.png";
+    "Data\\TEXTURE\\KARI.png";
    }
   }
  }

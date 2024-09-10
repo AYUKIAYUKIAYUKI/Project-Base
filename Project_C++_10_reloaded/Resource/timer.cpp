@@ -212,7 +212,7 @@ void CTimer::SwitchControlByPahse(int nSelect)
 		CPlayer* pPlayer = CUtility::GetInstance()->DownCast<CPlayer, CObject>(pFind);
 
 		// ゴール状態でなければ
-		if (typeid(*pPlayer->GetStateManager()->GetState()) != typeid(CPlayerState::STATE::GOAL))
+		if (typeid(*pPlayer->GetStateManager()->GetState()) != typeid(CPlayerStateGoal))
 		{
 			// フレームカウント
 			pTimer->m_nCntFrame++;
