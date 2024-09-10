@@ -168,7 +168,7 @@ void CGameManager::Update()
 		CStageMaker::GetInstance()->Import(m_stagePath[m_nSelectLevel]);
 
 		// プレイヤーの生成
-		CPlayer::Create({ 0.0f, 0.0f, 0.0f });	// 位置
+		CPlayer::Create();
 
 		// レベル進行フェーズへ
 		m_phase = PHASE::INGAME;

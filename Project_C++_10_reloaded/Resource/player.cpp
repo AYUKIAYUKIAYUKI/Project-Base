@@ -74,6 +74,13 @@ HRESULT CPlayer::Init()
 		m_pStateManager->Init(this);
 	}
 
+	// スタート地点を検索
+	CObject* pObject = CObject::FindObject(CObject::TYPE::START);
+	CStart* pStart = CUtility::GetInstance()->DownCast<CStart, CObject>(pObject);
+
+	// 初期座標をスタート地点に
+	SetPos(pStart->GetPos());
+
 	return hr;
 }
 
@@ -409,7 +416,7 @@ CPlayerStateManager* CPlayer::GetStateManager()
 //============================================================================
 // 生成
 //============================================================================
-CPlayer* CPlayer::Create(D3DXVECTOR3 pos)
+CPlayer* CPlayer::Create()
 {
 	// インスタンスを生成
 	CPlayer* pPlayer = DBG_NEW CPlayer;
@@ -424,9 +431,6 @@ CPlayer* CPlayer::Create(D3DXVECTOR3 pos)
 
 	// 基底クラスの初期設定
 	pPlayer->Init();
-
-	// 位置の設定
-	pPlayer->SetPos(pos);
 
 	return pPlayer;
 }
