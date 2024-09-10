@@ -39,6 +39,7 @@ private:
 	void Control();		// 操作
 	void Register();	// 設置
 	void Modify();		// 編集
+	void ModifyAll();	// 一斉編集ｓ
 	void Export();		// ステージ書き出し
 	void Output(std::ofstream& file, D3DXVECTOR3 pos, std::string str);	// 情報書き出し
 

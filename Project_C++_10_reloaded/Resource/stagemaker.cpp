@@ -323,9 +323,17 @@ void CStageMaker::Control()
 		}
 
 		CRenderer::GetInstance()->SetDebugString("現在の構造物のID:" + std::to_string(m_nID));
-	
-		// 編集
-		Modify();
+
+		if (CManager::GetKeyboard()->GetPress(DIK_RCONTROL))
+		{
+			// 一斉編集
+			ModifyAll();
+		}
+		else
+		{
+			// 編集
+			Modify();
+		}
 	}
 }
 
@@ -449,6 +457,54 @@ void CStageMaker::Modify()
 	// 座標を反映
 	pX->SetPos(m_pDummy->GetPos());
 	pX->Update();
+}
+
+//============================================================================
+// 一斉編集
+//============================================================================
+void CStageMaker::ModifyAll()
+{
+	// 操作用座標
+	D3DXVECTOR3 ControlPos{ 0.0f, 0.0f, 0.0f };
+
+	// Y軸方向にグリッド移動
+	if (CManager::GetKeyboard()->GetTrigger(DIK_W))
+	{
+		ControlPos.y += 5.0f;
+	}
+	else if (CManager::GetKeyboard()->GetTrigger(DIK_S))
+	{
+		ControlPos.y += -5.0f;
+	}
+
+	// X方向にグリッド移動
+	if (CManager::GetKeyboard()->GetTrigger(DIK_A))
+	{
+		ControlPos.x += -5.0f;
+	}
+	else if (CManager::GetKeyboard()->GetTrigger(DIK_D))
+	{
+		ControlPos.x += 5.0f;
+	}
+
+	// オブジェクトリストの先頭を取得
+	CObject* pObj = CObject::GetObject(static_cast<int>(CObject::LAYER::MIDDLE));
+
+	// オブジェクトがなくなるまで
+	while (pObj)
+	{
+		// 次のオブジェクトのポインタをコピー
+		CObject* pNext = pObj->GetNext();
+
+		// オブジェクトをXオブジェクトにダウンキャスト
+		CObject_X* pX = CUtility::GetInstance()->DownCast<CObject_X, CObject>(pObj);
+
+		// 
+		pX->SetPos(pX->GetPos() + ControlPos);
+
+		// 次のオブジェクトを代入
+		pObj = pNext;
+	}
 }
 
 //============================================================================
