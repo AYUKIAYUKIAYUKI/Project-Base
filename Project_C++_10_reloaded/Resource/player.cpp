@@ -432,5 +432,8 @@ CPlayer* CPlayer::Create()
 	// 基底クラスの初期設定
 	pPlayer->Init();
 
+	// 先行して更新しておく
+	pPlayer->Update();
+
 	return pPlayer;
 }

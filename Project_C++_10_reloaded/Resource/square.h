@@ -30,7 +30,8 @@ public:
 	void Draw() override;		// 描画処理
 
 	static void ControlAll(int nSelect);		// マス目を動作
-	static void DisappearAll();					// マス目を全消去
+	static void SetDisappearAll();				// マス目を一斉消去予約
+	//static void InstantDisappearAll();			// マス目を即座に一斉消去予約
 	//static void LineUpAll(int nSelect);		// マス目を並べる (不必要)
 	static CSquare* Create(D3DXVECTOR3 pos);	// 生成
 

@@ -313,7 +313,7 @@ void CRecord::Disappear()
 	float& fAlpha{ GetAlpha() };
 
 	// ™X‚ÉÁ–Å
-	fAlpha += -0.03f;
+	fAlpha += -0.05f;
 
 	// Å’á’l‚É“’B‚ÅŒÅ’è
 	if (fAlpha < 0.0f)

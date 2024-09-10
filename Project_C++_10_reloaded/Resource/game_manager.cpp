@@ -139,7 +139,7 @@ void CGameManager::Update()
 			pRecord->SetDisappearExtra();
 
 			// マス目を全消去予約
-			CSquare::DisappearAll();
+			CSquare::SetDisappearAll();
 
 			// タイマーリセット
 			CTimer::TimerReset();

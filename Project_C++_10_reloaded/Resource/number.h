@@ -35,7 +35,9 @@ public:
 
 private:
 
-	void Animation();	// アニメーション
+	void Appear() override;		// 出現
+	void Disappear() override;	// 消滅
+	void Animation();			// アニメーション
 
 	int m_nNum;	// 数字の割り当て
 };

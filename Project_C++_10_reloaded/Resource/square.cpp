@@ -213,9 +213,9 @@ void CSquare::ControlAll(int nSelect)
 }
 
 //============================================================================
-// マス目を全消去
+// マス目を一斉消去
 //============================================================================
-void CSquare::DisappearAll()
+void CSquare::SetDisappearAll()
 {
 	// マス目タグのオブジェクトを全て取得
 	CObject** pObj = CObject::FindAllObject(CObject::TYPE::SQUARE);
@@ -262,6 +262,36 @@ void CSquare::DisappearAll()
 		nSquareCnt++;
 	}
 }
+
+////============================================================================
+//// マス目を即座に一斉消去予約
+////============================================================================
+//void CSquare::InstantDisappearAll()
+//{
+//	// マス目タグのオブジェクトを全て取得
+//	CObject** pObj = CObject::FindAllObject(CObject::TYPE::SQUARE);
+//
+//	// マス数カウント
+//	int nSquareCnt{ 0 };
+//
+//	// オブジェクトがなくなるまで
+//	while (pObj[nSquareCnt])
+//	{
+//		// マス目クラスへダウンキャスト
+//		CSquare* pSquare = CUtility::GetInstance()->DownCast<CSquare, CObject>(pObj[nSquareCnt]);
+//
+//		// 破棄予約
+//		pSquare->Release();
+//
+//		for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
+//		{
+//			// 破棄予約
+//			pSquare->m_apNumber[nCntNum]->Release();
+//		}
+//
+//		nSquareCnt++;
+//	}
+//}
 
 ////============================================================================
 //// マス目を並べる (不必要)
@@ -341,7 +371,7 @@ void CSquare::Appear()
 	float& fAlpha{ GetAlpha() };
 
 	// 徐々に登場
-	fAlpha += 0.015f;
+	fAlpha += 0.025f;
 
 	// 最大値に到達で固定
 	if (fAlpha > 1.0f)
@@ -367,7 +397,7 @@ void CSquare::Disappear()
 	float& fAlpha{ GetAlpha() };
 
 	// 徐々に消滅
-	fAlpha += -0.025f;
+	fAlpha += -0.05f;
 
 	// 最低値に到達で固定
 	if (fAlpha < 0.0f)
