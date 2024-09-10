@@ -151,7 +151,7 @@ Mesh {
    0.500000;0.500000;0.500000;;
    0.250000;0.250000;0.250000;;
    TextureFilename {
-    "Data\\TEXTURE\\KARI.png";
+    "Data\\TEXTURE\\ROOM_2048.png";
    }
   }
  }
