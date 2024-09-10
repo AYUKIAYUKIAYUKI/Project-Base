@@ -448,7 +448,7 @@ void CTimer::Disappear()
 	float& fAlpha{ GetAlpha() };
 
 	// ™X‚ÉÁ–Å
-	fAlpha += -0.05f;
+	fAlpha += -0.03f;
 
 	// Å’á’l‚É“’B‚ÅŒÅ’è
 	if (fAlpha < 0.0f)

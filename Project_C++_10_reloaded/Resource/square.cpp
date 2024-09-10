@@ -230,10 +230,10 @@ void CSquare::DisappearAll()
 		CSquare* pSquare = CUtility::GetInstance()->DownCast<CSquare, CObject>(pObj[nSquareCnt]);
 
 		// 目標向きを設定
-		pSquare->SetRotTarget({ 0.0f, 0.0f, -D3DX_PI * 2.0f });
+		pSquare->SetRotTarget({ 0.0f, 0.0f, -D3DX_PI * 3.0f });
 
 		// 目標サイズを設定
-		pSquare->SetSizeTarget(pSquare->GetSize() * 2.0f);
+		pSquare->SetSizeTarget(pSquare->GetSize() * 3.0f);
 
 		// 消去予約
 		pSquare->SetDisappear(true);
@@ -341,7 +341,7 @@ void CSquare::Appear()
 	float& fAlpha{ GetAlpha() };
 
 	// 徐々に登場
-	fAlpha += 0.025f;
+	fAlpha += 0.015f;
 
 	// 最大値に到達で固定
 	if (fAlpha > 1.0f)
@@ -367,7 +367,7 @@ void CSquare::Disappear()
 	float& fAlpha{ GetAlpha() };
 
 	// 徐々に消滅
-	fAlpha += -0.05f;
+	fAlpha += -0.025f;
 
 	// 最低値に到達で固定
 	if (fAlpha < 0.0f)
