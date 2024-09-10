@@ -174,7 +174,7 @@ void CSquare::ControlAll(int nSelect)
 		///////////////////////////////////////////////////////////////////////
 
 		// カウント数のコピー
-		int nCopy{ nSquareCnt };
+		int nCopy{ nSquareCnt + 1 };
 
 		for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
 		{

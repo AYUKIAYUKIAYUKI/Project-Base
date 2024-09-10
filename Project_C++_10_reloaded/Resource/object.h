@@ -36,7 +36,7 @@ public:
 		ACHIEVE,		// アチーブ
 		SQUARE,			// マス目
 		TIMER,			// タイム
-		RECORD,			//レコード
+		RECORD,			// レコード
 		MAX,
 	};
 
