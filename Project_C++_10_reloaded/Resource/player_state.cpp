@@ -346,6 +346,25 @@ void CPlayerStateBeginning::Update()
 		rot.y = posTarget.y * BEGIN_SPINNING;
 		rot.z = 0.0f;
 		m_pPlayer->SetRot(rot);
+
+		// “–‚½‚è”»’è
+		if (m_pPlayer->Collision())
+		{
+			// ‚±‚ÌŽžA”»’è‚É‚æ‚èŽ€–Só‘Ô‚ÉˆÚs‚·‚é‚È‚ç‹­§I—¹
+			if (m_pPlayer->GetStateManager()->GetPendingState() == CPlayerState::STATE::MISS)
+			{
+				return;
+			}
+
+			// ‰½‚©‚ÉÕ“Ë‚Å•Ïg’âŽ~‚Ö
+			m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::STOPPING);
+
+			// Õ“Ë‰¹
+			CSound::GetInstance()->Play(CSound::LABEL::STOP);
+
+			// Ž€–S‰¹
+			CSound::GetInstance()->Play(CSound::LABEL::DIE);
+		}
 	}
 	else
 	{

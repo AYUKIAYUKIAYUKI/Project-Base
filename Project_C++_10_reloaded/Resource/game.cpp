@@ -66,7 +66,7 @@ void CGame::Update()
 	// ゲームマネージャーの更新処理
 	CGameManager::GetInstance()->Update();
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	if (CManager::GetKeyboard()->GetTrigger(DIK_F1))
 	{
 		// ステージデバッグ画面へ
@@ -77,7 +77,7 @@ void CGame::Update()
 		// リザルト画面へ
 		CFakeScreen::GetInstance()->SetFade(MODE::RESULT);
 	}
-#endif	// _DEBUG
+//#endif	// _DEBUG
 }
 
 //============================================================================

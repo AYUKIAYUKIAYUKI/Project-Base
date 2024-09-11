@@ -278,8 +278,12 @@ bool CBullet::Collision()
 	// プレイヤーと衝突する場合
 	if (CUtility::GetInstance()->OnlyCube(pPlayer->GetPos(), pPlayer->GetSize(), m_posTarget, GetSize()))
 	{
-		// プレイヤーをミス状態へ移行
-		pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::MISS);
+		// ゴール状態で無ければ
+		if (typeid(*pPlayer->GetStateManager()->GetState()) != typeid(CPlayerStateGoal))
+		{
+			// プレイヤーをミス状態へ移行
+			pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::MISS);
+		}
 
 		// 衝突判定を出す
 		bDetected = 1;
