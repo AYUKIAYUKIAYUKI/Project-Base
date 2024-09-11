@@ -152,6 +152,21 @@ private:
 };
 
 //****************************************************
+// プレイヤー突撃状態
+//****************************************************
+class CPlayerStateRushing : public CPlayerState
+{
+public:
+
+	CPlayerStateRushing();				// コンストラクタ
+	~CPlayerStateRushing() override;	// デストラクタ
+
+	void Enter() override;	// 変更開始
+	void Update() override;	// 更新
+	void Exit() override;	// 変更終了
+};
+
+//****************************************************
 // プレイヤー変身停止クラス
 //****************************************************
 class CPlayerStateStopping : public CPlayerState

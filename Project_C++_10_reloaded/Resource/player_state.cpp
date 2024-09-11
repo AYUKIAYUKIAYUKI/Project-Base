@@ -784,7 +784,7 @@ void CPlayerStateCharging::Update()
 
 	if (CManager::GetKeyboard()->GetTrigger(DIK_SPACE))
 	{
-		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::FLYING);
+		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::RUSHING);
 	}
 }
 
@@ -829,11 +829,11 @@ void CPlayerStateCharging::UpdateArrow()
 	// プレイヤー座標を取得
 	newPos = m_pPlayer->GetPos();
 
+	// 座標を補正
+#if 0
 	// 移動方向から角度を抜き出す
 	float fAngle{ atan2f(m_pPlayer->GetVelocity().x, m_pPlayer->GetVelocity().y) };
 
-	// 座標を補正
-#if 0
 	// プレイヤーの座標を基点に、移動していた方向の延長線上に出現する
 	newPos += {
 		sinf(fAngle) * 20.0f,
@@ -841,6 +841,9 @@ void CPlayerStateCharging::UpdateArrow()
 		0.0f
 	};
 #elif 0
+	// 移動方向から角度を抜き出す
+	float fAngle{ atan2f(m_pPlayer->GetVelocity().x, m_pPlayer->GetVelocity().y) };
+
 	// プレイヤーの座標を基点に、向きに合わせて円を描くように出現する
 	newPos += {
 		sinf(-newRot.z * 2.0f) * 20.0f,
@@ -848,13 +851,15 @@ void CPlayerStateCharging::UpdateArrow()
 		0.0f
 	};
 #elif 1
-	// 処理をかけ合わせる
+	// 移動方向の延長線上へずらす
+	/* 振り向き時などプレイヤーの移動方向とモデルの向きがずれるため、今回は見た目の角度を基にする */
 	newPos += {
-		sinf(fAngle) * 10.0f,
-		cosf(fAngle) * 10.0f,
+		sinf(-newRot.z * 2.0f) * 10.0f,
+		cosf(-newRot.z * 2.0f) * 10.0f,
 		0.0f
 	};
 
+	// ずらされた座標を基点に弧を描くように移動
 	newPos += {
 		sinf(-newRot.z * 2.0f) * 20.0f,
 		cosf(-newRot.z * 2.0f) * 20.0f,
@@ -875,6 +880,89 @@ void CPlayerStateCharging::UpdateArrow()
 
 	// 座標を反映
 	m_pArrow->SetPos(newPos);
+}
+
+
+
+//============================================================================
+// 
+// プレイヤー突撃状態クラス
+// 
+//============================================================================
+
+//============================================================================
+// コンストラクタ
+//============================================================================
+CPlayerStateRushing::CPlayerStateRushing()
+{
+
+}
+
+//============================================================================
+// デストラクタ
+//============================================================================
+CPlayerStateRushing::~CPlayerStateRushing()
+{
+
+}
+
+//============================================================================
+// 変更開始
+//============================================================================
+void CPlayerStateRushing::Enter()
+{
+	// モデルを取得
+	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_005);
+
+	// モデルの設定
+	m_pPlayer->BindModel(model);
+
+	// サイズを設定
+	m_pPlayer->SetSize(model->size);
+}
+
+//============================================================================
+// 更新
+//============================================================================
+void CPlayerStateRushing::Update()
+{
+	// この時点での加速度を保持
+	D3DXVECTOR3 oldVelocity{ m_pPlayer->GetVelocity() };
+
+	// 当たり判定
+	if (m_pPlayer->Collision())
+	{
+		// この時、判定により死亡状態に移行するなら強制終了
+		if (m_pPlayer->GetStateManager()->GetPendingState() == CPlayerState::STATE::MISS)
+		{
+			return;
+		}
+
+		// 何かに衝突で変身停止へ
+		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::STOPPING);
+
+		// 当たり判定により消失した加速度を戻す
+		m_pPlayer->SetVelocity(oldVelocity);
+
+		// 衝突音
+		CSound::GetInstance()->Play(CSound::LABEL::STOP);
+
+		// バウンド音
+		CSound::GetInstance()->Play(CSound::LABEL::BOUND);
+	}
+
+	if (CManager::GetKeyboard()->GetTrigger(DIK_SPACE))
+	{
+		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::STOPPING);
+	}
+}
+
+//============================================================================
+// 変更終了
+//============================================================================
+void CPlayerStateRushing::Exit()
+{
+
 }
 
 
@@ -1411,6 +1499,10 @@ void CPlayerStateManager::Create(CPlayerState::STATE state)
 
 	case CPlayerState::STATE::CHARGING:
 		m_pState = DBG_NEW CPlayerStateCharging;
+		break;
+
+	case CPlayerState::STATE::RUSHING:
+		m_pState = DBG_NEW CPlayerStateRushing;
 		break;
 
 	case CPlayerState::STATE::STOPPING:
