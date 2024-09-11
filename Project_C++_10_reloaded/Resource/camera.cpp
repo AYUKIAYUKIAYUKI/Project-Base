@@ -82,13 +82,13 @@ void CCamera::Update()
 	// 背景用の更新
 	UpdateBG();
 
-#ifdef _DEBUG
-	// 座標をデバッグ表示
-	CRenderer::GetInstance()->SetDebugString("【背景カメラポイント】");
-	std::ostringstream oss;
-	oss << std::fixed << std::setprecision(2) << "p X:" << m_posBG.x << "\np Y:" << m_posBG.y << "\np Z:" << m_posBG.z << "\nr X:" << m_rotBG.x << "\nr Y:" << m_rotBG.y << "\nr Z:" << m_rotBG.z;
-	CRenderer::GetInstance()->SetDebugString(oss.str().c_str());
-#endif	// _DEBUG
+//#ifdef _DEBUG
+//	// 座標をデバッグ表示
+//	CRenderer::GetInstance()->SetDebugString("【背景カメラポイント】");
+//	std::ostringstream oss;
+//	oss << std::fixed << std::setprecision(2) << "p X:" << m_posBG.x << "\np Y:" << m_posBG.y << "\np Z:" << m_posBG.z << "\nr X:" << m_rotBG.x << "\nr Y:" << m_rotBG.y << "\nr Z:" << m_rotBG.z;
+//	CRenderer::GetInstance()->SetDebugString(oss.str().c_str());
+//#endif	// _DEBUG
 }
 
 //============================================================================
@@ -661,19 +661,19 @@ void CCamera::UpdateBG()
 		m_rotBG = CUtility::GetInstance()->AdjustToTarget(m_rotBG, m_rotTargetBG, fCoeff);
 	}
 
-#ifdef _DEBUG
-	// 次のアンカーポイントをデバッグ表示
-	CRenderer::GetInstance()->SetDebugString("【安価ポイント】");
-	std::ostringstream oss0;
-	oss0 << std::fixed << std::setprecision(2) << "p X:" << m_vAnchorPoint[nNumElement].pos.x << "\np Y:" << m_vAnchorPoint[nNumElement].pos.y << "\np Z:" << m_vAnchorPoint[nNumElement].pos.z << "\nr X:" << m_vAnchorPoint[nNumElement].rot.x << "\nr Y:" << m_vAnchorPoint[nNumElement].rot.y << "\nr Z:" << m_vAnchorPoint[nNumElement].rot.z;
-	CRenderer::GetInstance()->SetDebugString(oss0.str().c_str());
-
-	// 目標座標をデバッグ表示
-	CRenderer::GetInstance()->SetDebugString("【背景カメラ目標ポイント");
-	std::ostringstream oss1;
-	oss1 << std::fixed << std::setprecision(2) << "p X:" << m_posTargetBG.x << "\np Y:" << m_posTargetBG.y << "\np Z:" << m_posTargetBG.z << "\nr X:" << m_rotTargetBG.x << "\nr Y:" << m_rotTargetBG.y << "\nr Z:" << m_rotTargetBG.z;
-	CRenderer::GetInstance()->SetDebugString(oss1.str().c_str());
-#endif	// _DEBUG
+//#ifdef _DEBUG
+//	// 次のアンカーポイントをデバッグ表示
+//	CRenderer::GetInstance()->SetDebugString("【安価ポイント】");
+//	std::ostringstream oss0;
+//	oss0 << std::fixed << std::setprecision(2) << "p X:" << m_vAnchorPoint[nNumElement].pos.x << "\np Y:" << m_vAnchorPoint[nNumElement].pos.y << "\np Z:" << m_vAnchorPoint[nNumElement].pos.z << "\nr X:" << m_vAnchorPoint[nNumElement].rot.x << "\nr Y:" << m_vAnchorPoint[nNumElement].rot.y << "\nr Z:" << m_vAnchorPoint[nNumElement].rot.z;
+//	CRenderer::GetInstance()->SetDebugString(oss0.str().c_str());
+//
+//	// 目標座標をデバッグ表示
+//	CRenderer::GetInstance()->SetDebugString("【背景カメラ目標ポイント");
+//	std::ostringstream oss1;
+//	oss1 << std::fixed << std::setprecision(2) << "p X:" << m_posTargetBG.x << "\np Y:" << m_posTargetBG.y << "\np Z:" << m_posTargetBG.z << "\nr X:" << m_rotTargetBG.x << "\nr Y:" << m_rotTargetBG.y << "\nr Z:" << m_rotTargetBG.z;
+//	CRenderer::GetInstance()->SetDebugString(oss1.str().c_str());
+//#endif	// _DEBUG
 }
 
 //============================================================================

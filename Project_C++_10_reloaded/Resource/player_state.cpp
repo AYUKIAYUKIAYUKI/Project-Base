@@ -19,6 +19,8 @@
 #include "renderer.h"
 
 // オブジェクト情報用
+#include "arrow.h"
+#include "object_2D.h"
 #include "ripple.h"
 #include "smoke.h"
 #include "star.h"
@@ -590,6 +592,12 @@ bool CPlayerStateFlying::Control()
 		//CSound::GetInstance()->Play(CSound::LABEL::TWINKLING);
 	}
 
+	if (CManager::GetKeyboard()->GetTrigger(DIK_SPACE))
+	{
+		// 溜め状態に移行
+		m_pPlayer->GetStateManager()->SetPendingState(STATE::CHARGING);
+	}
+
 	return true;
 }
 
@@ -650,6 +658,88 @@ void CPlayerStateFlying::Braking()
 	}
 
 	m_pPlayer->SetVelocity(velocity);
+}
+
+
+
+//============================================================================
+// 
+// プレイヤー溜め状態クラス
+// 
+//============================================================================
+
+//============================================================================
+// コンストラクタ
+//============================================================================
+CPlayerStateCharging::CPlayerStateCharging() :
+	m_pArrow{ nullptr }
+{
+	// 矢印の生成
+	m_pArrow = CArrow::Create();
+}
+
+//============================================================================
+// デストラクタ
+//============================================================================
+CPlayerStateCharging::~CPlayerStateCharging()
+{
+	// 矢印の破棄
+	if (m_pArrow)
+	{
+		// 消滅予約
+		m_pArrow->SetDisappear();
+	
+		// ポインタを初期化
+		m_pArrow = nullptr;
+	}
+}
+
+//============================================================================
+// 変更開始
+//============================================================================
+void CPlayerStateCharging::Enter()
+{
+	// 出現設定
+	m_pArrow->SetAppear();
+
+	// 初期座標を設定
+	m_pArrow->SetPos(m_pPlayer->GetPos());
+	
+	// 飛行方向に合わせた向きを生成
+	D3DXVECTOR3 newRot{ 0.0f, 0.0f, m_pPlayer->GetRot().z * 0.5f };
+
+	// 向きを設定
+	m_pArrow->SetRot(newRot);
+
+	// 目標サイズを設定
+	m_pArrow->SetSizeTarget({ 20.0f, 20.0f, 0.0f });
+
+	// モデルを取得
+	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_004);
+
+	// モデルの設定
+	m_pPlayer->BindModel(model);
+
+	// サイズを設定
+	m_pPlayer->SetSize(model->size);
+}
+
+//============================================================================
+// 更新
+//============================================================================
+void CPlayerStateCharging::Update()
+{
+	// 目標座標を設定
+
+	// 目標向きを設定
+}
+
+//============================================================================
+// 変更終了
+//============================================================================
+void CPlayerStateCharging::Exit()
+{
+
 }
 
 
@@ -851,7 +941,7 @@ void CPlayerStateMistook::Enter()
 	m_pPlayer->SetRot({ 0.0f, 0.0f, 0.0f });
 
 	// モデルを取得
-	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_004);
+	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_006);
 
 	// モデルの設定
 	m_pPlayer->BindModel(model);
@@ -976,7 +1066,7 @@ CPlayerStateGoal::~CPlayerStateGoal()
 void CPlayerStateGoal::Enter()
 {
 	// モデルを取得
-	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_005);
+	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_007);
 
 	// モデルの設定
 	m_pPlayer->BindModel(model);
@@ -1182,6 +1272,10 @@ void CPlayerStateManager::Create(CPlayerState::STATE state)
 
 	case CPlayerState::STATE::FLYING:
 		m_pState = DBG_NEW CPlayerStateFlying;
+		break;
+
+	case CPlayerState::STATE::CHARGING:
+		m_pState = DBG_NEW CPlayerStateCharging;
 		break;
 
 	case CPlayerState::STATE::STOPPING:

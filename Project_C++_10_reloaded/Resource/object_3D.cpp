@@ -24,6 +24,7 @@ CObject_3D::CObject_3D(int nPriority) : CObject(nPriority)
 	m_pos = { 0.0f, 0.0f, 0.0f };		// 位置
 	m_rot = { 0.0f, 0.0f, 0.0f };		// 向き
 	m_size = { 0.0f, 0.0f, 0.0f };		// サイズ
+	m_col = { 1.0f, 1.0f, 1.0f, 1.0f };	// 色
 	m_fLength = 0.0f;					// 展開用対角線
 	m_fAngle = 0.0f;					// 対角線用角度
 	D3DXMatrixIdentity(&m_mtxWorld);	// ワールド行列
@@ -118,8 +119,8 @@ void CObject_3D::Update()
 	}
 
 	// 必要な数値を計算
-	m_fAngle = atan2f(m_size.x, m_size.z);
-	m_fLength = sqrtf(m_size.x * m_size.x + m_size.z * m_size.z);
+	m_fAngle = atan2f(m_size.x, m_size.y);
+	m_fLength = sqrtf(m_size.x * m_size.x + m_size.y * m_size.y);
 
 	// 頂点情報へのポインタ
 	VERTEX_3D* pVtx;
@@ -130,27 +131,32 @@ void CObject_3D::Update()
 	// 位置の設定
 	pVtx[0].pos = {
 		sinf(m_rot.z - (D3DX_PI - m_fAngle)) * m_fLength,
-		0.0f,
-		-cosf(m_rot.z - (D3DX_PI - m_fAngle)) * m_fLength
+		-cosf(m_rot.z - (D3DX_PI - m_fAngle)) * m_fLength,
+		0.0f
 	};
 
 	pVtx[1].pos = {
 		sinf(m_rot.z + (D3DX_PI - m_fAngle)) * m_fLength,
-		0.0f,
-		-cosf(m_rot.z + (D3DX_PI - m_fAngle)) * m_fLength
+		-cosf(m_rot.z + (D3DX_PI - m_fAngle)) * m_fLength,
+		0.0f
 	};
 
 	pVtx[2].pos = {
 		sinf(m_rot.z - m_fAngle) * m_fLength,
-		0.0f,
-		-cosf(m_rot.z - m_fAngle) * m_fLength
+		-cosf(m_rot.z - m_fAngle) * m_fLength,
+		0.0f
 	};
 
 	pVtx[3].pos = {
 		sinf(m_rot.z + m_fAngle) * m_fLength,
-		0.0f,
-		-cosf(m_rot.z + m_fAngle) * m_fLength
+		-cosf(m_rot.z + m_fAngle) * m_fLength,
+		0.0f
 	};
+
+	pVtx[0].col = m_col;
+	pVtx[1].col = m_col;
+	pVtx[2].col = m_col;
+	pVtx[3].col = m_col;
 
 	// 頂点バッファをアンロックする
 	m_pVtxBuff->Unlock();
@@ -239,6 +245,22 @@ D3DXVECTOR3 CObject_3D::GetSize()
 void CObject_3D::SetSize(D3DXVECTOR3 size)
 {
 	m_size = size;
+}
+
+//============================================================================
+// アルファ値を取得
+//============================================================================
+float& CObject_3D::GetAlpha()
+{
+	return m_col.a;
+}
+
+//============================================================================
+// アルファ値を設定
+//============================================================================
+void CObject_3D::SetAlpha(float fAlpha)
+{
+	m_col.a = fAlpha;
 }
 
 //============================================================================

@@ -136,6 +136,8 @@ void CPlayer::Update()
 
 	CRenderer::GetInstance()->SetDebugString("現在の加速度X : " + std::to_string(m_velocity.x));
 	CRenderer::GetInstance()->SetDebugString("現在の加速度Y : " + std::to_string(m_velocity.y));
+	CRenderer::GetInstance()->SetDebugString("現在の向き" + std::to_string(m_rotTarget.z));
+	CRenderer::GetInstance()->SetDebugString("現在の飛行方向 : " + std::to_string(m_fAngleFlying));
 #endif	// _DEBUG
 
 	// 基底クラスの更新

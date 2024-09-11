@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Resource\achievement.cpp" />
+    <ClCompile Include="Resource\arrow.cpp" />
     <ClCompile Include="resource\bg.cpp" />
     <ClCompile Include="resource\block.cpp" />
     <ClCompile Include="Resource\block_destructible.cpp" />
@@ -83,6 +84,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Resource\achievement.h" />
+    <ClInclude Include="Resource\arrow.h" />
     <ClInclude Include="resource\bg.h" />
     <ClInclude Include="resource\block.h" />
     <ClInclude Include="Resource\block_destructible.h" />

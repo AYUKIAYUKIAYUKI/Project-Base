@@ -39,6 +39,8 @@ public:
 		PLAYER_003,		// プレイヤー003
 		PLAYER_004,		// プレイヤー004
 		PLAYER_005,		// プレイヤー005
+		PLAYER_006,		// プレイヤー006
+		PLAYER_007,		// プレイヤー007
 		BLOCK_000,		// ブロック000
 		DESTRUCTIBLE,	// 可壊ブロック
 		SPIKES,			// とげブロック

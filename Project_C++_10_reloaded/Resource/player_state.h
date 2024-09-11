@@ -14,6 +14,11 @@
 #include "player.h"
 
 //****************************************************
+// 前方宣言
+//****************************************************
+class CArrow;
+
+//****************************************************
 // プレイヤー状態クラス
 //****************************************************
 class CPlayerState
@@ -29,6 +34,8 @@ public:
 		DEFAULT,	// 通常状態
 		BEGINNING,	// 変身開始
 		FLYING,		// 飛行状態
+		CHARGING,	// 溜め状態
+		RUSHING,	// 突撃状態
 		STOPPING,	// 変身停止
 		MISS,		// 失敗状態
 		GOAL,		// ゴール後
@@ -117,6 +124,25 @@ private:
 	bool Control();		// 操縦
 	void Rotation();	// 回転
 	void Braking();		// 制動調整
+};
+
+//****************************************************
+// プレイヤー溜め状態クラス
+//****************************************************
+class CPlayerStateCharging : public CPlayerState
+{
+public:
+
+	CPlayerStateCharging();				// コンストラクタ
+	~CPlayerStateCharging() override;	// デストラクタ
+
+	void Enter() override;	// 変更開始
+	void Update() override;	// 更新
+	void Exit() override;	// 変更終了
+
+private:
+
+	CArrow* m_pArrow;	// 矢印情報
 };
 
 //****************************************************

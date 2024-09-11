@@ -1,4 +1,5 @@
 //============================================================================
+//============================================================================
 // 
 // 3Dオブジェクト管理、ヘッダファイル [object_3D.h]
 // Author : 福田歩希
@@ -39,6 +40,9 @@ public:
 	D3DXVECTOR3 GetSize();			// サイズ取得
 	void SetSize(D3DXVECTOR3 size);	// サイズ設定
 
+	float& GetAlpha();				// アルファ値取得
+	void SetAlpha(float fAlpha);	// アルファ値設定
+
 	float GetLength();	// 展開用対角線取得
 
 	static CObject_3D* Create();	// 生成
@@ -53,6 +57,7 @@ private:
 	D3DXVECTOR3 m_pos;		// 位置
 	D3DXVECTOR3 m_rot;		// 向き
 	D3DXVECTOR3 m_size;		// サイズ
+	D3DXCOLOR m_col;		// 色
 	float m_fLength;		// 展開用対角線
 	float m_fAngle;			// 対角線用角度
 	D3DXMATRIX m_mtxWorld;	// ワールド行列
