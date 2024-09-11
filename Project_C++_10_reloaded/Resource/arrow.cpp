@@ -21,7 +21,7 @@
 // デフォルトコンストラクタ
 //============================================================================
 CArrow::CArrow() :
-	CObject_3D{ static_cast<int>(LAYER::FRONT) },
+	CObject_3D{ static_cast<int>(LAYER::MIDDLE) },
 	m_bAppear{ false },
 	m_bDisappear{ false },
 	m_posTarget{ 0.0f, 0.0f, 0.0f },
@@ -94,6 +94,12 @@ void CArrow::Draw()
 {
 	auto pDev{ CRenderer::GetInstance()->GetDeviece() };
 
+	// 深度テストの比較方法の変更
+	pDev->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+
+	// 深度バッファに描画しない
+	pDev->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+
 	// ライト反映を無効にする
 	pDev->SetRenderState(D3DRS_LIGHTING, FALSE);
 
@@ -102,6 +108,12 @@ void CArrow::Draw()
 
 	// ライト反映を有効にする
 	pDev->SetRenderState(D3DRS_LIGHTING, TRUE);
+
+	// 深度テストの比較方法の変更
+	pDev->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+
+	// 深度バッファに書き込む
+	pDev->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 }
 
 //============================================================================
