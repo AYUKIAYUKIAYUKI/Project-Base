@@ -141,8 +141,12 @@ public:
 	void Exit() override;	// •ÏXI—¹
 
 private:
+	
+	static const float MAX_SPAN;	// •
 
-	CArrow* m_pArrow;	// –îˆóî•ñ
+	D3DXVECTOR3 m_rotHold;	// Œü‚«‚ğ•Û
+	float m_fCoeff;			// ‘‰Á—Ê
+	CArrow* m_pArrow;		// –îˆóî•ñ
 };
 
 //****************************************************

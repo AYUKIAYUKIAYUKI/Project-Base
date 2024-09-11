@@ -36,6 +36,7 @@ const float CPlayerStateBeginning::BEGIN_FLOATING = 1.25f;	// 変身時上昇量
 const float CPlayerStateBeginning::BEGIN_SPINNING = 0.5f;	// 変身時回転量
 const float CPlayerStateFlying::MAX_FLY_VELOCITY =	10.0f;	// 飛行時の最大加速度 (飛行速度以上推奨)
 const float CPlayerStateFlying::FLY_SPEED = 3.0f;			// 飛行速度
+const float CPlayerStateCharging::MAX_SPAN = 0.5f;			// 幅
 const int CPlayerStateStopping::STOP_CNT_MAX = 15;			// 変身停止必要時間
 const float CPlayerStateStopping::RECOIL_SPEED = 3.0f;		// 反動移動速度
 const float CPlayerStateMistook::MAX_WARP_SPEED = 15.0f;	// 強制移動速度の上限
@@ -672,6 +673,8 @@ void CPlayerStateFlying::Braking()
 // コンストラクタ
 //============================================================================
 CPlayerStateCharging::CPlayerStateCharging() :
+	m_rotHold{ 0.0f, 0.0f, 0.0f },
+	m_fCoeff{ 0.0f },
 	m_pArrow{ nullptr }
 {
 	// 矢印の生成
@@ -699,6 +702,9 @@ CPlayerStateCharging::~CPlayerStateCharging()
 //============================================================================
 void CPlayerStateCharging::Enter()
 {
+	// 増加量を設定
+	m_fCoeff = 0.015f;
+
 	// 出現設定
 	m_pArrow->SetAppear();
 
@@ -710,6 +716,9 @@ void CPlayerStateCharging::Enter()
 
 	// 向きを設定
 	m_pArrow->SetRot(newRot);
+
+	// この向きを保持
+	m_rotHold = newRot;
 
 	// 目標サイズを設定
 	m_pArrow->SetSizeTarget({ 20.0f, 20.0f, 0.0f });
@@ -729,9 +738,67 @@ void CPlayerStateCharging::Enter()
 //============================================================================
 void CPlayerStateCharging::Update()
 {
-	// 目標座標を設定
+	// 新たな向きを作成
+	D3DXVECTOR3 newRot{ 0.0f, 0.0f, 0.0f };
 
-	// 目標向きを設定
+	// 向きを取得
+	newRot = m_pArrow->GetRot();
+
+	// 向きを変更
+	newRot.z += m_fCoeff;
+
+	// 一定の幅を増減する
+	if (newRot.z <= m_rotHold.z - MAX_SPAN || newRot.z >= m_rotHold.z + MAX_SPAN)
+	{
+		m_fCoeff *= -1.0f;
+	}
+
+	// 向きを反映
+	m_pArrow->SetRot(newRot);
+
+	// 新たな座標を作成
+	D3DXVECTOR3 newPos{ 0.0f, 0.0f, 0.0f };
+
+	// プレイヤー座標を取得
+	newPos = m_pPlayer->GetPos();
+
+	// 加速度ベクトルから角度を抜き出す
+	float fAngle{ atan2f(m_pPlayer->GetVelocity().x, m_pPlayer->GetVelocity().y) };
+
+	// 座標を補正
+#if 1
+	newPos = {
+		newPos.x + sinf(fAngle) * 30.0f,
+		newPos.y + cosf(fAngle) * 30.0f,
+		0.0f
+	};
+#elif 0
+	newPos = {
+		newPos.x + sinf(-newRot.z) * 30.0f,
+		newPos.y + cosf(-newRot.z) * 30.0f,
+		0.0f
+	};
+#endif
+
+#ifdef _DEBUG
+	CRenderer::GetInstance()->SetDebugString("さいん" + std::to_string(sinf(m_rotHold.z)));
+	CRenderer::GetInstance()->SetDebugString("こさいん" + std::to_string(cosf(m_rotHold.z)));
+
+	// 座標をデバッグ表示
+	CRenderer::GetInstance()->SetDebugString("【矢印座標】");
+	std::ostringstream oss;
+	oss << std::fixed << std::setprecision(1) << "p X:" << newPos.x << "\np Y:" << newPos.y;
+	CRenderer::GetInstance()->SetDebugString(oss.str().c_str());
+#endif	// _DEBUG
+
+	// 座標を反映
+	m_pArrow->SetPos(newPos);
+
+	if (CManager::GetKeyboard()->GetTrigger(DIK_SPACE))
+	{
+		// 溜め状態に移行
+		m_pPlayer->GetStateManager()->SetPendingState(STATE::FLYING);
+	}
 }
 
 //============================================================================
