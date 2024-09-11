@@ -283,6 +283,9 @@ bool CBullet::Collision()
 		{
 			// プレイヤーをミス状態へ移行
 			pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::MISS);
+		
+			// 死亡音
+			CSound::GetInstance()->Play(CSound::LABEL::DIE);
 		}
 
 		// 衝突判定を出す

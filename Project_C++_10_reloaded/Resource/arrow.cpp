@@ -21,7 +21,7 @@
 // デフォルトコンストラクタ
 //============================================================================
 CArrow::CArrow() :
-	CObject_3D{ static_cast<int>(LAYER::MIDDLE) },
+	CObject_3D{ static_cast<int>(LAYER::FRONT) },
 	m_bAppear{ false },
 	m_bDisappear{ false },
 	m_posTarget{ 0.0f, 0.0f, 0.0f },
@@ -78,7 +78,7 @@ void CArrow::Update()
 	//SetRot(CUtility::GetInstance()->AdjustToTarget(GetRot(), m_rotTarget, 0.1f));
 
 	// 目標サイズへ
-	SetSize(CUtility::GetInstance()->AdjustToTarget(GetSize(), m_sizeTarget, 0.1f));
+	SetSize(CUtility::GetInstance()->AdjustToTarget(GetSize(), m_sizeTarget, 0.05f));
 
 	// 現在の向き
 	CRenderer::GetInstance()->SetDebugString("矢印の向き" + std::to_string(GetRot().z));

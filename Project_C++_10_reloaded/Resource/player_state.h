@@ -141,8 +141,10 @@ public:
 	void Exit() override;	// 変更終了
 
 private:
-	
+
 	static const float MAX_SPAN;	// 幅
+
+	void UpdateArrow();	// 矢印の更新を行う
 
 	D3DXVECTOR3 m_rotHold;	// 向きを保持
 	float m_fCoeff;			// 増加量

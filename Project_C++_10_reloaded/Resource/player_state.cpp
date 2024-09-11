@@ -737,6 +737,73 @@ void CPlayerStateCharging::Enter()
 // 更新
 //============================================================================
 void CPlayerStateCharging::Update()
+{ 
+	// 震える
+	D3DXVECTOR3 rot = m_pPlayer->GetRot();
+	rot.x = CUtility::GetInstance()->GetRandomValue<float>() * 0.0005f;
+	rot.y = CUtility::GetInstance()->GetRandomValue<float>() * 0.0005f;
+	m_pPlayer->SetRot(rot);
+
+	// 加速度減衰
+	D3DXVECTOR3 newVelocity{ m_pPlayer->GetVelocity() };
+	newVelocity = CUtility::GetInstance()->AdjustToTarget(newVelocity, D3DXVECTOR3{ 0.0f, 0.0f, 0.0f }, 0.1f);
+	m_pPlayer->SetVelocity(newVelocity);
+
+	// 加速度分、目標座標を変動
+	D3DXVECTOR3 posTarget = m_pPlayer->GetPosTarget();
+	posTarget += m_pPlayer->GetVelocity();
+	m_pPlayer->SetPosTarget(posTarget);
+
+	// 矢印の更新を行う
+	UpdateArrow();
+
+	// この時点での加速度を保持
+	D3DXVECTOR3 oldVelocity{ m_pPlayer->GetVelocity() };
+
+	// 当たり判定
+	if (m_pPlayer->Collision())
+	{
+		// この時、判定により死亡状態に移行するなら強制終了
+		if (m_pPlayer->GetStateManager()->GetPendingState() == CPlayerState::STATE::MISS)
+		{
+			return;
+		}
+
+		// 何かに衝突で変身停止へ
+		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::STOPPING);
+
+		// 当たり判定により消失した加速度を戻す
+		m_pPlayer->SetVelocity(oldVelocity);
+
+		// 衝突音
+		CSound::GetInstance()->Play(CSound::LABEL::STOP);
+
+		// バウンド音
+		CSound::GetInstance()->Play(CSound::LABEL::BOUND);
+	}
+
+	if (CManager::GetKeyboard()->GetTrigger(DIK_SPACE))
+	{
+		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::FLYING);
+	}
+}
+
+//============================================================================
+// 変更終了
+//============================================================================
+void CPlayerStateCharging::Exit()
+{
+	// XY軸回転を初期化
+	D3DXVECTOR3 rot = m_pPlayer->GetRot();
+	rot.x = 0.0f;
+	rot.y = 0.0f;
+	m_pPlayer->SetRot(rot);
+}
+
+//============================================================================
+// 矢印の更新を行う
+//============================================================================
+void CPlayerStateCharging::UpdateArrow()
 {
 	// 新たな向きを作成
 	D3DXVECTOR3 newRot{ 0.0f, 0.0f, 0.0f };
@@ -746,11 +813,6 @@ void CPlayerStateCharging::Update()
 
 	// 向きを変更
 	newRot.z += m_fCoeff;
-	
-	//if (newRot.z >= D3DX_PI)
-	//{
-	//	newRot.z += D3DX_PI * -2.0f;
-	//}
 
 	// 一定の幅を増減する
 	if (newRot.z <= m_rotHold.z - MAX_SPAN || newRot.z >= m_rotHold.z + MAX_SPAN)
@@ -813,20 +875,6 @@ void CPlayerStateCharging::Update()
 
 	// 座標を反映
 	m_pArrow->SetPos(newPos);
-
-	if (CManager::GetKeyboard()->GetTrigger(DIK_SPACE))
-	{
-		// 溜め状態に移行
-		m_pPlayer->GetStateManager()->SetPendingState(STATE::FLYING);
-	}
-}
-
-//============================================================================
-// 変更終了
-//============================================================================
-void CPlayerStateCharging::Exit()
-{
-
 }
 
 
