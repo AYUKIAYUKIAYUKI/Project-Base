@@ -36,7 +36,7 @@ const float CPlayerStateBeginning::BEGIN_FLOATING = 1.25f;	// 変身時上昇量
 const float CPlayerStateBeginning::BEGIN_SPINNING = 0.5f;	// 変身時回転量
 const float CPlayerStateFlying::MAX_FLY_VELOCITY =	10.0f;	// 飛行時の最大加速度 (飛行速度以上推奨)
 const float CPlayerStateFlying::FLY_SPEED = 3.0f;			// 飛行速度
-const float CPlayerStateCharging::MAX_SPAN = 0.5f;			// 幅
+const float CPlayerStateCharging::MAX_SPAN = 0.25f;			// 幅
 const int CPlayerStateStopping::STOP_CNT_MAX = 15;			// 変身停止必要時間
 const float CPlayerStateStopping::RECOIL_SPEED = 3.0f;		// 反動移動速度
 const float CPlayerStateMistook::MAX_WARP_SPEED = 15.0f;	// 強制移動速度の上限
@@ -746,6 +746,11 @@ void CPlayerStateCharging::Update()
 
 	// 向きを変更
 	newRot.z += m_fCoeff;
+	
+	//if (newRot.z >= D3DX_PI)
+	//{
+	//	newRot.z += D3DX_PI * -2.0f;
+	//}
 
 	// 一定の幅を増減する
 	if (newRot.z <= m_rotHold.z - MAX_SPAN || newRot.z >= m_rotHold.z + MAX_SPAN)
@@ -762,20 +767,35 @@ void CPlayerStateCharging::Update()
 	// プレイヤー座標を取得
 	newPos = m_pPlayer->GetPos();
 
-	// 加速度ベクトルから角度を抜き出す
+	// 移動方向から角度を抜き出す
 	float fAngle{ atan2f(m_pPlayer->GetVelocity().x, m_pPlayer->GetVelocity().y) };
 
 	// 座標を補正
-#if 1
-	newPos = {
-		newPos.x + sinf(fAngle) * 30.0f,
-		newPos.y + cosf(fAngle) * 30.0f,
+#if 0
+	// プレイヤーの座標を基点に、移動していた方向の延長線上に出現する
+	newPos += {
+		sinf(fAngle) * 20.0f,
+		cosf(fAngle) * 20.0f,
 		0.0f
 	};
 #elif 0
-	newPos = {
-		newPos.x + sinf(-newRot.z) * 30.0f,
-		newPos.y + cosf(-newRot.z) * 30.0f,
+	// プレイヤーの座標を基点に、向きに合わせて円を描くように出現する
+	newPos += {
+		sinf(-newRot.z * 2.0f) * 20.0f,
+		cosf(-newRot.z * 2.0f) * 20.0f,
+		0.0f
+	};
+#elif 1
+	// 処理をかけ合わせる
+	newPos += {
+		sinf(fAngle) * 10.0f,
+		cosf(fAngle) * 10.0f,
+		0.0f
+	};
+
+	newPos += {
+		sinf(-newRot.z * 2.0f) * 20.0f,
+		cosf(-newRot.z * 2.0f) * 20.0f,
 		0.0f
 	};
 #endif
