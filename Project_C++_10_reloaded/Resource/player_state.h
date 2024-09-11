@@ -152,7 +152,7 @@ private:
 };
 
 //****************************************************
-// プレイヤー突撃状態
+// プレイヤー突撃状態クラス
 //****************************************************
 class CPlayerStateRushing : public CPlayerState
 {
@@ -164,6 +164,10 @@ public:
 	void Enter() override;	// 変更開始
 	void Update() override;	// 更新
 	void Exit() override;	// 変更終了
+
+private:
+
+	void Rotation();	// 回転
 };
 
 //****************************************************

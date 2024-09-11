@@ -80,9 +80,6 @@ void CArrow::Update()
 	// 目標サイズへ
 	SetSize(CUtility::GetInstance()->AdjustToTarget(GetSize(), m_sizeTarget, 0.05f));
 
-	// 現在の向き
-	CRenderer::GetInstance()->SetDebugString("矢印の向き" + std::to_string(GetRot().z));
-
 	// 基底クラスの更新
 	CObject_3D::Update();
 }

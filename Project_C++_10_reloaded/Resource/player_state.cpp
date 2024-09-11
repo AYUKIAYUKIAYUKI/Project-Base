@@ -798,6 +798,9 @@ void CPlayerStateCharging::Exit()
 	rot.x = 0.0f;
 	rot.y = 0.0f;
 	m_pPlayer->SetRot(rot);
+
+	// 矢印の向いている方向を飛行角度に設定
+	m_pPlayer->SetAngleFlying(-m_pArrow->GetRot().z * 2.0f);
 }
 
 //============================================================================
@@ -867,17 +870,6 @@ void CPlayerStateCharging::UpdateArrow()
 	};
 #endif
 
-#ifdef _DEBUG
-	CRenderer::GetInstance()->SetDebugString("さいん" + std::to_string(sinf(m_rotHold.z)));
-	CRenderer::GetInstance()->SetDebugString("こさいん" + std::to_string(cosf(m_rotHold.z)));
-
-	// 座標をデバッグ表示
-	CRenderer::GetInstance()->SetDebugString("【矢印座標】");
-	std::ostringstream oss;
-	oss << std::fixed << std::setprecision(1) << "p X:" << newPos.x << "\np Y:" << newPos.y;
-	CRenderer::GetInstance()->SetDebugString(oss.str().c_str());
-#endif	// _DEBUG
-
 	// 座標を反映
 	m_pArrow->SetPos(newPos);
 }
@@ -911,6 +903,22 @@ CPlayerStateRushing::~CPlayerStateRushing()
 //============================================================================
 void CPlayerStateRushing::Enter()
 {
+	// 飛行角度から新たな加速度を作成
+	D3DXVECTOR3 newVelocity{ 
+		sinf(m_pPlayer->GetAngleFlying()),
+		cosf(m_pPlayer->GetAngleFlying()),
+		0.0f
+	};
+
+	// 加速度を設定
+	m_pPlayer->SetVelocity(newVelocity * 5.0f);
+
+#ifdef _DEBUG
+	// 新たな加速度を表示
+	CRenderer::GetInstance()->SetTimeString("【設定されている飛行角度】" + std::to_string(m_pPlayer->GetAngleFlying()), 600);
+	CRenderer::GetInstance()->SetTimeString("【飛行方向から設定した新たな加速度】" + std::to_string(newVelocity.x) + " : " + std::to_string(newVelocity.y), 600);
+#endif
+
 	// モデルを取得
 	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_005);
 
@@ -926,6 +934,14 @@ void CPlayerStateRushing::Enter()
 //============================================================================
 void CPlayerStateRushing::Update()
 {
+	// 回転
+	Rotation();
+
+	// 加速度分、目標座標を変動
+	D3DXVECTOR3 posTarget = m_pPlayer->GetPosTarget();
+	posTarget += m_pPlayer->GetVelocity();
+	m_pPlayer->SetPosTarget(posTarget);
+
 	// この時点での加速度を保持
 	D3DXVECTOR3 oldVelocity{ m_pPlayer->GetVelocity() };
 
@@ -963,6 +979,36 @@ void CPlayerStateRushing::Update()
 void CPlayerStateRushing::Exit()
 {
 
+}
+
+//============================================================================
+// 回転
+//============================================================================
+void CPlayerStateRushing::Rotation()
+{
+	// 向き情報取得
+	D3DXVECTOR3 rot = m_pPlayer->GetRot();
+	D3DXVECTOR3 rotTarget = m_pPlayer->GetRotTarget();
+
+	// ブレーキ力
+	float fStopEnergy = 0.1f;
+
+	// 回転反映と回転量の減衰
+	if (rotTarget.z - rot.z > D3DX_PI)
+	{
+		rot.z += ((rotTarget.z - rot.z) * fStopEnergy + (D3DX_PI * 1.8f));
+	}
+	else if (rotTarget.z - rot.z < -D3DX_PI)
+	{
+		rot.z += ((rotTarget.z - rot.z) * fStopEnergy + (D3DX_PI * -1.8f));
+	}
+	else
+	{
+		rot.z += ((rotTarget.z - rot.z) * fStopEnergy);
+	}
+
+	// 向き情報設定
+	m_pPlayer->SetRot(rot);
 }
 
 
