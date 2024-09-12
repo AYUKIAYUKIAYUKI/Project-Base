@@ -185,6 +185,9 @@ bool CPlayerStateDefault::Walk()
 		X = 1.0f;
 	}
 
+	// スティック
+	X = pPad->GetJoyStickL().X;
+
 	// 何か入力していれば移動判定を出す
 	if (X != 0.0f || Y != 0.0f)
 	{
@@ -536,6 +539,10 @@ bool CPlayerStateFlying::Control()
 		Y = -1.0f;
 	}
 
+	// スティック
+	X = pPad->GetJoyStickL().X;
+	Y = pPad->GetJoyStickL().Y;
+
 	// 何か入力していれば移動判定を出す
 	if (X != 0.0f || Y != 0.0f)
 	{
@@ -757,7 +764,7 @@ void CPlayerStateCharging::Update()
 
 	// 加速度減衰
 	D3DXVECTOR3 newVelocity{ m_pPlayer->GetVelocity() };
-	newVelocity = CUtility::GetInstance()->AdjustToTarget(newVelocity, D3DXVECTOR3{ 0.0f, 0.0f, 0.0f }, 0.1f);
+	newVelocity = CUtility::GetInstance()->AdjustToTarget(newVelocity, D3DXVECTOR3{ 0.0f, 0.0f, 0.0f }, 0.2f);
 	m_pPlayer->SetVelocity(newVelocity);
 
 	// 加速度分、目標座標を変動
@@ -866,6 +873,10 @@ void CPlayerStateCharging::UpdateArrow()
 	{
 		Y = -1.0f;
 	}
+
+	// スティック
+	X = pPad->GetJoyStickL().X;
+	Y = pPad->GetJoyStickL().Y;
 
 	// 何か入力していれば移動判定を出す
 	if (X != 0.0f || Y != 0.0f)

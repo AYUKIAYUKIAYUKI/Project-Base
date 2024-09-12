@@ -100,6 +100,34 @@ void CGameManager::Update()
 	// パッドを取得
 	CInputPad* pPad = CManager::GetPad();
 
+	// 左右の入力情報
+	static DWORD dwOldInput{ 0 };
+	static bool bInputLeft{ false };
+	static bool bInputRight{ false };
+
+	// 右疑似トリガー入力
+	if (pPad->GetJoyStickL().X > 0 && dwOldInput == 0)
+	{
+		bInputRight = true;
+	}
+	else
+	{
+		bInputRight = false;
+	}
+
+	// 左疑似トリガー入力
+	if (pPad->GetJoyStickL().X < 0 && dwOldInput == 0)
+	{
+		bInputLeft = true;
+	}
+	else
+	{
+		bInputLeft = false;
+	}
+
+	// 過去の入力情報を保持
+	dwOldInput = pPad->GetJoyStickL().X;
+
 #ifdef _DEBUG
 	// ステージ数を表示
 	std::string str = "【現在のステージ:" + std::to_string(m_nMaxStage - m_stagePath.size()) + "/" + std::to_string(m_nMaxStage) + "】";
@@ -114,7 +142,8 @@ void CGameManager::Update()
 		CLeaf::UpdateToCreate();
 
 		if (pKeyboard->GetTrigger(DIK_A) && m_nSelectLevel > 0 ||
-			pPad->GetTrigger(CInputPad::JOYKEY::LEFT) && m_nSelectLevel > 0)
+			pPad->GetTrigger(CInputPad::JOYKEY::LEFT) && m_nSelectLevel > 0 ||
+			bInputLeft && m_nSelectLevel > 0)
 		{
 			m_nSelectLevel--;
 
@@ -122,7 +151,8 @@ void CGameManager::Update()
 			CSound::GetInstance()->Play(CSound::LABEL::SELECT);
 		}
 		else if (pKeyboard->GetTrigger(DIK_D) && m_nSelectLevel < m_nMaxStage - 1 ||
-			pPad->GetTrigger(CInputPad::JOYKEY::RIGHT) && m_nSelectLevel < m_nMaxStage - 1)
+			pPad->GetTrigger(CInputPad::JOYKEY::RIGHT) && m_nSelectLevel < m_nMaxStage - 1 ||
+			bInputRight && m_nSelectLevel < m_nMaxStage - 1)
 		{
 			m_nSelectLevel++;
 
