@@ -80,6 +80,13 @@ void CArrow::Update()
 	// 目標サイズへ
 	SetSize(CUtility::GetInstance()->AdjustToTarget(GetSize(), m_sizeTarget, 0.05f));
 
+#ifdef _DEBUG
+
+	// 向きを表示
+	CRenderer::GetInstance()->SetDebugString(std::to_string(GetRot().z));
+
+#endif // _DEBUG
+
 	// 基底クラスの更新
 	CObject_3D::Update();
 }

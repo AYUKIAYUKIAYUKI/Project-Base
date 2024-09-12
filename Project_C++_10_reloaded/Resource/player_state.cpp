@@ -754,8 +754,17 @@ void CPlayerStateCharging::Update()
 	posTarget += m_pPlayer->GetVelocity();
 	m_pPlayer->SetPosTarget(posTarget);
 
-	// 矢印の更新を行う
-	UpdateArrow();
+	// エフェクト生成
+	if (rand() % 5 == 0)
+	{
+		// ランダムなベクトル
+		D3DXVECTOR3 random{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.0f };
+
+		// 星を生成
+		CStar::Create(
+			m_pPlayer->GetPos() + random * 2.0f,	// 座標
+			random);								// 加速度 (ランダム)
+	}
 
 	// この時点での加速度を保持
 	D3DXVECTOR3 oldVelocity{ m_pPlayer->GetVelocity() };
@@ -782,6 +791,10 @@ void CPlayerStateCharging::Update()
 		CSound::GetInstance()->Play(CSound::LABEL::BOUND);
 	}
 
+	// 矢印の更新を行う
+	UpdateArrow();
+
+	// 突進状態へ
 	if (CManager::GetKeyboard()->GetTrigger(DIK_SPACE))
 	{
 		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::RUSHING);
@@ -810,21 +823,50 @@ void CPlayerStateCharging::UpdateArrow()
 {
 	// 新たな向きを作成
 	D3DXVECTOR3 newRot{ 0.0f, 0.0f, 0.0f };
+		
+	// キーボード取得
+	CInputKeyboard* pKeyboard = CManager::GetKeyboard();
 
-	// 向きを取得
-	newRot = m_pArrow->GetRot();
+	// 移動方向用
+	bool bMove = 0;
+	float X = 0.0f;
+	float Y = 0.0f;
 
-	// 向きを変更
-	newRot.z += m_fCoeff;
-
-	// 一定の幅を増減する
-	if (newRot.z <= m_rotHold.z - MAX_SPAN || newRot.z >= m_rotHold.z + MAX_SPAN)
+	// X軸
+	if (pKeyboard->GetPress(DIK_A))
 	{
-		m_fCoeff *= -1.0f;
+		X = -1.0f;
+	}
+	else if (pKeyboard->GetPress(DIK_D))
+	{
+		X = 1.0f;
+	}
+
+	// Y軸
+	if (pKeyboard->GetPress(DIK_W))
+	{
+		Y = 1.0f;
+	}
+	else if (pKeyboard->GetPress(DIK_S))
+	{
+		Y = -1.0f;
+	}
+
+	// 何か入力していれば移動判定を出す
+	if (X != 0.0f || Y != 0.0f)
+	{
+		bMove = true;
+	}
+
+	// 移動判定が出ていれば
+	if (bMove)
+	{
+		// 方向を選択する
+		newRot.z = atan2f(X, Y);
 	}
 
 	// 向きを反映
-	m_pArrow->SetRot(newRot);
+	m_pArrow->SetRot(-newRot * 0.5f);
 
 	// 新たな座標を作成
 	D3DXVECTOR3 newPos{ 0.0f, 0.0f, 0.0f };
@@ -857,15 +899,15 @@ void CPlayerStateCharging::UpdateArrow()
 	// 移動方向の延長線上へずらす
 	/* 振り向き時などプレイヤーの移動方向とモデルの向きがずれるため、今回は見た目の角度を基にする */
 	newPos += {
-		sinf(-newRot.z * 2.0f) * 10.0f,
-		cosf(-newRot.z * 2.0f) * 10.0f,
+		sinf(newRot.z * 1.0f) * 10.0f,
+		cosf(newRot.z * 1.0f) * 10.0f,
 		0.0f
 	};
 
 	// ずらされた座標を基点に弧を描くように移動
 	newPos += {
-		sinf(-newRot.z * 2.0f) * 20.0f,
-		cosf(-newRot.z * 2.0f) * 20.0f,
+		sinf(newRot.z * 1.0f) * 20.0f,
+		cosf(newRot.z * 1.0f) * 20.0f,
 		0.0f
 	};
 #endif
@@ -955,17 +997,17 @@ void CPlayerStateRushing::Update()
 		// 煙を生成
 		CSmoke::Create(
 			m_pPlayer->GetPos() - (m_pPlayer->GetVelocity() * 5.0f) + random,	// 座標
-			m_pPlayer->GetVelocity());											// 加速度 (飛行方向の逆)
+			m_pPlayer->GetVelocity());											// 加速度 (飛行方向)
 
 		// 星を生成
 		CStar::Create(
 			m_pPlayer->GetPos() - m_pPlayer->GetVelocity() + random * 5.0f,	// 座標
-			-m_pPlayer->GetVelocity() * 2.0f);		// 加速度 (飛行方向の逆)
-
+			-m_pPlayer->GetVelocity());										// 加速度 (飛行方向の逆)
+		
 		// 波紋を生成
 		CRipple::Create(
 			m_pPlayer->GetPos() - m_pPlayer->GetVelocity() + random * 5.0f,	// 座標
-			-m_pPlayer->GetVelocity() * 2.0f);		// 加速度 (飛行方向の逆)
+			-m_pPlayer->GetVelocity());										// 加速度 (飛行方向の逆)
 
 		// きらきら音
 		//CSound::GetInstance()->Play(CSound::LABEL::TWINKLING);
@@ -1036,8 +1078,9 @@ void CPlayerStateRushing::Rotation()
 		rot.z += ((rotTarget.z - rot.z) * fStopEnergy);
 	}
 
-	CUtility::GetInstance()->AdjustToTarget(rot.x, rotTarget.x, 0.05f);
-	CUtility::GetInstance()->AdjustToTarget(rot.y, rotTarget.y, 0.05f);
+	// 震える
+	rot.x = CUtility::GetInstance()->GetRandomValue<float>() * 0.0005f;
+	rot.y = CUtility::GetInstance()->GetRandomValue<float>() * 0.0005f;
 	
 	// 向き情報設定
 	m_pPlayer->SetRot(rot);
