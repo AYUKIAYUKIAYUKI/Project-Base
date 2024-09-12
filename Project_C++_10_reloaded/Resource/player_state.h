@@ -144,10 +144,10 @@ private:
 
 	static const float MAX_SPAN;	// •
 
+	void Rotation();	// ‰ñ“]
 	void UpdateArrow();	// –îˆó‚ÌXV‚ğs‚¤
 
 	D3DXVECTOR3 m_rotHold;	// Œü‚«‚ğ•Û
-	float m_fCoeff;			// ‘‰Á—Ê
 	CArrow* m_pArrow;		// –îˆóî•ñ
 };
 

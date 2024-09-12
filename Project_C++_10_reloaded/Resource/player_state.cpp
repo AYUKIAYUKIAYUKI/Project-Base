@@ -689,7 +689,6 @@ void CPlayerStateFlying::Braking()
 //============================================================================
 CPlayerStateCharging::CPlayerStateCharging() :
 	m_rotHold{ 0.0f, 0.0f, 0.0f },
-	m_fCoeff{ 0.0f },
 	m_pArrow{ nullptr }
 {
 	// 矢印の生成
@@ -717,22 +716,14 @@ CPlayerStateCharging::~CPlayerStateCharging()
 //============================================================================
 void CPlayerStateCharging::Enter()
 {
-	// 増加量を設定
-	m_fCoeff = 0.015f;
-
 	// 出現設定
 	m_pArrow->SetAppear();
 
 	// 初期座標を設定
 	m_pArrow->SetPos(m_pPlayer->GetPos());
-	
-	// 飛行方向に合わせた向きを生成
-	D3DXVECTOR3 newRot{ 0.0f, 0.0f, m_pPlayer->GetRot().z * 0.5f };
 
-	// 向きを設定
-	m_pArrow->SetRot(newRot);
-
-	// この向きを保持
+	// 矢印用のホールド向きに、モデルの向ている方向を設定
+	D3DXVECTOR3 newRot{ 0.0f, 0.0f, -m_pPlayer->GetRot().z };
 	m_rotHold = newRot;
 
 	// 目標サイズを設定
@@ -756,11 +747,8 @@ void CPlayerStateCharging::Update()
 	// パッド取得
 	CInputPad* pPad = CManager::GetPad();
 
-	// 震える
-	D3DXVECTOR3 rot = m_pPlayer->GetRot();
-	rot.x = CUtility::GetInstance()->GetRandomValue<float>() * 0.0005f;
-	rot.y = CUtility::GetInstance()->GetRandomValue<float>() * 0.0005f;
-	m_pPlayer->SetRot(rot);
+	// 回転
+	Rotation();
 
 	// 加速度減衰
 	D3DXVECTOR3 newVelocity{ m_pPlayer->GetVelocity() };
@@ -836,6 +824,40 @@ void CPlayerStateCharging::Exit()
 }
 
 //============================================================================
+// 回転
+//============================================================================
+void CPlayerStateCharging::Rotation()
+{
+	// 向き情報取得
+	D3DXVECTOR3 rot = m_pPlayer->GetRot();
+	D3DXVECTOR3 rotTarget = m_pPlayer->GetRotTarget();
+
+	// ブレーキ力
+	float fStopEnergy = 0.2f;
+
+	// 回転反映と回転量の減衰
+	if (rotTarget.z - rot.z > D3DX_PI)
+	{
+		rot.z += ((rotTarget.z - rot.z) * fStopEnergy + (D3DX_PI * 1.8f));
+	}
+	else if (rotTarget.z - rot.z < -D3DX_PI)
+	{
+		rot.z += ((rotTarget.z - rot.z) * fStopEnergy + (D3DX_PI * -1.8f));
+	}
+	else
+	{
+		rot.z += ((rotTarget.z - rot.z) * fStopEnergy);
+	}
+
+	// 震える
+	rot.x = CUtility::GetInstance()->GetRandomValue<float>() * 0.0005f;
+	rot.y = CUtility::GetInstance()->GetRandomValue<float>() * 0.0005f;
+
+	// 向き情報設定
+	m_pPlayer->SetRot(rot);
+}
+
+//============================================================================
 // 矢印の更新を行う
 //============================================================================
 void CPlayerStateCharging::UpdateArrow()
@@ -847,7 +869,7 @@ void CPlayerStateCharging::UpdateArrow()
 	CInputPad* pPad = CManager::GetPad();
 
 	// 新たな向きを作成
-	D3DXVECTOR3 newRot{ 0.0f, 0.0f, 0.0f };
+	D3DXVECTOR3 newRot{ m_rotHold };
 
 	// 移動方向用
 	bool bMove = 0;
@@ -889,10 +911,16 @@ void CPlayerStateCharging::UpdateArrow()
 	{
 		// 方向を選択する
 		newRot.z = atan2f(X, Y);
+
+		// この方向をモデルの目標向きに設定
+		m_pPlayer->SetRotTarget(D3DXVECTOR3{  0.0f, 0.0f, -newRot.z });
 	}
 
 	// 向きを反映
 	m_pArrow->SetRot(-newRot * 0.5f);
+
+	// ホールド向きに記録
+	m_rotHold = newRot;
 
 	// 新たな座標を作成
 	D3DXVECTOR3 newPos{ 0.0f, 0.0f, 0.0f };
