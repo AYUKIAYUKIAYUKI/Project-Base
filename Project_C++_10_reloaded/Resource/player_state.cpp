@@ -899,15 +899,15 @@ void CPlayerStateCharging::UpdateArrow()
 	// 移動方向の延長線上へずらす
 	/* 振り向き時などプレイヤーの移動方向とモデルの向きがずれるため、今回は見た目の角度を基にする */
 	newPos += {
-		sinf(newRot.z * 1.0f) * 10.0f,
-		cosf(newRot.z * 1.0f) * 10.0f,
+		sinf(newRot.z) * 10.0f,
+		cosf(newRot.z) * 10.0f,
 		0.0f
 	};
 
 	// ずらされた座標を基点に弧を描くように移動
 	newPos += {
-		sinf(newRot.z * 1.0f) * 20.0f,
-		cosf(newRot.z * 1.0f) * 20.0f,
+		sinf(newRot.z) * 20.0f,
+		cosf(newRot.z) * 20.0f,
 		0.0f
 	};
 #endif
@@ -1038,10 +1038,12 @@ void CPlayerStateRushing::Update()
 		CSound::GetInstance()->Play(CSound::LABEL::BOUND);
 	}
 
-	if (CManager::GetKeyboard()->GetTrigger(DIK_SPACE))
+#ifdef _DEBUG
+	if (CManager::GetKeyboard()->GetTrigger(DIK_LSHIFT))
 	{
 		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::STOPPING);
 	}
+#endif // _DEBUG
 }
 
 //============================================================================

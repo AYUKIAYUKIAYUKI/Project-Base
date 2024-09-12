@@ -203,11 +203,8 @@ bool CPlayer::Collision()
 		// 可壊ブロックと衝突する場合
 		if (CUtility::GetInstance()->OnlyCube(pDestructible->GetPos(), pDestructible->GetSize(), m_posTarget, GetSize()))
 		{
-			// 押し出し処理
-			CUtility::GetInstance()->OnlyCube(m_posTarget, m_velocity, GetPos(), GetSize(), pDestructible->GetPos(), pDestructible->GetSize());
-
-			// 飛行状態の場合のみ
-			if (typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateFlying))
+			// 突進状態の場合のみ
+			if (typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateRushing))
 			{
 				// 可壊ブロックを破棄
 				pDestructible->SetRelease();
@@ -215,9 +212,24 @@ bool CPlayer::Collision()
 				// 破壊音
 				CSound::GetInstance()->Play(CSound::LABEL::BREAK);
 			}
+			else
+			{
+				// 押し出し処理
+				CUtility::GetInstance()->OnlyCube(m_posTarget, m_velocity, GetPos(), GetSize(), pDestructible->GetPos(), pDestructible->GetSize());
 
-			// 衝突判定を出す
-			bDetected = 1;
+				// 飛行状態の場合のみ
+				if (typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateFlying))
+				{
+					// 可壊ブロックを破棄
+					pDestructible->SetRelease();
+
+					// 破壊音
+					CSound::GetInstance()->Play(CSound::LABEL::BREAK);
+				}
+
+				// 衝突判定を出す
+				bDetected = 1;
+			}
 		}
 	}
 
@@ -266,23 +278,32 @@ bool CPlayer::Collision()
 		// エネミーと衝突する場合
 		if (CUtility::GetInstance()->OnlyCube(pEnemy->GetPos(), pEnemy->GetSize(), m_posTarget, GetSize()))
 		{
-			if (typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateFlying))
-			{ // 飛行状態の場合
-
-				// 押し出し処理
-				CUtility::GetInstance()->OnlyCube(m_posTarget, m_velocity, GetPos(), GetSize(), pEnemy->GetPos(), pEnemy->GetSize());
-
+			// 突進状態の場合のみ
+			if (typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateRushing))
+			{
 				// エネミーを破棄
 				pEnemy->SetRelease();
 			}
 			else
 			{
-				// ミス状態に移行
-				m_pStateManager->SetPendingState(CPlayerState::STATE::MISS);
-			}
+				if (typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateFlying))
+				{ // 飛行状態の場合
 
-			// 衝突判定を出す
-			bDetected = 1;
+					// 押し出し処理
+					CUtility::GetInstance()->OnlyCube(m_posTarget, m_velocity, GetPos(), GetSize(), pEnemy->GetPos(), pEnemy->GetSize());
+
+					// エネミーを破棄
+					pEnemy->SetRelease();
+				}
+				else
+				{
+					// ミス状態に移行
+					m_pStateManager->SetPendingState(CPlayerState::STATE::MISS);
+				}
+
+				// 衝突判定を出す
+				bDetected = 1;
+			}
 
 			// 死亡音
 			CSound::GetInstance()->Play(CSound::LABEL::DIE);
