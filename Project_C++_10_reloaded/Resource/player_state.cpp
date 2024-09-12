@@ -100,6 +100,14 @@ CPlayerStateDefault::~CPlayerStateDefault()
 //============================================================================
 void CPlayerStateDefault::Enter()
 {
+	// 回転をリセット
+	D3DXVECTOR3 newRot{ 0.0f, 0.0f, 0.0f };
+	m_pPlayer->SetRot(newRot);
+
+	// 回転目標をリセット
+	D3DXVECTOR3 newRotTarget{ 0.0f, 0.0f, 0.0f };
+	m_pPlayer->SetRotTarget(newRotTarget);
+
 	// モデルを取得
 	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_000);
 
@@ -689,6 +697,7 @@ void CPlayerStateFlying::Braking()
 //============================================================================
 CPlayerStateCharging::CPlayerStateCharging() :
 	m_rotHold{ 0.0f, 0.0f, 0.0f },
+	m_nLimitCharge{ 0 },
 	m_pArrow{ nullptr }
 {
 	// 矢印の生成
@@ -726,8 +735,8 @@ void CPlayerStateCharging::Enter()
 	D3DXVECTOR3 newRot{ 0.0f, 0.0f, -m_pPlayer->GetRot().z };
 	m_rotHold = newRot;
 
-	// 目標サイズを設定
-	m_pArrow->SetSizeTarget({ 20.0f, 20.0f, 0.0f });
+	// 初期サイズを設定
+	m_pArrow->SetSize({ 25.0f, 25.0f, 0.0f });
 
 	// モデルを取得
 	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_004);
@@ -744,6 +753,18 @@ void CPlayerStateCharging::Enter()
 //============================================================================
 void CPlayerStateCharging::Update()
 { 
+	// チャージが終わると強制終了
+	if (m_nLimitCharge > 120)
+	{
+		// 通常状態へ
+		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::DEFAULT);
+
+		return;
+	}
+
+	// チャージ猶予カウント
+	m_nLimitCharge++;
+
 	// パッド取得
 	CInputPad* pPad = CManager::GetPad();
 
@@ -832,6 +853,7 @@ void CPlayerStateCharging::Rotation()
 	D3DXVECTOR3 rot = m_pPlayer->GetRot();
 	D3DXVECTOR3 rotTarget = m_pPlayer->GetRotTarget();
 
+#if 0	// 旧式
 	// ブレーキ力
 	float fStopEnergy = 0.2f;
 
@@ -848,6 +870,21 @@ void CPlayerStateCharging::Rotation()
 	{
 		rot.z += ((rotTarget.z - rot.z) * fStopEnergy);
 	}
+#else	// 新式
+	// 回転量を制限
+	if (rotTarget.z > D3DX_PI * 2.0f)
+	{
+		rotTarget.z += D3DX_PI * -2.0f;
+	}
+
+	rot = rotTarget;
+
+	// 目標向きへ補正
+	rot = CUtility::GetInstance()->AdjustToTarget(rot, rotTarget, 0.25f);
+
+	CRenderer::GetInstance()->SetDebugString("【チャージ時のプレイヤーモデルの向き : " + std::to_string(rot.z) + "】");
+	CRenderer::GetInstance()->SetDebugString("【チャージ時のプレイヤーモデルの向き : " + std::to_string(rotTarget.z) + "】");
+#endif
 
 	// 震える
 	rot.x = CUtility::GetInstance()->GetRandomValue<float>() * 0.0005f;
@@ -921,6 +958,12 @@ void CPlayerStateCharging::UpdateArrow()
 
 	// ホールド向きに記録
 	m_rotHold = newRot;
+
+	// 目標サイズを縮小
+	D3DXVECTOR3 newSizeTarget{ m_pArrow->GetSizeTarget() };
+	newSizeTarget.x = 25.0f - ((25.0f / 120) * (m_nLimitCharge));
+	newSizeTarget.y = 25.0f - ((25.0f / 120) * (m_nLimitCharge));
+	m_pArrow->SetSizeTarget(newSizeTarget);
 
 	// 新たな座標を作成
 	D3DXVECTOR3 newPos{ 0.0f, 0.0f, 0.0f };
@@ -1293,12 +1336,13 @@ void CPlayerStateStopping::Recoil()
 	CRenderer::GetInstance()->SetTimeString("衝突時の加速度Y : " + std::to_string(newVelocity.y), 120);
 #endif	// _DEBUG
 
-	// 寸前の向きの真逆の角度を算出
+	// 寸前の加速度の角度を算出
 	float fNewFlyingAngle{ atan2f(newVelocity.x, newVelocity.y) };
 
 	// 真逆の角度方向に加速度を設定
 	newVelocity.x = -sinf(fNewFlyingAngle) * RECOIL_SPEED;
 	newVelocity.y = -cosf(fNewFlyingAngle) * RECOIL_SPEED;
+	//newVelocity.y = sinf(fNewFlyingAngle) * RECOIL_SPEED;
 
 #ifdef _DEBUG
 	CRenderer::GetInstance()->SetTimeString("衝突後の加速度X : " + std::to_string(newVelocity.x), 120);

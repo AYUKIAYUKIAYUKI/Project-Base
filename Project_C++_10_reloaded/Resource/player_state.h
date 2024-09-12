@@ -147,7 +147,8 @@ private:
 	void Rotation();	// 回転
 	void UpdateArrow();	// 矢印の更新を行う
 
-	D3DXVECTOR3 m_rotHold;	// 向きを保持
+	D3DXVECTOR3 m_rotHold;	// 向きを保持]
+	int m_nLimitCharge;		// チャージ猶予
 	CArrow* m_pArrow;		// 矢印情報
 };
 
