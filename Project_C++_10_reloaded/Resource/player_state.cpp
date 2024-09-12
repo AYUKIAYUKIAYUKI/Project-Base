@@ -288,6 +288,14 @@ void CPlayerStateDefault::Braking()
 	m_pPlayer->SetVelocity(velocity);
 }
 
+//============================================================================
+// 反動
+//============================================================================
+void CPlayerStateDefault::Recoil()
+{
+
+}
+
 
 
 //============================================================================
@@ -492,8 +500,20 @@ void CPlayerStateFlying::Update()
 		// 何かに衝突で変身停止へ
 		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::STOPPING);
 
-		// 当たり判定により消失した加速度を戻す
-		m_pPlayer->SetVelocity(oldVelocity);
+		if (m_pPlayer->GetVelocity().x == 0.0f)
+		{ // 横方向に衝突しているなら
+
+			// 横方向の反射ベクトルを代入しておく
+			oldVelocity.x *= -1.0f;
+			m_pPlayer->SetVelocity(oldVelocity);
+		}
+		else if (m_pPlayer->GetVelocity().y == 0.0f)
+		{ // 縦方向に衝突しているなら
+
+			// 縦方向の反射ベクトルを代入しておく
+			oldVelocity.y *= -1.0f;
+			m_pPlayer->SetVelocity(oldVelocity);
+		}
 
 		// 衝突音
 		CSound::GetInstance()->Play(CSound::LABEL::STOP);
@@ -808,8 +828,20 @@ void CPlayerStateCharging::Update()
 		// 何かに衝突で変身停止へ
 		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::STOPPING);
 
-		// 当たり判定により消失した加速度を戻す
-		m_pPlayer->SetVelocity(oldVelocity);
+		if (m_pPlayer->GetVelocity().x == 0.0f)
+		{ // 横方向に衝突しているなら
+
+			// 横方向の反射ベクトルを代入しておく
+			oldVelocity.x *= -1.0f;
+			m_pPlayer->SetVelocity(oldVelocity);
+		}
+		else if (m_pPlayer->GetVelocity().y == 0.0f)
+		{ // 縦方向に衝突しているなら
+
+			// 縦方向の反射ベクトルを代入しておく
+			oldVelocity.y *= -1.0f;
+			m_pPlayer->SetVelocity(oldVelocity);
+		}
 
 		// 衝突音
 		CSound::GetInstance()->Play(CSound::LABEL::STOP);
@@ -1125,8 +1157,20 @@ void CPlayerStateRushing::Update()
 		// 何かに衝突で変身停止へ
 		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::STOPPING);
 
-		// 当たり判定により消失した加速度を戻す
-		m_pPlayer->SetVelocity(oldVelocity);
+		if (m_pPlayer->GetVelocity().x == 0.0f)
+		{ // 横方向に衝突しているなら
+
+			// 横方向の反射ベクトルを代入しておく
+			oldVelocity.x *= -1.0f;
+			m_pPlayer->SetVelocity(oldVelocity);
+		}
+		else if (m_pPlayer->GetVelocity().y == 0.0f)
+		{ // 縦方向に衝突しているなら
+
+			// 縦方向の反射ベクトルを代入しておく
+			oldVelocity.y *= -1.0f;
+			m_pPlayer->SetVelocity(oldVelocity);
+		}
 
 		// 衝突音
 		CSound::GetInstance()->Play(CSound::LABEL::STOP);
@@ -1340,9 +1384,11 @@ void CPlayerStateStopping::Recoil()
 	float fNewFlyingAngle{ atan2f(newVelocity.x, newVelocity.y) };
 
 	// 真逆の角度方向に加速度を設定
-	newVelocity.x = -sinf(fNewFlyingAngle) * RECOIL_SPEED;
-	newVelocity.y = -cosf(fNewFlyingAngle) * RECOIL_SPEED;
-	//newVelocity.y = sinf(fNewFlyingAngle) * RECOIL_SPEED;
+	newVelocity.x = sinf(fNewFlyingAngle) * RECOIL_SPEED;
+	newVelocity.y = cosf(fNewFlyingAngle) * RECOIL_SPEED;
+
+	//newVelocity.x = sinf(fNewFlyingAngle) * (fabsf(newVelocity.x) + fabsf(newVelocity.y));
+	//newVelocity.y = cosf(fNewFlyingAngle) * (fabsf(newVelocity.x) + fabsf(newVelocity.y));
 
 #ifdef _DEBUG
 	CRenderer::GetInstance()->SetTimeString("衝突後の加速度X : " + std::to_string(newVelocity.x), 120);

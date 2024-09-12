@@ -77,6 +77,7 @@ private:
 	bool Walk();		// ‘€ì
 	void Rotation();	// ‰ñ“]
 	void Braking();		// §“®’²®
+	void Recoil();		// ”½“®
 };
 
 //****************************************************
