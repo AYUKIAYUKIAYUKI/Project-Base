@@ -94,6 +94,12 @@ void CGameManager::Uninit()
 //============================================================================
 void CGameManager::Update()
 {
+	// キーボードを取得
+	CInputKeyboard* pKeyboard = CManager::GetKeyboard();
+
+	// パッドを取得
+	CInputPad* pPad = CManager::GetPad();
+
 #ifdef _DEBUG
 	// ステージ数を表示
 	std::string str = "【現在のステージ:" + std::to_string(m_nMaxStage - m_stagePath.size()) + "/" + std::to_string(m_nMaxStage) + "】";
@@ -105,16 +111,18 @@ void CGameManager::Update()
 	case PHASE::SELECT:
 	
 		// 葉っぱ生成の更新
-		//CLeaf::UpdateToCreate();
+		CLeaf::UpdateToCreate();
 
-		if (CManager::GetKeyboard()->GetTrigger(DIK_A) && m_nSelectLevel > 0)
+		if (pKeyboard->GetTrigger(DIK_A) && m_nSelectLevel > 0 ||
+			pPad->GetTrigger(CInputPad::JOYKEY::LEFT) && m_nSelectLevel > 0)
 		{
 			m_nSelectLevel--;
 
 			// 選択音
 			CSound::GetInstance()->Play(CSound::LABEL::SELECT);
 		}
-		else if (CManager::GetKeyboard()->GetTrigger(DIK_D) && m_nSelectLevel < m_nMaxStage - 1)
+		else if (pKeyboard->GetTrigger(DIK_D) && m_nSelectLevel < m_nMaxStage - 1 ||
+			pPad->GetTrigger(CInputPad::JOYKEY::RIGHT) && m_nSelectLevel < m_nMaxStage - 1)
 		{
 			m_nSelectLevel++;
 
@@ -128,7 +136,8 @@ void CGameManager::Update()
 		// タイムを動作
 		CTimer::SwitchControlByPahse(m_nSelectLevel);
 
-		if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
+		if (pKeyboard->GetTrigger(DIK_RETURN) || pPad->GetTrigger(CInputPad::JOYKEY::START) || pPad->GetTrigger(CInputPad::JOYKEY::A) ||
+			pPad->GetTrigger(CInputPad::JOYKEY::B) || pPad->GetTrigger(CInputPad::JOYKEY::X) || pPad->GetTrigger(CInputPad::JOYKEY::Y))
 		{
 			// ウェーブを停止し、スタートフェーズへ移行
 			CFakeScreen::GetInstance()->StopWave(PHASE::START);
@@ -183,13 +192,13 @@ void CGameManager::Update()
 	case PHASE::INGAME:
 
 		// 葉っぱ生成の更新
-		//CLeaf::UpdateToCreate();
+		CLeaf::UpdateToCreate();
 
 		// タイムの動作
 		CTimer::SwitchControlByPahse(m_nSelectLevel);
 
 		// ステージセレクトに戻る
-		if (CManager::GetKeyboard()->GetTrigger(DIK_BACK))
+		if (pKeyboard->GetTrigger(DIK_BACK) || pPad->GetTrigger(CInputPad::JOYKEY::START) || pPad->GetTrigger(CInputPad::JOYKEY::BACK))
 		{
 			// プレイヤーを検索
 			CObject* pFind = CObject::FindObject(CObject::TYPE::PLAYER);

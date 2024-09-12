@@ -70,7 +70,13 @@ void CTitle::Uninit()
 //============================================================================
 void CTitle::Update()
 {
-	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN))
+	// ƒQ[ƒ€‰æ–Ê‚Ö
+	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN) ||
+		CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::START) ||
+		CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::A) ||
+		CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::B) ||
+		CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::X) ||
+		CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::Y))
 	{
 		CFakeScreen::GetInstance()->SetFade(MODE::GAME);
 	}

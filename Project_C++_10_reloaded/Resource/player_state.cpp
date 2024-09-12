@@ -167,17 +167,20 @@ bool CPlayerStateDefault::Walk()
 	// キーボード取得
 	CInputKeyboard* pKeyboard = CManager::GetKeyboard();
 
+	// パッド取得
+	CInputPad* pPad = CManager::GetPad();
+
 	// 移動方向用
 	bool bMove = 0;
 	float X = 0.0f;
 	float Y = 0.0f;
 
 	// X軸
-	if (pKeyboard->GetPress(DIK_A))
+	if (pKeyboard->GetPress(DIK_A) || pPad->GetPress(CInputPad::JOYKEY::LEFT))
 	{
 		X = -1.0f;
 	}
-	else if (pKeyboard->GetPress(DIK_D))
+	else if (pKeyboard->GetPress(DIK_D) || pPad->GetPress(CInputPad::JOYKEY::RIGHT))
 	{
 		X = 1.0f;
 	}
@@ -202,7 +205,8 @@ bool CPlayerStateDefault::Walk()
 	}
 
 	// 状態変更
-	if (pKeyboard->GetTrigger(DIK_SPACE))
+	if (pKeyboard->GetTrigger(DIK_SPACE) || pPad->GetTrigger(CInputPad::JOYKEY::A) || pPad->GetTrigger(CInputPad::JOYKEY::B) ||
+		pPad->GetTrigger(CInputPad::JOYKEY::X) || pPad->GetTrigger(CInputPad::JOYKEY::Y))
 	{
 		// Y方向への加速度が無ければ変身
 		if (m_pPlayer->GetVelocity().y == 0.0f)
@@ -504,27 +508,30 @@ bool CPlayerStateFlying::Control()
 	// キーボード取得
 	CInputKeyboard* pKeyboard = CManager::GetKeyboard();
 
+	// パッド取得
+	CInputPad* pPad = CManager::GetPad();
+
 	// 移動方向用
 	bool bMove = 0;
 	float X = 0.0f;
 	float Y = 0.0f;
 
 	// X軸
-	if (pKeyboard->GetPress(DIK_A))
+	if (pKeyboard->GetPress(DIK_A) || pPad->GetPress(CInputPad::JOYKEY::LEFT))
 	{
 		X = -1.0f;
 	}
-	else if (pKeyboard->GetPress(DIK_D))
+	else if (pKeyboard->GetPress(DIK_D) || pPad->GetPress(CInputPad::JOYKEY::RIGHT))
 	{
 		X = 1.0f;
 	}
 
 	// Y軸
-	if (pKeyboard->GetPress(DIK_W))
+	if (pKeyboard->GetPress(DIK_W) || pPad->GetPress(CInputPad::JOYKEY::UP))
 	{
 		Y = 1.0f;
 	}
-	else if (pKeyboard->GetPress(DIK_S))
+	else if (pKeyboard->GetPress(DIK_S) || pPad->GetPress(CInputPad::JOYKEY::DOWN))
 	{
 		Y = -1.0f;
 	}
@@ -593,7 +600,8 @@ bool CPlayerStateFlying::Control()
 		//CSound::GetInstance()->Play(CSound::LABEL::TWINKLING);
 	}
 
-	if (CManager::GetKeyboard()->GetTrigger(DIK_SPACE))
+	if (CManager::GetKeyboard()->GetTrigger(DIK_SPACE) || pPad->GetTrigger(CInputPad::JOYKEY::A) || pPad->GetTrigger(CInputPad::JOYKEY::B) ||
+		pPad->GetTrigger(CInputPad::JOYKEY::X) || pPad->GetTrigger(CInputPad::JOYKEY::Y))
 	{
 		// 溜め状態に移行
 		m_pPlayer->GetStateManager()->SetPendingState(STATE::CHARGING);
@@ -738,6 +746,9 @@ void CPlayerStateCharging::Enter()
 //============================================================================
 void CPlayerStateCharging::Update()
 { 
+	// パッド取得
+	CInputPad* pPad = CManager::GetPad();
+
 	// 震える
 	D3DXVECTOR3 rot = m_pPlayer->GetRot();
 	rot.x = CUtility::GetInstance()->GetRandomValue<float>() * 0.0005f;
@@ -795,7 +806,8 @@ void CPlayerStateCharging::Update()
 	UpdateArrow();
 
 	// 突進状態へ
-	if (CManager::GetKeyboard()->GetTrigger(DIK_SPACE))
+	if (CManager::GetKeyboard()->GetTrigger(DIK_SPACE) || pPad->GetTrigger(CInputPad::JOYKEY::A) || pPad->GetTrigger(CInputPad::JOYKEY::B) ||
+		pPad->GetTrigger(CInputPad::JOYKEY::X) || pPad->GetTrigger(CInputPad::JOYKEY::Y))
 	{
 		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::RUSHING);
 	}
@@ -821,11 +833,14 @@ void CPlayerStateCharging::Exit()
 //============================================================================
 void CPlayerStateCharging::UpdateArrow()
 {
-	// 新たな向きを作成
-	D3DXVECTOR3 newRot{ 0.0f, 0.0f, 0.0f };
-		
 	// キーボード取得
 	CInputKeyboard* pKeyboard = CManager::GetKeyboard();
+
+	// パッド取得
+	CInputPad* pPad = CManager::GetPad();
+
+	// 新たな向きを作成
+	D3DXVECTOR3 newRot{ 0.0f, 0.0f, 0.0f };
 
 	// 移動方向用
 	bool bMove = 0;
@@ -833,21 +848,21 @@ void CPlayerStateCharging::UpdateArrow()
 	float Y = 0.0f;
 
 	// X軸
-	if (pKeyboard->GetPress(DIK_A))
+	if (pKeyboard->GetPress(DIK_A) || pPad->GetPress(CInputPad::JOYKEY::LEFT))
 	{
 		X = -1.0f;
 	}
-	else if (pKeyboard->GetPress(DIK_D))
+	else if (pKeyboard->GetPress(DIK_D) || pPad->GetPress(CInputPad::JOYKEY::RIGHT))
 	{
 		X = 1.0f;
 	}
 
 	// Y軸
-	if (pKeyboard->GetPress(DIK_W))
+	if (pKeyboard->GetPress(DIK_W) || pPad->GetPress(CInputPad::JOYKEY::UP))
 	{
 		Y = 1.0f;
 	}
-	else if (pKeyboard->GetPress(DIK_S))
+	else if (pKeyboard->GetPress(DIK_S) || pPad->GetPress(CInputPad::JOYKEY::DOWN))
 	{
 		Y = -1.0f;
 	}
