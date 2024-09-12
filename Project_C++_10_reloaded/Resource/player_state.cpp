@@ -903,6 +903,10 @@ CPlayerStateRushing::~CPlayerStateRushing()
 //============================================================================
 void CPlayerStateRushing::Enter()
 {
+	// 目標向きを設定
+	D3DXVECTOR3 newRotTarget{ 0.0f, 0.0f, -m_pPlayer->GetAngleFlying() };
+	m_pPlayer->SetRotTarget(newRotTarget);
+
 	// 飛行角度から新たな加速度を作成
 	D3DXVECTOR3 newVelocity{ 
 		sinf(m_pPlayer->GetAngleFlying()),
@@ -941,6 +945,31 @@ void CPlayerStateRushing::Update()
 	D3DXVECTOR3 posTarget = m_pPlayer->GetPosTarget();
 	posTarget += m_pPlayer->GetVelocity();
 	m_pPlayer->SetPosTarget(posTarget);
+
+	// エフェクト生成
+	if (rand() % 2 == 0)
+	{
+		// ランダムなベクトル
+		D3DXVECTOR3 random{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.0f };
+
+		// 煙を生成
+		CSmoke::Create(
+			m_pPlayer->GetPos() - (m_pPlayer->GetVelocity() * 5.0f) + random,	// 座標
+			m_pPlayer->GetVelocity());											// 加速度 (飛行方向の逆)
+
+		// 星を生成
+		CStar::Create(
+			m_pPlayer->GetPos() - m_pPlayer->GetVelocity() + random * 5.0f,	// 座標
+			-m_pPlayer->GetVelocity() * 2.0f);		// 加速度 (飛行方向の逆)
+
+		// 波紋を生成
+		CRipple::Create(
+			m_pPlayer->GetPos() - m_pPlayer->GetVelocity() + random * 5.0f,	// 座標
+			-m_pPlayer->GetVelocity() * 2.0f);		// 加速度 (飛行方向の逆)
+
+		// きらきら音
+		//CSound::GetInstance()->Play(CSound::LABEL::TWINKLING);
+	}
 
 	// この時点での加速度を保持
 	D3DXVECTOR3 oldVelocity{ m_pPlayer->GetVelocity() };
@@ -1007,6 +1036,9 @@ void CPlayerStateRushing::Rotation()
 		rot.z += ((rotTarget.z - rot.z) * fStopEnergy);
 	}
 
+	CUtility::GetInstance()->AdjustToTarget(rot.x, rotTarget.x, 0.05f);
+	CUtility::GetInstance()->AdjustToTarget(rot.y, rotTarget.y, 0.05f);
+	
 	// 向き情報設定
 	m_pPlayer->SetRot(rot);
 }
