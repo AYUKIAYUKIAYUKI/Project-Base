@@ -175,6 +175,9 @@ bool CPlayerStateDefault::Walk()
 	float X = 0.0f;
 	float Y = 0.0f;
 
+	// スティック
+	X = pPad->GetJoyStickL().X;
+
 	// X軸
 	if (pKeyboard->GetPress(DIK_A) || pPad->GetPress(CInputPad::JOYKEY::LEFT))
 	{
@@ -184,9 +187,6 @@ bool CPlayerStateDefault::Walk()
 	{
 		X = 1.0f;
 	}
-
-	// スティック
-	X = pPad->GetJoyStickL().X;
 
 	// 何か入力していれば移動判定を出す
 	if (X != 0.0f || Y != 0.0f)
@@ -519,6 +519,10 @@ bool CPlayerStateFlying::Control()
 	float X = 0.0f;
 	float Y = 0.0f;
 
+	// スティック
+	X = pPad->GetJoyStickL().X;
+	Y = pPad->GetJoyStickL().Y;
+
 	// X軸
 	if (pKeyboard->GetPress(DIK_A) || pPad->GetPress(CInputPad::JOYKEY::LEFT))
 	{
@@ -538,10 +542,6 @@ bool CPlayerStateFlying::Control()
 	{
 		Y = -1.0f;
 	}
-
-	// スティック
-	X = pPad->GetJoyStickL().X;
-	Y = pPad->GetJoyStickL().Y;
 
 	// 何か入力していれば移動判定を出す
 	if (X != 0.0f || Y != 0.0f)
@@ -854,6 +854,10 @@ void CPlayerStateCharging::UpdateArrow()
 	float X = 0.0f;
 	float Y = 0.0f;
 
+	// スティック
+	X = pPad->GetJoyStickL().X;
+	Y = pPad->GetJoyStickL().Y;
+
 	// X軸
 	if (pKeyboard->GetPress(DIK_A) || pPad->GetPress(CInputPad::JOYKEY::LEFT))
 	{
@@ -873,10 +877,6 @@ void CPlayerStateCharging::UpdateArrow()
 	{
 		Y = -1.0f;
 	}
-
-	// スティック
-	X = pPad->GetJoyStickL().X;
-	Y = pPad->GetJoyStickL().Y;
 
 	// 何か入力していれば移動判定を出す
 	if (X != 0.0f || Y != 0.0f)
