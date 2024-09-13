@@ -1,6 +1,7 @@
 Data\\TEXTURE\\title.png
 Data\\TEXTURE\\result.png
 Data\\TEXTURE\\arrow.png
+Data\\TEXTURE\\ring.png
 Data\\TEXTURE\\square.png
 Data\\TEXTURE\\leaf00.png
 Data\\TEXTURE\\leaf01.png

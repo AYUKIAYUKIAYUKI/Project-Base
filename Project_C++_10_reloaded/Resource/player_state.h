@@ -17,6 +17,7 @@
 // 前方宣言
 //****************************************************
 class CArrow;
+class CRing;
 
 //****************************************************
 // プレイヤー状態クラス
@@ -143,7 +144,7 @@ public:
 
 private:
 
-	static const float MAX_SPAN;	// 幅
+	static const int MAX_LIMITCHARGE;	// 最大チャージ猶予
 
 	void Rotation();	// 回転
 	void UpdateArrow();	// 矢印の更新を行う
@@ -151,6 +152,9 @@ private:
 	D3DXVECTOR3 m_rotHold;	// 向きを保持]
 	int m_nLimitCharge;		// チャージ猶予
 	CArrow* m_pArrow;		// 矢印情報
+	float m_fArrowSize;		// 矢印サイズ
+	CRing* m_pRing;			// リング情報
+	float m_fRingSize;		// リングサイズ
 };
 
 //****************************************************

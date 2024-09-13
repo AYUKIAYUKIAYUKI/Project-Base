@@ -20,6 +20,7 @@
 
 // オブジェクト情報用
 #include "arrow.h"
+#include "ring.h"
 #include "object_2D.h"
 #include "ripple.h"
 #include "smoke.h"
@@ -36,7 +37,7 @@ const float CPlayerStateBeginning::BEGIN_FLOATING = 1.25f;	// 変身時上昇量
 const float CPlayerStateBeginning::BEGIN_SPINNING = 0.5f;	// 変身時回転量
 const float CPlayerStateFlying::MAX_FLY_VELOCITY =	10.0f;	// 飛行時の最大加速度 (飛行速度以上推奨)
 const float CPlayerStateFlying::FLY_SPEED = 3.0f;			// 飛行速度
-const float CPlayerStateCharging::MAX_SPAN = 0.25f;			// 幅
+const int CPlayerStateCharging::MAX_LIMITCHARGE = 150;		// 最大チャージ猶予
 const int CPlayerStateStopping::STOP_CNT_MAX = 15;			// 変身停止必要時間
 const float CPlayerStateStopping::RECOIL_SPEED = 3.0f;		// 反動移動速度
 const float CPlayerStateMistook::MAX_WARP_SPEED = 15.0f;	// 強制移動速度の上限
@@ -718,8 +719,14 @@ void CPlayerStateFlying::Braking()
 CPlayerStateCharging::CPlayerStateCharging() :
 	m_rotHold{ 0.0f, 0.0f, 0.0f },
 	m_nLimitCharge{ 0 },
-	m_pArrow{ nullptr }
+	m_pArrow{ nullptr },
+	m_fArrowSize{ 0.0f },
+	m_pRing{ nullptr },
+	m_fRingSize{ 0.0f }
 {
+	// リングの生成 (先行)
+	m_pRing = CRing::Create();
+
 	// 矢印の生成
 	m_pArrow = CArrow::Create();
 }
@@ -738,6 +745,16 @@ CPlayerStateCharging::~CPlayerStateCharging()
 		// ポインタを初期化
 		m_pArrow = nullptr;
 	}
+
+	// リングの破棄
+	if (m_pRing)
+	{
+		// 消滅予約
+		m_pRing->SetDisappear();
+
+		// ポインタを初期化
+		m_pRing = nullptr;
+	}
 }
 
 //============================================================================
@@ -747,16 +764,22 @@ void CPlayerStateCharging::Enter()
 {
 	// 出現設定
 	m_pArrow->SetAppear();
+	m_pRing->SetAppear();
 
 	// 初期座標を設定
 	m_pArrow->SetPos(m_pPlayer->GetPos());
+	m_pRing->SetPos(m_pPlayer->GetPos());
 
 	// 矢印用のホールド向きに、モデルの向ている方向を設定
 	D3DXVECTOR3 newRot{ 0.0f, 0.0f, -m_pPlayer->GetRot().z };
 	m_rotHold = newRot;
 
 	// 初期サイズを設定
-	m_pArrow->SetSize({ 25.0f, 25.0f, 0.0f });
+	m_fArrowSize = 30.0f;
+	m_pArrow->SetSize({ m_fArrowSize, m_fArrowSize, 0.0f });
+	m_fRingSize = 27.5f;
+	m_pRing->SetSize({ m_fRingSize, m_fRingSize, 0.0f });
+	m_pRing->SetSizeTarget({ m_fRingSize, m_fRingSize, 0.0f });
 
 	// モデルを取得
 	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_004);
@@ -774,7 +797,7 @@ void CPlayerStateCharging::Enter()
 void CPlayerStateCharging::Update()
 { 
 	// チャージが終わると強制終了
-	if (m_nLimitCharge > 120)
+	if (m_nLimitCharge > MAX_LIMITCHARGE)
 	{
 		// 通常状態へ
 		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::DEFAULT);
@@ -991,17 +1014,26 @@ void CPlayerStateCharging::UpdateArrow()
 	// ホールド向きに記録
 	m_rotHold = newRot;
 
-	// 目標サイズを縮小
-	D3DXVECTOR3 newSizeTarget{ m_pArrow->GetSizeTarget() };
-	newSizeTarget.x = 25.0f - ((25.0f / 120) * (m_nLimitCharge));
-	newSizeTarget.y = 25.0f - ((25.0f / 120) * (m_nLimitCharge));
-	m_pArrow->SetSizeTarget(newSizeTarget);
+	// 矢印の目標サイズを縮小
+	D3DXVECTOR3 newArrowSizeTarget{ m_pArrow->GetSizeTarget() };
+	newArrowSizeTarget.x = m_fArrowSize - ((m_fArrowSize / MAX_LIMITCHARGE) * (m_nLimitCharge));
+	newArrowSizeTarget.y = m_fArrowSize - ((m_fArrowSize / MAX_LIMITCHARGE) * (m_nLimitCharge));
+	m_pArrow->SetSizeTarget(newArrowSizeTarget);
+
+	// リングの目標サイズを縮小
+	D3DXVECTOR3 newRingSizeTarget{ m_pRing->GetSizeTarget() };
+	newRingSizeTarget.x = m_fRingSize - ((m_fRingSize / MAX_LIMITCHARGE) * (m_nLimitCharge));
+	newRingSizeTarget.y = m_fRingSize - ((m_fRingSize / MAX_LIMITCHARGE) * (m_nLimitCharge));
+	m_pRing->SetSizeTarget(newRingSizeTarget);
 
 	// 新たな座標を作成
 	D3DXVECTOR3 newPos{ 0.0f, 0.0f, 0.0f };
 
 	// プレイヤー座標を取得
 	newPos = m_pPlayer->GetPos();
+
+	// リングへ座標を反映
+	m_pRing->SetPos(newPos);
 
 	// 座標を補正
 #if 0
@@ -1027,21 +1059,21 @@ void CPlayerStateCharging::UpdateArrow()
 #elif 1
 	// 移動方向の延長線上へずらす
 	/* 振り向き時などプレイヤーの移動方向とモデルの向きがずれるため、今回は見た目の角度を基にする */
-	newPos += {
-		sinf(newRot.z) * 10.0f,
-		cosf(newRot.z) * 10.0f,
-		0.0f
-	};
+	//newPos += {
+	//	sinf(newRot.z) * (10.0f - ((10.0f / 120) * (m_nLimitCharge))),
+	//	cosf(newRot.z) * (10.0f - ((10.0f / 120) * (m_nLimitCharge))),
+	//	0.0f
+	//};
 
-	// ずらされた座標を基点に弧を描くように移動
-	newPos += {
-		sinf(newRot.z) * 20.0f,
-		cosf(newRot.z) * 20.0f,
-		0.0f
-	};
+	//// ずらされた座標を基点に弧を描くように移動
+	//newPos += {
+	//	sinf(newRot.z) * (20.0f - ((20.0f / 120) * (m_nLimitCharge))),
+	//	cosf(newRot.z) * (20.0f - ((20.0f / 120) * (m_nLimitCharge))),
+	//	0.0f
+	//};
 #endif
 
-	// 座標を反映
+	// 矢印へ座標を反映
 	m_pArrow->SetPos(newPos);
 }
 
