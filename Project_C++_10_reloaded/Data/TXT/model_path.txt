@@ -21,6 +21,7 @@ data\\MODEL\\player7_Y_0.x
 data\\MODEL\\player_goal_Y_0.x
 data\\MODEL\\block_Y_0.x
 data\\MODEL\\destructible.x
+data\\MODEL\\destructible_big.x
 data\\MODEL\\spikes.x
 data\\MODEL\\enemy.x
 data\\MODEL\\bullet_core.x

@@ -108,22 +108,26 @@ void CDummy::ChangeModel(int nPattern)
 		break;
 
 	case 2:
-		BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::SPIKES));
+		BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::DEST_BIG));
 		break;
 
 	case 3:
-		BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::ENEMY));
+		BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::SPIKES));
 		break;
 
 	case 4:
-		BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::START));
+		BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::ENEMY));
 		break;
 
 	case 5:
-		BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::GOAL));
+		BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::START));
 		break;
 
 	case 6:
+		BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::GOAL));
+		break;
+
+	case 7:
 		BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::ACHIEVE));
 		break;
 

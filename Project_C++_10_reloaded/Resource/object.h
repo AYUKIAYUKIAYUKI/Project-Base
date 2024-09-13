@@ -29,6 +29,7 @@ public:
 		BULLET,			// 弾
 		BLOCK,			// ブロック
 		DESTRUCTIBLE,	// 可壊ブロック
+		DEST_BIG,		// 可壊でかブロック
 		SPIKES,			// トゲブロック
 		ITEM,			// アイテム
 		START,			// スタート

@@ -21,6 +21,7 @@
 #include "achievement.h"
 #include "block.h"
 #include "block_destructible.h"
+#include "block_destructible_big.h"
 #include "block_spikes.h"
 #include "dummy.h"
 #include "enemy.h"
@@ -152,6 +153,10 @@ void CStageMaker::Import(std::string path)
 		else if (str_type == "destructible")
 		{ // 可壊ブロック
 			CBlockDestructible::Create(pos);
+		}
+		else if (str_type == "dest_big")
+		{ // 可壊でかブロック
+			CBlockDestructibleBig::Create(pos);
 		}
 		else if (str_type == "spikes")
 		{ // とげブロック
@@ -292,11 +297,11 @@ void CStageMaker::Control()
 
 		if (CManager::GetKeyboard()->GetTrigger(DIK_NUMPAD4))
 		{
-			m_nPattern > 0 ? m_nPattern-- : m_nPattern = 6;
+			m_nPattern > 0 ? m_nPattern-- : m_nPattern = 7;
 		}
 		else if (CManager::GetKeyboard()->GetTrigger(DIK_NUMPAD6))
 		{
-			m_nPattern < 6 ? m_nPattern++ : m_nPattern = 0;
+			m_nPattern < 7 ? m_nPattern++ : m_nPattern = 0;
 		}
 
 		CRenderer::GetInstance()->SetDebugString("現在の構造物の種類:" + std::to_string(m_nPattern));
@@ -357,14 +362,18 @@ void CStageMaker::Register()
 		break;
 
 	case 2:
-		CBlockSpikes::Create(pos);
+		CBlockDestructibleBig::Create(pos);
 		break;
 
 	case 3:
-		CEnemy::Create(pos);
+		CBlockSpikes::Create(pos);
 		break;
 
 	case 4:
+		CEnemy::Create(pos);
+		break;
+
+	case 5:
 
 		// スタートタイプのオブジェクトを検索
 		if (!CObject::FindObject(CObject::TYPE::START))
@@ -378,7 +387,7 @@ void CStageMaker::Register()
 
 		break;
 
-	case 5:
+	case 6:
 
 		// ゴールタイプのオブジェクトを検索
 		if (!CObject::FindObject(CObject::TYPE::GOAL))
@@ -392,7 +401,7 @@ void CStageMaker::Register()
 
 		break;
 
-	case 6:
+	case 7:
 
 		// アチーブタイプのオブジェクトを検索
 		if (!CObject::FindObject(CObject::TYPE::ACHIEVE))
@@ -561,6 +570,24 @@ void CStageMaker::Export()
 
 		// 情報を書き出す
 		Output(Export, pDestructible->GetPos(), "destructible");
+	}
+
+	// 可壊でかブロックタイプのオブジェクトをすべて取得
+	pObject = CObject::FindAllObject(CObject::TYPE::DEST_BIG);
+
+	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	{
+		// オブジェクトの情報が無くなったら終了
+		if (pObject[nCntObj] == nullptr)
+		{
+			break;
+		}
+
+		// 可壊でかブロッククラスへダウンキャスト
+		CBlockDestructibleBig* pDestructible = CUtility::GetInstance()->DownCast<CBlockDestructibleBig, CObject>(pObject[nCntObj]);
+
+		// 情報を書き出す
+		Output(Export, pDestructible->GetPos(), "dest_big");
 	}
 
 	// とげブロックタイプのオブジェクトをすべて取得

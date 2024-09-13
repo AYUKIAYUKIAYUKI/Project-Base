@@ -23,6 +23,7 @@
 #include "achievement.h"
 #include "block.h"
 #include "block_destructible.h"
+#include "block_destructible_big.h"
 #include "block_spikes.h"
 #include "enemy.h"
 #include "fakescreen.h"
@@ -222,6 +223,60 @@ bool CPlayer::Collision()
 				{
 					// 可壊ブロックを破棄
 					pDestructible->SetRelease();
+
+					// 破壊音
+					CSound::GetInstance()->Play(CSound::LABEL::BREAK);
+				}
+
+				// 衝突判定を出す
+				bDetected = 1;
+			}
+		}
+	}
+
+	// 可壊でかタグを取得
+	pObject = CObject::FindAllObject(CObject::TYPE::DEST_BIG);
+
+	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	{
+		// 可壊でかタグの情報が無くなったら終了
+		if (pObject[nCntObj] == nullptr)
+		{
+			break;
+		}
+
+		// 可壊でかブロックへダウンキャスト
+		CBlockDestructibleBig* pDest_Big = CUtility::GetInstance()->DownCast<CBlockDestructibleBig, CObject>(pObject[nCntObj]);
+
+		// 可壊でかブロックと衝突する場合
+		if (CUtility::GetInstance()->OnlyCube(pDest_Big->GetPos(), pDest_Big->GetSize(), m_posTarget, GetSize()))
+		{
+			// 突進状態の場合のみ
+			if (typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateRushing))
+			{
+				// ダメージ処理
+				if (pDest_Big->Damage(-1))
+				{
+					// 破壊仕切れない場合、押し出し処理
+					CUtility::GetInstance()->OnlyCube(m_posTarget, m_velocity, GetPos(), GetSize(), pDest_Big->GetPos(), pDest_Big->GetSize());
+				
+					// 衝突判定を出す
+					bDetected = 1;
+				}
+
+				// 破壊音
+				CSound::GetInstance()->Play(CSound::LABEL::BREAK);
+			}
+			else
+			{
+				// 押し出し処理
+				CUtility::GetInstance()->OnlyCube(m_posTarget, m_velocity, GetPos(), GetSize(), pDest_Big->GetPos(), pDest_Big->GetSize());
+
+				// 飛行状態の場合のみ
+				if (typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateFlying))
+				{
+					// ダメージ処理
+					pDest_Big->Damage(-1);
 
 					// 破壊音
 					CSound::GetInstance()->Play(CSound::LABEL::BREAK);

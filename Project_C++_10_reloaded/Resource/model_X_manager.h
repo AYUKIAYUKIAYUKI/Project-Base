@@ -43,6 +43,7 @@ public:
 		PLAYER_007,		// プレイヤー007
 		BLOCK_000,		// ブロック000
 		DESTRUCTIBLE,	// 可壊ブロック
+		DEST_BIG,		// 可壊でかブロック
 		SPIKES,			// とげブロック
 		ENEMY,			// エネミー
 		BULLET_CORE,	// 弾 - 核

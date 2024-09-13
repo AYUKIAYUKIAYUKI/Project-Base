@@ -24,6 +24,7 @@
     <ClCompile Include="resource\bg.cpp" />
     <ClCompile Include="resource\block.cpp" />
     <ClCompile Include="Resource\block_destructible.cpp" />
+    <ClCompile Include="Resource\block_destructible_big.cpp" />
     <ClCompile Include="Resource\block_spikes.cpp" />
     <ClCompile Include="Resource\bullet.cpp" />
     <ClCompile Include="resource\camera.cpp" />
@@ -89,6 +90,7 @@
     <ClInclude Include="resource\bg.h" />
     <ClInclude Include="resource\block.h" />
     <ClInclude Include="Resource\block_destructible.h" />
+    <ClInclude Include="Resource\block_destructible_big.h" />
     <ClInclude Include="Resource\block_spikes.h" />
     <ClInclude Include="Resource\bullet.h" />
     <ClInclude Include="resource\camera.h" />
