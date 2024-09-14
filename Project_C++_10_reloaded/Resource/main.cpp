@@ -21,8 +21,8 @@
 //****************************************************
 // マクロ定義
 //****************************************************
-#define CLASS_NAME	"WindowClass"			// ウインドウクラスの名前
-#define WINDOW_NAME	"ウインドウテンプレ"	// ウインドウの名前
+#define CLASS_NAME	"WindowClass"			// ウィンドウクラスの名前
+#define WINDOW_NAME	"ウィンドウテンプレ"	// ウィンドウの名前
 
 // メモリリーク検出用
 #define _CRTDBG_MAP_ALLOC
@@ -36,6 +36,7 @@ CManager* g_pManager = nullptr;	// マネージャー管理
 // プロトタイプ宣言
 //****************************************************
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);	// ウィンドウプロシージャ
+void ChangeWindowSize(HWND hWnd);													// ウィンドウサイズの変更
 
 //****************************************************************************
 // メイン関数
@@ -49,8 +50,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 	WNDCLASSEX wcex =
 	{
 		sizeof(WNDCLASSEX),				// WNDCLASSEXのメモリサイズ
-		CS_CLASSDC,						// ウインドウのスタイル
-		WindowProc,						// ウインドウプロシージャ
+		CS_CLASSDC,						// ウィンドウのスタイル
+		WindowProc,						// ウィンドウプロシージャ
 		0,								// 何かを0にする
 		0,								// 何かを0にする
 		hInstance,						// インスタンスハンドル
@@ -58,39 +59,40 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 		LoadCursor(NULL,IDC_ARROW),		// マウスカーソル
 		(HBRUSH)(COLOR_WINDOW),			// クライアント領域の背景色
 		NULL,							// メニューバー
-		CLASS_NAME,						// ウインドウクラスの名前
+		CLASS_NAME,						// ウィンドウクラスの名前
 		LoadIcon(NULL,IDI_APPLICATION)	// ファイルのアイコン
 	};
 
-	HWND hWnd;	// ウインドウハンドル(識別子)
+	HWND hWnd;	// ウィンドウハンドル(識別子)
 	MSG msg;	// メッセージを格納する変数
 
 	// 画面サイズの設定用
-	RECT rect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+	RECT rect{ 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 
-	// ウインドウクラスの登録
+	// ウィンドウクラスの登録
 	RegisterClassEx(&wcex);
 
 	// クライアント領域を指定のサイズに調整
 	AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
 
-	// ウインドウを生成
-	hWnd = CreateWindowEx(0,	// 拡張ウインドウのスタイル
-		CLASS_NAME,				// ウインドウクラスの名前
-		WINDOW_NAME,			// ウインドウの名前
-		WS_OVERLAPPEDWINDOW,	// ウインドウのスタイル
-		125,					// ウインドウの左上のX座標
-		50,						// ウインドウの左上のY座標
-		SCREEN_WIDTH,			// ウインドウの幅
-		SCREEN_HEIGHT,			// ウインドウの高さ
-		NULL,					// 親ウインドウのハンドル
-		NULL,					// メニューバーまたは子ウインドウID
+	// ウィンドウを生成
+	hWnd = CreateWindowEx(0,	// 拡張ウィンドウのスタイル
+		CLASS_NAME,				// ウィンドウクラスの名前
+		WINDOW_NAME,			// ウィンドウの名前
+		WS_OVERLAPPEDWINDOW,	// ウィンドウのスタイル
+		125,					// ウィンドウの左上のX座標
+		50,						// ウィンドウの左上のY座標
+		SCREEN_WIDTH,			// ウィンドウの幅
+		SCREEN_HEIGHT,			// ウィンドウの高さ
+		NULL,					// 親ウィンドウのハンドル
+		NULL,					// メニューバーまたは子ウィンドウID
 		hInstance,				// インスタンスハンドル
-		NULL);					// ウインドウ作成データ
+		NULL);					// ウィンドウ作成データ
 
-	// ウインドウの表示
-	ShowWindow(hWnd, SW_NORMAL);	// ウインドウの表示状態を設定
+	// ウィンドウの表示
+	ShowWindow(hWnd, SW_NORMAL);	// ウィンドウの表示状態を設定
 	UpdateWindow(hWnd);				// クライアント領域を更新
+	ChangeWindowSize(hWnd);			// ウィンドウサイズの変更
 
 	// マネージャーの生成
 	g_pManager = DBG_NEW CManager;
@@ -130,7 +132,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 			{
 				//メッセージの設定
 				TranslateMessage(&msg);	// 仮想キーメッセージを文字メッセージへ変換
-				DispatchMessage(&msg);	// ウインドウプロシージャへメッセージを創出
+				DispatchMessage(&msg);	// ウィンドウプロシージャへメッセージを創出
 			}
 		}
 		else
@@ -183,8 +185,6 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 		g_pManager = nullptr;	// ポインタを初期化
 	}
 
-	// ウインドウクラスの登録を解除
-
 	// CRTメモリリーク箇所検出
 	//_CrtSetBreakAlloc();
 
@@ -192,7 +192,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hInstancePrev, _
 }
 
 //****************************************************************************
-// ウインドウプロシージャ関数
+// ウィンドウプロシージャ関数
 //****************************************************************************
 LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
@@ -201,7 +201,7 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 
 	switch (uMsg)
 	{
-		// ウインドウ破棄のメッセージを送る
+		// ウィンドウ破棄のメッセージを送る
 	case WM_DESTROY:
 
 		PostQuitMessage(0);
@@ -241,10 +241,61 @@ LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 			}
 
 			break;
+
+		case VK_F11:
+
+			// ウィンドウサイズの変更
+			ChangeWindowSize(hWnd);
+
+			break;
 		}
 
 		break;
 	}
 
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);	// 既定の処理を返す
+}
+
+//****************************************************************************
+// ウィンドウサイズの変更
+//****************************************************************************
+void ChangeWindowSize(HWND hWnd)
+{
+	// モード変更フラグ
+	static bool bSetFullScreen{ false };
+
+	// ウィンドウサイズ保持用
+	static RECT windowRectHold{ 0, 0, 0, 0 };
+
+	// 現在のウィンドウスタイルを取得
+	DWORD dwStyle = GetWindowLong(hWnd, GWL_STYLE);
+
+	// モード変更
+	bSetFullScreen = !bSetFullScreen;
+
+	if (bSetFullScreen)
+	{ // フルスクリーンモードに切り替え
+
+		// 現在のウィンドウサイズを保持する
+		GetWindowRect(hWnd, &windowRectHold);
+
+		// ウィンドウの表示スタイルを変更する
+		SetWindowLong(hWnd, GWL_STYLE, dwStyle & ~WS_OVERLAPPEDWINDOW);
+
+		// ウィンドウのサイズを変更する
+		SetWindowPos(hWnd, HWND_TOP,
+			0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN),
+			SWP_FRAMECHANGED | SWP_NOACTIVATE);
+	}
+	else
+	{ // ウィンドウモードに切り替え
+
+		// ウィンドウの表示スタイルを変更する
+		SetWindowLong(hWnd, GWL_STYLE, dwStyle | WS_OVERLAPPEDWINDOW);
+
+		// ウィンドウのサイズを変更する
+		SetWindowPos(hWnd, HWND_TOP,
+			windowRectHold.left, windowRectHold.top, windowRectHold.right - windowRectHold.left, windowRectHold.bottom - windowRectHold.top,
+			SWP_FRAMECHANGED | SWP_NOACTIVATE);
+	}
 }
