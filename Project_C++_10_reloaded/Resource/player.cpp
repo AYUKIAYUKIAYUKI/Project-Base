@@ -25,6 +25,7 @@
 #include "block_destructible.h"
 #include "block_destructible_big.h"
 #include "block_spikes.h"
+#include "block_spikes_move.h"
 #include "enemy.h"
 #include "fakescreen.h"
 #include "goal.h"
@@ -304,6 +305,34 @@ bool CPlayer::Collision()
 
 		// とげブロックと衝突する場合
 		if (CUtility::GetInstance()->OnlyCube(pBlockSpikes->GetPos(), pBlockSpikes->GetSize(), m_posTarget, GetSize()))
+		{
+			// ミス状態に移行
+			m_pStateManager->SetPendingState(CPlayerState::STATE::MISS);
+
+			// 衝突判定を出す
+			bDetected = 1;
+
+			// 死亡音
+			CSound::GetInstance()->Play(CSound::LABEL::DIE);
+		}
+	}
+
+	// とげ移動タグを取得
+	pObject = CObject::FindAllObject(CObject::TYPE::SPIKES_MOVE);
+
+	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	{
+		// とげ移動タグの情報が無くなったら終了
+		if (pObject[nCntObj] == nullptr)
+		{
+			break;
+		}
+
+		// とげ移動ブロックへダウンキャスト
+		CBlockSpikesMove* pBlockSpikesMove = CUtility::GetInstance()->DownCast<CBlockSpikesMove, CObject>(pObject[nCntObj]);
+
+		// とげ移動ブロックと衝突する場合
+		if (CUtility::GetInstance()->OnlyCube(pBlockSpikesMove->GetPos(), pBlockSpikesMove->GetSize(), m_posTarget, GetSize()))
 		{
 			// ミス状態に移行
 			m_pStateManager->SetPendingState(CPlayerState::STATE::MISS);

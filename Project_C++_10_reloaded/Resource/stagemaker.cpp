@@ -23,6 +23,7 @@
 #include "block_destructible.h"
 #include "block_destructible_big.h"
 #include "block_spikes.h"
+#include "block_spikes_move.h"
 #include "dummy.h"
 #include "enemy.h"
 #include "goal.h"
@@ -162,6 +163,13 @@ void CStageMaker::Import(std::string path)
 		{ // とげブロック
 			CBlockSpikes::Create(pos);
 		}
+		else if (str_type == "spikes_move")
+		{ // とげ移動ブロック
+			float fAngleInit{ std::stof(str.substr(str.find("i:") + 2, str.find(","))) };
+			float fAdder{ std::stof(str.substr(str.find("a:") + 2, str.find(","))) };
+			float fCoeff{ std::stof(str.substr(str.find("c:") + 2, str.find(","))) };
+			CBlockSpikesMove::Create(pos, fAngleInit, fAdder, fCoeff);
+		}
 		else if (str_type == "enemy")
 		{ // エネミー
 			CEnemy::Create(pos);
@@ -213,10 +221,13 @@ CStageMaker* CStageMaker::GetInstance()
 // コンストラクタ
 //============================================================================
 CStageMaker::CStageMaker() :
-	m_nPattern{ 0 },	// 構造物の種類識別
-	m_bModify{ false },	// 編集切り替え
-	m_nID{ 0 },			// 編集する構造物を識別
-	m_pDummy{ nullptr }	// 構造物のダミー情報
+	m_nPattern{ 0 },		// 構造物の種類識別
+	m_fAngleInit{ 0.0f },	// 初期角度
+	m_fAdder{ 0.0f },		// 増加量
+	m_fCoeff{ 1.0f },		// 反映係数
+	m_bModify{ false },		// 編集切り替え
+	m_nID{ 0 },				// 編集する構造物を識別
+	m_pDummy{ nullptr }		// 構造物のダミー情報
 {
 	// ステージデバッグモードのみ
 	if (CManager::GetScene()->GetMode() == CScene::MODE::STAGE)
@@ -297,11 +308,11 @@ void CStageMaker::Control()
 
 		if (CManager::GetKeyboard()->GetTrigger(DIK_NUMPAD4))
 		{
-			m_nPattern > 0 ? m_nPattern-- : m_nPattern = 7;
+			m_nPattern > 0 ? m_nPattern-- : m_nPattern = 8;
 		}
 		else if (CManager::GetKeyboard()->GetTrigger(DIK_NUMPAD6))
 		{
-			m_nPattern < 7 ? m_nPattern++ : m_nPattern = 0;
+			m_nPattern < 8 ? m_nPattern++ : m_nPattern = 0;
 		}
 
 		CRenderer::GetInstance()->SetDebugString("現在の構造物の種類:" + std::to_string(m_nPattern));
@@ -340,6 +351,70 @@ void CStageMaker::Control()
 			Modify();
 		}
 	}
+
+	if (CManager::GetKeyboard()->GetTrigger(DIK_F4))
+	{
+		// とげ移動ブロックの角度を一斉リセット
+		CBlockSpikesMove::ResetAngleAll();
+	}
+}
+
+//============================================================================
+// とげ用操作
+//============================================================================
+void CStageMaker::ControlSpikes()
+{
+	if (CManager::GetKeyboard()->GetTrigger(DIK_R))
+	{
+		m_fAngleInit += D3DX_PI * 0.1f;
+	}
+	else if (CManager::GetKeyboard()->GetTrigger(DIK_F))
+	{
+		m_fAngleInit += D3DX_PI * -0.1f;
+	}
+	else if (CManager::GetKeyboard()->GetTrigger(DIK_V))
+	{
+		m_fAngleInit = 0.0f;
+	}
+
+	if (m_fAngleInit > D3DX_PI)
+	{
+		m_fAngleInit += -D3DX_PI * 2.0f;
+	}
+	else if (m_fAngleInit < -D3DX_PI)
+	{
+		m_fAngleInit += D3DX_PI * 2.0f;
+	}
+
+	if (CManager::GetKeyboard()->GetTrigger(DIK_T))
+	{
+		m_fAdder += 0.01f;
+	}
+	else if (CManager::GetKeyboard()->GetTrigger(DIK_G))
+	{
+		m_fAdder += -0.01f;
+	}
+	else if (CManager::GetKeyboard()->GetTrigger(DIK_B))
+	{
+		m_fAdder = 0.0f;
+	}
+
+	if (CManager::GetKeyboard()->GetTrigger(DIK_Y))
+	{
+		m_fCoeff += 1.0f;
+	}
+	else if (CManager::GetKeyboard()->GetTrigger(DIK_H))
+	{
+		m_fCoeff += -1.0f;
+	}
+	else if (CManager::GetKeyboard()->GetTrigger(DIK_N))
+	{
+		m_fCoeff = 1.0f;
+	}
+
+	CRenderer::GetInstance()->SetDebugString("初期角度 : " + std::to_string(m_fAngleInit));
+	CRenderer::GetInstance()->SetDebugString("増加量 : " + std::to_string(m_fAdder));
+	CRenderer::GetInstance()->SetDebugString("反映係数 : " + std::to_string(m_fCoeff));
 }
 
 //============================================================================
@@ -370,10 +445,14 @@ void CStageMaker::Register()
 		break;
 
 	case 4:
-		CEnemy::Create(pos);
+		CBlockSpikesMove::Create(pos, m_fAngleInit, m_fAdder, m_fCoeff);
 		break;
 
 	case 5:
+		CEnemy::Create(pos);
+		break;
+
+	case 6:
 
 		// スタートタイプのオブジェクトを検索
 		if (!CObject::FindObject(CObject::TYPE::START))
@@ -387,7 +466,7 @@ void CStageMaker::Register()
 
 		break;
 
-	case 6:
+	case 7:
 
 		// ゴールタイプのオブジェクトを検索
 		if (!CObject::FindObject(CObject::TYPE::GOAL))
@@ -401,7 +480,7 @@ void CStageMaker::Register()
 
 		break;
 
-	case 7:
+	case 8:
 
 		// アチーブタイプのオブジェクトを検索
 		if (!CObject::FindObject(CObject::TYPE::ACHIEVE))
@@ -454,18 +533,52 @@ void CStageMaker::Modify()
 	// オブジェクトをXオブジェクトにダウンキャスト
 	CObject_X* pX = CUtility::GetInstance()->DownCast<CObject_X, CObject>(pObj);
 
-	// ダミーの座標をオブジェクトの座標に同期
-	m_pDummy->SetPos(pX->GetPos());
+	// このオブジェクトがとげ移動ブロックなら
+	if (typeid(*pX) == typeid(CBlockSpikesMove))
+	{
+		// Xオブジェクトをとげ移動ブロックにダウンキャスト
+		CBlockSpikesMove* pSpikeMove = CUtility::GetInstance()->DownCast<CBlockSpikesMove, CObject_X>(pX);
 
-	// ダミー操作
-	m_pDummy->Control();
+		// ダミーの座標をオブジェクトの座標に同期
+		m_pDummy->SetPos(pSpikeMove->GetPosHold());
 
-	// 操作反映
-	m_pDummy->Update();
+		// ダミー操作
+		m_pDummy->Control();
 
-	// 座標を反映
-	pX->SetPos(m_pDummy->GetPos());
-	pX->Update();
+		// 操作反映
+		m_pDummy->Update();
+
+		// 座標・追加数値を反映
+		pSpikeMove->SetPosHold(m_pDummy->GetPos());
+
+		// 設定されていた追加情報を取得
+		m_fAngleInit = pSpikeMove->GetAngleInit();
+		m_fAdder = pSpikeMove->GetAdder();
+		m_fCoeff = pSpikeMove->GetCoeff();
+	
+		// とげ用操作
+		ControlSpikes();
+
+		// 変更した追加情報を反映
+		pSpikeMove->SetAngleInit(m_fAngleInit);
+		pSpikeMove->SetAdder(m_fAdder);
+		pSpikeMove->SetCoeff(m_fCoeff);
+	}
+	else
+	{
+		// ダミーの座標をオブジェクトの座標に同期
+		m_pDummy->SetPos(pX->GetPos());
+
+		// ダミー操作
+		m_pDummy->Control();
+
+		// 操作反映
+		m_pDummy->Update();
+
+		// 座標を反映
+		pX->SetPos(m_pDummy->GetPos());
+		pX->Update();
+	}
 }
 
 //============================================================================
@@ -608,6 +721,24 @@ void CStageMaker::Export()
 		Output(Export, pDestructible->GetPos(), "spikes");
 	}
 
+	// とげ移動ブロックタイプのオブジェクトをすべて取得
+	pObject = CObject::FindAllObject(CObject::TYPE::SPIKES_MOVE);
+
+	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	{
+		// オブジェクトの情報が無くなったら終了
+		if (pObject[nCntObj] == nullptr)
+		{
+			break;
+		}
+
+		// とげ移動ブロッククラスへダウンキャスト
+		CBlockSpikesMove* pSpike_Move = CUtility::GetInstance()->DownCast<CBlockSpikesMove, CObject>(pObject[nCntObj]);
+
+		// 情報を書き出す
+		Output(Export, pSpike_Move->GetPosHold(), "spikes_move", pSpike_Move->GetAngleInit(), pSpike_Move->GetAdder(), pSpike_Move->GetCoeff());
+	}
+
 	// エネミータイプのオブジェクトをすべて取得
 	pObject = CObject::FindAllObject(CObject::TYPE::ENEMY);
 
@@ -662,4 +793,23 @@ void CStageMaker::Output(std::ofstream& file, D3DXVECTOR3 pos, std::string str)
 
 	// 種類を書き出す
 	file << "type:" << str << "," << std::endl;
+}
+
+//============================================================================
+// 情報書き出し
+//============================================================================
+void CStageMaker::Output(std::ofstream& file, D3DXVECTOR3 pos, std::string str, float fAngleInit, float fAdder, float fCoeff)
+{
+	// 座標を書き出す
+	file << std::fixed << std::setprecision(1) << "X:" << pos.x << ",";
+	file << std::fixed << std::setprecision(1) << "Y:" << pos.y << ",";
+	file << std::fixed << std::setprecision(1) << "Z:" << pos.z << ",";
+
+	// 種類を書き出す
+	file << "type:" << str << ",";
+
+	// 追加数値を書き出す
+	file << std::fixed << std::setprecision(3) << "i:" << fAngleInit << ",";
+	file << std::fixed << std::setprecision(3) << "a:" << fAdder << ",";
+	file << std::fixed << std::setprecision(3) << "c:" << fCoeff << "," << std::endl;
 }

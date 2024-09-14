@@ -31,6 +31,7 @@ public:
 		DESTRUCTIBLE,	// 可壊ブロック
 		DEST_BIG,		// 可壊でかブロック
 		SPIKES,			// トゲブロック
+		SPIKES_MOVE,	// トゲ移動ブロック
 		ITEM,			// アイテム
 		START,			// スタート
 		GOAL,			// ゴール

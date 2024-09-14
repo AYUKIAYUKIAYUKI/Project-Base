@@ -45,6 +45,7 @@ public:
 		DESTRUCTIBLE,	// 可壊ブロック
 		DEST_BIG,		// 可壊でかブロック
 		SPIKES,			// とげブロック
+		SPIKES_MOVE,	// とげ移動ブロック
 		ENEMY,			// エネミー
 		BULLET_CORE,	// 弾 - 核
 		START,			// スタート

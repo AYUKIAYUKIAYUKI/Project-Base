@@ -26,6 +26,7 @@
     <ClCompile Include="Resource\block_destructible.cpp" />
     <ClCompile Include="Resource\block_destructible_big.cpp" />
     <ClCompile Include="Resource\block_spikes.cpp" />
+    <ClCompile Include="Resource\block_spikes_move.cpp" />
     <ClCompile Include="Resource\bullet.cpp" />
     <ClCompile Include="resource\camera.cpp" />
     <ClCompile Include="Resource\dummy.cpp" />
@@ -92,6 +93,7 @@
     <ClInclude Include="Resource\block_destructible.h" />
     <ClInclude Include="Resource\block_destructible_big.h" />
     <ClInclude Include="Resource\block_spikes.h" />
+    <ClInclude Include="Resource\block_spikes_move.h" />
     <ClInclude Include="Resource\bullet.h" />
     <ClInclude Include="resource\camera.h" />
     <ClInclude Include="Resource\dummy.h" />
