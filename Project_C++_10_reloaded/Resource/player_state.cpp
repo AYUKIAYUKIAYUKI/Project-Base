@@ -102,7 +102,7 @@ CPlayerStateDefault::~CPlayerStateDefault()
 //============================================================================
 void CPlayerStateDefault::Enter()
 {
-	// X・Y軸の向きをリセット;
+	// X・Y軸の向きをリセット
 	m_pPlayer->SetRot(D3DXVECTOR3{ 0.0f, 0.0f, m_pPlayer->GetRot().z });
 
 	// 目標向きをリセット
@@ -124,8 +124,9 @@ void CPlayerStateDefault::Enter()
 void CPlayerStateDefault::Update()
 {
 	// 操作
-	if (!Walk())
+	if (!Control())
 	{
+		// 変更開始状態になっていたら終了
 		return;
 	}
 
@@ -133,7 +134,7 @@ void CPlayerStateDefault::Update()
 	Rotation();
 
 	// 重力加速
-	D3DXVECTOR3 NewVelocity = m_pPlayer->GetVelocity();
+	D3DXVECTOR3 NewVelocity{ m_pPlayer->GetVelocity() };
 	CUtility::GetInstance()->Gravity(NewVelocity);
 	m_pPlayer->SetVelocity(NewVelocity);
 
@@ -141,17 +142,17 @@ void CPlayerStateDefault::Update()
 	Braking();
 
 	// 加速度分、目標座標を変動
-	D3DXVECTOR3 NewPosTarget = m_pPlayer->GetPosTarget();
+	D3DXVECTOR3 NewPosTarget{ m_pPlayer->GetPosTarget() };
 	NewPosTarget += m_pPlayer->GetVelocity();
 	m_pPlayer->SetPosTarget(NewPosTarget);
 
 	// 当たり判定
 	m_pPlayer->Collision();
 
-	// おかしなところに行くと一旦殺す
+	// 一定以上落下すると
 	if (m_pPlayer->GetPosTarget().y < -300.0f)
 	{
-		// 失敗状態に変更
+		// 死亡状態に変更
 		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::MISS);
 	}
 }
@@ -167,20 +168,20 @@ void CPlayerStateDefault::Exit()
 //============================================================================
 // 移動
 //============================================================================
-bool CPlayerStateDefault::Walk()
+bool CPlayerStateDefault::Control()
 {
 	// キーボード取得
-	CInputKeyboard* pKeyboard = CManager::GetKeyboard();
+	CInputKeyboard* pKeyboard{ CManager::GetKeyboard() };
 
 	// パッド取得
-	CInputPad* pPad = CManager::GetPad();
+	CInputPad* pPad{ CManager::GetPad() };
 
 	// 移動方向用
-	bool bMove = 0;
-	float X = 0.0f;
-	float Y = 0.0f;
+	bool bMove{ false };
+	float X{ 0.0f };
+	float Y{ 0.0f };
 
-	// スティック
+	// スティックのX軸の傾きを取得
 	X = pPad->GetJoyStickL().X;
 
 	// X軸
@@ -201,25 +202,25 @@ bool CPlayerStateDefault::Walk()
 
 	if (bMove)
 	{
-		// 移動量と目標回転量を設定
-		D3DXVECTOR3 veloctiy = m_pPlayer->GetVelocity();
-		D3DXVECTOR3 rotTarget = m_pPlayer->GetRotTarget();
+		// 入力方向に加速度を設定
+		D3DXVECTOR3 NewVeloctiy{ m_pPlayer->GetVelocity() };
+		NewVeloctiy.x += sinf(atan2f(X, 0.0f));
+		m_pPlayer->SetVelocity(NewVeloctiy);
 
-		veloctiy.x += sinf(atan2f(X, 0.0f));
-		rotTarget.y = atan2f(X, 0.0f);
-
-		m_pPlayer->SetVelocity(veloctiy);
-		m_pPlayer->SetRotTarget(rotTarget);
+		// 入力方向にモデルの目標向きを設定
+		D3DXVECTOR3 NewRotTarget{ m_pPlayer->GetRotTarget() };
+		NewRotTarget.y = atan2f(X, 0.0f);
+		m_pPlayer->SetRotTarget(NewRotTarget);
 	}
 
-	// 状態変更
+	// 変身
 	if (pKeyboard->GetTrigger(DIK_SPACE) || pPad->GetTrigger(CInputPad::JOYKEY::A) || pPad->GetTrigger(CInputPad::JOYKEY::B) ||
 		pPad->GetTrigger(CInputPad::JOYKEY::X) || pPad->GetTrigger(CInputPad::JOYKEY::Y))
 	{
 		// Y方向への加速度が無ければ変身
 		if (m_pPlayer->GetVelocity().y == 0.0f)
 		{
-			// 飛行状態へ
+			// 変身開始状態へ変更
 			m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::BEGINNING);
 
 			// 以降の更新処理を行わない
@@ -265,7 +266,7 @@ void CPlayerStateDefault::Rotation()
 void CPlayerStateDefault::Braking()
 {
 	// 新しい加速度を作成
-	D3DXVECTOR3 NewVelocity = m_pPlayer->GetVelocity();
+	D3DXVECTOR3 NewVelocity{ m_pPlayer->GetVelocity() };
 
 	// 加速度上限に到達で速度固定
 	if (NewVelocity.x > MAX_WALK_VELOCITY)
@@ -303,9 +304,10 @@ void CPlayerStateDefault::Recoil()
 //============================================================================
 // コンストラクタ
 //============================================================================
-CPlayerStateBeginning::CPlayerStateBeginning()
+CPlayerStateBeginning::CPlayerStateBeginning() :
+	m_nCntMetamorphose{ 0 }
 {
-	m_nCntMetamorphose = 0;	// 変身時間カウントを初期化
+
 }
 
 //============================================================================
@@ -313,7 +315,7 @@ CPlayerStateBeginning::CPlayerStateBeginning()
 //============================================================================
 CPlayerStateBeginning::~CPlayerStateBeginning()
 {
-	m_nCntMetamorphose = 0;	// 変身時間カウントを初期化
+
 }
 
 //============================================================================
@@ -322,23 +324,24 @@ CPlayerStateBeginning::~CPlayerStateBeginning()
 void CPlayerStateBeginning::Enter()
 {
 	// モデルを取得
-	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_001);
+	auto Model{ CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_001) };
 
 	// モデルの設定
-	m_pPlayer->BindModel(model);
+	m_pPlayer->BindModel(Model);
 
 	// サイズを設定
-	m_pPlayer->SetSize(model->size);
+	m_pPlayer->SetSize(Model->size);
 
+	// エフェクト生成
 	for (int i = 0; i < 10; i++)
 	{
-		// ランダムな加速度を生成
-		D3DXVECTOR3 velocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>() };
+		// ランダムな加速度を作成
+		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>() };
 
 		// 煙を生成
 		CSmoke::Create(
-			m_pPlayer->GetPos(),	// 座標
-			velocity * 0.0075f);	// 加速度
+			m_pPlayer->GetPos(),		// 座標
+			RandomVelocity * 0.0075f);	// 加速度
 	}
 
 	// 爆発音
@@ -359,15 +362,15 @@ void CPlayerStateBeginning::Update()
 		m_nCntMetamorphose++;
 
 		// 変身期間中は強制上昇
-		D3DXVECTOR3 posTarget = m_pPlayer->GetPosTarget();
-		posTarget.y += BEGIN_FLOATING;
-		m_pPlayer->SetPosTarget(posTarget);
+		D3DXVECTOR3 NewPosTarget{ m_pPlayer->GetPosTarget() };
+		NewPosTarget.y += BEGIN_FLOATING;
+		m_pPlayer->SetPosTarget(NewPosTarget);
 
-		// Y軸を高速回転し、Z軸回転を初期化
-		D3DXVECTOR3 rot = m_pPlayer->GetRot();
-		rot.y = posTarget.y * BEGIN_SPINNING;
-		rot.z = 0.0f;
-		m_pPlayer->SetRot(rot);
+		// Y軸向きを高速回転し、Z軸向きはリセット
+		D3DXVECTOR3 NewRot{ m_pPlayer->GetRot() };
+		NewRot.y = NewPosTarget.y * BEGIN_SPINNING;
+		NewRot.z = 0.0f;
+		m_pPlayer->SetRot(NewRot);
 
 		// 当たり判定
 		if (m_pPlayer->Collision())
@@ -401,23 +404,23 @@ void CPlayerStateBeginning::Update()
 void CPlayerStateBeginning::Exit()
 {
 	// 加速度を初期化
-	m_pPlayer->SetVelocity({ 0.0f, 0.0f, 0.0f });
+	m_pPlayer->SetVelocity(D3DXVECTOR3{ 0.0f, 0.0f, 0.0f });
 
 	// 目標加速度を初期化
-	m_pPlayer->SetVelocityTarget({ 0.0f, 0.0f, 0.0f });
+	m_pPlayer->SetVelocityTarget(D3DXVECTOR3{ 0.0f, 0.0f, 0.0f });
 
 	// 飛行方向を初期化
 	m_pPlayer->SetAngleFlying(0.0f);
 
-	// Z軸回転目標を初期化
-	D3DXVECTOR3 rotTarget = m_pPlayer->GetRotTarget();
-	rotTarget.z = 0.0f;
-	m_pPlayer->SetRotTarget(rotTarget);
+	// Y軸の向きをリセット
+	D3DXVECTOR3 NewRot{ m_pPlayer->GetRot() };
+	NewRot.y = 0.0f;
+	m_pPlayer->SetRot(NewRot);
 
-	// Y軸回転を初期化
-	D3DXVECTOR3 rot = m_pPlayer->GetRot();
-	rot.y = 0.0f;
-	m_pPlayer->SetRot(rot);
+	// Z軸の目標向きをリセット
+	D3DXVECTOR3 NewRotTarget{ m_pPlayer->GetRotTarget() };
+	NewRotTarget.z = 0.0f;
+	m_pPlayer->SetRotTarget(NewRotTarget);
 }
 
 
@@ -1221,8 +1224,10 @@ void CPlayerStateRushing::Update()
 //============================================================================
 void CPlayerStateRushing::Exit()
 {
-	// X・Y軸の向きをリセット
-	D3DXVECTOR3 NewRot{ 0.0f, 0.0f, m_pPlayer->GetRot().z };
+	// X・Y軸の向きを少し大げさに設定
+	D3DXVECTOR3 NewRot{ m_pPlayer->GetRot() };
+	NewRot.x = CUtility::GetInstance()->GetRandomValue<float>() * 0.003f;
+	NewRot.y = CUtility::GetInstance()->GetRandomValue<float>() * 0.003f;
 	m_pPlayer->SetRot(NewRot);
 }
 

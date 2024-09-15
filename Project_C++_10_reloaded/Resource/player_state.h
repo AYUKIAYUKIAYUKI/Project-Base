@@ -77,7 +77,7 @@ private:
 
 	D3DXVECTOR3 m_OldRotTarget;	// ‰ß‹‚Ì–Ú•WŒü‚«
 
-	bool Walk();		// ‘€ì
+	bool Control();		// ‘€ì
 	void Rotation();	// ‰ñ“]
 	void Braking();		// §“®’²®
 	void Recoil();		// ”½“®
