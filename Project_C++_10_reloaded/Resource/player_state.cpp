@@ -37,7 +37,7 @@ const float CPlayerStateBeginning::BEGIN_FLOATING = 1.25f;	// •ÏgŽžã¸—Ê
 const float CPlayerStateBeginning::BEGIN_SPINNING = 0.5f;	// •ÏgŽž‰ñ“]—Ê
 const float CPlayerStateFlying::MAX_FLY_VELOCITY =	10.0f;	// ”òsŽž‚ÌÅ‘å‰Á‘¬“x (”òs‘¬“xˆÈã„§)
 const float CPlayerStateFlying::FLY_SPEED = 3.0f;			// ”òs‘¬“x
-const int CPlayerStateCharging::MAX_LIMITCHARGE = 120;		// Å‘åƒ`ƒƒ[ƒW—P—\
+const int CPlayerStateCharging::MAX_LIMITCHARGE = 9000;		// Å‘åƒ`ƒƒ[ƒW—P—\
 const int CPlayerStateStopping::STOP_CNT_MAX = 25;			// •Ïg’âŽ~•K—vŽžŠÔ
 const float CPlayerStateStopping::RECOIL_SPEED = 4.0f;		// ”½“®ˆÚ“®‘¬“x
 const float CPlayerStateMistook::MAX_WARP_SPEED = 15.0f;	// ‹­§ˆÚ“®‘¬“x‚ÌãŒÀ
@@ -907,46 +907,46 @@ void CPlayerStateCharging::Exit()
 //============================================================================
 void CPlayerStateCharging::Rotation()
 {
-	// Œü‚«î•ñŽæ“¾
+	// ‰ß‹Ž‚Ì–Ú•WŒü‚«—p
+	static D3DXVECTOR3 OldRotTarget{ 0.0f, 0.0f, 0.0f };
+
+	// Œü‚«î•ñ‚ðŽæ“¾
 	D3DXVECTOR3 rot = m_pPlayer->GetRot();
 	D3DXVECTOR3 rotTarget = m_pPlayer->GetRotTarget();
 
-#if 0	// ‹ŒŽ®
-	// ƒuƒŒ[ƒL—Í
-	float fStopEnergy = 0.2f;
+#ifdef _DEBUG
+	CRenderer::GetInstance()->SetDebugString("yŒ»Ý‚ÌŒü‚« :" + std::to_string(rot.z) + "z");
+	CRenderer::GetInstance()->SetDebugString("y–Ú•W‚ÌŒü‚« :" + std::to_string(rotTarget.z) + "z");
+#endif // _DEBUG
 
-	// ‰ñ“]”½‰f‚Æ‰ñ“]—Ê‚ÌŒ¸Š
-	if (rotTarget.z - rot.z > D3DX_PI)
+	// –Ú•WŒü‚«‚ðãY—í‚É’Ç‚¢‚©‚¯‚é‚æ‚¤‚ÉAŒü‚«‚ð•â³
+	if (rotTarget.z > 0.0f && OldRotTarget.z < 0.0f)
 	{
-		rot.z += ((rotTarget.z - rot.z) * fStopEnergy + (D3DX_PI * 1.8f));
+		rot.z += D3DX_PI * 2.0f;
+#ifdef _DEBUG
+		CRenderer::GetInstance()->SetTimeString("‚È‚ñ‚È‚ñ‚È‚ñ‚È‚ñ‚È‚ñ‚È‚ñ‚È‚ñ‚È‚ñ‚È‚ñ", 60);
+#endif // _DEBUG
 	}
-	else if (rotTarget.z - rot.z < -D3DX_PI)
+	else if (rotTarget.z < 0.0f && OldRotTarget.z > 0.0f)
 	{
-		rot.z += ((rotTarget.z - rot.z) * fStopEnergy + (D3DX_PI * -1.8f));
+		rot.z += D3DX_PI * -2.0f;
+#ifdef _DEBUG
+		CRenderer::GetInstance()->SetTimeString("‚¨‚ñ‚¨‚ñ‚¨‚ñ‚¨‚ñ‚¨‚ñ‚¨‚ñ‚¨‚ñ‚¨‚ñ‚¨‚ñ", 60);
+#endif // _DEBUG
 	}
-	else
-	{
-		rot.z += ((rotTarget.z - rot.z) * fStopEnergy);
-	}
-#else	// VŽ®
-	// ‰ñ“]—Ê‚ð§ŒÀ
-	if (rotTarget.z > D3DX_PI * 2.0f)
-	{
-		rotTarget.z += D3DX_PI * -2.0f;
-	}
-
-	rot = rotTarget;
 
 	// –Ú•WŒü‚«‚Ö•â³
-	rot = CUtility::GetInstance()->AdjustToTarget(rot, rotTarget, 0.25f);
-#endif
+	rot = CUtility::GetInstance()->AdjustToTarget(rot, rotTarget, 0.1f);
 
 	// k‚¦‚é
-	rot.x = CUtility::GetInstance()->GetRandomValue<float>() * 0.0005f;
-	rot.y = CUtility::GetInstance()->GetRandomValue<float>() * 0.0005f;
+	rot.x = CUtility::GetInstance()->GetRandomValue<float>() * 0.00025f;
+	rot.y = CUtility::GetInstance()->GetRandomValue<float>() * 0.00025f;
 
 	// Œü‚«î•ñÝ’è
 	m_pPlayer->SetRot(rot);
+
+	// –Ú•WŒü‚«‚ð‹L˜^
+	OldRotTarget = rotTarget;
 }
 
 //============================================================================
@@ -1257,8 +1257,8 @@ void CPlayerStateRushing::Rotation()
 	}
 
 	// k‚¦‚é
-	rot.x = CUtility::GetInstance()->GetRandomValue<float>() * 0.0005f;
-	rot.y = CUtility::GetInstance()->GetRandomValue<float>() * 0.0005f;
+	rot.x = CUtility::GetInstance()->GetRandomValue<float>() * 0.001f;
+	rot.y = CUtility::GetInstance()->GetRandomValue<float>() * 0.001f;
 	
 	// Œü‚«î•ñÝ’è
 	m_pPlayer->SetRot(rot);
