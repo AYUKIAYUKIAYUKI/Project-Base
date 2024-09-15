@@ -33,6 +33,7 @@ public:
 		NUMBER_00,		// 数字00
 		LASTTIME,		// ラストタイム
 		BESTTIME,		// ベストタイム
+		BACK,			// 戻るマーク
 		MAX,
 	};
 

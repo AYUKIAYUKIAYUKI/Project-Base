@@ -37,13 +37,16 @@ public:
 private:
 
 	static const int MAX_DIGIT = 3;	// 最大桁数
+	static const int MAX_BACK = 2;	// 戻るマーク用最大数
 
 	void Appear() override;			// 出現
 	void Disappear() override;		// 消滅
 	int ImportRecord(int nSelect);	// ベストタイムの読み込み
+	void LayoutBackAtSquare();		// マス目に戻るマークを並べる
 
 	CText* m_pText;					// テキスト情報
 	CNumber* m_apNumber[MAX_DIGIT];	// 数字情報
+	CText* m_apBack[MAX_BACK];		// 戻るマーク用テキスト情報
 };
 
 #endif	// _RECORD_H_

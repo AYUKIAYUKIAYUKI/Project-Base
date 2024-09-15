@@ -17,6 +17,10 @@
 // テクスチャ取得用
 #include "texture_manager.h"
 
+// マス目情報取得用
+#include "square.h"
+#include "game_manager.h"
+
 //============================================================================
 // デフォルトコンストラクタ
 //============================================================================
@@ -43,6 +47,27 @@ CRecord::CRecord() :
 
 		// 数字の出現予約
 		m_apNumber[nCntNum]->SetAppear(true);
+	}
+
+	for (int nCntBack = 0; nCntBack < MAX_BACK; nCntBack++)
+	{
+		// 戻るマーク情報のポインタを初期化
+		m_apBack[nCntBack] = nullptr;
+
+		// テキストを生成
+		m_apBack[nCntBack] = CText::Create(CTexture_Manager::TYPE::BACK);
+
+		// ランダムな座標
+		D3DXVECTOR3 pos{ (SCREEN_WIDTH * 0.5f) + CUtility::GetInstance()->GetRandomValue<float>() * 5.0f, (SCREEN_HEIGHT * 0.5f) + CUtility::GetInstance()->GetRandomValue<float>() * 5.0f, 0.0f };
+
+		// 初期座標の設定
+		m_apBack[nCntBack]->SetPos(pos);
+
+		// 初期向きの設定
+		m_apBack[nCntBack]->SetRot({ 0.0f, 0.0f, CUtility::GetInstance()->GetRandomValue<float>() * 0.5f });
+
+		// 戻るマークの出現予約
+		m_apBack[nCntBack]->SetAppear(true);
 	}
 
 	// 出現予約
@@ -155,6 +180,9 @@ void CRecord::Update()
 		CopyPosTarget.x += -195.0f;
 		m_pText->SetPosTarget(CopyPosTarget);
 	}
+
+	// マス目に戻るマークを並べる
+	LayoutBackAtSquare();
 }
 
 //============================================================================
@@ -198,6 +226,22 @@ void CRecord::SetDisappearExtra()
 
 	// テキストの消去予約
 	m_pText->SetDisappear(true);
+
+	// 戻るマークの消去予約
+	for (int nCntBack = 0; nCntBack < MAX_BACK; nCntBack++)
+	{
+		// ランダムな座標
+		D3DXVECTOR3 pos{ (SCREEN_WIDTH * 0.5f) + CUtility::GetInstance()->GetRandomValue<float>(), (SCREEN_HEIGHT * 0.5f) + CUtility::GetInstance()->GetRandomValue<float>(), 0.0f };
+
+		// 目標座標の設定
+		m_apBack[nCntBack]->SetPosTarget(pos);
+
+		// 目標向きの設定
+		m_apBack[nCntBack]->SetRotTarget({ 0.0f, 0.0f, CUtility::GetInstance()->GetRandomValue<float>() * 0.1f });
+
+		// 消去予約
+		m_apBack[nCntBack]->SetDisappear(true);
+	}
 }
 
 //============================================================================
@@ -206,7 +250,7 @@ void CRecord::SetDisappearExtra()
 CRecord* CRecord::Create()
 {
 	// インスタンスを生成
-	CRecord* pRecord = DBG_NEW CRecord;
+	CRecord* pRecord = DBG_NEW CRecord{};
 
 	if (pRecord == nullptr)
 	{ // 生成失敗
@@ -228,54 +272,6 @@ CRecord* CRecord::Create()
 	pRecord->SetSize({ 0.0f, 0.0f, 0.0f });
 
 	return pRecord;
-}
-
-//============================================================================
-// タイムの読み込み
-//============================================================================
-int CRecord::ImportRecord(int nSelect)
-{
-	if (nSelect < 0 || nSelect >= CGameManager::GetInstance()->GetMaxStage())
-	{
-		return 0;
-	}
-
-	// テキストを行ごとに保持する
-	std::vector<std::string> vStr;
-
-	// レベルファイルを展開
-	std::ifstream Import{ "Data\\TXT\\level.txt" };
-
-	if (!Import)
-	{ // 展開失敗
-#if 0
-		assert(false);
-#else
-
-#ifdef _DEBUG
-		CRenderer::GetInstance()->SetTimeString("【警告】レベル情報・タイムの読み込み(3)に失敗しました", 300);
-#endif	// _DEBUG
-
-		return 0;
-#endif
-	}
-
-	// テキストを格納
-	std::string str;
-
-	// ファイルを一行ずつ、情報を全て取得する
-	while (std::getline(Import, str))
-	{
-		vStr.push_back(str);
-	}
-
-	// ファイルを閉じる
-	Import.close();
-
-	// ベストタイム情報を抜き出す
-	int nBestTime{ std::stoi(vStr[nSelect].substr(vStr[nSelect].find("b") + 2, vStr[nSelect].find(","))) };
-
-	return nBestTime;
 }
 
 //============================================================================
@@ -330,5 +326,105 @@ void CRecord::Disappear()
 
 		// 破棄予約
 		SetRelease();
+	}
+}
+
+//============================================================================
+// タイムの読み込み
+//============================================================================
+int CRecord::ImportRecord(int nSelect)
+{
+	// 有効ステージを選択していない場合は無視
+	if (nSelect < 0 || nSelect >= CGameManager::GetInstance()->GetMaxStage())
+	{
+		return 0;
+	}
+
+	// テキストを行ごとに保持する
+	std::vector<std::string> vStr{};
+
+	// レベルファイルを展開
+	std::ifstream Import{ "Data\\TXT\\level.txt" };
+
+	if (!Import)
+	{ // 展開失敗
+#if 0
+		assert(false);
+#else
+
+#ifdef _DEBUG
+		CRenderer::GetInstance()->SetTimeString("【警告】レベル情報・タイムの読み込み(3)に失敗しました", 300);
+#endif	// _DEBUG
+
+		return 0;
+#endif
+	}
+
+	// テキストを格納
+	std::string str;
+
+	// ファイルを一行ずつ、情報を全て取得する
+	while (std::getline(Import, str))
+	{
+		vStr.push_back(str);
+	}
+
+	// ファイルを閉じる
+	Import.close();
+
+	// ベストタイム情報を抜き出す
+	int nBestTime{ std::stoi(vStr[nSelect].substr(vStr[nSelect].find("b") + 2, vStr[nSelect].find(","))) };
+
+	return nBestTime;
+}
+
+//============================================================================
+// マス目に戻るマークを並べる
+//============================================================================
+void CRecord::LayoutBackAtSquare()
+{
+	// 消去予定なら無視
+	if (m_apBack[0]->GetDisappear())
+	{
+		return;
+	}
+
+	// マス目タグのオブジェクトをすべて取得
+	CObject** pObject = CObject::FindAllObject(CObject::TYPE::SQUARE);
+
+	for (int nCntObj = -1, nCntBack = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	{
+		// オブジェクトの情報が無くなったら終了
+		if (pObject[nCntObj + 1] == nullptr)
+		{
+			break;
+		}
+
+		// 先頭・末尾のマスのみ
+		if (nCntObj == -1 || nCntObj == CGameManager::GetInstance()->GetMaxStage())
+		{
+			// マス目クラスへダウンキャスト
+			CSquare* pSquare = CUtility::GetInstance()->DownCast<CSquare, CObject>(pObject[nCntObj + 1]);
+
+			// マス目と戻るマークの座標を同期
+			m_apBack[nCntBack]->SetPosTarget(pSquare->GetPosTarget());
+
+			// 新しい目標サイズを作成
+			D3DXVECTOR3 NewSizeTarget{ 0.0f, 0.0f, 0.0f };
+
+			if (nCntObj == CGameManager::GetInstance()->GetSelectLevel())
+			{ // このマス目を選択していたら
+				NewSizeTarget = { 40.0f, 40.0f, 0.0f };
+			}
+			else
+			{ // 選択されていない
+				NewSizeTarget = { 25.0f, 25.0f, 0.0f };
+			}
+			
+			// 新しい目標サイズを反映
+			m_apBack[nCntBack]->SetSizeTarget(NewSizeTarget);
+
+			nCntBack++;
+		}
 	}
 }

@@ -58,7 +58,7 @@ void CText::Uninit()
 void CText::Update()
 {
 	// –Ú•WÀ•W‚Ö
-	SetPos(CUtility::GetInstance()->AdjustToTarget(GetPos(), GetPosTarget(), 0.05f));
+	SetPos(CUtility::GetInstance()->AdjustToTarget(GetPos(), GetPosTarget(), 0.065f));
 
 	// –Ú•WŒü‚«‚Ö
 	SetRot(CUtility::GetInstance()->AdjustToTarget(GetRot(), GetRotTarget(), 0.05f));
