@@ -323,7 +323,7 @@ CSound::CSound()
 	m_aSoundInfo[12] = { "Data\\SE\\miss.wav", 0, 0.75f };
 	m_aSoundInfo[13] = { "Data\\SE\\goal.wav", 0, 1.0f };
 	m_aSoundInfo[14] = { "Data\\SE\\get.wav", 0, 0.75f };
-	m_aSoundInfo[15] = { "Data\\SE\\charge.wav", 0, 1.5f };
+	m_aSoundInfo[15] = { "Data\\SE\\charge.wav", 0, 1.75f };
 	m_aSoundInfo[16] = { "Data\\SE\\rush.wav", 0, 0.75f };
 }
 

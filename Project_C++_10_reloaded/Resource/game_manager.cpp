@@ -128,12 +128,6 @@ void CGameManager::Update()
 	// 過去の入力情報を保持
 	dwOldInput = pPad->GetJoyStickL().X;
 
-#ifdef _DEBUG
-	// ステージ数を表示
-	std::string str = "【現在のステージ:" + std::to_string(m_nMaxStage - m_stagePath.size()) + "/" + std::to_string(m_nMaxStage) + "】";
-	CRenderer::GetInstance()->SetDebugString(str);
-#endif	// _DEBUG
-
 	switch (m_phase)
 	{
 	case PHASE::SELECT:
@@ -258,6 +252,9 @@ void CGameManager::Update()
 
 				// タイマーリセット
 				CTimer::TimerReset();
+
+				// 死亡音
+				CSound::GetInstance()->Play(CSound::LABEL::DIE);
 			}
 		}
 
@@ -272,11 +269,14 @@ void CGameManager::Update()
 		// レコードを生成
 		CRecord::Create();
 
-		// マス目をステージ分生成
-		for (int i = 0; i < m_nMaxStage; i++)
+		// マス目をステージ分生成 + ゲーム終了マス
+		for (int i = 0; i < m_nMaxStage + 2; i++)
 		{
 			CSquare::Create({ 0.0f, 0.0f, 0.0f });
 		}
+
+		// 先頭・末尾の色を設定する
+		CSquare::SetColorFrontAndBack();
 
 		// タイムを書き出す
 		CTimer::ExportTimer(m_nSelectLevel);
@@ -298,17 +298,20 @@ void CGameManager::Update()
 		// レコードを生成
 		CRecord::Create();
 
-		// マス目をステージ分生成
-		for (int i = 0; i < m_nMaxStage; i++)
+		// マス目をステージ分生成 + ゲーム終了マス
+		for (int i = 0; i < m_nMaxStage + 2; i++)
 		{
 			CSquare::Create({ 0.0f, 0.0f, 0.0f });
 		}
 
+		// 先頭・末尾の色を設定する
+		CSquare::SetColorFrontAndBack();
+
 		// レベル選択フェーズへ
 		m_phase = PHASE::SELECT;
 
-		// 死亡音
-		CSound::GetInstance()->Play(CSound::LABEL::DIE);
+		// 表示音
+		CSound::GetInstance()->Play(CSound::LABEL::DISPLAY);
 
 #ifdef _DEBUG
 		CRenderer::GetInstance()->SetDebugString("リタイア");

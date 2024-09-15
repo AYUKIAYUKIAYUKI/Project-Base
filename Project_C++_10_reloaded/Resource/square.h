@@ -31,8 +31,9 @@ public:
 
 	static void ControlAll(int nSelect);		// マス目を動作
 	static void SetDisappearAll();				// マス目を一斉消去予約
-	//static void InstantDisappearAll();			// マス目を即座に一斉消去予約
+	//static void InstantDisappearAll();		// マス目を即座に一斉消去予約
 	//static void LineUpAll(int nSelect);		// マス目を並べる (不必要)
+	static void SetColorFrontAndBack();			// 先頭・末尾の色を設定する
 	static CSquare* Create(D3DXVECTOR3 pos);	// 生成
 
 private:

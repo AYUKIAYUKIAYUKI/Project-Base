@@ -11,6 +11,9 @@
 #include "square.h"
 #include "utility.h"
 
+// ステージ数取得用
+#include "game_manager.h"
+
 // テクスチャ取得用
 #include "texture_manager.h"
 
@@ -122,13 +125,14 @@ void CSquare::ControlAll(int nSelect)
 	CObject** pObj = CObject::FindAllObject(CObject::TYPE::SQUARE);
 
 	// マス数カウント
-	int nSquareCnt{ 0 };
+	/* 終了マスの追加により、カウントは1つ手前の範囲から行う*/
+	int nSquareCnt{ -1 };
 
 	// オブジェクトがなくなるまで
-	while (pObj[nSquareCnt])
+	while (pObj[nSquareCnt + 1])
 	{
 		// マス目クラスへダウンキャスト
-		CSquare* pSquare = CUtility::GetInstance()->DownCast<CSquare, CObject>(pObj[nSquareCnt]);
+		CSquare* pSquare = CUtility::GetInstance()->DownCast<CSquare, CObject>(pObj[nSquareCnt + 1]);
 
 		// 新規座標情報
 		D3DXVECTOR3 posNew{ 0.0f, 0.0f, 0.0f };
@@ -139,9 +143,9 @@ void CSquare::ControlAll(int nSelect)
 		// 新規サイズ情報
 		D3DXVECTOR3 sizeNew{ 0.0f, 0.0f, 0.0f };
 
-		// 選択しているマスのみ特殊
 		if (nSquareCnt == nSelect)
-		{
+		{ // 選択しているマスを拡大
+
 			posNew = {
 				(SCREEN_WIDTH * 0.5f),
 				(SCREEN_HEIGHT * 0.5f) + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f,
@@ -152,10 +156,11 @@ void CSquare::ControlAll(int nSelect)
 			sizeNew = { 60.0f, 60.0f, 0.0f };
 		}
 		else
-		{
+		{ // 通常マスを縮小
+
 			posNew = { 
-				(SCREEN_WIDTH * 0.5f) + (150.0f * nSquareCnt) - (nSelect * 150.0f),
-				SCREEN_HEIGHT * 0.75f + +CUtility::GetInstance()->GetRandomValue<float>() * 0.2f,
+				(SCREEN_WIDTH * 0.5f) + (150.0f * (nSquareCnt)) - (nSelect * 150.0f),
+				SCREEN_HEIGHT * 0.75f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f,
 				0.0f };
 
 			sizeNew = { 40.0f, 40.0f, 0.0f };
@@ -174,31 +179,35 @@ void CSquare::ControlAll(int nSelect)
 		///////////////////////////////////////////////////////////////////////
 
 		// カウント数のコピー
-		int nCopy{ nSquareCnt + 1 };
+		int nCopy{ nSquareCnt };
 
 		for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
 		{
-			D3DXVECTOR3 size{ 0.0f, 0.0f, 0.0f };
+			// 新しいサイズを作成
+			sizeNew = { 0.0f, 0.0f, 0.0f };
 
-			// 選択しているマスの数字のみ拡大
-			if (nSquareCnt == nSelect)
-			{	
-				size = { 37.5f, 30.0f, 0.0f };
+			if (nSquareCnt == -1 || nSquareCnt == CGameManager::GetInstance()->GetMaxStage())
+			{ // 終了マスの数字を表示しない
+				sizeNew = { 0.0f, 0.0f, 0.0f };
+			}
+			else if (nSquareCnt == nSelect)
+			{ // 選択しているマスの数字を拡大
+				sizeNew = { 37.5f, 30.0f, 0.0f };
 			}
 			else
-			{
-				size = { 25.0f, 20.0f, 0.0f };
+			{ // 通常マスの数字を縮小
+				sizeNew = { 25.0f, 20.0f, 0.0f };
 			}
 
 			// 中心座標から、相対的な先頭の位置を設定
-			posNew.x = pSquare->GetPosTarget().x + (size.x * MAX_DIGIT * 0.5f) - (size.x * 0.5f);
+			posNew.x = pSquare->GetPosTarget().x + (sizeNew.x * MAX_DIGIT * 0.5f) - (sizeNew.x * 0.5f);
 
 			// 先頭座標から数字が並ぶように調整
-			posNew.x += -size.x * nCntNum;
+			posNew.x += -sizeNew.x * nCntNum;
 			pSquare->m_apNumber[nCntNum]->SetPosTarget(posNew);
 
-			// 目標サイズを反映
-			pSquare->m_apNumber[nCntNum]->SetSizeTarget(size);
+			// 目標サイズを設定
+			pSquare->m_apNumber[nCntNum]->SetSizeTarget(sizeNew);
 
 			// 数字を設定
 			pSquare->m_apNumber[nCntNum]->SetNumber(nCopy % 10);
@@ -317,6 +326,35 @@ void CSquare::SetDisappearAll()
 //		nSquareCnt++;
 //	}
 //}
+
+//============================================================================
+// 先頭・末尾の色を設定する
+//============================================================================
+void CSquare::SetColorFrontAndBack()
+{
+	// マス目タグのオブジェクトを全て取得
+	CObject** pObj = CObject::FindAllObject(CObject::TYPE::SQUARE);
+
+	// マス数カウント
+	/* 終了マスの追加により、カウントは1つ手前の範囲から行う*/
+	int nSquareCnt{ -1 };
+
+	// オブジェクトがなくなるまで
+	while (pObj[nSquareCnt + 1])
+	{
+		if (nSquareCnt == -1 || nSquareCnt == CGameManager::GetInstance()->GetMaxStage())
+		{ // 先頭・末尾のオブジェクトのみ
+			
+			// マス目クラスへダウンキャスト
+			CSquare* pSquare = CUtility::GetInstance()->DownCast<CSquare, CObject>(pObj[nSquareCnt + 1]);
+
+			// 好きな色に
+			pSquare->SetCol(D3DXCOLOR{ 0.0f, 1.0f, 1.0f, 0.0f });
+		}
+
+		nSquareCnt++;
+	}
+}
 
 //============================================================================
 // 生成
