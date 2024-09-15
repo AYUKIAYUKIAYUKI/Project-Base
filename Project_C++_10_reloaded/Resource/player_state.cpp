@@ -789,6 +789,9 @@ void CPlayerStateCharging::Enter()
 
 	// サイズを設定
 	m_pPlayer->SetSize(model->size);
+
+	// チャージ音
+	CSound::GetInstance()->Play(CSound::LABEL::CHARGE);
 }
 
 //============================================================================
@@ -1134,6 +1137,9 @@ void CPlayerStateRushing::Enter()
 
 	// サイズを設定
 	m_pPlayer->SetSize(model->size);
+
+	// 突進音
+	CSound::GetInstance()->Play(CSound::LABEL::RUSH);
 }
 
 //============================================================================

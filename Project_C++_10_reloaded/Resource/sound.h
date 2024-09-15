@@ -34,6 +34,8 @@ public:
 		MISS,			// ミス音
 		GOAL,			// ゴール音
 		GET,			// 取得音
+		CHARGE,			// チャージ音
+		RUSH,			// 突進音
 		MAX,
 	};
 
