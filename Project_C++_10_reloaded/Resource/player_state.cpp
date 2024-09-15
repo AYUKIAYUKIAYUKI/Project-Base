@@ -83,7 +83,8 @@ void CPlayerState::RegisterPlayer(CPlayer* pPlayer)
 //============================================================================
 // コンストラクタ
 //============================================================================
-CPlayerStateDefault::CPlayerStateDefault()
+CPlayerStateDefault::CPlayerStateDefault() : 
+	m_OldRotTarget{ 0.0f, 0.0f, 0.0f }
 {
 
 }
@@ -101,22 +102,20 @@ CPlayerStateDefault::~CPlayerStateDefault()
 //============================================================================
 void CPlayerStateDefault::Enter()
 {
-	// 回転をリセット
-	D3DXVECTOR3 newRot{ 0.0f, 0.0f, 0.0f };
-	m_pPlayer->SetRot(newRot);
+	// X・Y軸の向きをリセット;
+	m_pPlayer->SetRot(D3DXVECTOR3{ 0.0f, 0.0f, m_pPlayer->GetRot().z });
 
-	// 回転目標をリセット
-	D3DXVECTOR3 newRotTarget{ 0.0f, 0.0f, 0.0f };
-	m_pPlayer->SetRotTarget(newRotTarget);
+	// 目標向きをリセット
+	m_pPlayer->SetRotTarget(D3DXVECTOR3{ 0.0f, 0.0f, 0.0f });
 
 	// モデルを取得
-	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_000);
+	auto Model{ CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_000) };
 
 	// モデルの設定
-	m_pPlayer->BindModel(model);
+	m_pPlayer->BindModel(Model);
 
 	// サイズを設定
-	m_pPlayer->SetSize(model->size);
+	m_pPlayer->SetSize(Model->size);
 }
 
 //============================================================================
@@ -133,18 +132,18 @@ void CPlayerStateDefault::Update()
 	// 回転
 	Rotation();
 
-	// 重力落下
-	D3DXVECTOR3 velocity = m_pPlayer->GetVelocity();
-	CUtility::GetInstance()->Gravity(velocity);
-	m_pPlayer->SetVelocity(velocity);
+	// 重力加速
+	D3DXVECTOR3 NewVelocity = m_pPlayer->GetVelocity();
+	CUtility::GetInstance()->Gravity(NewVelocity);
+	m_pPlayer->SetVelocity(NewVelocity);
 
 	// 制動調整
 	Braking();
 
 	// 加速度分、目標座標を変動
-	D3DXVECTOR3 posTarget = m_pPlayer->GetPosTarget();
-	posTarget += m_pPlayer->GetVelocity();
-	m_pPlayer->SetPosTarget(posTarget);
+	D3DXVECTOR3 NewPosTarget = m_pPlayer->GetPosTarget();
+	NewPosTarget += m_pPlayer->GetVelocity();
+	m_pPlayer->SetPosTarget(NewPosTarget);
 
 	// 当たり判定
 	m_pPlayer->Collision();
@@ -162,10 +161,7 @@ void CPlayerStateDefault::Update()
 //============================================================================
 void CPlayerStateDefault::Exit()
 {
-	// Z軸回転を初期化
-	D3DXVECTOR3 rot = m_pPlayer->GetRot();
-	rot.z = 0.0f;
-	m_pPlayer->SetRot(rot);
+
 }
 
 //============================================================================
@@ -239,29 +235,28 @@ bool CPlayerStateDefault::Walk()
 //============================================================================
 void CPlayerStateDefault::Rotation()
 {
-	// 向き情報取得
-	D3DXVECTOR3 rot = m_pPlayer->GetRot();
-	D3DXVECTOR3 rotTarget = m_pPlayer->GetRotTarget();
+	// 新しい向き情報を作成
+	D3DXVECTOR3 NewRot{ m_pPlayer->GetRot() };
+	D3DXVECTOR3 NewRotTarget{ m_pPlayer->GetRotTarget() };
 
-	// ブレーキ力
-	float fStopEnergy = 0.1f;
-
-	// 回転反映と回転量の減衰
-	if (rotTarget.y - rot.y > D3DX_PI)
+	// 目標向きを綺麗に追いかけるように、Y軸の向きを補正
+	if (NewRotTarget.y > 0.0f && m_OldRotTarget.y < 0.0f)
 	{
-		rot.y += ((rotTarget.y - rot.y) * fStopEnergy + (D3DX_PI * 1.8f));
+		NewRot.y += D3DX_PI * 2.0f;
 	}
-	else if (rotTarget.y - rot.y < -D3DX_PI)
+	else if (NewRotTarget.y < 0.0f && m_OldRotTarget.y > 0.0f)
 	{
-		rot.y += ((rotTarget.y - rot.y) * fStopEnergy + (D3DX_PI * -1.8f));
-	}
-	else
-	{
-		rot.y += ((rotTarget.y - rot.y) * fStopEnergy);
+		NewRot.y += D3DX_PI * -2.0f;
 	}
 
-	// 向き情報設定
-	m_pPlayer->SetRot(rot);
+	// 目標向きへ補正
+	NewRot = CUtility::GetInstance()->AdjustToTarget(NewRot, NewRotTarget, 0.1f);
+
+	// 新しい向き情報を反映
+	m_pPlayer->SetRot(NewRot);
+
+	// 目標向きを記録
+	m_OldRotTarget = NewRotTarget;
 }
 
 //============================================================================
@@ -269,24 +264,24 @@ void CPlayerStateDefault::Rotation()
 //============================================================================
 void CPlayerStateDefault::Braking()
 {
-	// 加速度を取得
-	D3DXVECTOR3 velocity = m_pPlayer->GetVelocity();
+	// 新しい加速度を作成
+	D3DXVECTOR3 NewVelocity = m_pPlayer->GetVelocity();
 
 	// 加速度上限に到達で速度固定
-	if (velocity.x > MAX_WALK_VELOCITY)
+	if (NewVelocity.x > MAX_WALK_VELOCITY)
 	{
-		velocity.x = MAX_WALK_VELOCITY;
+		NewVelocity.x = MAX_WALK_VELOCITY;
 	}
-	else if (velocity.x < -MAX_WALK_VELOCITY)
+	else if (NewVelocity.x < -MAX_WALK_VELOCITY)
 	{
-		velocity.x = -MAX_WALK_VELOCITY;
+		NewVelocity.x = -MAX_WALK_VELOCITY;
 	}
 
 	// 少しずつ加速度を失う
-	velocity.x = velocity.x * BRAKING_WALK_SPEED;
+	NewVelocity.x = NewVelocity.x * BRAKING_WALK_SPEED;
 
-	// 加速度を設定
-	m_pPlayer->SetVelocity(velocity);
+	// 新しい加速度を反映
+	m_pPlayer->SetVelocity(NewVelocity);
 }
 
 //============================================================================
@@ -436,7 +431,8 @@ void CPlayerStateBeginning::Exit()
 //============================================================================
 // コンストラクタ
 //============================================================================
-CPlayerStateFlying::CPlayerStateFlying()
+CPlayerStateFlying::CPlayerStateFlying() :
+	m_OldRotTarget{ 0.0f, 0.0f, 0.0f }
 {
 
 }
@@ -651,29 +647,28 @@ bool CPlayerStateFlying::Control()
 //============================================================================
 void CPlayerStateFlying::Rotation()
 {
-	// 向き情報取得
-	D3DXVECTOR3 rot = m_pPlayer->GetRot();
-	D3DXVECTOR3 rotTarget = m_pPlayer->GetRotTarget();
+	// 新しい向き情報を作成
+	D3DXVECTOR3 NewRot{ m_pPlayer->GetRot() };
+	D3DXVECTOR3 NewRotTarget{ m_pPlayer->GetRotTarget() };
 
-	// ブレーキ力
-	float fStopEnergy = 0.1f;
-
-	// 回転反映と回転量の減衰
-	if (rotTarget.z - rot.z > D3DX_PI)
+	// 目標向きを綺麗に追いかけるように、Z軸の向きを補正
+	if (NewRotTarget.z > 0.0f && m_OldRotTarget.z < 0.0f)
 	{
-		rot.z += ((rotTarget.z - rot.z) * fStopEnergy + (D3DX_PI * 1.8f));
+		NewRot.z += D3DX_PI * 2.0f;
 	}
-	else if (rotTarget.z - rot.z < -D3DX_PI)
+	else if (NewRotTarget.z < 0.0f && m_OldRotTarget.z > 0.0f)
 	{
-		rot.z += ((rotTarget.z - rot.z) * fStopEnergy + (D3DX_PI * -1.8f));
-	}
-	else
-	{
-		rot.z += ((rotTarget.z - rot.z) * fStopEnergy);
+		NewRot.z += D3DX_PI * -2.0f;
 	}
 
-	// 向き情報設定
-	m_pPlayer->SetRot(rot);
+	// 目標向きへ補正
+	NewRot = CUtility::GetInstance()->AdjustToTarget(NewRot, NewRotTarget, 0.1f);
+
+	// 新しい向き情報を反映
+	m_pPlayer->SetRot(NewRot);
+
+	// 目標向きを記録
+	m_OldRotTarget = NewRotTarget;
 }
 
 //============================================================================
@@ -717,6 +712,7 @@ void CPlayerStateFlying::Braking()
 // コンストラクタ
 //============================================================================
 CPlayerStateCharging::CPlayerStateCharging() :
+	m_OldRotTarget{ 0.0f, 0.0f, 0.0f },
 	m_rotHold{ 0.0f, 0.0f, 0.0f },
 	m_nLimitCharge{ 0 },
 	m_pArrow{ nullptr },
@@ -766,15 +762,15 @@ void CPlayerStateCharging::Enter()
 	m_pArrow->SetAppear();
 	m_pRing->SetAppear();
 
-	// 初期座標を設定
+	// UI初期座標を設定
 	m_pArrow->SetPos(m_pPlayer->GetPos());
 	m_pRing->SetPos(m_pPlayer->GetPos());
 
 	// 矢印用のホールド向きに、モデルの向ている方向を設定
-	D3DXVECTOR3 newRot{ 0.0f, 0.0f, -m_pPlayer->GetRot().z };
-	m_rotHold = newRot;
+	D3DXVECTOR3 NewRot{ 0.0f, 0.0f, -m_pPlayer->GetRot().z };
+	m_rotHold = NewRot;
 
-	// 初期サイズを設定
+	// UI初期サイズを設定
 	m_fArrowSize = 30.0f;
 	m_pArrow->SetSize({ m_fArrowSize, m_fArrowSize, 0.0f });
 	m_fRingSize = 27.5f;
@@ -892,11 +888,11 @@ void CPlayerStateCharging::Update()
 //============================================================================
 void CPlayerStateCharging::Exit()
 {
-	// XY軸回転を初期化
-	D3DXVECTOR3 rot = m_pPlayer->GetRot();
-	rot.x = 0.0f;
-	rot.y = 0.0f;
-	m_pPlayer->SetRot(rot);
+	// X・Y軸回転をリセット
+	D3DXVECTOR3 NweRot{ m_pPlayer->GetRot() };
+	NweRot.x = 0.0f;
+	NweRot.y = 0.0f;
+	m_pPlayer->SetRot(NweRot);
 
 	// 矢印の向いている方向を飛行角度に設定
 	m_pPlayer->SetAngleFlying(-m_pArrow->GetRot().z * 2.0f);
@@ -907,9 +903,6 @@ void CPlayerStateCharging::Exit()
 //============================================================================
 void CPlayerStateCharging::Rotation()
 {
-	// 過去の目標向き用
-	static D3DXVECTOR3 OldRotTarget{ 0.0f, 0.0f, 0.0f };
-
 	// 向き情報を取得
 	D3DXVECTOR3 rot = m_pPlayer->GetRot();
 	D3DXVECTOR3 rotTarget = m_pPlayer->GetRotTarget();
@@ -919,15 +912,15 @@ void CPlayerStateCharging::Rotation()
 	CRenderer::GetInstance()->SetDebugString("【目標の向き :" + std::to_string(rotTarget.z) + "】");
 #endif // _DEBUG
 
-	// 目標向きを綺麗に追いかけるように、向きを補正
-	if (rotTarget.z > 0.0f && OldRotTarget.z < 0.0f)
+	// 目標向きを綺麗に追いかけるように、Z軸の向きを補正
+	if (rotTarget.z > 0.0f && m_OldRotTarget.z < 0.0f)
 	{
 		rot.z += D3DX_PI * 2.0f;
 #ifdef _DEBUG
 		CRenderer::GetInstance()->SetTimeString("なんなんなんなんなんなんなんなんなん", 60);
 #endif // _DEBUG
 	}
-	else if (rotTarget.z < 0.0f && OldRotTarget.z > 0.0f)
+	else if (rotTarget.z < 0.0f && m_OldRotTarget.z > 0.0f)
 	{
 		rot.z += D3DX_PI * -2.0f;
 #ifdef _DEBUG
@@ -946,7 +939,7 @@ void CPlayerStateCharging::Rotation()
 	m_pPlayer->SetRot(rot);
 
 	// 目標向きを記録
-	OldRotTarget = rotTarget;
+	m_OldRotTarget = rotTarget;
 }
 
 //============================================================================
@@ -1088,7 +1081,8 @@ void CPlayerStateCharging::UpdateArrow()
 //============================================================================
 // コンストラクタ
 //============================================================================
-CPlayerStateRushing::CPlayerStateRushing()
+CPlayerStateRushing::CPlayerStateRushing() :
+	m_OldRotTarget{ 0.0f, 0.0f, 0.0f }
 {
 
 }
@@ -1107,23 +1101,23 @@ CPlayerStateRushing::~CPlayerStateRushing()
 void CPlayerStateRushing::Enter()
 {
 	// 目標向きを設定
-	D3DXVECTOR3 newRotTarget{ 0.0f, 0.0f, -m_pPlayer->GetAngleFlying() };
-	m_pPlayer->SetRotTarget(newRotTarget);
+	D3DXVECTOR3 NewRotTarget{ 0.0f, 0.0f, -m_pPlayer->GetAngleFlying() };
+	m_pPlayer->SetRotTarget(NewRotTarget);
 
 	// 飛行角度から新たな加速度を作成
-	D3DXVECTOR3 newVelocity{ 
+	D3DXVECTOR3 NewVelocity{ 
 		sinf(m_pPlayer->GetAngleFlying()),
 		cosf(m_pPlayer->GetAngleFlying()),
 		0.0f
 	};
 
 	// 加速度を設定
-	m_pPlayer->SetVelocity(newVelocity * 5.0f);
+	m_pPlayer->SetVelocity(NewVelocity * 5.0f);
 
 #ifdef _DEBUG
 	// 新たな加速度を表示
 	CRenderer::GetInstance()->SetTimeString("【設定されている飛行角度】" + std::to_string(m_pPlayer->GetAngleFlying()), 600);
-	CRenderer::GetInstance()->SetTimeString("【飛行方向から設定した新たな加速度】" + std::to_string(newVelocity.x) + " : " + std::to_string(newVelocity.y), 600);
+	CRenderer::GetInstance()->SetTimeString("【飛行方向から設定した新たな加速度】" + std::to_string(NewVelocity.x) + " : " + std::to_string(NewVelocity.y), 600);
 #endif
 
 	// モデルを取得
@@ -1227,7 +1221,9 @@ void CPlayerStateRushing::Update()
 //============================================================================
 void CPlayerStateRushing::Exit()
 {
-
+	// X・Y軸の向きをリセット
+	D3DXVECTOR3 NewRot{ 0.0f, 0.0f, m_pPlayer->GetRot().z };
+	m_pPlayer->SetRot(NewRot);
 }
 
 //============================================================================
@@ -1235,33 +1231,32 @@ void CPlayerStateRushing::Exit()
 //============================================================================
 void CPlayerStateRushing::Rotation()
 {
-	// 向き情報取得
+	// 向き情報を取得
 	D3DXVECTOR3 rot = m_pPlayer->GetRot();
 	D3DXVECTOR3 rotTarget = m_pPlayer->GetRotTarget();
 
-	// ブレーキ力
-	float fStopEnergy = 0.1f;
+	// 目標向きを綺麗に追いかけるように、Z軸の向きを補正
+	if (rotTarget.z > 0.0f && m_OldRotTarget.z < 0.0f)
+	{
+		rot.z += D3DX_PI * 2.0f;
+	}
+	else if (rotTarget.z < 0.0f && m_OldRotTarget.z > 0.0f)
+	{
+		rot.z += D3DX_PI * -2.0f;
+	}
 
-	// 回転反映と回転量の減衰
-	if (rotTarget.z - rot.z > D3DX_PI)
-	{
-		rot.z += ((rotTarget.z - rot.z) * fStopEnergy + (D3DX_PI * 1.8f));
-	}
-	else if (rotTarget.z - rot.z < -D3DX_PI)
-	{
-		rot.z += ((rotTarget.z - rot.z) * fStopEnergy + (D3DX_PI * -1.8f));
-	}
-	else
-	{
-		rot.z += ((rotTarget.z - rot.z) * fStopEnergy);
-	}
+	// 目標向きへ補正
+	rot = CUtility::GetInstance()->AdjustToTarget(rot, rotTarget, 0.1f);
 
 	// 震える
 	rot.x = CUtility::GetInstance()->GetRandomValue<float>() * 0.001f;
 	rot.y = CUtility::GetInstance()->GetRandomValue<float>() * 0.001f;
-	
+
 	// 向き情報設定
 	m_pPlayer->SetRot(rot);
+
+	// 目標向きを記録
+	m_OldRotTarget = rotTarget;
 }
 
 
@@ -1275,9 +1270,11 @@ void CPlayerStateRushing::Rotation()
 //============================================================================
 // コンストラクタ
 //============================================================================
-CPlayerStateStopping::CPlayerStateStopping()
+CPlayerStateStopping::CPlayerStateStopping() :
+	m_OldRotTarget{ 0.0f, 0.0f, 0.0f },
+	m_nCntStopMetamorphose{ 0 }
 {
-	m_nCntStopMetamorphose = 0;	// 変身時間カウントを初期化
+
 }
 
 //============================================================================
@@ -1285,7 +1282,7 @@ CPlayerStateStopping::CPlayerStateStopping()
 //============================================================================
 CPlayerStateStopping::~CPlayerStateStopping()
 {
-	m_nCntStopMetamorphose = 0;	// 変身時間カウントを初期化
+
 }
 
 //============================================================================
@@ -1328,7 +1325,7 @@ void CPlayerStateStopping::Update()
 		m_nCntStopMetamorphose++;
 
 		// 回転
-		Rolling();
+		Rotation();
 
 		// 重力加速
 		D3DXVECTOR3 velocity = m_pPlayer->GetVelocity();
@@ -1355,11 +1352,8 @@ void CPlayerStateStopping::Update()
 //============================================================================
 void CPlayerStateStopping::Exit()
 {
-	// X, Z軸回転を初期化
-	D3DXVECTOR3 rot = m_pPlayer->GetRot();
-	rot.x = 0.0f;
-	rot.z = 0.0f;
-	m_pPlayer->SetRot(rot);
+	// 目標向きをリセット
+	m_pPlayer->SetRotTarget(D3DXVECTOR3{ 0.0f, 0.0f, 0.0f });
 
 	// モデルを取得
 	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_000);
@@ -1374,32 +1368,30 @@ void CPlayerStateStopping::Exit()
 //============================================================================
 // 回転
 //============================================================================
-void CPlayerStateStopping::Rolling()
+void CPlayerStateStopping::Rotation()
 {
-	// 向き情報取得
-	D3DXVECTOR3 rot = m_pPlayer->GetRot();
-	D3DXVECTOR3 rotTarget = m_pPlayer->GetRotTarget();
-	m_pPlayer->SetRotTarget(rotTarget);
+	// 新しい向き情報を作成
+	D3DXVECTOR3 NewRot{ m_pPlayer->GetRot() };
+	D3DXVECTOR3 NewRotTarget{ m_pPlayer->GetRotTarget() };
 
-	// ブレーキ力
-	float fStopEnergy = 0.1f;
-
-	// 回転反映と回転量の減衰
-	if (rotTarget.x - rot.x > D3DX_PI)
+	// 目標向きを綺麗に追いかけるように、Z軸の向きを補正
+	if (NewRotTarget.z > 0.0f && m_OldRotTarget.z < 0.0f)
 	{
-		rot.x += ((rotTarget.x - rot.x) * fStopEnergy + (D3DX_PI * 1.8f));
+		NewRot.z += D3DX_PI * 2.0f;
 	}
-	else if (rotTarget.x - rot.x < -D3DX_PI)
+	else if (NewRotTarget.y < 0.0f && m_OldRotTarget.z > 0.0f)
 	{
-		rot.x += ((rotTarget.x - rot.x) * fStopEnergy + (D3DX_PI * -1.8f));
-	}
-	else
-	{
-		rot.x += ((rotTarget.x - rot.x) * fStopEnergy);
+		NewRot.z += D3DX_PI * -2.0f;
 	}
 
-	// 向き情報設定
-	m_pPlayer->SetRot(rot);
+	// 目標向きへ補正
+	NewRot = CUtility::GetInstance()->AdjustToTarget(NewRot, NewRotTarget, 0.1f);
+
+	// 新しい向き情報を反映
+	m_pPlayer->SetRot(NewRot);
+
+	// 目標向きを記録
+	m_OldRotTarget = NewRotTarget;
 }
 
 //============================================================================

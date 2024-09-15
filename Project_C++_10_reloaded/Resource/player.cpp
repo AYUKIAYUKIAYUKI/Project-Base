@@ -136,9 +136,10 @@ void CPlayer::Update()
 	oss << std::fixed << std::setprecision(1) << "X:" << GetPos().x << "\nY:" << GetPos().y;
 	CRenderer::GetInstance()->SetDebugString(oss.str().c_str());
 
-	CRenderer::GetInstance()->SetDebugString("現在の加速度X : " + std::to_string(m_velocity.x));
-	CRenderer::GetInstance()->SetDebugString("現在の加速度Y : " + std::to_string(m_velocity.y));
-	CRenderer::GetInstance()->SetDebugString("現在の向き" + std::to_string(m_rotTarget.z));
+	CRenderer::GetInstance()->SetDebugString("加速度X : " + std::to_string(m_velocity.x));
+	CRenderer::GetInstance()->SetDebugString("加速度Y : " + std::to_string(m_velocity.y));
+	CRenderer::GetInstance()->SetDebugString("向き : x " + std::to_string(GetRot().x) + " : y " + std::to_string(GetRot().y) + " : z " + std::to_string(GetRot().z));
+	CRenderer::GetInstance()->SetDebugString("目標向き : x " + std::to_string(m_rotTarget.x) + " : y " + std::to_string(m_rotTarget.y) + " : z " + std::to_string(m_rotTarget.z));
 	CRenderer::GetInstance()->SetDebugString("現在の飛行方向 : " + std::to_string(m_fAngleFlying));
 #endif	// _DEBUG
 

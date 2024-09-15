@@ -75,6 +75,8 @@ private:
 	static const float MAX_WALK_VELOCITY;	// 歩行時の最大加速度
 	static const float BRAKING_WALK_SPEED;	// 歩行時の制動力
 
+	D3DXVECTOR3 m_OldRotTarget;	// 過去の目標向き
+
 	bool Walk();		// 操作
 	void Rotation();	// 回転
 	void Braking();		// 制動調整
@@ -111,7 +113,6 @@ class CPlayerStateFlying : public CPlayerState
 {
 public:
 
-
 	CPlayerStateFlying();			// コンストラクタ
 	~CPlayerStateFlying() override;	// デストラクタ
 
@@ -123,6 +124,8 @@ private:
 
 	static const float MAX_FLY_VELOCITY;	// 飛行時の最大加速度
 	static const float FLY_SPEED;			// 飛行速度
+
+	D3DXVECTOR3 m_OldRotTarget;	// 過去の目標向き
 
 	bool Control();		// 操縦
 	void Rotation();	// 回転
@@ -150,12 +153,13 @@ private:
 	void Rotation();	// 回転
 	void UpdateArrow();	// 矢印の更新を行う
 
-	D3DXVECTOR3 m_rotHold;	// 向きを保持]
-	int m_nLimitCharge;		// チャージ猶予
-	CArrow* m_pArrow;		// 矢印情報
-	float m_fArrowSize;		// 矢印サイズ
-	CRing* m_pRing;			// リング情報
-	float m_fRingSize;		// リングサイズ
+	D3DXVECTOR3 m_OldRotTarget;	// 過去の目標向き
+	D3DXVECTOR3 m_rotHold;		// 向きを保持
+	int m_nLimitCharge;			// チャージ猶予
+	CArrow* m_pArrow;			// 矢印情報
+	float m_fArrowSize;			// 矢印サイズ
+	CRing* m_pRing;				// リング情報
+	float m_fRingSize;			// リングサイズ
 };
 
 //****************************************************
@@ -175,6 +179,8 @@ public:
 private:
 
 	void Rotation();	// 回転
+
+	D3DXVECTOR3 m_OldRotTarget;	// 過去の目標向き
 };
 
 //****************************************************
@@ -196,9 +202,10 @@ private:
 	static const int STOP_CNT_MAX;		// 変身停止必要時間
 	static const float RECOIL_SPEED;	// 反動移動速度
 
-	void Rolling();	// 回転
-	void Recoil();	// 反動
+	void Rotation();	// 回転
+	void Recoil();		// 反動
 
+	D3DXVECTOR3 m_OldRotTarget;	// 過去の目標向き
 	int m_nCntStopMetamorphose;	// 変身時間カウント
 };
 
