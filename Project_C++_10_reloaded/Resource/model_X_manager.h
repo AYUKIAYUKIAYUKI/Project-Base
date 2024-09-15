@@ -20,50 +20,51 @@ public:
 	//****************************************************
 	enum class TYPE
 	{
-		KARIHAIKEI = 0,	// 仮背景
-		ROOM,			// ROOM
-		MONITOR,		// モニター
-		VHS,			// VHS
-		BOOKSELF,		// 本棚
-		SPEAKER,		// スピーカー
-		SPEAKER_BIG,	// でかスピーカー
-		GRAMOPHONE,		// 蓄音機
-		INDOOR_PLANTS,	// 観葉植物
-		POSTER,			// ポスター
-		MEMO,			// メモ
-		LAMP,			// ランプ
-		TV_STAND,		// テレビ台
-		PLAYER_000,		// プレイヤー000
-		PLAYER_001,		// プレイヤー001
-		PLAYER_002,		// プレイヤー002
-		PLAYER_003,		// プレイヤー003
-		PLAYER_004,		// プレイヤー004
-		PLAYER_005,		// プレイヤー005
-		PLAYER_006,		// プレイヤー006
-		PLAYER_007,		// プレイヤー007
-		BLOCK_000,		// ブロック000
-		DESTRUCTIBLE,	// 可壊ブロック
-		DEST_BIG,		// 可壊でかブロック
-		SPIKES,			// とげブロック
-		SPIKES_MOVE,	// とげ移動ブロック
-		ENEMY,			// エネミー
-		BULLET_CORE,	// 弾 - 核
-		START,			// スタート
-		GOAL,			// ゴール
-		ACHIEVE,		// アチーブ
-		LINE_X,			// X軸
-		LINE_Y,			// Y軸
-		RIPPLE00,		// 波紋00
-		RIPPLE01,		// 波紋01
-		RIPPLE02,		// 波紋02
-		RIPPLE03,		// 波紋03
-		STAR00,			// 星00
-		STAR01,			// 星01
-		PARTICLE00,		// 粒子00
-		PARTICLE01,		// 粒子01
-		PARTICLE02,		// 粒子02
-		PARTICLE03,		// 粒子03
-		CURSOR,			// カーソル
+		KARIHAIKEI = 0,		// 仮背景
+		ROOM,				// ROOM
+		MONITOR,			// モニター
+		VHS,				// VHS
+		BOOKSELF,			// 本棚
+		SPEAKER,			// スピーカー
+		SPEAKER_BIG,		// でかスピーカー
+		GRAMOPHONE,			// 蓄音機
+		INDOOR_PLANTS,		// 観葉植物
+		POSTER,				// ポスター
+		MEMO,				// メモ
+		LAMP,				// ランプ
+		TV_STAND,			// テレビ台
+		PLAYER_000,			// プレイヤー000
+		PLAYER_001,			// プレイヤー001
+		PLAYER_002,			// プレイヤー002
+		PLAYER_003,			// プレイヤー003
+		PLAYER_004,			// プレイヤー004
+		PLAYER_005,			// プレイヤー005
+		PLAYER_006,			// プレイヤー006
+		PLAYER_007,			// プレイヤー007
+		BLOCK_000,			// ブロック000
+		DESTRUCTIBLE,		// 可壊ブロック
+		DEST_BIG,			// 可壊でかブロック
+		DEST_BIG_DAMAGE,	// 可壊でかブロック(ダメージ)
+		SPIKES,				// とげブロック
+		SPIKES_MOVE,		// とげ移動ブロック
+		ENEMY,				// エネミー
+		BULLET_CORE,		// 弾 - 核
+		START,				// スタート
+		GOAL,				// ゴール
+		ACHIEVE,			// アチーブ
+		LINE_X,				// X軸
+		LINE_Y,				// Y軸
+		RIPPLE00,			// 波紋00
+		RIPPLE01,			// 波紋01
+		RIPPLE02,			// 波紋02
+		RIPPLE03,			// 波紋03
+		STAR00,				// 星00
+		STAR01,				// 星01
+		PARTICLE00,			// 粒子00
+		PARTICLE01,			// 粒子01
+		PARTICLE02,			// 粒子02
+		PARTICLE03,			// 粒子03
+		CURSOR,				// カーソル
 		MAX,
 	};
 

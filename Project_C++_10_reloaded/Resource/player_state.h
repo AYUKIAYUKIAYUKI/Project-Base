@@ -111,6 +111,7 @@ class CPlayerStateFlying : public CPlayerState
 {
 public:
 
+
 	CPlayerStateFlying();			// コンストラクタ
 	~CPlayerStateFlying() override;	// デストラクタ
 

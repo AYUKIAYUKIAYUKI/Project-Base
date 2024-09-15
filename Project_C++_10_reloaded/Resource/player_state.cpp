@@ -37,9 +37,9 @@ const float CPlayerStateBeginning::BEGIN_FLOATING = 1.25f;	// 変身時上昇量
 const float CPlayerStateBeginning::BEGIN_SPINNING = 0.5f;	// 変身時回転量
 const float CPlayerStateFlying::MAX_FLY_VELOCITY =	10.0f;	// 飛行時の最大加速度 (飛行速度以上推奨)
 const float CPlayerStateFlying::FLY_SPEED = 3.0f;			// 飛行速度
-const int CPlayerStateCharging::MAX_LIMITCHARGE = 150;		// 最大チャージ猶予
-const int CPlayerStateStopping::STOP_CNT_MAX = 15;			// 変身停止必要時間
-const float CPlayerStateStopping::RECOIL_SPEED = 3.0f;		// 反動移動速度
+const int CPlayerStateCharging::MAX_LIMITCHARGE = 120;		// 最大チャージ猶予
+const int CPlayerStateStopping::STOP_CNT_MAX = 25;			// 変身停止必要時間
+const float CPlayerStateStopping::RECOIL_SPEED = 4.0f;		// 反動移動速度
 const float CPlayerStateMistook::MAX_WARP_SPEED = 15.0f;	// 強制移動速度の上限
 
 //============================================================================

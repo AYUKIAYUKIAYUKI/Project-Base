@@ -109,6 +109,12 @@ bool CBlockDestructibleBig::Damage(int nAtk)
 		return false;
 	}
 
+	// ƒ‚ƒfƒ‹‚ğæ“¾
+	auto model{ CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::DEST_BIG_DAMAGE) };
+
+	// ƒ‚ƒfƒ‹‚ğİ’è
+	BindModel(model);
+
 	return true;
 }
 
