@@ -1103,11 +1103,7 @@ void CPlayerStateRushing::Enter()
 	m_pPlayer->SetRotTarget(NewRotTarget);
 
 	// 飛行角度から新たな加速度を作成
-	D3DXVECTOR3 NewVelocity{ 
-		sinf(m_pPlayer->GetAngleFlying()),
-		cosf(m_pPlayer->GetAngleFlying()),
-		0.0f
-	};
+	D3DXVECTOR3 NewVelocity{ sinf(m_pPlayer->GetAngleFlying()),cosf(m_pPlayer->GetAngleFlying()), 0.0f };
 
 	// 加速度を設定
 	m_pPlayer->SetVelocity(NewVelocity * 5.0f);
@@ -1119,13 +1115,13 @@ void CPlayerStateRushing::Enter()
 #endif
 
 	// モデルを取得
-	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_005);
+	auto Model{ CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_005) };
 
 	// モデルの設定
-	m_pPlayer->BindModel(model);
+	m_pPlayer->BindModel(Model);
 
 	// サイズを設定
-	m_pPlayer->SetSize(model->size);
+	m_pPlayer->SetSize(Model->size);
 
 	// 突進音
 	CSound::GetInstance()->Play(CSound::LABEL::RUSH);
@@ -1140,37 +1136,34 @@ void CPlayerStateRushing::Update()
 	Rotation();
 
 	// 加速度分、目標座標を変動
-	D3DXVECTOR3 posTarget = m_pPlayer->GetPosTarget();
-	posTarget += m_pPlayer->GetVelocity();
-	m_pPlayer->SetPosTarget(posTarget);
+	D3DXVECTOR3 NewPosTarget{ m_pPlayer->GetPosTarget() };
+	NewPosTarget += m_pPlayer->GetVelocity();
+	m_pPlayer->SetPosTarget(NewPosTarget);
 
 	// エフェクト生成
 	if (rand() % 2 == 0)
 	{
-		// ランダムなベクトル
-		D3DXVECTOR3 random{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.0f };
+		// ランダムな加速度を作成
+		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.0f };
 
 		// 煙を生成
 		CSmoke::Create(
-			m_pPlayer->GetPos() - (m_pPlayer->GetVelocity() * 5.0f) + random,	// 座標
-			m_pPlayer->GetVelocity());											// 加速度 (飛行方向)
+			m_pPlayer->GetPos() - (m_pPlayer->GetVelocity() * 5.0f) + RandomVelocity,	// 座標
+			m_pPlayer->GetVelocity());													// 加速度 (飛行方向)
 
 		// 星を生成
 		CStar::Create(
-			m_pPlayer->GetPos() - m_pPlayer->GetVelocity() + random * 5.0f,	// 座標
-			-m_pPlayer->GetVelocity());										// 加速度 (飛行方向の逆)
+			m_pPlayer->GetPos() - m_pPlayer->GetVelocity() + RandomVelocity * 5.0f,	// 座標
+			-m_pPlayer->GetVelocity());												// 加速度 (飛行方向の逆)
 		
 		// 波紋を生成
 		CRipple::Create(
-			m_pPlayer->GetPos() - m_pPlayer->GetVelocity() + random * 5.0f,	// 座標
-			-m_pPlayer->GetVelocity());										// 加速度 (飛行方向の逆)
-
-		// きらきら音
-		//CSound::GetInstance()->Play(CSound::LABEL::TWINKLING);
+			m_pPlayer->GetPos() - m_pPlayer->GetVelocity() + RandomVelocity * 5.0f,	// 座標
+			-m_pPlayer->GetVelocity());												// 加速度 (飛行方向の逆)
 	}
 
 	// この時点での加速度を保持
-	D3DXVECTOR3 oldVelocity{ m_pPlayer->GetVelocity() };
+	D3DXVECTOR3 OldVelocity{ m_pPlayer->GetVelocity() };
 
 	// 当たり判定
 	if (m_pPlayer->Collision())
@@ -1188,16 +1181,16 @@ void CPlayerStateRushing::Update()
 		{ // 横方向に衝突しているなら
 
 			// 横方向の反射ベクトルを代入しておく
-			oldVelocity.x *= -1.0f;
-			m_pPlayer->SetVelocity(oldVelocity);
+			OldVelocity.x *= -1.0f;
 		}
 		else if (m_pPlayer->GetVelocity().y == 0.0f)
 		{ // 縦方向に衝突しているなら
 
 			// 縦方向の反射ベクトルを代入しておく
-			oldVelocity.y *= -1.0f;
-			m_pPlayer->SetVelocity(oldVelocity);
+			OldVelocity.y *= -1.0f;
 		}
+
+		m_pPlayer->SetVelocity(OldVelocity);
 
 		// 衝突音
 		CSound::GetInstance()->Play(CSound::LABEL::STOP);
@@ -1232,31 +1225,31 @@ void CPlayerStateRushing::Exit()
 void CPlayerStateRushing::Rotation()
 {
 	// 向き情報を取得
-	D3DXVECTOR3 rot = m_pPlayer->GetRot();
-	D3DXVECTOR3 rotTarget = m_pPlayer->GetRotTarget();
+	D3DXVECTOR3 NewRot{ m_pPlayer->GetRot() };
+	D3DXVECTOR3 NewRotTarget{ m_pPlayer->GetRotTarget() };
 
 	// 目標向きを綺麗に追いかけるように、Z軸の向きを補正
-	if (rotTarget.z > 0.0f && m_OldRotTarget.z < 0.0f)
+	if (NewRotTarget.z > 0.0f && m_OldRotTarget.z < 0.0f)
 	{
-		rot.z += D3DX_PI * 2.0f;
+		NewRot.z += D3DX_PI * 2.0f;
 	}
-	else if (rotTarget.z < 0.0f && m_OldRotTarget.z > 0.0f)
+	else if (NewRotTarget.z < 0.0f && m_OldRotTarget.z > 0.0f)
 	{
-		rot.z += D3DX_PI * -2.0f;
+		NewRot.z += D3DX_PI * -2.0f;
 	}
 
 	// 目標向きへ補正
-	rot = CUtility::GetInstance()->AdjustToTarget(rot, rotTarget, 0.1f);
+	NewRot = CUtility::GetInstance()->AdjustToTarget(NewRot, NewRotTarget, 0.1f);
 
 	// 震える
-	rot.x = CUtility::GetInstance()->GetRandomValue<float>() * 0.001f;
-	rot.y = CUtility::GetInstance()->GetRandomValue<float>() * 0.001f;
+	NewRot.x = CUtility::GetInstance()->GetRandomValue<float>() * 0.001f;
+	NewRot.y = CUtility::GetInstance()->GetRandomValue<float>() * 0.001f;
 
 	// 向き情報設定
-	m_pPlayer->SetRot(rot);
+	m_pPlayer->SetRot(NewRot);
 
 	// 目標向きを記録
-	m_OldRotTarget = rotTarget;
+	m_OldRotTarget = NewRotTarget;
 }
 
 
@@ -1291,23 +1284,24 @@ CPlayerStateStopping::~CPlayerStateStopping()
 void CPlayerStateStopping::Enter()
 {
 	// モデルを取得
-	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_003);
+	auto Model{ CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_003) };
 
 	// モデルの設定
-	m_pPlayer->BindModel(model);
+	m_pPlayer->BindModel(Model);
 
 	// サイズを設定
-	m_pPlayer->SetSize(model->size);
+	m_pPlayer->SetSize(Model->size);
 
+	// エフェクトを生成
 	for (int i = 0; i < 10; i++)
 	{
-		// ランダムな加速度を生成
-		D3DXVECTOR3 velocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>() };
+		// ランダムな加速度を作成
+		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>() };
 
 		// 煙を生成
 		CSmoke::Create(
-			m_pPlayer->GetPos(),	// 座標
-			velocity * 0.0075f);	// 加速度
+			m_pPlayer->GetPos(),		// 座標
+			RandomVelocity * 0.0075f);	// 加速度
 	}
 
 	// 反動
@@ -1328,21 +1322,21 @@ void CPlayerStateStopping::Update()
 		Rotation();
 
 		// 重力加速
-		D3DXVECTOR3 velocity = m_pPlayer->GetVelocity();
-		CUtility::GetInstance()->Gravity(velocity);
-		m_pPlayer->SetVelocity(velocity);
+		D3DXVECTOR3 NewVelocity{ m_pPlayer->GetVelocity() };
+		CUtility::GetInstance()->Gravity(NewVelocity);
+		m_pPlayer->SetVelocity(NewVelocity);
 
 		// 加速度分、目標座標を変動
-		D3DXVECTOR3 posTarget = m_pPlayer->GetPosTarget();
-		posTarget += m_pPlayer->GetVelocity();
-		m_pPlayer->SetPosTarget(posTarget);
+		D3DXVECTOR3 NewPosTarget{ m_pPlayer->GetPosTarget() };
+		NewPosTarget += m_pPlayer->GetVelocity();
+		m_pPlayer->SetPosTarget(NewPosTarget);
 
 		// 当たり判定
 		m_pPlayer->Collision();
 	}
 	else
 	{
-		// 状態変更
+		// 通常状態に変更
 		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::DEFAULT);
 	}
 }
@@ -1356,13 +1350,13 @@ void CPlayerStateStopping::Exit()
 	m_pPlayer->SetRotTarget(D3DXVECTOR3{ 0.0f, 0.0f, 0.0f });
 
 	// モデルを取得
-	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_000);
+	auto Model{ CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_000) };
 
 	// モデルの設定
-	m_pPlayer->BindModel(model);
+	m_pPlayer->BindModel(Model);
 
 	// サイズを設定
-	m_pPlayer->SetSize(model->size);
+	m_pPlayer->SetSize(Model->size);
 }
 
 //============================================================================
@@ -1400,29 +1394,29 @@ void CPlayerStateStopping::Rotation()
 void CPlayerStateStopping::Recoil()
 {
 	// 衝突寸前の加速度を取得
-	D3DXVECTOR3 newVelocity{ m_pPlayer->GetVelocity() };
+	D3DXVECTOR3 NewVelocity{ m_pPlayer->GetVelocity() };
 
 #ifdef _DEBUG
-	CRenderer::GetInstance()->SetTimeString("\n衝突時の加速度X : " + std::to_string(newVelocity.x), 120);
-	CRenderer::GetInstance()->SetTimeString("衝突時の加速度Y : " + std::to_string(newVelocity.y), 120);
+	CRenderer::GetInstance()->SetTimeString("\n衝突時の加速度X : " + std::to_string(NewVelocity.x), 120);
+	CRenderer::GetInstance()->SetTimeString("衝突時の加速度Y : " + std::to_string(NewVelocity.y), 120);
 #endif	// _DEBUG
 
 	// 寸前の加速度の角度を算出
-	float fNewFlyingAngle{ atan2f(newVelocity.x, newVelocity.y) };
+	float fNewFlyingAngle{ atan2f(NewVelocity.x, NewVelocity.y) };
 
 	// 真逆の角度方向に加速度を設定
-	newVelocity.x = sinf(fNewFlyingAngle) * RECOIL_SPEED;
-	newVelocity.y = cosf(fNewFlyingAngle) * RECOIL_SPEED;
+	NewVelocity.x = sinf(fNewFlyingAngle) * RECOIL_SPEED;
+	NewVelocity.y = cosf(fNewFlyingAngle) * RECOIL_SPEED;
 
 	//newVelocity.x = sinf(fNewFlyingAngle) * (fabsf(newVelocity.x) + fabsf(newVelocity.y));
 	//newVelocity.y = cosf(fNewFlyingAngle) * (fabsf(newVelocity.x) + fabsf(newVelocity.y));
 
 #ifdef _DEBUG
-	CRenderer::GetInstance()->SetTimeString("衝突後の加速度X : " + std::to_string(newVelocity.x), 120);
-	CRenderer::GetInstance()->SetTimeString("衝突後の加速度Y : " + std::to_string(newVelocity.y), 120);
+	CRenderer::GetInstance()->SetTimeString("衝突後の加速度X : " + std::to_string(NewVelocity.x), 120);
+	CRenderer::GetInstance()->SetTimeString("衝突後の加速度Y : " + std::to_string(NewVelocity.y), 120);
 #endif	// _DEBUG
 
-	m_pPlayer->SetVelocity(newVelocity);
+	m_pPlayer->SetVelocity(NewVelocity);
 }
 
 
@@ -1638,9 +1632,12 @@ void CPlayerStateGoal::Exit()
 //============================================================================
 // コンストラクタ
 //============================================================================
-CPlayerStateManager::CPlayerStateManager() : m_pPlayer(nullptr), m_pState(nullptr)
+CPlayerStateManager::CPlayerStateManager() :
+	m_pPlayer{ nullptr },
+	m_pState{ nullptr },
+	m_PendingState{ CPlayerState::STATE::NONE }
 {
-	m_PendingState = CPlayerState::STATE::NONE;	// 変更予定の状態を初期化
+
 }
 
 //============================================================================
