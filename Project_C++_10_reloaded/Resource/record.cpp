@@ -235,6 +235,11 @@ CRecord* CRecord::Create()
 //============================================================================
 int CRecord::ImportRecord(int nSelect)
 {
+	if (nSelect < 0 || nSelect >= CGameManager::GetInstance()->GetMaxStage())
+	{
+		return 0;
+	}
+
 	// テキストを行ごとに保持する
 	std::vector<std::string> vStr;
 

@@ -141,18 +141,18 @@ void CGameManager::Update()
 		// 葉っぱ生成の更新
 		CLeaf::UpdateToCreate();
 
-		if (pKeyboard->GetTrigger(DIK_A) && m_nSelectLevel > 0 ||
-			pPad->GetTrigger(CInputPad::JOYKEY::LEFT) && m_nSelectLevel > 0 ||
-			bInputLeft && m_nSelectLevel > 0)
+		if (pKeyboard->GetTrigger(DIK_A) && m_nSelectLevel > -1 ||
+			pPad->GetTrigger(CInputPad::JOYKEY::LEFT) && m_nSelectLevel > -1 ||
+			bInputLeft && m_nSelectLevel > -1)
 		{
 			m_nSelectLevel--;
 
 			// 選択音
 			CSound::GetInstance()->Play(CSound::LABEL::SELECT);
 		}
-		else if (pKeyboard->GetTrigger(DIK_D) && m_nSelectLevel < m_nMaxStage - 1 ||
-			pPad->GetTrigger(CInputPad::JOYKEY::RIGHT) && m_nSelectLevel < m_nMaxStage - 1 ||
-			bInputRight && m_nSelectLevel < m_nMaxStage - 1)
+		else if (pKeyboard->GetTrigger(DIK_D) && m_nSelectLevel < m_nMaxStage ||
+			pPad->GetTrigger(CInputPad::JOYKEY::RIGHT) && m_nSelectLevel < m_nMaxStage ||
+			bInputRight && m_nSelectLevel < m_nMaxStage)
 		{
 			m_nSelectLevel++;
 
@@ -169,6 +169,18 @@ void CGameManager::Update()
 		if (pKeyboard->GetTrigger(DIK_RETURN) || pPad->GetTrigger(CInputPad::JOYKEY::START) || pPad->GetTrigger(CInputPad::JOYKEY::A) ||
 			pPad->GetTrigger(CInputPad::JOYKEY::B) || pPad->GetTrigger(CInputPad::JOYKEY::X) || pPad->GetTrigger(CInputPad::JOYKEY::Y))
 		{
+			// 決定音
+			CSound::GetInstance()->Play(CSound::LABEL::DEFINE);
+
+			// ステージの範囲外を選択していたら
+			if (m_nSelectLevel < 0 || m_nSelectLevel >= m_nMaxStage)
+			{
+				// リザルト画面へ
+				CFakeScreen::GetInstance()->SetFade(CScene::MODE::RESULT);
+
+				return;
+			}
+
 			// ウェーブを停止し、スタートフェーズへ移行
 			CFakeScreen::GetInstance()->StopWave(PHASE::START);
 
@@ -182,9 +194,6 @@ void CGameManager::Update()
 
 			// タイマーリセット
 			CTimer::TimerReset();
-
-			// 決定音
-			CSound::GetInstance()->Play(CSound::LABEL::DEFINE);
 		}
 
 #ifdef _DEBUG
@@ -330,6 +339,14 @@ CGameManager::PHASE CGameManager::GetPhase()
 void CGameManager::SetPhase(PHASE phase)
 {
 	m_phase = phase;
+}
+
+//============================================================================
+// ステージ数を取得
+//============================================================================
+int CGameManager::GetMaxStage()
+{
+	return m_nMaxStage;
 }
 
 //============================================================================

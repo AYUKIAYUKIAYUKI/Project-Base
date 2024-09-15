@@ -38,6 +38,7 @@ public:
 	PHASE GetPhase();			// フェーズ取得
 	void SetPhase(PHASE phase);	// フェーズ設定
 
+	int GetMaxStage();		// ステージ数を取得
 	int GetSelectLevel();	// 選択レベル番号を取得
 
 	static CGameManager* GetInstance();	// ゲームマネージャーを取得

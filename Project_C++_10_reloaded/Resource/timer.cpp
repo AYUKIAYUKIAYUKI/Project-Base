@@ -374,6 +374,11 @@ CTimer* CTimer::Create()
 //============================================================================
 int CTimer::ImportTimer(int nSelect)
 {
+	if (nSelect < 0 || nSelect >= CGameManager::GetInstance()->GetMaxStage())
+	{
+		return 0;
+	}
+
 	// レベルファイルを展開
 	std::ifstream Import{ "Data\\TXT\\level.txt" };
 
