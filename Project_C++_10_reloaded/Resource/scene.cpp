@@ -108,10 +108,10 @@ CScene* CScene::Create(MODE mode)
 		pScene->m_mode = MODE::STAGE;
 		break;
 
-	case CScene::MODE::RESULT:
-		pScene = DBG_NEW CResult;
-		pScene->m_mode = MODE::RESULT;
-		break;
+	//case CScene::MODE::RESULT:
+	//	pScene = DBG_NEW CResult;
+	//	pScene->m_mode = MODE::RESULT;
+	//	break;
 
 	default:
 		assert(false);

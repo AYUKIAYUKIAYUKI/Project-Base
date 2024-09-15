@@ -939,9 +939,6 @@ void CPlayerStateCharging::Rotation()
 
 	// 目標向きへ補正
 	rot = CUtility::GetInstance()->AdjustToTarget(rot, rotTarget, 0.25f);
-
-	CRenderer::GetInstance()->SetDebugString("【チャージ時のプレイヤーモデルの向き : " + std::to_string(rot.z) + "】");
-	CRenderer::GetInstance()->SetDebugString("【チャージ時のプレイヤーモデルの向き : " + std::to_string(rotTarget.z) + "】");
 #endif
 
 	// 震える

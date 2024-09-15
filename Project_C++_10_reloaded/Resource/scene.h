@@ -24,7 +24,7 @@ public:
 		TITLE,		// タイトル
 		GAME,		// ゲーム
 		STAGE,		// ステージデバッグ
-		RESULT,		// リザルト
+		//RESULT,		// リザルト
 		MAX,
 	};
 

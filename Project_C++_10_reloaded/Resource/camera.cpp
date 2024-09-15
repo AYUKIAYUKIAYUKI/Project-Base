@@ -107,6 +107,7 @@ void CCamera::SetCameraBG()
 	/////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////
 
+#ifdef _DEBUG
 	// 左右
 	if (CManager::GetKeyboard()->GetPress(DIK_RIGHT))
 	{
@@ -126,6 +127,7 @@ void CCamera::SetCameraBG()
 	{
 		m_rotBG.x -= 0.01f;
 	}
+#endif	// _DEBUG
 
 	/////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////
@@ -161,6 +163,7 @@ void CCamera::SetCameraBG()
 	/////////////////////////////////////////////////////////////
 	/////////////////////////////////////////////////////////////
 
+#ifdef _DEBUG
 	if (CManager::GetKeyboard()->GetPress(DIK_T))
 	{
 		m_posBG.y += 0.5f;
@@ -201,7 +204,6 @@ void CCamera::SetCameraBG()
 		m_fDistanceBG = 25.0f;
 	}
 
-#ifdef _DEBUG
 	CRenderer::GetInstance()->SetDebugString("空間ズーム具合 : " + std::to_string(m_fDistanceBG));
 #endif	// _DEBUG
 
@@ -417,8 +419,10 @@ void CCamera::UpdateScreen()
 		}
 	}
 
+#ifdef _DEBUG
 	// カメラ操作
 	Control();
+#endif	// _DEBUG
 
 	// 回転
 	Rotation();
