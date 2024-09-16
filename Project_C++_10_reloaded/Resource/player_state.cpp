@@ -1430,9 +1430,10 @@ void CPlayerStateStopping::Recoil()
 //============================================================================
 // コンストラクタ
 //============================================================================
-CPlayerStateMistook::CPlayerStateMistook()
+CPlayerStateMistook::CPlayerStateMistook() :
+	m_PosStartObject{ 0.0f, 0.0f, 0.0f }
 {
-	m_posStartObject = { 0.0f, 0.0f, 0.0f };	// スタートオブジェクトの位置を初期化
+
 }
 
 //============================================================================
@@ -1440,7 +1441,7 @@ CPlayerStateMistook::CPlayerStateMistook()
 //============================================================================
 CPlayerStateMistook::~CPlayerStateMistook()
 {
-	m_posStartObject = { 0.0f, 0.0f, 0.0f };	// スタートオブジェクトの位置を初期化
+
 }
 
 //============================================================================
@@ -1448,17 +1449,17 @@ CPlayerStateMistook::~CPlayerStateMistook()
 //============================================================================
 void CPlayerStateMistook::Enter()
 {
-	// 回転を初期化
+	// 向きを初期化
 	m_pPlayer->SetRot({ 0.0f, 0.0f, 0.0f });
 
 	// モデルを取得
-	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_006);
+	auto Model{ CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_006) };
 
 	// モデルの設定
-	m_pPlayer->BindModel(model);
+	m_pPlayer->BindModel(Model);
 
 	// サイズを設定
-	m_pPlayer->SetSize(model->size);
+	m_pPlayer->SetSize(Model->size);
 
 	// スタートオブジェクトの位置情報を取得
 	FindStartObject();
@@ -1490,15 +1491,16 @@ void CPlayerStateMistook::Exit()
 //============================================================================
 void CPlayerStateMistook::FindStartObject()
 {
-	CStart* pStart = CUtility::GetInstance()->DownCast<CStart, CObject>(CObject::FindObject(CObject::TYPE::START));
+	// スタートオブジェクトを取得
+	CStart* pStart{ CUtility::GetInstance()->DownCast<CStart, CObject>(CObject::FindObject(CObject::TYPE::START)) };
 
 	if (pStart == nullptr)
 	{ // 発見失敗
 		assert(false);
 	}
 
-	// スタートオブジェクトの位置を取得
-	m_posStartObject = pStart->GetPos();
+	// スタート座標をコピー
+	m_PosStartObject = pStart->GetPos();
 }
 
 //============================================================================
@@ -1506,39 +1508,39 @@ void CPlayerStateMistook::FindStartObject()
 //============================================================================
 void CPlayerStateMistook::Respawn()
 {
-	// 目標位置取得
-	D3DXVECTOR3 posTarget = m_pPlayer->GetPosTarget();
+	// 新しい目標座標を作成
+	D3DXVECTOR3 NewPosTarget{ m_pPlayer->GetPosTarget() };
 
-	// プレイヤーの位置がスタートオブジェクトの位置と異なれば
-	if (posTarget != m_posStartObject)
+	// プレイヤーの座標がスタートの座標と異なれば
+	if (NewPosTarget != m_PosStartObject)
 	{
-		// プレイヤー位置とスタート位置の差を割り出す
-		D3DXVECTOR3 distance = m_posStartObject - posTarget;
+		// プレイヤー座標とスタート位置の差を割り出す
+		D3DXVECTOR3 Distance{ m_PosStartObject - NewPosTarget };
 
 		// 差が一定以上あれば制限を付ける
-		if (distance.x > MAX_WARP_SPEED)
+		if (Distance.x > MAX_WARP_SPEED)
 		{
-			distance.x = MAX_WARP_SPEED;
+			Distance.x = MAX_WARP_SPEED;
 		}
-		else if (distance.x < -MAX_WARP_SPEED)
+		else if (Distance.x < -MAX_WARP_SPEED)
 		{
-			distance.x = -MAX_WARP_SPEED;
-		}
-
-		if (distance.y > MAX_WARP_SPEED)
-		{
-			distance.y = MAX_WARP_SPEED;
-		}
-		else if (distance.y < -MAX_WARP_SPEED)
-		{
-			distance.y = -MAX_WARP_SPEED;
+			Distance.x = -MAX_WARP_SPEED;
 		}
 
-		// 差を縮めて位置を補正していく
-		posTarget += distance;
+		if (Distance.y > MAX_WARP_SPEED)
+		{
+			Distance.y = MAX_WARP_SPEED;
+		}
+		else if (Distance.y < -MAX_WARP_SPEED)
+		{
+			Distance.y = -MAX_WARP_SPEED;
+		}
+
+		// 差を縮めて座標を補正していく
+		NewPosTarget += Distance;
 
 		// 目標位置を設定する
-		m_pPlayer->SetPosTarget(posTarget);
+		m_pPlayer->SetPosTarget(NewPosTarget);
 	}
 	else
 	{
@@ -1577,13 +1579,13 @@ CPlayerStateGoal::~CPlayerStateGoal()
 void CPlayerStateGoal::Enter()
 {
 	// モデルを取得
-	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_007);
+	auto Model{ CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_007) };
 
 	// モデルの設定
-	m_pPlayer->BindModel(model);
+	m_pPlayer->BindModel(Model);
 
 	// サイズを設定
-	m_pPlayer->SetSize(model->size);
+	m_pPlayer->SetSize(Model->size);
 }
 
 //============================================================================
@@ -1591,26 +1593,24 @@ void CPlayerStateGoal::Enter()
 //============================================================================
 void CPlayerStateGoal::Update()
 {
-	// 加速度を減らしていく
-	D3DXVECTOR3 velocity = m_pPlayer->GetVelocity();
-	velocity = velocity * 0.9f;
-	m_pPlayer->SetVelocity(velocity);
+	// 加速度を減衰
+	D3DXVECTOR3 NewVelocity{ m_pPlayer->GetVelocity() };
+	NewVelocity *= 0.9f;
+	m_pPlayer->SetVelocity(NewVelocity);
 
 	// 変身期間中は強制上昇
-	D3DXVECTOR3 posTarget = m_pPlayer->GetPosTarget();
-	posTarget.y += 1.0f;
-	m_pPlayer->SetPosTarget(posTarget);
+	D3DXVECTOR3 NewPosTarget{ m_pPlayer->GetPosTarget() };
+	NewPosTarget.y += 1.0f;
 
-	// Y軸を高速回転し、Z軸回転を初期化
-	D3DXVECTOR3 rot = m_pPlayer->GetRot();
-	rot.y = posTarget.y * 0.1f;
-	rot.z = 0.0f;
-	m_pPlayer->SetRot(rot);
+	// Y軸向きを高速回転し、Z軸向きをリセット
+	D3DXVECTOR3 NewRot{ m_pPlayer->GetRot() };
+	NewRot.y = NewPosTarget.y * 0.1f;
+	NewRot.z = 0.0f;
+	m_pPlayer->SetRot(NewRot);
 
 	// 加速度分、目標座標を変動
-	posTarget = m_pPlayer->GetPosTarget();
-	posTarget += m_pPlayer->GetVelocity();
-	m_pPlayer->SetPosTarget(posTarget);
+	NewPosTarget += m_pPlayer->GetVelocity();
+	m_pPlayer->SetPosTarget(NewPosTarget);
 }
 
 //============================================================================

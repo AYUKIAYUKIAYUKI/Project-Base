@@ -161,11 +161,11 @@ void CPlayer::Draw()
 //============================================================================
 bool CPlayer::Collision()
 {
-	// 衝突検出
-	bool bDetected = 0;
+	// 衝突検出用
+	bool bDetected{ false };
 
 	// ブロックタグを取得
-	CObject** pObject = CObject::FindAllObject(CObject::TYPE::BLOCK);
+	CObject** pObject{ CObject::FindAllObject(CObject::TYPE::BLOCK) };
 
 	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
 	{
@@ -393,6 +393,12 @@ bool CPlayer::Collision()
 			// 死亡音
 			CSound::GetInstance()->Play(CSound::LABEL::DIE);
 		}
+	}
+
+	// ミス状態に移行予定であればゴール・アチーブとの接触は認めない
+	if (m_pStateManager->GetPendingState() == CPlayerState::STATE::MISS)
+	{
+		return bDetected;
 	}
 
 	// ゴールオブジェクトを取得

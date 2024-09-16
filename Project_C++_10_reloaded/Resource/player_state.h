@@ -230,7 +230,7 @@ private:
 	void FindStartObject();	// スタートオブジェクトの位置を検索
 	void Respawn();			// リスポーン
 
-	D3DXVECTOR3 m_posStartObject;	// スタートオブジェクトの位置
+	D3DXVECTOR3 m_PosStartObject;	// スタートオブジェクトの位置
 };
 
 //****************************************************
