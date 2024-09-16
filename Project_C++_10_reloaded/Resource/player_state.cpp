@@ -108,6 +108,9 @@ void CPlayerStateDefault::Enter()
 	// 目標向きをリセット
 	m_pPlayer->SetRotTarget(D3DXVECTOR3{ 0.0f, 0.0f, 0.0f });
 
+	// 縮尺をリセット
+	m_pPlayer->SetScale(0.0f);
+
 	// モデルを取得
 	auto Model{ CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_000) };
 
@@ -145,6 +148,9 @@ void CPlayerStateDefault::Update()
 	D3DXVECTOR3 NewPosTarget{ m_pPlayer->GetPosTarget() };
 	NewPosTarget += m_pPlayer->GetVelocity();
 	m_pPlayer->SetPosTarget(NewPosTarget);
+
+	// 目標サイズへ拡大
+	m_pPlayer->SetScale(CUtility::GetInstance()->AdjustToTarget(m_pPlayer->GetScale(), 1.0f, 0.1f));
 
 	// 当たり判定
 	m_pPlayer->Collision();
@@ -1539,8 +1545,11 @@ void CPlayerStateMistook::Respawn()
 		// 差を縮めて座標を補正していく
 		NewPosTarget += Distance;
 
-		// 目標位置を設定する
+		// 目標座標を設定する
 		m_pPlayer->SetPosTarget(NewPosTarget);
+
+		// 縮小させていく
+		m_pPlayer->SetScale(CUtility::GetInstance()->AdjustToTarget(m_pPlayer->GetScale(), 0.0f, 0.1f));
 	}
 	else
 	{
