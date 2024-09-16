@@ -533,9 +533,28 @@ void CStageMaker::Modify()
 	// オブジェクトをXオブジェクトにダウンキャスト
 	CObject_X* pX = CUtility::GetInstance()->DownCast<CObject_X, CObject>(pObj);
 
-	// このオブジェクトがとげ移動ブロックなら
-	if (typeid(*pX) == typeid(CBlockSpikesMove))
-	{
+	if (typeid(*pX) == typeid(CStart))
+	{ // このオブジェクトがスタートオブジェクトなら
+
+		// Xオブジェクトをスタートオブジェクトにダウンキャスト
+		CStart* pStart = CUtility::GetInstance()->DownCast<CStart, CObject_X>(pX);
+
+		// ダミーの座標をオブジェクトの座標に同期
+		m_pDummy->SetPos(pStart->GetActualPos());
+
+		// ダミー操作
+		m_pDummy->Control();
+
+		// 操作反映
+		m_pDummy->Update();
+
+		// 座標を反映
+		pStart->SetActualPos(m_pDummy->GetPos());
+		pStart->Update();
+	}
+	else if (typeid(*pX) == typeid(CBlockSpikesMove))
+	{ // このオブジェクトがとげ移動ブロックなら
+
 		// Xオブジェクトをとげ移動ブロックにダウンキャスト
 		CBlockSpikesMove* pSpikeMove = CUtility::GetInstance()->DownCast<CBlockSpikesMove, CObject_X>(pX);
 
@@ -641,7 +660,7 @@ void CStageMaker::Export()
 	CStart* pStart = CUtility::GetInstance()->DownCast<CStart, CObject>(CObject::FindObject(CObject::TYPE::START));
 
 	// 情報を書き出す
-	Output(Export, pStart->GetPos(), "start");
+	Output(Export, pStart->GetActualPos(), "start");
 
 	// ゴールオブジェクトを取得
 	CGoal* pGoal = CUtility::GetInstance()->DownCast<CGoal, CObject>(CObject::FindObject(CObject::TYPE::GOAL));

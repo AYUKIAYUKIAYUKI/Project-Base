@@ -9,12 +9,23 @@
 // インクルードファイル
 //****************************************************
 #include "start.h"
+#include "utility.h"
+
+#include "renderer.h"
+
+// プレイヤー取得用
+#include "player.h"
+#include "player_state.h"
 
 //============================================================================
 // コンストラクタ
 //============================================================================
 CStart::CStart() :
-	CObject_X{ static_cast<int>(LAYER::MIDDLE) }	// 描画優先度を指定
+	CObject_X{ static_cast<int>(LAYER::MIDDLE) },
+	m_ActualPos{ 0.0f, 0.0f, 0.0f },
+	m_PosTarget{ 0.0f, 0.0f, 0.0f },
+	m_RotTarget{ 0.0f, 0.0f, 0.0f },
+	m_fScaleTarget{ 0.0f }
 {
 
 }
@@ -32,6 +43,13 @@ CStart::~CStart()
 //============================================================================
 HRESULT CStart::Init()
 {
+	// 目標座標を設定
+	m_PosTarget = m_ActualPos;
+	m_PosTarget.z = 40.0f;
+
+	// 目標縮尺を設定
+	m_fScaleTarget = 0.75f;
+
 	// 基底クラスの初期設定
 	HRESULT hr = CObject_X::Init();
 
@@ -52,10 +70,52 @@ void CStart::Uninit()
 //============================================================================
 void CStart::Update()
 {
-	// 回転
-	D3DXVECTOR3 rot = GetRot();
-	rot.x += 0.025f;
-	SetRot(rot);
+	// プレイヤータグのオブジェクトを取得
+	CObject* pObj{ CObject::FindObject(CObject::TYPE::PLAYER) };
+
+	// オブジェクトを取得出来たら
+	if (pObj)
+	{
+		// プレイヤーへダウンキャスト
+		CPlayer* pPlayer{ CUtility::GetInstance()->DownCast<CPlayer, CObject>(pObj) };
+
+		// プレイヤーが死亡状態なら
+		if (typeid(*pPlayer->GetStateManager()->GetState()) == typeid(CPlayerStateMistook))
+		{
+			// 激しく上下する
+			m_PosTarget.y = m_ActualPos.y + CUtility::GetInstance()->GetRandomValue<float>();
+
+			// 座標を手前へ
+			D3DXVECTOR3 NewPos{ GetPos() };
+			NewPos.z = -40.0f;
+			SetPos(NewPos);
+
+			// モデルを拡大
+			SetScale(1.5f);
+		}
+		else
+		{
+			// 正面を向く
+			m_RotTarget = {
+				0.0f,
+				0.0f,
+				CUtility::GetInstance()->GetRandomValue<float>() * 0.005f };
+
+			// 上下する
+			m_PosTarget.y = m_ActualPos.y + CUtility::GetInstance()->GetRandomValue<float>() * 0.1f;
+		}
+	}
+
+	// 目標向きへ
+	SetRot(CUtility::GetInstance()->AdjustToTarget(GetRot(), m_RotTarget, 0.05f));
+
+	// 目標座標へ
+	SetPos(CUtility::GetInstance()->AdjustToTarget(GetPos(), m_PosTarget, 0.05f));
+
+	// 目標縮尺へ
+	SetScale(CUtility::GetInstance()->AdjustToTarget(GetScale(), m_fScaleTarget, 0.05f));
+
+	CRenderer::GetInstance()->SetDebugString("縮尺 : "+ std::to_string(GetScale()));
 
 	// 基底クラスの更新
 	CObject_X::Update();
@@ -71,21 +131,28 @@ void CStart::Draw()
 }
 
 //============================================================================
-// 位置を取得
+// 実座標の取得
 //============================================================================
-D3DXVECTOR3 CStart::GetPos()
+D3DXVECTOR3 CStart::GetActualPos()
 {
-	// 自身の位置を返す
-	return CObject_X::GetPos();
+	return m_ActualPos;
+}
+
+//============================================================================
+// 実座標の設定
+//============================================================================
+void CStart::SetActualPos(D3DXVECTOR3 Pos)
+{
+	m_ActualPos = Pos;
 }
 
 //============================================================================
 // 生成
 //============================================================================
-CStart* CStart::Create(D3DXVECTOR3 pos)
+CStart* CStart::Create(D3DXVECTOR3 Pos)
 {
 	// インスタンスを生成
-	CStart* pStart = DBG_NEW CStart;
+	CStart* pStart{ DBG_NEW CStart };
 
 	if (pStart == nullptr)
 	{ // 生成失敗
@@ -95,20 +162,23 @@ CStart* CStart::Create(D3DXVECTOR3 pos)
 	// タイプを設定
 	pStart->SetType(TYPE::START);
 
+	// 実座標の設定 (先行)
+	pStart->SetActualPos(Pos);
+
 	// 基底クラスの初期設定
 	pStart->Init();
 
-	// 位置の設定
-	pStart->SetPos(pos);
+	// 座標の設定
+	pStart->SetPos(Pos);
 
 	// モデルを取得
-	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::START);
+	auto Model{ CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::START) };
 
 	// モデルを設定
-	pStart->BindModel(model);
+	pStart->BindModel(Model);
 
 	// サイズを設定
-	pStart->SetSize(model->size);
+	pStart->SetSize(Model->size);
 
 	// 描画される前に一度更新しておく
 	pStart->Update();

@@ -1500,7 +1500,7 @@ void CPlayerStateMistook::FindStartObject()
 	}
 
 	// スタート座標をコピー
-	m_PosStartObject = pStart->GetPos();
+	m_PosStartObject = pStart->GetActualPos();
 }
 
 //============================================================================

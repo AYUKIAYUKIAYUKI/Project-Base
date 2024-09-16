@@ -28,9 +28,17 @@ public:
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
 
-	D3DXVECTOR3 GetPos();	// 位置を取得
+	D3DXVECTOR3 GetActualPos();			// 実座標を取得
+	void SetActualPos(D3DXVECTOR3 Pos);	// 実座標を設定
 
-	static CStart* Create(D3DXVECTOR3 pos);	// 生成
+	static CStart* Create(D3DXVECTOR3 Pos);	// 生成
+
+private:
+
+	D3DXVECTOR3 m_ActualPos;	// 実座標
+	D3DXVECTOR3 m_PosTarget;	// 目標座標
+	D3DXVECTOR3 m_RotTarget;	// 目標向き
+	float m_fScaleTarget;		// 目標縮尺
 };
 
 #endif // _START_H_

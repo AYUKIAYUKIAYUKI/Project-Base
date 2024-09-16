@@ -27,7 +27,7 @@ data\\MODEL\\spikes.x
 data\\MODEL\\spikes_move.x
 data\\MODEL\\enemy.x
 data\\MODEL\\bullet_core.x
-data\\MODEL\\start.x
+data\\MODEL\\tv_start.x
 data\\MODEL\\goal.x
 data\\MODEL\\halo.x
 data\\MODEL\\LINE_X.x
