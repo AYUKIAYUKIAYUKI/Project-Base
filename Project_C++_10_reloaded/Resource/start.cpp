@@ -43,7 +43,7 @@ HRESULT CStart::Init()
 {
 	// 目標座標を設定
 	m_PosTarget = m_ActualPos;
-	m_PosTarget.z = 30.0f;
+	m_PosTarget.z = 40.0f;
 
 	// 目標縮尺を設定
 	m_fScaleTarget = 0.75f;
@@ -81,12 +81,12 @@ void CStart::Update()
 		if (typeid(*pPlayer->GetStateManager()->GetState()) == typeid(CPlayerStateMistook))
 		{
 			// 激しく移動する
-			m_PosTarget.x = m_ActualPos.x + CUtility::GetInstance()->GetRandomValue<float>() * 0.5f;
-			m_PosTarget.y = m_ActualPos.y + CUtility::GetInstance()->GetRandomValue<float>() * 0.5f;
+			m_PosTarget.x = m_ActualPos.x + CUtility::GetInstance()->GetRandomValue<float>() * 0.25f;
+			m_PosTarget.y = m_ActualPos.y + CUtility::GetInstance()->GetRandomValue<float>() * 0.25f;
 
 			// 座標を手前へ
 			D3DXVECTOR3 NewPos{ GetPos() };
-			NewPos.z = -30.0f;
+			NewPos.z = -40.0f;
 			SetPos(NewPos);
 
 			// モデルを拡大

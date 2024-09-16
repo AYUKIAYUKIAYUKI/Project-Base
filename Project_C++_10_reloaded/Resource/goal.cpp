@@ -86,22 +86,19 @@ void CGoal::Update()
 		// プレイヤーがゴール状態なら
 		if (typeid(*pPlayer->GetStateManager()->GetState()) == typeid(CPlayerStateGoal))
 		{
+			// カメラの間距離をズームイン
+			CManager::GetCamera()->SetDistance(CUtility::GetInstance()->AdjustToTarget(CManager::GetCamera()->GetDistance(), 150.0f, 0.02f));
+		
+			// ゴールシンボルが上昇していく
+			//m_ActualPos.y += 0.5f;
+
 			// プレイヤーの座標をテレビに吸い寄せる
 			pPlayer->SetPos(CUtility::GetInstance()->AdjustToTarget(pPlayer->GetPos(), GetPos(), 0.1f));
-
-			// 正面を向く
-			m_RotTarget = {
-				0.0f,
-				0.0f,
-				CUtility::GetInstance()->GetRandomValue<float>() * 0.005f };
-
-			// 上下する
-			m_PosTarget.y = m_ActualPos.y + CUtility::GetInstance()->GetRandomValue<float>() * 0.1f;
 		}
 		else
 		{
-			// カメラの間距離をリセット
-			CManager::GetCamera()->SetDistance(300.0f);
+			// カメラの間距離をアウト
+			CManager::GetCamera()->SetDistance(CUtility::GetInstance()->AdjustToTarget(CManager::GetCamera()->GetDistance(), 300.0f, 0.05f));
 		}
 
 		// 正面を向く

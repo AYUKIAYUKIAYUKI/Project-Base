@@ -300,7 +300,7 @@ void CCamera::SetPosTarget(D3DXVECTOR3 posTarget)
 //============================================================================
 // ŠÔ‹——£‚ðŽæ“¾
 //============================================================================
-float CCamera::GetDistane()
+float CCamera::GetDistance()
 {
 	return m_fDistance;
 }
