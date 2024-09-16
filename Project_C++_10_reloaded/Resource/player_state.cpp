@@ -108,9 +108,6 @@ void CPlayerStateDefault::Enter()
 	// 目標向きをリセット
 	m_pPlayer->SetRotTarget(D3DXVECTOR3{ 0.0f, 0.0f, 0.0f });
 
-	// 縮尺をリセット
-	m_pPlayer->SetScale(0.0f);
-
 	// モデルを取得
 	auto Model{ CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_000) };
 
@@ -1490,6 +1487,9 @@ void CPlayerStateMistook::Exit()
 {
 	// 加速度を初期化
 	m_pPlayer->SetVelocity({ 0.0f, 0.0f, 0.0f });
+
+	// 縮尺をリセット
+	m_pPlayer->SetScale(0.0f);
 }
 
 //============================================================================

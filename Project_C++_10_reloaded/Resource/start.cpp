@@ -45,7 +45,7 @@ HRESULT CStart::Init()
 {
 	// 目標座標を設定
 	m_PosTarget = m_ActualPos;
-	m_PosTarget.z = 40.0f;
+	m_PosTarget.z = 30.0f;
 
 	// 目標縮尺を設定
 	m_fScaleTarget = 0.75f;
@@ -82,12 +82,13 @@ void CStart::Update()
 		// プレイヤーが死亡状態なら
 		if (typeid(*pPlayer->GetStateManager()->GetState()) == typeid(CPlayerStateMistook))
 		{
-			// 激しく上下する
-			m_PosTarget.y = m_ActualPos.y + CUtility::GetInstance()->GetRandomValue<float>();
+			// 激しく移動する
+			m_PosTarget.x = m_ActualPos.x + CUtility::GetInstance()->GetRandomValue<float>() * 0.5f;
+			m_PosTarget.y = m_ActualPos.y + CUtility::GetInstance()->GetRandomValue<float>() * 0.5f;
 
 			// 座標を手前へ
 			D3DXVECTOR3 NewPos{ GetPos() };
-			NewPos.z = -40.0f;
+			NewPos.z = -30.0f;
 			SetPos(NewPos);
 
 			// モデルを拡大
@@ -102,6 +103,7 @@ void CStart::Update()
 				CUtility::GetInstance()->GetRandomValue<float>() * 0.005f };
 
 			// 上下する
+			m_PosTarget.x = m_ActualPos.x;
 			m_PosTarget.y = m_ActualPos.y + CUtility::GetInstance()->GetRandomValue<float>() * 0.1f;
 		}
 	}
@@ -113,7 +115,7 @@ void CStart::Update()
 	SetPos(CUtility::GetInstance()->AdjustToTarget(GetPos(), m_PosTarget, 0.05f));
 
 	// 目標縮尺へ
-	SetScale(CUtility::GetInstance()->AdjustToTarget(GetScale(), m_fScaleTarget, 0.05f));
+	SetScale(CUtility::GetInstance()->AdjustToTarget(GetScale(), m_fScaleTarget, 0.035f));
 
 	CRenderer::GetInstance()->SetDebugString("縮尺 : "+ std::to_string(GetScale()));
 
