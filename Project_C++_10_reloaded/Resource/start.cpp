@@ -11,8 +11,6 @@
 #include "start.h"
 #include "utility.h"
 
-#include "renderer.h"
-
 // プレイヤー取得用
 #include "player.h"
 #include "player_state.h"
@@ -116,8 +114,6 @@ void CStart::Update()
 
 	// 目標縮尺へ
 	SetScale(CUtility::GetInstance()->AdjustToTarget(GetScale(), m_fScaleTarget, 0.035f));
-
-	CRenderer::GetInstance()->SetDebugString("縮尺 : "+ std::to_string(GetScale()));
 
 	// 基底クラスの更新
 	CObject_X::Update();

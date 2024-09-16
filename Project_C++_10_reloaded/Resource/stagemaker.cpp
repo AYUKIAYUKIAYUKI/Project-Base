@@ -552,6 +552,25 @@ void CStageMaker::Modify()
 		pStart->SetActualPos(m_pDummy->GetPos());
 		pStart->Update();
 	}
+	else if (typeid(*pX) == typeid(CGoal))
+	{ // このオブジェクトがゴールオブジェクトなら
+
+		// Xオブジェクトをゴールオブジェクトにダウンキャスト
+		CGoal* pGoal = CUtility::GetInstance()->DownCast<CGoal, CObject_X>(pX);
+
+		// ダミーの座標をオブジェクトの座標に同期
+		m_pDummy->SetPos(pGoal->GetActualPos());
+
+		// ダミー操作
+		m_pDummy->Control();
+
+		// 操作反映
+		m_pDummy->Update();
+
+		// 座標を反映
+		pGoal->SetActualPos(m_pDummy->GetPos());
+		pGoal->Update();
+	}
 	else if (typeid(*pX) == typeid(CBlockSpikesMove))
 	{ // このオブジェクトがとげ移動ブロックなら
 
@@ -666,7 +685,7 @@ void CStageMaker::Export()
 	CGoal* pGoal = CUtility::GetInstance()->DownCast<CGoal, CObject>(CObject::FindObject(CObject::TYPE::GOAL));
 
 	// 情報を書き出す
-	Output(Export, pGoal->GetPos(), "goal");
+	Output(Export, pGoal->GetActualPos(), "goal");
 
 	// ブロックタイプのオブジェクトをすべて取得
 	CObject** pObject = CObject::FindAllObject(CObject::TYPE::BLOCK);

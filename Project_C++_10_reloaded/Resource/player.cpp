@@ -83,6 +83,9 @@ HRESULT CPlayer::Init()
 	// 初期座標をスタート地点に
 	SetPos(pStart->GetPos());
 
+	// 初期縮尺を設定
+	SetScale(0.0f);
+
 	return hr;
 }
 
@@ -405,7 +408,7 @@ bool CPlayer::Collision()
 	CGoal* pGoal = CUtility::GetInstance()->DownCast<CGoal, CObject>(CObject::FindObject(CObject::TYPE::GOAL));
 
 	// ゴールと衝突する場合
-	if (CUtility::GetInstance()->SphereAndCube(pGoal->GetPos(), pGoal->GetSize().x, m_posTarget, GetSize()))
+	if (CUtility::GetInstance()->SphereAndCube(pGoal->GetActualPos(), pGoal->GetSize().x, m_posTarget, GetSize()))
 	{
 		// ゴール状態に移行
 		m_pStateManager->SetPendingState(CPlayerState::STATE::GOAL);

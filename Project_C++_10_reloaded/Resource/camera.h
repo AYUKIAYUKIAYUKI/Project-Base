@@ -29,6 +29,9 @@ public:
 	D3DXVECTOR3 GetPosTarget();					// 目標位置を取得
 	void SetPosTarget(D3DXVECTOR3 posTarget);	// 目標位置を設定
 
+	float GetDistane();					// 間距離を取得
+	void SetDistance(float fDistance);	// 間距離を設定
+
 	D3DXVECTOR3 GetRot();	// 向きを取得
 
 private:

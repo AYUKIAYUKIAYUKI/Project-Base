@@ -1587,6 +1587,11 @@ CPlayerStateGoal::~CPlayerStateGoal()
 //============================================================================
 void CPlayerStateGoal::Enter()
 {
+	// 真上方向に加速度を設定
+	D3DXVECTOR3 NewVelocity{ m_pPlayer->GetVelocity() };
+	NewVelocity.y += 10.0f;
+	m_pPlayer->SetVelocity(NewVelocity);
+
 	// モデルを取得
 	auto Model{ CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_007) };
 
@@ -1602,24 +1607,23 @@ void CPlayerStateGoal::Enter()
 //============================================================================
 void CPlayerStateGoal::Update()
 {
-	// 加速度を減衰
-	D3DXVECTOR3 NewVelocity{ m_pPlayer->GetVelocity() };
-	NewVelocity *= 0.9f;
-	m_pPlayer->SetVelocity(NewVelocity);
-
-	// 変身期間中は強制上昇
-	D3DXVECTOR3 NewPosTarget{ m_pPlayer->GetPosTarget() };
-	NewPosTarget.y += 1.0f;
-
 	// Y軸向きを高速回転し、Z軸向きをリセット
 	D3DXVECTOR3 NewRot{ m_pPlayer->GetRot() };
-	NewRot.y = NewPosTarget.y * 0.1f;
+	NewRot.y += 0.1f;
 	NewRot.z = 0.0f;
 	m_pPlayer->SetRot(NewRot);
 
+	// 加速度を減衰
+	m_pPlayer->SetVelocity(CUtility::GetInstance()->AdjustToTarget(m_pPlayer->GetVelocity(), D3DXVECTOR3{ 0.0f, 0.0f, 0.0f }, 0.05f));
+
 	// 加速度分、目標座標を変動
+	D3DXVECTOR3 NewPosTarget{ m_pPlayer->GetPosTarget() };
 	NewPosTarget += m_pPlayer->GetVelocity();
 	m_pPlayer->SetPosTarget(NewPosTarget);
+
+	// 縮小させていく
+	m_pPlayer->SetScale(CUtility::GetInstance()->AdjustToTarget(m_pPlayer->GetScale(), 0.0f, 0.035f));
+
 }
 
 //============================================================================
