@@ -530,6 +530,14 @@ void CStageMaker::Modify()
 		return;
 	}
 
+	if (CManager::GetKeyboard()->GetTrigger(DIK_BACK))
+	{
+		// 削除
+		pObj->SetRelease();
+
+		return;
+	}
+
 	// オブジェクトをXオブジェクトにダウンキャスト
 	CObject_X* pX = CUtility::GetInstance()->DownCast<CObject_X, CObject>(pObj);
 
@@ -550,6 +558,7 @@ void CStageMaker::Modify()
 
 		// 座標を反映
 		pStart->SetActualPos(m_pDummy->GetPos());
+		pStart->SetPos(m_pDummy->GetPos());
 		pStart->Update();
 	}
 	else if (typeid(*pX) == typeid(CGoal))
@@ -569,6 +578,7 @@ void CStageMaker::Modify()
 
 		// 座標を反映
 		pGoal->SetActualPos(m_pDummy->GetPos());
+		pGoal->SetPos(m_pDummy->GetPos());
 		pGoal->Update();
 	}
 	else if (typeid(*pX) == typeid(CBlockSpikesMove))
