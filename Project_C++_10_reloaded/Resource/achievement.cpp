@@ -11,6 +11,9 @@
 #include "achievement.h"
 #include "utility.h"
 
+// ステージ情報取得用
+#include "game_manager.h"
+
 //============================================================================
 // デフォルトコンストラクタ
 //============================================================================
@@ -102,14 +105,28 @@ CAchieve* CAchieve::Create(D3DXVECTOR3 pos)
 	// 位置の設定
 	pAchieve->SetPos(pos);
 
+	// 現在選択しているレベルを取得
+	int nSelectLevel{ CGameManager::GetInstance()->GetSelectLevel() };
+
+	// アチーブメントの回収状態を取得
+	std::vector<bool> vbCollectAchieve{ CGameManager::GetInstance()->GetCollectAchieve() };
+
+	CModel_X_Manager::TYPE Type{ CModel_X_Manager::TYPE::ACHIEVE };
+
+	// このレベルのアチーブメントを回収していたら
+	if (vbCollectAchieve[nSelectLevel])
+	{
+		Type = CModel_X_Manager::TYPE::ACHIEVE_LOST;
+	}
+
 	// モデルを取得
-	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::ACHIEVE);
+	auto Model{ CModel_X_Manager::GetInstance()->GetModel(Type) };
 
 	// モデルを設定
-	pAchieve->BindModel(model);
+	pAchieve->BindModel(Model);
 
 	// サイズを設定
-	pAchieve->SetSize(model->size);
+	pAchieve->SetSize(Model->size);
 
 	// 描画される前に一度更新しておく
 	pAchieve->Update();

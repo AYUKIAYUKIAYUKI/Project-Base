@@ -217,6 +217,71 @@ void CSquare::ControlAll(int nSelect)
 			nCopy /= 10;
 		}
 
+		///////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////////////
+
+		if (nSquareCnt == -1 || nSquareCnt == CGameManager::GetInstance()->GetMaxStage())
+		{
+			nSquareCnt++;
+			continue;
+		}
+
+		if (!pSquare->m_pCrown)
+		{ // 王冠が作成されていなければ
+
+			// 新規作成
+			pSquare->m_pCrown = CCrown::Create();
+
+			// アチーブ回収状態を取得
+			std::vector<bool> CollectAchieve{ CGameManager::GetInstance()->GetCollectAchieve() };
+	
+			// どんな王冠を付けるのか判定
+			if (CollectAchieve[nSquareCnt])
+			{ // アチーブを取得している
+
+				// 好みの色に
+				pSquare->m_pCrown->SetCol(D3DXCOLOR{ 1.0f, 1.0f, 1.0f, pSquare->m_pCrown->GetAlpha() });
+			}
+			else
+			{ // アチーブを取得していない
+
+				// 黒っぽく
+				pSquare->m_pCrown->SetCol(D3DXCOLOR{ 0.15f, 0.15f, 0.15f, pSquare->m_pCrown->GetAlpha() });
+			}
+
+			// 出現設定
+			pSquare->m_pCrown->SetAppear(true);
+		}
+		else
+		{
+			if (nSelect == nSquareCnt)
+			{
+				// 目標向きを設定
+				pSquare->m_pCrown->SetRotTarget(D3DXVECTOR3{ 0.0f, 0.0f, D3DX_PI * -4.0f });
+
+				// 目標座標を設定
+				D3DXVECTOR3 NewPosTarget{ pSquare->GetPosTarget() };
+				NewPosTarget.y += -100.0f;
+				pSquare->m_pCrown->SetPosTarget(NewPosTarget);
+
+				// 目標サイズを設定
+				pSquare->m_pCrown->SetSizeTarget(D3DXVECTOR3{ 35.0f, 35.0f, 0.0f });
+			}
+			else
+			{
+				// 目標向きを設定
+				pSquare->m_pCrown->SetRotTarget(D3DXVECTOR3{ 0.0f, 0.0f, 0.0f });
+
+				// 目標座標を設定
+				D3DXVECTOR3 NewPosTarget{ pSquare->GetPosTarget() };
+				NewPosTarget.y += -75.0f;
+				pSquare->m_pCrown->SetPosTarget(NewPosTarget);
+
+				// 目標サイズを設定
+				pSquare->m_pCrown->SetSizeTarget(D3DXVECTOR3{ 20.0f, 20.0f, 0.0f });
+			}
+		}
+
 		// 次へ進める
 		nSquareCnt++;
 	}
@@ -251,23 +316,23 @@ void CSquare::SetDisappearAll()
 		/////////////////////////////////////////////////////
 		/////////////////////////////////////////////////////
 
-		for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
-		{
-			// ランダムな座標
-			D3DXVECTOR3 pos{ (SCREEN_WIDTH * 0.5f) + CUtility::GetInstance()->GetRandomValue<float>() * 1.5f, (SCREEN_HEIGHT * 0.5f) + CUtility::GetInstance()->GetRandomValue<float>() * 1.5f, 0.0f };
-			
-			// 数字の目標座標を設定
-			pSquare->m_apNumber[nCntNum]->SetPosTarget(pos);
-
-			// 数字の目標向きを設定
-			pSquare->m_apNumber[nCntNum]->SetRotTarget({ 0.0f, 0.0f, -D3DX_PI * 2.0f });
-
-			// 数字の目標サイズを設定
-			pSquare->m_apNumber[nCntNum]->SetSizeTarget({ 0.0f, 0.0f, 0.0f });
-		}
-
 		// 数字を消去予約
 		pSquare->DisappearNumber();
+
+		///////////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////////////
+		
+		if (pSquare->m_pCrown)
+		{ // 王冠が作成されていれば
+			
+			// 目標座標を設定
+			D3DXVECTOR3 NewPos{ pSquare->m_pCrown->GetPos() };
+			NewPos.y = SCREEN_HEIGHT;
+			pSquare->m_pCrown->SetPosTarget(NewPos);
+			
+			// 消去予約
+			pSquare->m_pCrown->SetDisappear(true);
+		}
 
 		nSquareCnt++;
 	}
@@ -360,7 +425,7 @@ void CSquare::SetColorFrontAndBack()
 //============================================================================
 // 生成
 //============================================================================
-CSquare* CSquare::Create(D3DXVECTOR3 pos)
+CSquare* CSquare::Create()
 {
 	// インスタンスを生成
 	CSquare* pSquare = DBG_NEW CSquare{};
@@ -458,6 +523,19 @@ void CSquare::DisappearNumber()
 {
 	for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
 	{
+		// ランダムな座標
+		D3DXVECTOR3 pos{ (SCREEN_WIDTH * 0.5f) + CUtility::GetInstance()->GetRandomValue<float>() * 1.5f, (SCREEN_HEIGHT * 0.5f) + CUtility::GetInstance()->GetRandomValue<float>() * 1.5f, 0.0f };
+
+		// 数字の目標座標を設定
+		m_apNumber[nCntNum]->SetPosTarget(pos);
+
+		// 数字の目標向きを設定
+		m_apNumber[nCntNum]->SetRotTarget({ 0.0f, 0.0f, -D3DX_PI * 2.0f });
+
+		// 数字の目標サイズを設定
+		m_apNumber[nCntNum]->SetSizeTarget({ 0.0f, 0.0f, 0.0f });
+	
+		// 消去予約
 		m_apNumber[nCntNum]->SetDisappear(true);
 	}
 }

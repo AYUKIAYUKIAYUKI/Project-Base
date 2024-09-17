@@ -52,6 +52,7 @@ public:
 		START,				// スタート
 		GOAL,				// ゴール
 		ACHIEVE,			// アチーブ
+		ACHIEVE_LOST,		// アチーブ(取得)
 		LINE_X,				// X軸
 		LINE_Y,				// Y軸
 		RIPPLE00,			// 波紋00

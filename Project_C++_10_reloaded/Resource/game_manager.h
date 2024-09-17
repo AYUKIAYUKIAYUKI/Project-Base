@@ -38,8 +38,9 @@ public:
 	PHASE GetPhase();			// フェーズ取得
 	void SetPhase(PHASE phase);	// フェーズ設定
 
-	int GetMaxStage();		// ステージ数を取得
-	int GetSelectLevel();	// 選択レベル番号を取得
+	int GetMaxStage();						// ステージ数を取得
+	int GetSelectLevel();					// 選択レベル番号を取得
+	std::vector<bool> GetCollectAchieve();	// アチーブ回収状態
 
 	static CGameManager* GetInstance();	// ゲームマネージャーを取得
 
@@ -54,6 +55,7 @@ private:
 	int m_nMaxStage;						// ステージ数
 	int m_nSelectLevel;						// レベル選択
 	std::vector<std::string> m_stagePath;	// ステージパス
+	std::vector<bool> m_vbCollectAchieve;	// アチーブ回収状態
 
 	static CGameManager* m_pInstance;	// ゲームマネージャー
 };

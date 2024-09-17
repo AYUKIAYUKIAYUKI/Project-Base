@@ -30,6 +30,7 @@ data\\MODEL\\bullet_core.x
 data\\MODEL\\tv_start.x
 data\\MODEL\\tv_start.x
 data\\MODEL\\halo.x
+data\\MODEL\\halo_lost.x
 data\\MODEL\\LINE_X.x
 data\\MODEL\\LINE_Y.x
 data\\MODEL\\ripple00.x

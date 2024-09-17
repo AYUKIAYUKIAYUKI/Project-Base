@@ -29,7 +29,7 @@ public:
 	void Update() override;		// XVˆ—
 	void Draw() override;		// •`‰æˆ—
 
-	static CCrown* Create(CTexture_Manager::TYPE tex);	// ¶¬
+	static CCrown* Create();	// ¶¬
 
 private:
 

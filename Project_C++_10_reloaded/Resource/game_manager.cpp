@@ -226,7 +226,7 @@ void CGameManager::Update()
 	case PHASE::INGAME:
 
 		// 葉っぱ生成の更新
-		//CLeaf::UpdateToCreate();
+		CLeaf::UpdateToCreate();
 
 		// タイムの動作
 		CTimer::SwitchControlByPahse(m_nSelectLevel);
@@ -267,13 +267,20 @@ void CGameManager::Update()
 
 	case PHASE::FINISH:
 
+		// ゴール時にアチーブメントが見つからなければ
+		if (!CObject::FindObject(CObject::TYPE::ACHIEVE))
+		{
+			// 選択しているレベルのアチーブを回収済みに
+			m_vbCollectAchieve[m_nSelectLevel] = true;
+		}
+
 		// レコードを生成
 		CRecord::Create();
 
 		// マス目をステージ分生成 + ゲーム終了マス
 		for (int i = 0; i < m_nMaxStage + 2; i++)
 		{
-			CSquare::Create({ 0.0f, 0.0f, 0.0f });
+			CSquare::Create();
 		}
 
 		// 先頭・末尾の色を設定する
@@ -302,7 +309,7 @@ void CGameManager::Update()
 		// マス目をステージ分生成 + ゲーム終了マス
 		for (int i = 0; i < m_nMaxStage + 2; i++)
 		{
-			CSquare::Create({ 0.0f, 0.0f, 0.0f });
+			CSquare::Create();
 		}
 
 		// 先頭・末尾の色を設定する
@@ -362,6 +369,14 @@ int CGameManager::GetSelectLevel()
 }
 
 //============================================================================
+// アチーブ回収状態を取得
+//============================================================================
+std::vector<bool> CGameManager::GetCollectAchieve()
+{
+	return m_vbCollectAchieve;
+}
+
+//============================================================================
 // ゲームマネージャーを取得
 //============================================================================
 CGameManager* CGameManager::GetInstance()
@@ -383,7 +398,8 @@ CGameManager::CGameManager() :
 	m_phase{ PHASE::NONE },	// フェーズ識別
 	m_nMaxStage{ 0 },		// ステージ数
 	m_nSelectLevel{ 0 },	// レベル選択
-	m_stagePath{}			// ステージパス
+	m_stagePath{},			// ステージパス
+	m_vbCollectAchieve{}	// アチーブ回収状態
 {
 	// タイムを生成
 	CTimer::Create();
@@ -423,6 +439,9 @@ void CGameManager::ImportLevel()
 
 		// パスを保持しておく
 		m_stagePath.push_back(path);
+
+		// 回収状態の拡大
+		m_vbCollectAchieve.push_back(false);
 
 		// ステージ数をカウントアップ
 		nCntStage++;

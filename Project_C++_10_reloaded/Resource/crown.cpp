@@ -82,7 +82,7 @@ void CCrown::Draw()
 //============================================================================
 // 生成
 //============================================================================
-CCrown* CCrown::Create(CTexture_Manager::TYPE tex)
+CCrown* CCrown::Create()
 {
 	// インスタンスを生成
 	CCrown* pCrown = DBG_NEW CCrown{};
