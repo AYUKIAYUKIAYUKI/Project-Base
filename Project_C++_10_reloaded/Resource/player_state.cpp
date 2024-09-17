@@ -452,6 +452,10 @@ CPlayerStateFlying::~CPlayerStateFlying()
 //============================================================================
 void CPlayerStateFlying::Enter()
 {
+	// 向きをリセット
+	m_pPlayer->SetRot(D3DXVECTOR3{ 0.0f, 0.0f, 0.0f });
+	m_pPlayer->SetRotTarget(D3DXVECTOR3{ 0.0f, 0.0f, 0.0f });
+
 	// モデルを取得
 	auto Model{ CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_002) };
 

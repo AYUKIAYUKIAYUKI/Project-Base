@@ -14,6 +14,9 @@
 // ステージ情報取得用
 #include "game_manager.h"
 
+// シーン情報取得用
+#include "manager.h"
+
 //============================================================================
 // デフォルトコンストラクタ
 //============================================================================
@@ -105,18 +108,26 @@ CAchieve* CAchieve::Create(D3DXVECTOR3 pos)
 	// 位置の設定
 	pAchieve->SetPos(pos);
 
-	// 現在選択しているレベルを取得
-	int nSelectLevel{ CGameManager::GetInstance()->GetSelectLevel() };
-
-	// アチーブメントの回収状態を取得
-	std::vector<bool> vbCollectAchieve{ CGameManager::GetInstance()->GetCollectAchieve() };
-
+	// モデルの種類を設定
 	CModel_X_Manager::TYPE Type{ CModel_X_Manager::TYPE::ACHIEVE };
 
-	// このレベルのアチーブメントを回収していたら
-	if (vbCollectAchieve[nSelectLevel])
+	if (CManager::GetScene()->GetMode() == CScene::MODE::GAME)
 	{
-		Type = CModel_X_Manager::TYPE::ACHIEVE_LOST;
+		// 現在選択しているレベルを取得
+		int nSelectLevel{ CGameManager::GetInstance()->GetSelectLevel() };
+
+		// アチーブメントの回収状態を取得
+		std::vector<bool> vbCollectAchieve{ CGameManager::GetInstance()->GetCollectAchieve() };
+
+		// このレベルのアチーブメントを回収していたら
+		if (vbCollectAchieve.size() > 0)
+		{
+			if (vbCollectAchieve[nSelectLevel])
+			{
+				// 取得後モデルを設定
+				Type = CModel_X_Manager::TYPE::ACHIEVE_LOST;
+			}
+		}
 	}
 
 	// モデルを取得
