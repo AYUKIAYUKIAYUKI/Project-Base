@@ -66,8 +66,8 @@ void CRipple::Update()
 	// ‰ñ“]
 	auto rot{ GetRot() };
 #if 1
-	rot.x += CUtility::GetInstance()->GetRandomValue<float>() * 0.001f;
-	rot.y += CUtility::GetInstance()->GetRandomValue<float>() * 0.001f;
+	rot.x += fabsf(CUtility::GetInstance()->GetRandomValue<float>()) * 0.001f;
+	rot.y += fabsf(CUtility::GetInstance()->GetRandomValue<float>()) * 0.001f;
 	rot.z = atan2f(m_velocity.y, m_velocity.x);
 #else
 	//rot.x += fabsf(CUtility::GetInstance()->GetRandomValue<float>()) * 0.01f;

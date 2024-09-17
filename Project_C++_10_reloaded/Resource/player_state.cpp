@@ -38,7 +38,7 @@ const float CPlayerStateBeginning::BEGIN_SPINNING = 0.5f;	// 変身時回転量
 const float CPlayerStateFlying::MAX_FLY_VELOCITY =	10.0f;	// 飛行時の最大加速度 (飛行速度以上推奨)
 const float CPlayerStateFlying::FLY_SPEED = 3.5f;			// 飛行速度
 const int CPlayerStateCharging::MAX_LIMITCHARGE = 120;		// 最大チャージ猶予
-const int CPlayerStateStopping::STOP_CNT_MAX = 25;			// 変身停止必要時間
+const int CPlayerStateStopping::STOP_CNT_MAX = 30;			// 変身停止必要時間
 const float CPlayerStateStopping::RECOIL_SPEED = 4.0f;		// 反動移動速度
 const float CPlayerStateMistook::MAX_WARP_SPEED = 15.0f;	// 強制移動速度の上限
 
@@ -381,6 +381,14 @@ void CPlayerStateBeginning::Update()
 			// 死亡音
 			CSound::GetInstance()->Play(CSound::LABEL::DIE);
 		}
+
+		// ランダムな加速度を作成
+		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.0f };
+
+		// 星を生成
+		CStar::Create(
+			m_pPlayer->GetPos() + RandomVelocity * 3.0f,	// 座標
+			RandomVelocity * 3.0f);							// 加速度 (ランダム)
 	}
 	else
 	{
@@ -622,18 +630,26 @@ bool CPlayerStateFlying::Control()
 	// 変更した加速度を反映
 	m_pPlayer->SetVelocity(NewVelocity);
 
+	// 乱数
+	int nRandom{ rand() % 3 };
+
 	// エフェクト生成
-	if (rand() % 3 == 0)
+	if (nRandom == 0)
 	{
 		// 波紋を生成
 		CRipple::Create(
-			m_pPlayer->GetPos() + (-NewVelocity * 5.0f),	// 座標
-			-NewVelocity);									// 加速度 (飛行方向の逆)
+			m_pPlayer->GetPos() - (NewVelocity * 3.0f),	// 座標
+			-NewVelocity * 3.0f);						// 加速度 (飛行方向の逆)
+	}
+	else if (nRandom == 1)
+	{
+		// ランダムな加速度を作成
+		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.0f };
 
 		// 星を生成
 		CStar::Create(
-			m_pPlayer->GetPos() + (-NewVelocity * 5.0f),	// 座標
-			-NewVelocity);									// 加速度 (飛行方向の逆)
+			m_pPlayer->GetPos() - (RandomVelocity * 3.0f),	// 座標
+			-NewVelocity * 3.0f);							// 加速度 (ランダム)
 	}
 
 	if (CManager::GetKeyboard()->GetTrigger(DIK_SPACE) || pPad->GetTrigger(CInputPad::JOYKEY::A) || pPad->GetTrigger(CInputPad::JOYKEY::B) ||
@@ -828,14 +844,14 @@ void CPlayerStateCharging::Update()
 	m_pPlayer->SetPosTarget(NewPosTarget);
 
 	// エフェクト生成
-	if (rand() % 5 == 0)
+	if (rand() % 4 == 0)
 	{
 		// ランダムな加速度を作成
 		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.0f };
 
 		// 星を生成
 		CStar::Create(
-			m_pPlayer->GetPos() + RandomVelocity * 2.0f,	// 座標
+			m_pPlayer->GetPos() + RandomVelocity * 3.0f,	// 座標
 			RandomVelocity);								// 加速度 (ランダム)
 	}
 
@@ -937,8 +953,8 @@ void CPlayerStateCharging::Rotation()
 	NewRot = CUtility::GetInstance()->AdjustToTarget(NewRot, NewRotTarget, 0.1f);
 
 	// 震える
-	NewRot.x = CUtility::GetInstance()->GetRandomValue<float>() * 0.00025f;
-	NewRot.y = CUtility::GetInstance()->GetRandomValue<float>() * 0.00025f;
+	NewRot.x = CUtility::GetInstance()->GetRandomValue<float>() * 0.0005f;
+	NewRot.y = CUtility::GetInstance()->GetRandomValue<float>() * 0.0005f;
 
 	// 向き情報設定
 	m_pPlayer->SetRot(NewRot);
@@ -1160,12 +1176,12 @@ void CPlayerStateRushing::Update()
 		// 星を生成
 		CStar::Create(
 			m_pPlayer->GetPos() - m_pPlayer->GetVelocity() + RandomVelocity * 5.0f,	// 座標
-			-m_pPlayer->GetVelocity());												// 加速度 (飛行方向の逆)
+			-m_pPlayer->GetVelocity() * 5.0f);										// 加速度 (飛行方向の逆)
 		
 		// 波紋を生成
 		CRipple::Create(
 			m_pPlayer->GetPos() - m_pPlayer->GetVelocity() + RandomVelocity * 5.0f,	// 座標
-			-m_pPlayer->GetVelocity());												// 加速度 (飛行方向の逆)
+			-m_pPlayer->GetVelocity() * 5.0f);										// 加速度 (飛行方向の逆)
 	}
 
 	// この時点での加速度を保持
