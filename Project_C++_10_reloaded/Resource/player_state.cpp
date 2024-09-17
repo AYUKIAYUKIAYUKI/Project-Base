@@ -818,8 +818,19 @@ void CPlayerStateCharging::Update()
 	// チャージが終わると強制終了
 	if (m_nLimitCharge > MAX_LIMITCHARGE)
 	{
-		// 通常状態へ
-		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::DEFAULT);
+		// ミス状態へ
+		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::MISS);
+
+		//for (int i = 0; i < 300; i++)
+		//{
+		//	// ランダムな加速度を作成
+		//	D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>() };
+
+		//	// 煙を生成
+		//	CSmoke::Create(
+		//		m_pPlayer->GetPos() + (RandomVelocity * 10.0f),	// 座標
+		//		RandomVelocity * 10.0f);							// 加速度
+		//}
 
 		return;
 	}
