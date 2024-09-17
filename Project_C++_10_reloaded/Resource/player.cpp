@@ -224,7 +224,8 @@ bool CPlayer::Collision()
 				CUtility::GetInstance()->OnlyCube(m_posTarget, m_velocity, GetPos(), GetSize(), pDestructible->GetPos(), pDestructible->GetSize());
 
 				// 飛行状態の場合のみ
-				if (typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateFlying))
+				if (typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateFlying) ||
+					typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateStopping))
 				{
 					// 可壊ブロックを破棄
 					pDestructible->SetRelease();
