@@ -247,7 +247,9 @@ void CBlockSpikesMove::Translate()
 		0.0f
 	};
 
+#ifdef _DEBUG
 	CRenderer::GetInstance()->SetDebugString("ˆÚ“®‚Æ‚° : " + std::to_string(newPos.x) + " : " + std::to_string(newPos.y) + " : " + std::to_string(m_fAngle));
+#endif	// _DEBUG
 
 	// À•W‚ğ”½‰f
 	SetPos(newPos);
