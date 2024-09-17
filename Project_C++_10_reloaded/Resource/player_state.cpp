@@ -1334,7 +1334,7 @@ void CPlayerStateStopping::Update()
 		m_pPlayer->SetVelocity(NewVelocity);
 
 		// 加速度を減衰
-		m_pPlayer->SetVelocity(CUtility::GetInstance()->AdjustToTarget(m_pPlayer->GetVelocity(), D3DXVECTOR3{ 0.0f, 0.0f, 0.0f }, 0.01f));
+		m_pPlayer->SetVelocity(CUtility::GetInstance()->AdjustToTarget(m_pPlayer->GetVelocity(), D3DXVECTOR3{ 0.0f, 0.0f, 0.0f }, 0.05f));
 
 		// 加速度分、目標座標を変動
 		D3DXVECTOR3 NewPosTarget{ m_pPlayer->GetPosTarget() };
@@ -1371,7 +1371,7 @@ void CPlayerStateStopping::Update()
 				// 縦方向の反射ベクトルを代入しておく
 				OldVelocity.y *= -1.0f;
 
-				OldVelocity.y *= 0.75f;
+				OldVelocity.y *= 0.9f;
 			}
 
 			// 加速度を反映
