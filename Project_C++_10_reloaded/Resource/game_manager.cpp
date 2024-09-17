@@ -133,7 +133,7 @@ void CGameManager::Update()
 	case PHASE::SELECT:
 	
 		// —t‚Á‚Ï¶¬‚ÌXV
-		//CLeaf::UpdateToCreate();
+		CLeaf::UpdateToCreate();
 
 		if (pKeyboard->GetTrigger(DIK_A) && m_nSelectLevel > -1 ||
 			pPad->GetTrigger(CInputPad::JOYKEY::LEFT) && m_nSelectLevel > -1 ||

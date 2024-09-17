@@ -36,7 +36,7 @@ const int CPlayerStateBeginning::BEGIN_CNT_MAX = 20;		// 変身必要時間
 const float CPlayerStateBeginning::BEGIN_FLOATING = 1.25f;	// 変身時上昇量
 const float CPlayerStateBeginning::BEGIN_SPINNING = 0.5f;	// 変身時回転量
 const float CPlayerStateFlying::MAX_FLY_VELOCITY =	10.0f;	// 飛行時の最大加速度 (飛行速度以上推奨)
-const float CPlayerStateFlying::FLY_SPEED = 3.0f;			// 飛行速度
+const float CPlayerStateFlying::FLY_SPEED = 3.5f;			// 飛行速度
 const int CPlayerStateCharging::MAX_LIMITCHARGE = 120;		// 最大チャージ猶予
 const int CPlayerStateStopping::STOP_CNT_MAX = 25;			// 変身停止必要時間
 const float CPlayerStateStopping::RECOIL_SPEED = 4.0f;		// 反動移動速度
@@ -138,6 +138,10 @@ void CPlayerStateDefault::Update()
 	CUtility::GetInstance()->Gravity(NewVelocity);
 	m_pPlayer->SetVelocity(NewVelocity);
 
+	// 加速度を減衰
+	NewVelocity.x = CUtility::GetInstance()->AdjustToTarget(NewVelocity.x, 0.0f, 0.1f);
+	m_pPlayer->SetVelocity(NewVelocity);
+
 	// 制動調整
 	Braking();
 
@@ -206,7 +210,7 @@ bool CPlayerStateDefault::Control()
 	{
 		// 入力方向に加速度を設定
 		D3DXVECTOR3 NewVeloctiy{ m_pPlayer->GetVelocity() };
-		NewVeloctiy.x += sinf(atan2f(X, 0.0f));
+		NewVeloctiy.x += sinf(atan2f(X, 0.0f)) * 0.25f;
 		m_pPlayer->SetVelocity(NewVeloctiy);
 
 		// 入力方向にモデルの目標向きを設定
@@ -280,9 +284,6 @@ void CPlayerStateDefault::Braking()
 		NewVelocity.x = -MAX_WALK_VELOCITY;
 	}
 
-	// 少しずつ加速度を失う
-	NewVelocity.x = NewVelocity.x * BRAKING_WALK_SPEED;
-
 	// 新しい加速度を反映
 	m_pPlayer->SetVelocity(NewVelocity);
 }
@@ -334,18 +335,6 @@ void CPlayerStateBeginning::Enter()
 	// サイズを設定
 	m_pPlayer->SetSize(Model->size);
 
-	// エフェクト生成
-	for (int i = 0; i < 10; i++)
-	{
-		// ランダムな加速度を作成
-		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>() };
-
-		// 煙を生成
-		CSmoke::Create(
-			m_pPlayer->GetPos(),		// 座標
-			RandomVelocity * 0.0075f);	// 加速度
-	}
-
 	// 爆発音
 	CSound::GetInstance()->Play(CSound::LABEL::EXPLOSION);
 
@@ -383,8 +372,8 @@ void CPlayerStateBeginning::Update()
 				return;
 			}
 
-			// 何かに衝突で変身停止へ
-			m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::STOPPING);
+			// 何かに衝突で通常状態へ
+			m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::DEFAULT);
 
 			// 衝突音
 			CSound::GetInstance()->Play(CSound::LABEL::STOP);
@@ -463,6 +452,18 @@ void CPlayerStateFlying::Enter()
 
 	// サイズを設定
 	m_pPlayer->SetSize(Model->size);
+
+	// エフェクト生成
+	for (int i = 0; i < 10; i++)
+	{
+		// ランダムな加速度を作成
+		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>() };
+
+		// 煙を生成
+		CSmoke::Create(
+			m_pPlayer->GetPos(),		// 座標
+			RandomVelocity * 0.0075f);	// 加速度
+	}
 }
 
 //============================================================================
@@ -502,15 +503,16 @@ void CPlayerStateFlying::Update()
 		// 何かに衝突で変身停止へ
 		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::STOPPING);
 
+		// 横方向に衝突しているなら
 		if (m_pPlayer->GetVelocity().x == 0.0f)
-		{ // 横方向に衝突しているなら
-
+		{
 			// 横方向の反射ベクトルを代入しておく
 			OldVelocity.x *= -1.0f;
 		}
-		else if (m_pPlayer->GetVelocity().y == 0.0f)
-		{ // 縦方向に衝突しているなら
 
+		// 縦方向に衝突しているなら
+		if (m_pPlayer->GetVelocity().y == 0.0f)
+		{
 			// 縦方向の反射ベクトルを代入しておく
 			OldVelocity.y *= -1.0f;
 		}
@@ -595,24 +597,24 @@ bool CPlayerStateFlying::Control()
 	NewVelocityTarget.y = cosf(m_pPlayer->GetAngleFlying()) * FLY_SPEED;
 	m_pPlayer->SetVelocityTarget(NewVelocityTarget);
 
-#ifdef _DEBUG
-	// 目標加速度をデバッグ表示
-	CRenderer::GetInstance()->SetDebugString("【　目標加速度　】");
-	std::ostringstream oss;
-	oss << std::fixed << std::setprecision(3) << "X:" << m_pPlayer->GetVelocityTarget().x << "\nY:" << m_pPlayer->GetVelocityTarget().y;
-	CRenderer::GetInstance()->SetDebugString(oss.str().c_str());
-#endif // _DEBUG
+//#ifdef _DEBUG
+//	// 目標加速度をデバッグ表示
+//	CRenderer::GetInstance()->SetDebugString("【　目標加速度　】");
+//	std::ostringstream oss;
+//	oss << std::fixed << std::setprecision(3) << "X:" << m_pPlayer->GetVelocityTarget().x << "\nY:" << m_pPlayer->GetVelocityTarget().y;
+//	CRenderer::GetInstance()->SetDebugString(oss.str().c_str());
+//#endif // _DEBUG
 
 	// 現在の加速度を取得
 	D3DXVECTOR3 NewVelocity{ m_pPlayer->GetVelocity() };
 
-#ifdef _DEBUG
-	// 現在の加速度をデバッグ表示
-	CRenderer::GetInstance()->SetDebugString("【　現在の加速度　】");
-	std::ostringstream oss1;
-	oss1 << std::fixed << std::setprecision(3) << "X:" << NewVelocity.x << "\nY:" << NewVelocity.y;
-	CRenderer::GetInstance()->SetDebugString(oss1.str().c_str());
-#endif // _DEBUG
+//#ifdef _DEBUG
+//	// 現在の加速度をデバッグ表示
+//	CRenderer::GetInstance()->SetDebugString("【　現在の加速度　】");
+//	std::ostringstream oss1;
+//	oss1 << std::fixed << std::setprecision(3) << "X:" << NewVelocity.x << "\nY:" << NewVelocity.y;
+//	CRenderer::GetInstance()->SetDebugString(oss1.str().c_str());
+//#endif // _DEBUG
 
 	// 現在の加速度を補正
 	NewVelocity += (m_pPlayer->GetVelocityTarget() - NewVelocity) * 0.1f;
@@ -852,15 +854,16 @@ void CPlayerStateCharging::Update()
 		// 何かに衝突で変身停止へ
 		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::STOPPING);
 
+		// 横方向に衝突しているなら
 		if (m_pPlayer->GetVelocity().x == 0.0f)
-		{ // 横方向に衝突しているなら
-
+		{
 			// 横方向の反射ベクトルを代入しておく
 			OldVelocity.x *= -1.0f;
 		}
-		else if (m_pPlayer->GetVelocity().y == 0.0f)
-		{ // 縦方向に衝突しているなら
 
+		// 縦方向に衝突しているなら
+		if (m_pPlayer->GetVelocity().y == 0.0f)
+		{
 			// 縦方向の反射ベクトルを代入しておく
 			OldVelocity.y *= -1.0f;
 		}
@@ -1180,15 +1183,16 @@ void CPlayerStateRushing::Update()
 		// 何かに衝突で変身停止へ
 		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::STOPPING);
 
+		// 横方向に衝突しているなら
 		if (m_pPlayer->GetVelocity().x == 0.0f)
-		{ // 横方向に衝突しているなら
-
+		{
 			// 横方向の反射ベクトルを代入しておく
 			OldVelocity.x *= -1.0f;
 		}
-		else if (m_pPlayer->GetVelocity().y == 0.0f)
-		{ // 縦方向に衝突しているなら
-
+		
+		// 縦方向に衝突しているなら
+		if (m_pPlayer->GetVelocity().y == 0.0f)
+		{
 			// 縦方向の反射ベクトルを代入しておく
 			OldVelocity.y *= -1.0f;
 		}
@@ -1329,13 +1333,50 @@ void CPlayerStateStopping::Update()
 		CUtility::GetInstance()->Gravity(NewVelocity);
 		m_pPlayer->SetVelocity(NewVelocity);
 
+		// 加速度を減衰
+		m_pPlayer->SetVelocity(CUtility::GetInstance()->AdjustToTarget(m_pPlayer->GetVelocity(), D3DXVECTOR3{ 0.0f, 0.0f, 0.0f }, 0.01f));
+
 		// 加速度分、目標座標を変動
 		D3DXVECTOR3 NewPosTarget{ m_pPlayer->GetPosTarget() };
 		NewPosTarget += m_pPlayer->GetVelocity();
 		m_pPlayer->SetPosTarget(NewPosTarget);
 
+		// この時点での加速度を保持
+		D3DXVECTOR3 OldVelocity{ m_pPlayer->GetVelocity() };
+
 		// 当たり判定
-		m_pPlayer->Collision();
+		if (m_pPlayer->Collision())
+		{
+			// ランダムな加速度を作成
+			D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>() };
+
+			// 煙を生成
+			CSmoke* pSmoke = CSmoke::Create(
+				m_pPlayer->GetPos(),		// 座標
+				RandomVelocity * 0.0075f);	// 加速度
+
+			// 小さめに
+			pSmoke->SetScale(0.5f);
+
+			// 横方向に衝突しているなら
+			if (m_pPlayer->GetVelocity().x == 0.0f)
+			{
+				// 横方向の反射ベクトルを代入しておく
+				OldVelocity.x *= -1.0f;
+			}
+
+			// 縦方向に衝突しているなら
+			if (m_pPlayer->GetVelocity().y == 0.0f)
+			{
+				// 縦方向の反射ベクトルを代入しておく
+				OldVelocity.y *= -1.0f;
+
+				OldVelocity.y *= 0.75f;
+			}
+
+			// 加速度を反映
+			m_pPlayer->SetVelocity(OldVelocity);
+		}
 	}
 	else
 	{
