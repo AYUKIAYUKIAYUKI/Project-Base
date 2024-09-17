@@ -12,6 +12,7 @@
 // インクルードファイル
 //****************************************************
 #include "object_UI.h"
+#include "crown.h"
 #include "number.h"
 
 //****************************************************
@@ -45,6 +46,7 @@ private:
 	void DisappearNumber();		// 数字を消去
 
 	CNumber* m_apNumber[MAX_DIGIT];	// 数字
+	CCrown* m_pCrown;				// 王冠
 };
 
 #endif // _SQUARE_H_

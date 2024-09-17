@@ -34,6 +34,7 @@ public:
 		LASTTIME,		// ラストタイム
 		BESTTIME,		// ベストタイム
 		BACK,			// 戻るマーク
+		CROWN,			// 王冠
 		MAX,
 	};
 

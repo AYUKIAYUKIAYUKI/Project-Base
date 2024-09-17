@@ -21,7 +21,8 @@
 // デフォルトコンストラクタ
 //============================================================================
 CSquare::CSquare() :
-	CObject_UI{ static_cast<int>(LAYER::UI) }
+	CObject_UI{ static_cast<int>(LAYER::UI) },
+	m_pCrown{ nullptr }
 {
 	// 数字を生成
 	for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)

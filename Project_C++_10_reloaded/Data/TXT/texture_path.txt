@@ -12,3 +12,4 @@ Data\\TEXTURE\\number00.png
 Data\\TEXTURE\\lasttime.png
 Data\\TEXTURE\\besttime.png
 Data\\TEXTURE\\back.png
+Data\\TEXTURE\\crown_256.png

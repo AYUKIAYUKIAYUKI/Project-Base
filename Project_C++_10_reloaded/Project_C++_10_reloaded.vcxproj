@@ -29,6 +29,7 @@
     <ClCompile Include="Resource\block_spikes_move.cpp" />
     <ClCompile Include="Resource\bullet.cpp" />
     <ClCompile Include="resource\camera.cpp" />
+    <ClCompile Include="Resource\crown.cpp" />
     <ClCompile Include="Resource\dummy.cpp" />
     <ClCompile Include="Resource\enemy.cpp" />
     <ClCompile Include="Resource\explosion.cpp" />
@@ -96,6 +97,7 @@
     <ClInclude Include="Resource\block_spikes_move.h" />
     <ClInclude Include="Resource\bullet.h" />
     <ClInclude Include="resource\camera.h" />
+    <ClInclude Include="Resource\crown.h" />
     <ClInclude Include="Resource\dummy.h" />
     <ClInclude Include="Resource\enemy.h" />
     <ClInclude Include="Resource\explosion.h" />
