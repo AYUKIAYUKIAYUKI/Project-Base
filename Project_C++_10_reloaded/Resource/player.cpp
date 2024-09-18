@@ -286,7 +286,7 @@ bool CPlayer::Collision()
 					// 煙を生成
 					CSmoke::Create(
 						pDestructible->GetPos() + RandomVelocity * 0.05f,	// 座標
-						m_velocity * -0.8f);								// 加速度
+						m_velocity * -0.5f);								// 加速度
 				}
 
 				// 破壊音
@@ -308,7 +308,7 @@ bool CPlayer::Collision()
 					pDestructible->SetRelease();
 
 					// エフェクトを作成
-					for (int i = 0; i < 2; i++)
+					for (int i = 0; i < 5; i++)
 					{
 						// ランダムな加速度を生成
 						D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), 0.0f };
@@ -316,7 +316,7 @@ bool CPlayer::Collision()
 						// 煙を生成
 						CSmoke::Create(
 							pDestructible->GetPos() + RandomVelocity * 0.05f,	// 座標
-							OldVelocity * -0.8f);								// 加速度
+							OldVelocity * -0.5f);								// 加速度
 					}
 
 					// 破壊音
@@ -361,15 +361,18 @@ bool CPlayer::Collision()
 				else
 				{
 					// エフェクトを作成
-					for (int i = 0; i < 3; i++)
+					for (int i = 0; i < 10; i++)
 					{
 						// ランダムな加速度を生成
 						D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), 0.0f };
 
 						// 煙を生成
-						CSmoke::Create(
-							pDest_Big->GetPos() + RandomVelocity * 0.05f,	// 座標
-							m_velocity * -1.0f);							// 加速度
+						CSmoke* pSmoke{ CSmoke::Create(
+							pDest_Big->GetPos() + RandomVelocity * 0.1f,	// 座標
+							m_velocity * -1.0f) };							// 加速度
+					
+						// 大きく
+						pSmoke->SetScale(1.2f);
 					}
 				}
 
@@ -392,15 +395,18 @@ bool CPlayer::Collision()
 					{ // 破壊出来たら
 
 						// エフェクトを作成
-						for (int i = 0; i < 3; i++)
+						for (int i = 0; i < 5; i++)
 						{
 							// ランダムな加速度を生成
 							D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), 0.0f };
+						
+							// 煙を生成
+							CSmoke* pSmoke{ CSmoke::Create(
+								pDest_Big->GetPos() + RandomVelocity * 0.1f,	// 座標
+								OldVelocity * -1.0f) };							// 加速度
 
-								// 煙を生成
-								CSmoke::Create(
-									pDest_Big->GetPos() + RandomVelocity * 0.05f,	// 座標
-									OldVelocity * -1.0f);							// 加速度
+							// 大きく
+							pSmoke->SetScale(1.2f);
 						}
 					}
 
