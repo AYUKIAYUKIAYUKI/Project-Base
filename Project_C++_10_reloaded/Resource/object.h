@@ -39,6 +39,8 @@ public:
 		SQUARE,			// マス目
 		TIMER,			// タイム
 		RECORD,			// レコード
+		BARRIER,		// バリア
+		BARRIER_ANCHOR,	// バリアアンカー
 		MAX,
 	};
 

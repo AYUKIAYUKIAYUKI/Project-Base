@@ -55,8 +55,17 @@ HRESULT CModel_X_Manager::Load()
 
 		if (FAILED(hr))
 		{ // 取得失敗
+#if 0
 			file.close();	// ファイルを閉じる
 			assert(false);
+#else
+
+#ifdef _DEBUG
+			CRenderer::GetInstance()->SetTimeString("【警告】モデル[" + filename + "]は読み込みに失敗しました", 300);
+#endif	// _DEBUG
+
+			continue;
+#endif
 		}
 
 		// モデルのサイズを取得する
@@ -204,7 +213,17 @@ D3DXVECTOR3 CModel_X_Manager::ImportSize(std::string filename)
 
 	if (!file)
 	{ // 展開に失敗
+#if 0
 		assert(false);
+#else
+
+#ifdef _DEBUG
+		CRenderer::GetInstance()->SetTimeString("【警告】モデル[" + filename + "]はサイズ読み込みに失敗しました", 300);
+#endif	// _DEBUG
+
+		return D3DXVECTOR3{ 0.0f, 0.0f, 0.0f, };
+
+#endif
 	}
 
 	// 文字列格納用

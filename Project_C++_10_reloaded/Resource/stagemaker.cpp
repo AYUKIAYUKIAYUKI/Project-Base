@@ -19,6 +19,7 @@
 
 // オブジェクト配置用
 #include "achievement.h"
+#include "barrier_anchor.h"
 #include "block.h"
 #include "block_destructible.h"
 #include "block_destructible_big.h"
@@ -186,6 +187,10 @@ void CStageMaker::Import(std::string path)
 		{ // アチーブ
 			CAchieve::Create(pos);
 		}
+		else if (str_type == "anchor")
+		{ // バリアアンカー
+			CBarrier_Anchor::Create(pos);
+		}
 		else
 		{ // 不明
 			assert(false);
@@ -267,9 +272,24 @@ void CStageMaker::Control()
 		// ゴールタイプのオブジェクトを取得
 		CObject* pGoal = CObject::FindObject(CObject::TYPE::GOAL);
 
-		if (pStart == nullptr || pGoal == nullptr)
+		// バリアアンカータグをすべて取得
+		CObject** pObject{ CObject::FindAllObject(CObject::TYPE::BARRIER_ANCHOR) };
+
+		// オブジェクト数をカウント
+		int nCntObj{ 0 };
+
+		for (nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+		{
+			// オブジェクトの情報が無くなったら終了
+			if (pObject[nCntObj] == nullptr)
+			{
+				break;
+			}
+		}
+
+		if (pStart == nullptr || pGoal == nullptr || nCntObj < 2)
 		{ // スタート・ゴールタイプのオブジェクトの発見に失敗
-			CRenderer::GetInstance()->SetTimeString("【スタート・ゴールの配置情報が異常です！】", 180);
+			CRenderer::GetInstance()->SetTimeString("【スタート・ゴール・バリアアンカーを配置してください！】", 180);
 		}
 		else
 		{
@@ -308,11 +328,11 @@ void CStageMaker::Control()
 
 		if (CManager::GetKeyboard()->GetTrigger(DIK_NUMPAD4))
 		{
-			m_nPattern > 0 ? m_nPattern-- : m_nPattern = 8;
+			m_nPattern > 0 ? m_nPattern-- : m_nPattern = 9;
 		}
 		else if (CManager::GetKeyboard()->GetTrigger(DIK_NUMPAD6))
 		{
-			m_nPattern < 8 ? m_nPattern++ : m_nPattern = 0;
+			m_nPattern < 9 ? m_nPattern++ : m_nPattern = 0;
 		}
 
 		CRenderer::GetInstance()->SetDebugString("現在の構造物の種類:" + std::to_string(m_nPattern));
@@ -492,6 +512,34 @@ void CStageMaker::Register()
 			CRenderer::GetInstance()->SetTimeString("【アチーブはすでに配置されています】", 60);
 		}
 
+		break;
+
+	case 9:
+	{
+		// バリアアンカータグをすべて取得
+		CObject** pObject{ CObject::FindAllObject(CObject::TYPE::BARRIER_ANCHOR) };
+
+		// オブジェクト数をカウント
+		int nCntObj{ 0 };
+
+		for (nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+		{
+			// オブジェクトの情報が無くなったら終了
+			if (pObject[nCntObj] == nullptr)
+			{
+				break;
+			}
+		}
+
+		if (nCntObj < 2)
+		{
+			CBarrier_Anchor::Create(pos);
+		}
+		else
+		{
+			CRenderer::GetInstance()->SetTimeString("【バリアアンカーはすでに2つ配置されています】", 60);
+		}
+	}
 		break;
 
 	default:
@@ -697,8 +745,44 @@ void CStageMaker::Export()
 	// 情報を書き出す
 	Output(Export, pGoal->GetActualPos(), "goal");
 
+	// アチーブタイプのオブジェクトをすべて取得
+	CObject** pObject{ CObject::FindAllObject(CObject::TYPE::ACHIEVE) };
+
+	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	{
+		// オブジェクトの情報が無くなったら終了
+		if (pObject[nCntObj] == nullptr)
+		{
+			break;
+		}
+
+		// アチーブクラスへダウンキャスト
+		CAchieve* pAchieve = CUtility::GetInstance()->DownCast<CAchieve, CObject>(pObject[nCntObj]);
+
+		// 情報を書き出す
+		Output(Export, pAchieve->GetPos(), "archieve");
+	}
+
+	// バリアアンカータグをすべて取得
+	pObject = CObject::FindAllObject(CObject::TYPE::BARRIER_ANCHOR);
+
+	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	{
+		// オブジェクトの情報が無くなったら終了
+		if (pObject[nCntObj] == nullptr)
+		{
+			break;
+		}
+
+		// バリアアンカーへダウンキャスト
+		CBarrier_Anchor* pAnchor = CUtility::GetInstance()->DownCast<CBarrier_Anchor, CObject>(pObject[nCntObj]);
+
+		// 情報を書き出す
+		Output(Export, pAnchor->GetPos(), "anchor");
+	}
+
 	// ブロックタイプのオブジェクトをすべて取得
-	CObject** pObject = CObject::FindAllObject(CObject::TYPE::BLOCK);
+	pObject = CObject::FindAllObject(CObject::TYPE::BLOCK);
 
 	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
 	{
@@ -803,24 +887,6 @@ void CStageMaker::Export()
 
 		// 情報を書き出す
 		Output(Export, pEnemy->GetPos(), "enemy");
-	}
-
-	// アチーブタイプのオブジェクトをすべて取得
-	pObject = CObject::FindAllObject(CObject::TYPE::ACHIEVE);
-
-	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
-	{
-		// オブジェクトの情報が無くなったら終了
-		if (pObject[nCntObj] == nullptr)
-		{
-			break;
-		}
-
-		// アチーブクラスへダウンキャスト
-		CAchieve* pAchieve = CUtility::GetInstance()->DownCast<CAchieve, CObject>(pObject[nCntObj]);
-
-		// 情報を書き出す
-		Output(Export, pAchieve->GetPos(), "archieve");
 	}
 
 	Export.close();	// ファイルを閉じる

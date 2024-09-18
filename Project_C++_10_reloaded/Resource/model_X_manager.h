@@ -66,6 +66,8 @@ public:
 		PARTICLE02,			// 粒子02
 		PARTICLE03,			// 粒子03
 		CURSOR,				// カーソル
+		BARRIER,			// バリア
+		BARRIER_ANCHOR,		// バリアアンカー
 		MAX,
 	};
 

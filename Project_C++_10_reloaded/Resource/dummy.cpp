@@ -135,6 +135,10 @@ void CDummy::ChangeModel(int nPattern)
 		BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::ACHIEVE));
 		break;
 
+	case 9:
+		BindModel(CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::BARRIER_ANCHOR));
+		break;
+
 	default:
 		assert(false);
 		break;
