@@ -10,11 +10,6 @@
 //****************************************************
 #include "block_destructible.h"
 #include "utility.h"
-#include "sound.h"
-
-// オブジェクト取得用
-#include "player.h"
-#include "smoke.h"
 
 //============================================================================
 // デフォルトコンストラクタ
@@ -39,30 +34,7 @@ CBlockDestructible::CBlockDestructible(LAYER priority) :
 //============================================================================
 CBlockDestructible::~CBlockDestructible()
 {
-	// プレイヤータグのオブジェクトを取得
-	CObject* pObject{ CObject::FindObject(CObject::TYPE::PLAYER) };
 
-	// 取得出来たら
-	if (pObject)
-	{
-		// プレイヤークラスにダウンキャスト
-		CPlayer* pPlayer{ CUtility::GetInstance()->DownCast<CPlayer, CObject>(pObject) };
-
-		// エフェクトを作成
-		for (int i = 0; i < 5; i++)
-		{
-			// ランダムな加速度を生成
-			//D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), 0.0f };
-
-			// 煙を生成
-			CSmoke* pSmoke{ CSmoke::Create(
-				GetPos(),							// 座標
-				-pPlayer->GetVelocity() * 0.5f) };	// 加速度
-
-			// 小さめに
-			//pSmoke->SetScale(0.5f);
-		}
-	}
 }
 
 //============================================================================

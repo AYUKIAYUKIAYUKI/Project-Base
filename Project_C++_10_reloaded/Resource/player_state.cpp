@@ -467,12 +467,15 @@ void CPlayerStateFlying::Enter()
 	for (int i = 0; i < 10; i++)
 	{
 		// ランダムな加速度を作成
-		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>() };
+		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.05f, fabsf(CUtility::GetInstance()->GetRandomValue<float>()) * 0.01f, 0.0f };
 
 		// 煙を生成
-		CSmoke::Create(
-			m_pPlayer->GetPos(),		// 座標
-			RandomVelocity * 0.0075f);	// 加速度
+		CSmoke* pSmoke{ CSmoke::Create(
+			m_pPlayer->GetPos() + D3DXVECTOR3{ RandomVelocity.x, -3.0f + RandomVelocity.y, 0.0f },	// 座標
+			D3DXVECTOR3{ 0.0f, -3.0f + RandomVelocity.y, 0.0f }) };									// 加速度
+	
+		// 小さめに
+		pSmoke->SetScale(0.75f);
 	}
 }
 
@@ -1182,9 +1185,9 @@ void CPlayerStateRushing::Update()
 		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.0f };
 
 		// 煙を生成
-		CSmoke::Create(
-			m_pPlayer->GetPos() - (m_pPlayer->GetVelocity() * 5.0f) + RandomVelocity,	// 座標
-			m_pPlayer->GetVelocity());													// 加速度 (飛行方向)
+		//CSmoke::Create(
+		//	m_pPlayer->GetPos() - (m_pPlayer->GetVelocity() * 3.0f) + RandomVelocity,	// 座標
+		//	-m_pPlayer->GetVelocity() * 0.25f);											// 加速度 (飛行方向)
 
 		// 星を生成
 		CStar::Create(
@@ -1382,7 +1385,7 @@ void CPlayerStateStopping::Update()
 			// 煙を生成
 			CSmoke* pSmoke = CSmoke::Create(
 				m_pPlayer->GetPos(),		// 座標
-				RandomVelocity * 0.0075f);	// 加速度
+				RandomVelocity * 0.001f);	// 加速度
 
 			// 小さめに
 			pSmoke->SetScale(0.5f);

@@ -31,6 +31,7 @@
 #include "enemy.h"
 #include "fakescreen.h"
 #include "goal.h"
+#include "smoke.h"
 #include "start.h"
 
 //============================================================================
@@ -276,11 +277,26 @@ bool CPlayer::Collision()
 				// 可壊ブロックを破棄
 				pDestructible->SetRelease();
 
+				// エフェクトを作成
+				for (int i = 0; i < 1; i++)
+				{
+					// ランダムな加速度を生成
+					D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), 0.0f };
+
+					// 煙を生成
+					CSmoke::Create(
+						pDestructible->GetPos() + RandomVelocity * 0.05f,	// 座標
+						m_velocity * -0.8f);								// 加速度
+				}
+
 				// 破壊音
 				CSound::GetInstance()->Play(CSound::LABEL::BREAK);
 			}
 			else
 			{
+				// 衝突前の加速度を保持
+				D3DXVECTOR3 OldVelocity{ m_velocity };
+
 				// 押し出し処理
 				CUtility::GetInstance()->OnlyCube(m_posTarget, m_velocity, GetPos(), GetSize(), pDestructible->GetPos(), pDestructible->GetSize());
 
@@ -290,6 +306,18 @@ bool CPlayer::Collision()
 				{
 					// 可壊ブロックを破棄
 					pDestructible->SetRelease();
+
+					// エフェクトを作成
+					for (int i = 0; i < 2; i++)
+					{
+						// ランダムな加速度を生成
+						D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), 0.0f };
+
+						// 煙を生成
+						CSmoke::Create(
+							pDestructible->GetPos() + RandomVelocity * 0.05f,	// 座標
+							OldVelocity * -0.8f);								// 加速度
+					}
 
 					// 破壊音
 					CSound::GetInstance()->Play(CSound::LABEL::BREAK);
@@ -330,12 +358,29 @@ bool CPlayer::Collision()
 					// 衝突判定を出す
 					bDetected = 1;
 				}
+				else
+				{
+					// エフェクトを作成
+					for (int i = 0; i < 3; i++)
+					{
+						// ランダムな加速度を生成
+						D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), 0.0f };
+
+						// 煙を生成
+						CSmoke::Create(
+							pDest_Big->GetPos() + RandomVelocity * 0.05f,	// 座標
+							m_velocity * -1.0f);							// 加速度
+					}
+				}
 
 				// 破壊音
 				CSound::GetInstance()->Play(CSound::LABEL::BREAK);
 			}
 			else
 			{
+				// 衝突前の加速度を保持
+				D3DXVECTOR3 OldVelocity{ m_velocity };
+
 				// 押し出し処理
 				CUtility::GetInstance()->OnlyCube(m_posTarget, m_velocity, GetPos(), GetSize(), pDest_Big->GetPos(), pDest_Big->GetSize());
 
@@ -343,7 +388,21 @@ bool CPlayer::Collision()
 				if (typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateFlying))
 				{
 					// ダメージ処理
-					pDest_Big->Damage(-1);
+					if (!pDest_Big->Damage(-1))
+					{ // 破壊出来たら
+
+						// エフェクトを作成
+						for (int i = 0; i < 3; i++)
+						{
+							// ランダムな加速度を生成
+							D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), 0.0f };
+
+								// 煙を生成
+								CSmoke::Create(
+									pDest_Big->GetPos() + RandomVelocity * 0.05f,	// 座標
+									OldVelocity * -1.0f);							// 加速度
+						}
+					}
 
 					// 破壊音
 					CSound::GetInstance()->Play(CSound::LABEL::BREAK);
