@@ -467,15 +467,15 @@ void CPlayerStateFlying::Enter()
 	m_pPlayer->SetSize(Model->size);
 
 	// エフェクト生成
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		// ランダムな加速度を作成
-		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.05f, fabsf(CUtility::GetInstance()->GetRandomValue<float>()) * 0.01f, 0.0f };
+		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, -fabsf(CUtility::GetInstance()->GetRandomValue<float>()) * 0.01f, 0.0f };
 
 		// 煙を生成
 		CSmoke* pSmoke{ CSmoke::Create(
-			m_pPlayer->GetPos() + D3DXVECTOR3{ RandomVelocity.x, -3.0f + RandomVelocity.y, 0.0f },	// 座標
-			D3DXVECTOR3{ 0.0f, -3.0f + RandomVelocity.y, 0.0f }) };									// 加速度
+			m_pPlayer->GetPos(),		// 座標
+			RandomVelocity * 0.75) };	// 加速度
 	
 		// 小さめに
 		pSmoke->SetScale(0.75f);
@@ -1149,11 +1149,11 @@ void CPlayerStateRushing::Enter()
 	// 加速度を設定
 	m_pPlayer->SetVelocity(NewVelocity * (CPlayerStateFlying::FLY_SPEED * 1.5f));
 
-#ifdef _DEBUG
-	// 新たな加速度を表示
-	CRenderer::GetInstance()->SetTimeString("【設定されている飛行角度】" + std::to_string(m_pPlayer->GetAngleFlying()), 60);
-	CRenderer::GetInstance()->SetTimeString("【飛行方向から設定した新たな加速度】" + std::to_string(NewVelocity.x) + " : " + std::to_string(NewVelocity.y), 60);
-#endif
+//#ifdef _DEBUG
+//	// 新たな加速度を表示
+//	CRenderer::GetInstance()->SetTimeString("【設定されている飛行角度】" + std::to_string(m_pPlayer->GetAngleFlying()), 60);
+//	CRenderer::GetInstance()->SetTimeString("【飛行方向から設定した新たな加速度】" + std::to_string(NewVelocity.x) + " : " + std::to_string(NewVelocity.y), 60);
+//#endif
 
 	// モデルを取得
 	auto Model{ CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_005) };
@@ -1475,10 +1475,10 @@ void CPlayerStateStopping::Recoil()
 	// 衝突寸前の加速度を取得
 	D3DXVECTOR3 NewVelocity{ m_pPlayer->GetVelocity() };
 
-#ifdef _DEBUG
-	CRenderer::GetInstance()->SetTimeString("\n衝突時の加速度X : " + std::to_string(NewVelocity.x), 120);
-	CRenderer::GetInstance()->SetTimeString("衝突時の加速度Y : " + std::to_string(NewVelocity.y), 120);
-#endif	// _DEBUG
+//#ifdef _DEBUG
+//	CRenderer::GetInstance()->SetTimeString("\n衝突時の加速度X : " + std::to_string(NewVelocity.x), 120);
+//	CRenderer::GetInstance()->SetTimeString("衝突時の加速度Y : " + std::to_string(NewVelocity.y), 120);
+//#endif	// _DEBUG
 
 	// 寸前の加速度の角度を算出
 	float fNewFlyingAngle{ atan2f(NewVelocity.x, NewVelocity.y) };
@@ -1490,10 +1490,10 @@ void CPlayerStateStopping::Recoil()
 	//newVelocity.x = sinf(fNewFlyingAngle) * (fabsf(newVelocity.x) + fabsf(newVelocity.y));
 	//newVelocity.y = cosf(fNewFlyingAngle) * (fabsf(newVelocity.x) + fabsf(newVelocity.y));
 
-#ifdef _DEBUG
-	CRenderer::GetInstance()->SetTimeString("衝突後の加速度X : " + std::to_string(NewVelocity.x), 120);
-	CRenderer::GetInstance()->SetTimeString("衝突後の加速度Y : " + std::to_string(NewVelocity.y), 120);
-#endif	// _DEBUG
+//#ifdef _DEBUG
+//	CRenderer::GetInstance()->SetTimeString("衝突後の加速度X : " + std::to_string(NewVelocity.x), 120);
+//	CRenderer::GetInstance()->SetTimeString("衝突後の加速度Y : " + std::to_string(NewVelocity.y), 120);
+//#endif	// _DEBUG
 
 	m_pPlayer->SetVelocity(NewVelocity);
 }

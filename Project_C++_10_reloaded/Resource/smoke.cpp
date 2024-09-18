@@ -87,7 +87,7 @@ void CSmoke::Update()
 	SetScale(fNewSclae);
 
 	// アルファ値が減少
-	SetAlpha(CUtility::GetInstance()->AdjustToTarget(GetAlpha(), 0.0f, 0.1f));
+	SetAlpha(CUtility::GetInstance()->AdjustToTarget(GetAlpha(), 0.0f, 0.05f));
 
 	// 自身を破棄
 	if (GetAlpha() < 0.01f)
