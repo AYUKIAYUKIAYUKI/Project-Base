@@ -207,23 +207,26 @@ void CTimer::SwitchControlByPahse(int nSelect)
 			pTimer->m_apNumber[nCntNum]->SetSizeTarget({ fSizeX, 30.0f, 0.0f });
 		}
 
-		// プレイヤーを検索
-		CObject* pFind = CObject::FindObject(CObject::TYPE::PLAYER);
-		CPlayer* pPlayer = CUtility::GetInstance()->DownCast<CPlayer, CObject>(pFind);
-
-		// ゴール状態でなければ
-		if (typeid(*pPlayer->GetStateManager()->GetState()) != typeid(CPlayerStateGoal))
+		if (pTimer->m_nTimer < 999)
 		{
-			// フレームカウント
-			pTimer->m_nCntFrame++;
+			// プレイヤーを検索
+			CObject* pFind = CObject::FindObject(CObject::TYPE::PLAYER);
+			CPlayer* pPlayer = CUtility::GetInstance()->DownCast<CPlayer, CObject>(pFind);
 
-			if (pTimer->m_nCntFrame > 60)
+			// ゴール状態でなければ
+			if (typeid(*pPlayer->GetStateManager()->GetState()) != typeid(CPlayerStateGoal))
 			{
-				// カウントリセット
-				pTimer->m_nCntFrame = 0;
-			
-				// タイマー進行
-				pTimer->m_nTimer++;
+				// フレームカウント
+				pTimer->m_nCntFrame++;
+
+				if (pTimer->m_nCntFrame > 60)
+				{
+					// カウントリセット
+					pTimer->m_nCntFrame = 0;
+
+					// タイマー進行
+					pTimer->m_nTimer++;
+				}
 			}
 		}
 	}

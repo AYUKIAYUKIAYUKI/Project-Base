@@ -137,7 +137,7 @@ CAchieve* CAchieve::Create(D3DXVECTOR3 pos)
 	pAchieve->BindModel(Model);
 
 	// サイズを設定
-	pAchieve->SetSize(Model->size);
+	pAchieve->SetSize(D3DXVECTOR3{ 10.0f, 10.0f, 0.0f });
 
 	// 描画される前に一度更新しておく
 	pAchieve->Update();
