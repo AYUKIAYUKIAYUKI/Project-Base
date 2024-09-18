@@ -21,6 +21,7 @@
 #include "renderer.h"
 
 // オブジェクト生成用
+#include "barrier_manager.h"
 #include "block_destructible.h"
 #include "leaf.h"
 #include "player.h"
@@ -210,6 +211,9 @@ void CGameManager::Update()
 
 		// ステージを読み込む
 		CStageMaker::GetInstance()->Import(m_stagePath[m_nSelectLevel]);
+
+		// ステージにバリアを生成する
+		CBarrier_Manager::CreateStageBarrier();
 
 		// プレイヤーの生成
 		CPlayer::Create();
