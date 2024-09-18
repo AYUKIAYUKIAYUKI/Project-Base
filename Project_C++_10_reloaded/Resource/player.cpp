@@ -21,6 +21,8 @@
 
 // オブジェクト情報用 
 #include "achievement.h"
+#include "barrier.h"
+#include "barrier_anchor.h"
 #include "block.h"
 #include "block_destructible.h"
 #include "block_destructible_big.h"
@@ -167,8 +169,67 @@ bool CPlayer::Collision()
 	// 衝突検出用
 	bool bDetected{ false };
 
+	// オブジェクト取得用ポインタ
+	CObject** pObject{ nullptr };
+
+	// バリアタグを取得
+	pObject = CObject::FindAllObject(CObject::TYPE::BARRIER);
+
+	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	{
+		// オブジェクトの情報が無くなったら終了
+		if (pObject[nCntObj] == nullptr)
+		{
+			break;
+		}
+
+		// バリアクラスへダウンキャスト
+		CBarrier* pBarrier = CUtility::GetInstance()->DownCast<CBarrier, CObject>(pObject[nCntObj]);
+
+		// バリアと衝突する場合
+		if (CUtility::GetInstance()->OnlyCube(pBarrier->GetPos(), pBarrier->GetSize(), m_posTarget, GetSize()))
+		{
+			// ミス状態に移行
+			m_pStateManager->SetPendingState(CPlayerState::STATE::MISS);
+
+			// 衝突判定を出す
+			bDetected = 1;
+
+			// 死亡音
+			CSound::GetInstance()->Play(CSound::LABEL::DIE);
+		}
+	}
+
+	// バリアアンカータグを取得
+	pObject = CObject::FindAllObject(CObject::TYPE::BARRIER_ANCHOR);
+
+	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	{
+		// オブジェクトの情報が無くなったら終了
+		if (pObject[nCntObj] == nullptr)
+		{
+			break;
+		}
+
+		// バリアアンカークラスへダウンキャスト
+		CBarrier_Anchor* pAnchor = CUtility::GetInstance()->DownCast<CBarrier_Anchor, CObject>(pObject[nCntObj]);
+
+		// バリアアンカーと衝突する場合
+		if (CUtility::GetInstance()->OnlyCube(pAnchor->GetPos(), pAnchor->GetSize(), m_posTarget, GetSize()))
+		{
+			// ミス状態に移行
+			m_pStateManager->SetPendingState(CPlayerState::STATE::MISS);
+
+			// 衝突判定を出す
+			bDetected = 1;
+
+			// 死亡音
+			CSound::GetInstance()->Play(CSound::LABEL::DIE);
+		}
+	}
+
 	// ブロックタグを取得
-	CObject** pObject{ CObject::FindAllObject(CObject::TYPE::BLOCK) };
+	pObject = CObject::FindAllObject(CObject::TYPE::BLOCK);
 
 	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
 	{
@@ -405,6 +466,22 @@ bool CPlayer::Collision()
 		return bDetected;
 	}
 
+	// アチーブオブジェクトを取得
+	if (CObject::FindObject(CObject::TYPE::ACHIEVE))
+	{
+		CAchieve* pAchieve = CUtility::GetInstance()->DownCast<CAchieve, CObject>(CObject::FindObject(CObject::TYPE::ACHIEVE));
+
+		// アチーブと衝突する場合
+		if (CUtility::GetInstance()->SphereAndCube(pAchieve->GetPos(), pAchieve->GetSize().x, m_posTarget, GetSize()))
+		{
+			// 破棄予約
+			pAchieve->SetRelease();
+
+			// 取得音
+			CSound::GetInstance()->Play(CSound::LABEL::GET);
+		}
+	}
+
 	// ゴールオブジェクトを取得
 	CGoal* pGoal = CUtility::GetInstance()->DownCast<CGoal, CObject>(CObject::FindObject(CObject::TYPE::GOAL));
 
@@ -422,22 +499,6 @@ bool CPlayer::Collision()
 
 		// ゴール音
 		CSound::GetInstance()->Play(CSound::LABEL::GOAL);
-	}
-
-	// アチーブオブジェクトを取得
-	if (CObject::FindObject(CObject::TYPE::ACHIEVE))
-	{
-		CAchieve* pAchieve = CUtility::GetInstance()->DownCast<CAchieve, CObject>(CObject::FindObject(CObject::TYPE::ACHIEVE));
-
-		// アチーブと衝突する場合
-		if (CUtility::GetInstance()->SphereAndCube(pAchieve->GetPos(), pAchieve->GetSize().x, m_posTarget, GetSize()))
-		{
-			// 破棄予約
-			pAchieve->SetRelease();
-
-			// 取得音
-			CSound::GetInstance()->Play(CSound::LABEL::GET);
-		}
 	}
 
 	return bDetected;

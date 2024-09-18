@@ -97,7 +97,7 @@ CBarrier* CBarrier::Create(D3DXVECTOR3 Pos, D3DXVECTOR3 Rot)
 	pBarrier->BindModel(Model);
 
 	// サイズを設定
-	pBarrier->SetSize(D3DXVECTOR3{ 20.0f, 20.0f, 0.0f, });
+	pBarrier->SetSize(D3DXVECTOR3{ 2.0f, 2.0f, 0.0f, });
 
 	// 描画される前に一度更新しておく
 	pBarrier->Update();
