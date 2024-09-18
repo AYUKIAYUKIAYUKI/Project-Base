@@ -383,10 +383,13 @@ void CPlayerStateBeginning::Update()
 		// ランダムな加速度を作成
 		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.0f };
 
-		// 星を生成
-		CStar::Create(
-			m_pPlayer->GetPos() + RandomVelocity * 3.0f,	// 座標
-			RandomVelocity * 3.0f);							// 加速度 (ランダム)
+		// 波紋を生成
+		CRipple* pRipple{ CRipple::Create(
+			m_pPlayer->GetPos() + RandomVelocity,	// 座標
+			D3DXVECTOR3{ 0.0f, 0.0f, 0.0f, }) };	// 加速度
+
+		// 加速度を再設定
+		pRipple->SetVelocity((pRipple->GetPos() - m_pPlayer->GetPos()) * 2.0f);
 	}
 	else
 	{
@@ -638,23 +641,23 @@ bool CPlayerStateFlying::Control()
 	// 乱数
 	int nRandom{ rand() % 3 };
 
+	// ランダムな加速度を作成
+	D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.0f };
+
 	// エフェクト生成
 	if (nRandom == 0)
 	{
 		// 波紋を生成
 		CRipple::Create(
-			m_pPlayer->GetPos() - (NewVelocity * 3.0f),	// 座標
-			-NewVelocity * 3.0f);						// 加速度 (飛行方向の逆)
+			m_pPlayer->GetPos() - (RandomVelocity * 2.0f),	// 座標
+			NewVelocity * -0.5f);							// 加速度
 	}
 	else if (nRandom == 1)
 	{
-		// ランダムな加速度を作成
-		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.0f };
-
 		// 星を生成
 		CStar::Create(
-			m_pPlayer->GetPos() - (RandomVelocity * 3.0f),	// 座標
-			-NewVelocity * 3.0f);							// 加速度 (ランダム)
+			m_pPlayer->GetPos() - (NewVelocity * 2.0f),	// 座標
+			RandomVelocity * -0.5f);					// 加速度
 	}
 
 	if (CManager::GetKeyboard()->GetTrigger(DIK_SPACE) || pPad->GetTrigger(CInputPad::JOYKEY::A) || pPad->GetTrigger(CInputPad::JOYKEY::B) ||
@@ -860,14 +863,14 @@ void CPlayerStateCharging::Update()
 	m_pPlayer->SetPosTarget(NewPosTarget);
 
 	// エフェクト生成
-	if (rand() % 4 == 0)
+	if (rand() % 5 == 0)
 	{
 		// ランダムな加速度を作成
 		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.0f };
 
 		// 星を生成
 		CStar::Create(
-			m_pPlayer->GetPos() + RandomVelocity * 3.0f,	// 座標
+			m_pPlayer->GetPos() + RandomVelocity * 2.0f,	// 座標
 			RandomVelocity);								// 加速度 (ランダム)
 	}
 
@@ -1191,12 +1194,12 @@ void CPlayerStateRushing::Update()
 
 		// 星を生成
 		CStar::Create(
-			m_pPlayer->GetPos() - m_pPlayer->GetVelocity() + RandomVelocity * 5.0f,	// 座標
+			m_pPlayer->GetPos() - m_pPlayer->GetVelocity() + RandomVelocity * 2.0f,	// 座標
 			-m_pPlayer->GetVelocity() * 5.0f);										// 加速度 (飛行方向の逆)
 		
 		// 波紋を生成
 		CRipple::Create(
-			m_pPlayer->GetPos() - m_pPlayer->GetVelocity() + RandomVelocity * 5.0f,	// 座標
+			m_pPlayer->GetPos() - m_pPlayer->GetVelocity() + RandomVelocity * 2.0f,	// 座標
 			-m_pPlayer->GetVelocity() * 5.0f);										// 加速度 (飛行方向の逆)
 	}
 

@@ -78,13 +78,13 @@ void CRipple::Update()
 #endif
 	SetRot(rot);
 
-	//// ˆÚ“®
-	//D3DXVECTOR3 pos = GetPos();
-	//pos += m_velocity;
-	//SetPos(pos);
+	// ˆÚ“®
+	D3DXVECTOR3 pos = GetPos();
+	pos += m_velocity;
+	SetPos(pos);
 
-	//// ‰Á‘¬“x‚ðŒ¸­
-	//m_velocity *= 0.9f;
+	// ‰Á‘¬“x‚ðŒ¸­
+	m_velocity *= 0.9f;
 
 	// k¬
 	CUtility::GetInstance()->DecrementUntilGone(GetScale(), -0.01f);
