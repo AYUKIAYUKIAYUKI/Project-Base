@@ -266,11 +266,17 @@ void CStageMaker::Control()
 {
 	if (CManager::GetKeyboard()->GetTrigger(DIK_F2))
 	{
+		// セーフチェック用
+		bool bSafe{ true };
+
 		// スタートタイプのオブジェクトを取得
 		CObject* pStart = CObject::FindObject(CObject::TYPE::START);
 
 		// ゴールタイプのオブジェクトを取得
 		CObject* pGoal = CObject::FindObject(CObject::TYPE::GOAL);
+
+		// アチーブタイプのオブジェクトを取得
+		CObject* pAchieve = CObject::FindObject(CObject::TYPE::ACHIEVE);
 
 		// バリアアンカータグをすべて取得
 		CObject** pObject{ CObject::FindAllObject(CObject::TYPE::BARRIER_ANCHOR) };
@@ -287,11 +293,35 @@ void CStageMaker::Control()
 			}
 		}
 
-		if (pStart == nullptr || pGoal == nullptr || nCntObj < 2)
-		{ // スタート・ゴールタイプのオブジェクトの発見に失敗
-			CRenderer::GetInstance()->SetTimeString("【スタート・ゴール・バリアアンカーを配置してください！】", 180);
+		// スタートオブジェクトの発見に失敗
+		if (pStart == nullptr)
+		{
+			bSafe = false;
+			CRenderer::GetInstance()->SetTimeString("【スタートを配置してください！】", 180);
 		}
-		else
+
+		// ゴールオブジェクトの発見に失敗
+		if (pGoal == nullptr)
+		{
+			bSafe = false;
+			CRenderer::GetInstance()->SetTimeString("【ゴールを配置してください！】", 180);
+		}
+
+		// アチーブオブジェクトの発見に失敗
+		if (pAchieve == nullptr)
+		{
+			bSafe = false;
+			CRenderer::GetInstance()->SetTimeString("【アチーブを配置してください！】", 180);
+		}
+		
+		// バリアアンカーオブジェクトの発見に失敗
+		if (nCntObj < 2)
+		{
+			bSafe = false;
+			CRenderer::GetInstance()->SetTimeString("【バリアアンカーを2つ配置してください！】", 180);
+		}
+
+		if (bSafe)
 		{
 			// ステージ書き出し
 			Export();
