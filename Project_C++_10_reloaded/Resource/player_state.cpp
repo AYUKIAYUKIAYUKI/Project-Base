@@ -108,6 +108,14 @@ void CPlayerStateDefault::Enter()
 	// 目標向きをリセット
 	m_pPlayer->SetRotTarget(D3DXVECTOR3{ 0.0f, 0.0f, 0.0f });
 
+	// 加速度をリセット
+	m_pPlayer->SetVelocity(D3DXVECTOR3{ 0.0f, 0.0f, 0.0f });
+
+	// 重力加速
+	D3DXVECTOR3 NewVelocity{ m_pPlayer->GetVelocity() };
+	CUtility::GetInstance()->Gravity(NewVelocity);
+	m_pPlayer->SetVelocity(NewVelocity);
+
 	// モデルを取得
 	auto Model{ CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_000) };
 
@@ -155,13 +163,6 @@ void CPlayerStateDefault::Update()
 
 	// 当たり判定
 	m_pPlayer->Collision();
-
-	// 一定以上落下すると
-	if (m_pPlayer->GetPosTarget().y < -300.0f)
-	{
-		// 死亡状態に変更
-		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::MISS);
-	}
 }
 
 //============================================================================
