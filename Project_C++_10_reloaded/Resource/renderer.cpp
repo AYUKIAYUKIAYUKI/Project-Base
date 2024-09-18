@@ -237,8 +237,9 @@ void CRenderer::Draw()
 		m_pD3DDevice->SetRenderTarget(0, m_pMonitorSurface);
 
 		// 色情報をランダムに設定
-		auto p{ CUtility::GetInstance() };
-		D3DXCOLOR col{ p->GetRandomValue<float>(), p->GetRandomValue<float>(), p->GetRandomValue<float>(), 0 };
+		//auto p{ CUtility::GetInstance() };
+		//D3DXCOLOR col{ p->GetRandomValue<float>(), p->GetRandomValue<float>(), p->GetRandomValue<float>(), 0 };
+		D3DXCOLOR col{ 255, 255, 255, 0 };
 
 		// 画面バッファクリア
 		m_pD3DDevice->Clear(0, nullptr,

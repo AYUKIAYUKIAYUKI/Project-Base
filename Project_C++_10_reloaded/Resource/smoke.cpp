@@ -66,8 +66,8 @@ void CSmoke::Update()
 	// 回転
 	D3DXVECTOR3 NewRot{ GetRot() };
 	//D3DXVECTOR3 NewRot{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>() };
-	NewRot += m_velocity;
-	NewRot.z += fabsf(CUtility::GetInstance()->GetRandomValue<float>()) * 0.0025f;
+	NewRot += m_velocity * 0.1f;
+	NewRot.z += fabsf(CUtility::GetInstance()->GetRandomValue<float>()) * 0.0005f;
 	SetRot(NewRot);
 
 	// 加速度を減少
@@ -81,10 +81,17 @@ void CSmoke::Update()
 	pos += m_velocity;
 	SetPos(pos);
 
-	// 縮小
-	if (CUtility::GetInstance()->DecrementUntilGone(GetScale(), -0.01f))
+	// 拡大
+	float fNewSclae{ GetScale() };
+	fNewSclae += 0.01f;
+	SetScale(fNewSclae);
+
+	// アルファ値が減少
+	SetAlpha(CUtility::GetInstance()->AdjustToTarget(GetAlpha(), 0.0f, 0.1f));
+
+	// 自身を破棄
+	if (GetAlpha() < 0.01f)
 	{
-		// 自身を破棄
 		CObject::SetRelease();
 	}
 }
@@ -96,7 +103,7 @@ void CSmoke::Draw()
 {
 	auto pDev{ CRenderer::GetInstance()->GetDeviece() };
 
-	//// 深度バッファへの書き込みを無効に
+	// 深度バッファへの書き込みを無効に
 	//pDev->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 
 	// 頂点法線の自動正規化を有効に
@@ -108,7 +115,7 @@ void CSmoke::Draw()
 	// 頂点法線の自動正規化を無効に
 	pDev->SetRenderState(D3DRS_NORMALIZENORMALS, FALSE);
 
-	//// 深度バッファへの書き込みを無効に
+	// 深度バッファへの書き込みを無効に
 	//pDev->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 }
 
