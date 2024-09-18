@@ -113,6 +113,8 @@ class CPlayerStateFlying : public CPlayerState
 {
 public:
 
+	static const float FLY_SPEED;	// 飛行速度
+
 	CPlayerStateFlying();			// コンストラクタ
 	~CPlayerStateFlying() override;	// デストラクタ
 
@@ -123,7 +125,6 @@ public:
 private:
 
 	static const float MAX_FLY_VELOCITY;	// 飛行時の最大加速度
-	static const float FLY_SPEED;			// 飛行速度
 
 	D3DXVECTOR3 m_OldRotTarget;	// 過去の目標向き
 

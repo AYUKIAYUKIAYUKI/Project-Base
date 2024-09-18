@@ -104,7 +104,7 @@ void CSmoke::Draw()
 	auto pDev{ CRenderer::GetInstance()->GetDeviece() };
 
 	// 深度バッファへの書き込みを無効に
-	//pDev->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+	pDev->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 
 	// 頂点法線の自動正規化を有効に
 	pDev->SetRenderState(D3DRS_NORMALIZENORMALS, TRUE);
@@ -116,7 +116,7 @@ void CSmoke::Draw()
 	pDev->SetRenderState(D3DRS_NORMALIZENORMALS, FALSE);
 
 	// 深度バッファへの書き込みを無効に
-	//pDev->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+	pDev->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 }
 
 //============================================================================

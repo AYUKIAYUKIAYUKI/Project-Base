@@ -1147,12 +1147,12 @@ void CPlayerStateRushing::Enter()
 	D3DXVECTOR3 NewVelocity{ sinf(m_pPlayer->GetAngleFlying()),cosf(m_pPlayer->GetAngleFlying()), 0.0f };
 
 	// 加速度を設定
-	m_pPlayer->SetVelocity(NewVelocity * 5.0f);
+	m_pPlayer->SetVelocity(NewVelocity * (CPlayerStateFlying::FLY_SPEED * 1.5f));
 
 #ifdef _DEBUG
 	// 新たな加速度を表示
-	CRenderer::GetInstance()->SetTimeString("【設定されている飛行角度】" + std::to_string(m_pPlayer->GetAngleFlying()), 600);
-	CRenderer::GetInstance()->SetTimeString("【飛行方向から設定した新たな加速度】" + std::to_string(NewVelocity.x) + " : " + std::to_string(NewVelocity.y), 600);
+	CRenderer::GetInstance()->SetTimeString("【設定されている飛行角度】" + std::to_string(m_pPlayer->GetAngleFlying()), 60);
+	CRenderer::GetInstance()->SetTimeString("【飛行方向から設定した新たな加速度】" + std::to_string(NewVelocity.x) + " : " + std::to_string(NewVelocity.y), 60);
 #endif
 
 	// モデルを取得
@@ -1187,20 +1187,20 @@ void CPlayerStateRushing::Update()
 		// ランダムな加速度を作成
 		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.0f };
 
-		// 煙を生成
+		//// 煙を生成
 		//CSmoke::Create(
-		//	m_pPlayer->GetPos() - (m_pPlayer->GetVelocity() * 3.0f) + RandomVelocity,	// 座標
-		//	-m_pPlayer->GetVelocity() * 0.25f);											// 加速度 (飛行方向)
+		//	m_pPlayer->GetPos() + RandomVelocity * 3.0f,	// 座標
+		//	m_pPlayer->GetVelocity() * -0.25f);				// 加速度 (飛行方向)
 
 		// 星を生成
 		CStar::Create(
-			m_pPlayer->GetPos() - m_pPlayer->GetVelocity() + RandomVelocity * 2.0f,	// 座標
-			-m_pPlayer->GetVelocity() * 5.0f);										// 加速度 (飛行方向の逆)
+			m_pPlayer->GetPos() + RandomVelocity * 3.0f,	// 座標
+			-m_pPlayer->GetVelocity() + RandomVelocity);	// 加速度 (飛行方向の逆)
 		
 		// 波紋を生成
 		CRipple::Create(
-			m_pPlayer->GetPos() - m_pPlayer->GetVelocity() + RandomVelocity * 2.0f,	// 座標
-			-m_pPlayer->GetVelocity() * 5.0f);										// 加速度 (飛行方向の逆)
+			m_pPlayer->GetPos() + RandomVelocity * 3.0f,	// 座標
+			-m_pPlayer->GetVelocity() + RandomVelocity);	// 加速度 (飛行方向の逆)
 	}
 
 	// この時点での加速度を保持
