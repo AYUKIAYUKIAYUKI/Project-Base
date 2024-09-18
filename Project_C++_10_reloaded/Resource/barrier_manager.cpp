@@ -97,7 +97,7 @@ void CBarrier_Manager::CreateStageBarrier()
 	}
 
 	// 横のラインを2本引く
-	while (fBeginX <= fEndX - 20.0f)
+	while (fBeginX <= fEndX)
 	{
 		for (int nCntAnchor = 0; nCntAnchor < 2; nCntAnchor++)
 		{
@@ -108,7 +108,7 @@ void CBarrier_Manager::CreateStageBarrier()
 	}
 
 	// 縦のラインを2本引く
-	while (fBeginY <= fEndY - 20.0f)
+	while (fBeginY <= fEndY)
 	{
 		for (int nCntAnchor = 0; nCntAnchor < 2; nCntAnchor++)
 		{

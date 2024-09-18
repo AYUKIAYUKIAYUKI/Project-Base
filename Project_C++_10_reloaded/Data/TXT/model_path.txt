@@ -44,5 +44,5 @@ data\\MODEL\\particle01.x
 data\\MODEL\\particle02_b.x
 data\\MODEL\\particle03.x
 data\\MODEL\\cursor.x
-data\\MODEL\\LINE_Y.x
+data\\MODEL\\barrier.x
 data\\MODEL\\barrier_anchor.x
