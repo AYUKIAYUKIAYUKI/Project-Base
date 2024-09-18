@@ -181,7 +181,7 @@ CGoal* CGoal::Create(D3DXVECTOR3 Pos)
 	pGoal->BindModel(Model);
 
 	// サイズを設定
-	pGoal->SetSize(Model->size);
+	pGoal->SetSize(D3DXVECTOR3{ 10.0f, 10.0f, 0.0f });
 
 	// ゴールシンボルのモニター画面にテクスチャを設定
 	//Model->ppTex[0] = CRenderer::GetInstance()->GetTexture();

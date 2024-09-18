@@ -108,9 +108,6 @@ void CPlayerStateDefault::Enter()
 	// 目標向きをリセット
 	m_pPlayer->SetRotTarget(D3DXVECTOR3{ 0.0f, 0.0f, 0.0f });
 
-	// 加速度をリセット
-	m_pPlayer->SetVelocity(D3DXVECTOR3{ 0.0f, 0.0f, 0.0f });
-
 	// 重力加速
 	D3DXVECTOR3 NewVelocity{ m_pPlayer->GetVelocity() };
 	CUtility::GetInstance()->Gravity(NewVelocity);
@@ -1331,17 +1328,17 @@ void CPlayerStateStopping::Enter()
 	// サイズを設定
 	m_pPlayer->SetSize(Model->size);
 
-	// エフェクトを生成
-	for (int i = 0; i < 10; i++)
-	{
-		// ランダムな加速度を作成
-		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>() };
+	//// エフェクトを生成
+	//for (int i = 0; i < 10; i++)
+	//{
+	//	// ランダムな加速度を作成
+	//	D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>() };
 
-		// 煙を生成
-		CSmoke::Create(
-			m_pPlayer->GetPos(),		// 座標
-			RandomVelocity * 0.0075f);	// 加速度
-	}
+	//	// 煙を生成
+	//	CSmoke::Create(
+	//		m_pPlayer->GetPos(),		// 座標
+	//		RandomVelocity * 0.0075f);	// 加速度
+	//}
 
 	// 反動
 	Recoil();

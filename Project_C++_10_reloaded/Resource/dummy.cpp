@@ -200,6 +200,28 @@ void CDummy::Translate()
 			pos.x += 5.0f;
 		}
 	}
+	else if (CManager::GetKeyboard()->GetPress(DIK_RCONTROL))
+	{
+		// Y軸方向にグリッド移動
+		if (CManager::GetKeyboard()->GetTrigger(DIK_W))
+		{
+			pos.y += 20.0f;
+		}
+		else if (CManager::GetKeyboard()->GetTrigger(DIK_S))
+		{
+			pos.y += -20.0f;
+		}
+
+		// X方向にグリッド移動
+		if (CManager::GetKeyboard()->GetTrigger(DIK_A))
+		{
+			pos.x += -20.0f;
+		}
+		else if (CManager::GetKeyboard()->GetTrigger(DIK_D))
+		{
+			pos.x += 20.0f;
+		}
+	}
 	else
 	{
 		// Y軸方向にグリッド移動

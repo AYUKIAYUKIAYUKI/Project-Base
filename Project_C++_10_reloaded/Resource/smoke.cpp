@@ -77,7 +77,7 @@ void CSmoke::Update()
 	m_velocity *= 0.9f;
 
 	// ã¸E‰ñ“]ƒuƒŒ
-	m_velocity.y += 0.025f;
+	//m_velocity.y += 0.025f;
 
 	// k¬
 	if (CUtility::GetInstance()->DecrementUntilGone(GetScale(), -0.01f))
