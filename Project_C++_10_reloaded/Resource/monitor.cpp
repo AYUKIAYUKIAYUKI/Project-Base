@@ -87,7 +87,7 @@ void CMonitor::Draw()
 //============================================================================
 // 生成
 //============================================================================
-CMonitor* CMonitor::Create(D3DXVECTOR3 pos)
+CMonitor* CMonitor::Create()
 {
 	// インスタンスを生成
 	CMonitor* pMonitor = DBG_NEW CMonitor;

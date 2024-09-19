@@ -28,7 +28,7 @@ public:
 	void Update() override;		// XVˆ—
 	void Draw() override;		// •`‰æˆ—
 
-	static CMonitor* Create(D3DXVECTOR3 pos);	// ¶¬
+	static CMonitor* Create();	// ¶¬
 
 private:
 

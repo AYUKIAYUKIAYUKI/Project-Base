@@ -157,7 +157,7 @@ HRESULT CRenderer::Init(HWND hWnd, BOOL bWindiw)
 	CFakeScreen::GetInstance()->Init();
 
 	// モニターの生成
-	CMonitor::Create({ 0.0f, 0.0f, 0.0f });
+	CMonitor::Create();
 
 	// 家具の配置
 	LayoutFurniture();

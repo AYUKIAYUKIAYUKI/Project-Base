@@ -40,8 +40,9 @@ CBlockDestructible::~CBlockDestructible()
 		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, fabsf(CUtility::GetInstance()->GetRandomValue<float>()) * 0.03f, 0.01f };
 
 		// がれきを生成
-		CRubble::Create(GetPos() + RandomVelocity * 2.0f,	// 座標
-			RandomVelocity * 0.5f);							// 加速度
+		CRubble::Create(0,						// 通常
+			GetPos() + RandomVelocity * 2.0f,	// 座標
+			RandomVelocity * 0.5f);				// 加速度
 	}
 }
 

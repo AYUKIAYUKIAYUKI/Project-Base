@@ -111,7 +111,7 @@ void CRubble::SetVelocity(D3DXVECTOR3 Velocity)
 //============================================================================
 // ¶¬
 //============================================================================
-CRubble* CRubble::Create(D3DXVECTOR3 Pos, D3DXVECTOR3 Velocity)
+CRubble* CRubble::Create(int nType, D3DXVECTOR3 Pos, D3DXVECTOR3 Velocity)
 {
 	CRubble* pRubble = DBG_NEW CRubble{};
 
@@ -140,15 +140,42 @@ CRubble* CRubble::Create(D3DXVECTOR3 Pos, D3DXVECTOR3 Velocity)
 	switch (rand() % 2)
 	{
 	case 0:
-		Model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::RUBBLE_00);
+
+		if (nType == 0)
+		{
+			Model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::RUBBLE_00);
+		}
+		else
+		{
+			Model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::RUBBLE_BIG_00);
+		}
+
 		break;
 
 	case 1:
-		Model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::RUBBLE_01);
+
+		if (nType == 0)
+		{
+			Model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::RUBBLE_01);
+		}
+		else
+		{
+			Model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::RUBBLE_BIG_01);
+		}
+
 		break;
 
 	default:
-		Model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::RUBBLE_00);
+
+		if (nType == 0)
+		{
+			Model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::RUBBLE_00);
+		}
+		else
+		{
+			Model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::RUBBLE_BIG_00);
+		}
+
 		break;
 	}
 

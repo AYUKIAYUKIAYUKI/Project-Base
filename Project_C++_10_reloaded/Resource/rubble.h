@@ -31,7 +31,7 @@ public:
 	D3DXVECTOR3& GetVelocity();				// ‰Á‘¬“x‚ğæ“¾
 	void SetVelocity(D3DXVECTOR3 Velocity);	// ‰Á‘¬“x‚ğİ’è
 
-	static CRubble* Create(D3DXVECTOR3 Pos, D3DXVECTOR3 Velocity);	// ¶¬
+	static CRubble* Create(int nType, D3DXVECTOR3 Pos, D3DXVECTOR3 Velocity);	// ¶¬
 
 private:
 

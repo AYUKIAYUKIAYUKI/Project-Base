@@ -41,11 +41,12 @@ CBlockDestructibleBig::~CBlockDestructibleBig()
 		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, fabsf(CUtility::GetInstance()->GetRandomValue<float>()) * 0.03f, 0.01f };
 
 		// がれきを生成
-		CRubble* pRubble{ CRubble::Create(GetPos() + RandomVelocity * 5.0f,	// 座標
-			RandomVelocity * 0.5f) };										// 加速度
+		CRubble* pRubble{ CRubble::Create(1,	// でか
+			GetPos() + RandomVelocity * 5.0f,	// 座標
+			RandomVelocity * 0.5f) };			// 加速度
 
 		// 少し大きめに
-		pRubble->SetScale(1.5f);
+		pRubble->SetScale(2.0f);
 	}
 }
 

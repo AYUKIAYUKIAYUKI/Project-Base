@@ -48,6 +48,8 @@ public:
 		DEST_BIG_DAMAGE,	// 可壊でかブロック(ダメージ)
 		RUBBLE_00,			// がれき00
 		RUBBLE_01,			// がれき01
+		RUBBLE_BIG_00,		// でかがれき00
+		RUBBLE_BIG_01,		// でかがれき01
 		SPIKES,				// とげブロック
 		SPIKES_MOVE,		// とげ移動ブロック
 		ENEMY,				// エネミー
