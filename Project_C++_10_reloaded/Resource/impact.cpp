@@ -71,8 +71,11 @@ void CImpact::Update()
 	NewRot = m_Velocity;
 	SetRot(NewRot);
 
+	// d—Í‰Á‘¬
+	//CUtility::GetInstance()->Gravity(m_Velocity);
+
 	// ‰Á‘¬“x‚ªŒ¸Š
-	m_Velocity = CUtility::GetInstance()->AdjustToTarget(m_Velocity, D3DXVECTOR3{ 0.0f, 0.0f, 0.0f }, 0.05f);
+	m_Velocity = CUtility::GetInstance()->AdjustToTarget(m_Velocity, D3DXVECTOR3{ 0.0f, 0.0f, 0.0f }, 0.3f);
 
 	// ˆÚ“®
 	D3DXVECTOR3 NewPos = GetPos();
@@ -80,7 +83,7 @@ void CImpact::Update()
 	SetPos(NewPos);
 
 	// k¬
-	if (CUtility::GetInstance()->DecrementUntilGone(GetScale(), -0.025f))
+	if (CUtility::GetInstance()->DecrementUntilGone(GetScale(), -0.05f))
 	{
 		// ©g‚ğ”jŠü
 		CObject::SetRelease();

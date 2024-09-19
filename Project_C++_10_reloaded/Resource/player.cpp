@@ -249,7 +249,8 @@ bool CPlayer::Collision()
 		{
 			// 飛行状態の場合のみ
 			if (typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateFlying) ||
-				typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateRushing))
+				typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateRushing) ||
+				typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateStopping))
 			{
 				for (int i = 0; i < 3; i++)
 				{
@@ -258,11 +259,11 @@ bool CPlayer::Collision()
 
 					// 新しい加速度を作成
 					D3DXVECTOR3 NewVelocity{ m_velocity * 0.25f };
-					NewVelocity.z = -1.0f;
+					NewVelocity.z = -1.5f;
 
 					// 衝撃を生成
-					CImpact::Create(GetPos() + (m_velocity * 3.0f) + RandomVelocity,	// 座標
-						NewVelocity);													// 加速度
+					CImpact::Create(GetPos() + (m_velocity * 3.0f) + (RandomVelocity * 2.0f),	// 座標
+						NewVelocity);															// 加速度
 				}
 			}
 

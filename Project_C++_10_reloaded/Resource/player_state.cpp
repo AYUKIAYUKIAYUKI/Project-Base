@@ -20,8 +20,9 @@
 
 // オブジェクト情報用
 #include "arrow.h"
-#include "ring.h"
+#include "impact.h"
 #include "object_2D.h"
+#include "ring.h"
 #include "ripple.h"
 #include "smoke.h"
 #include "star.h"
@@ -1392,6 +1393,14 @@ void CPlayerStateStopping::Update()
 
 			// 小さめに
 			pSmoke->SetScale(0.25f);
+
+			//// 新しい加速度を作成
+			//D3DXVECTOR3 NewVelocityImpact{ OldVelocity * 0.25f };
+			//NewVelocityImpact.z = -1.5f;
+			//
+			//// 衝撃を生成
+			//CImpact::Create(m_pPlayer->GetPos() + (OldVelocity * 5.0f),	// 座標
+			//	NewVelocityImpact);										// 加速度
 
 			// 横方向に衝突しているなら
 			if (m_pPlayer->GetVelocity().x == 0.0f)
