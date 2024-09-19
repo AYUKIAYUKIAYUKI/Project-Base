@@ -6393,7 +6393,7 @@ Mesh {
    0.500000;0.500000;0.500000;;
    1.000000;1.000000;1.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Downloads\\聖園ミカ_配布_ver1.1\\聖園ミカ_配布_ver1.1\\Texture\\Acc_C.png";
+    "Data\\TEXTURE\\kyrie_512.jpg";
    }
   }
   Material {
