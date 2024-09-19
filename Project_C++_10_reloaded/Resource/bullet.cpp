@@ -17,7 +17,9 @@
 #include "player_state.h"
 #include "block.h"
 #include "block_destructible.h"
+#include "block_destructible_big.h"
 #include "block_spikes.h"
+#include "block_spikes_move.h"
 #include "smoke.h"
 
 //============================================================================
@@ -49,16 +51,13 @@ CBullet::CBullet(int nDuration) :
 //============================================================================
 CBullet::~CBullet()
 {
-	for (int i = 0; i < 3; i++)
-	{
-		// ランダムな加速度を生成
-		D3DXVECTOR3 velocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>() };
+	// 煙を生成
+	CSmoke* pSmoke{ CSmoke::Create(
+		GetPos() + m_velocity * 15.0f,	// 座標
+		m_velocity * -0.75f) };			// 加速度
 
-		// 煙を生成
-		CSmoke::Create(
-			GetPos(),				// 座標
-			velocity * 0.0025f);	// 加速度
-	}
+	// 小さめに
+	pSmoke->SetScale(0.25f);
 }
 
 //============================================================================
@@ -239,14 +238,30 @@ bool CBullet::Collision()
 		// 可壊ブロックと衝突する場合
 		if (CUtility::GetInstance()->OnlyCube(pDestructible->GetPos(), pDestructible->GetSize(), m_posTarget, GetSize()))
 		{
-			// 可壊ブロックを破棄
-			pDestructible->SetRelease();
-
 			// 衝突判定を出す
 			bDetected = 1;
+		}
+	}
 
-			// 破壊音
-			CSound::GetInstance()->Play(CSound::LABEL::BREAK);
+	// 可壊でかタグを取得
+	pObject = CObject::FindAllObject(CObject::TYPE::DEST_BIG);
+
+	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	{
+		// 可壊でかタグの情報が無くなったら終了
+		if (pObject[nCntObj] == nullptr)
+		{
+			break;
+		}
+
+		// 可壊でかブロックへダウンキャスト
+		CBlockDestructibleBig* pDest_Big = CUtility::GetInstance()->DownCast<CBlockDestructibleBig, CObject>(pObject[nCntObj]);
+
+		// 可壊でかブロックと衝突する場合
+		if (CUtility::GetInstance()->OnlyCube(pDest_Big->GetPos(), pDest_Big->GetSize(), m_posTarget, GetSize()))
+		{
+			// 衝突判定を出す
+			bDetected = 1;
 		}
 	}
 
@@ -266,6 +281,28 @@ bool CBullet::Collision()
 
 		// とげブロックと衝突する場合
 		if (CUtility::GetInstance()->OnlyCube(pBlockSpikes->GetPos(), pBlockSpikes->GetSize(), m_posTarget, GetSize()))
+		{
+			// 衝突判定を出す
+			bDetected = 1;
+		}
+	}
+
+	// とげ移動タグを取得
+	pObject = CObject::FindAllObject(CObject::TYPE::SPIKES_MOVE);
+
+	for (int nCntObj = 0; nCntObj < CObject::MAX_OBJ; nCntObj++)
+	{
+		// とげ移動タグの情報が無くなったら終了
+		if (pObject[nCntObj] == nullptr)
+		{
+			break;
+		}
+
+		// とげ移動ブロックへダウンキャスト
+		CBlockSpikesMove* pSpikes_Move = CUtility::GetInstance()->DownCast<CBlockSpikesMove, CObject>(pObject[nCntObj]);
+
+		// とげ移動ブロックと衝突する場合
+		if (CUtility::GetInstance()->OnlyCube(pSpikes_Move->GetPos(), pSpikes_Move->GetSize(), m_posTarget, GetSize()))
 		{
 			// 衝突判定を出す
 			bDetected = 1;

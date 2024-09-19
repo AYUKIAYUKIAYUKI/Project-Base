@@ -44,16 +44,7 @@ CEnemy::CEnemy(LAYER priority) :
 //============================================================================
 CEnemy::~CEnemy()
 {
-	for (int i = 0; i < 5; i++)
-	{
-		// ランダムな加速度を生成
-		D3DXVECTOR3 velocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>() };
 
-		// 煙を生成
-		CSmoke::Create(
-			GetPos(),			// 座標
-			velocity * 0.005f);	// 加速度
-	}
 }
 
 //============================================================================
