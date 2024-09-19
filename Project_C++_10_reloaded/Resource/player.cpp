@@ -247,7 +247,7 @@ bool CPlayer::Collision()
 		// ブロックと衝突する場合
 		if (CUtility::GetInstance()->OnlyCube(pBlock->GetPos(), pBlock->GetSize(), m_posTarget, GetSize()))
 		{
-			// 飛行状態の場合のみ
+			// 飛行・突進・停止状態の場合のみ
 			if (typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateFlying) ||
 				typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateRushing) ||
 				typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateStopping))
@@ -372,6 +372,21 @@ bool CPlayer::Collision()
 				// ダメージ処理
 				if (pDest_Big->Damage(-1))
 				{
+					// エフェクトを生成
+					for (int i = 0; i < 5; i++)
+					{
+						// ランダムな加速度を作成
+						D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, fabsf(CUtility::GetInstance()->GetRandomValue<float>()) * 0.01f, 0.0f };
+
+						// 新しい加速度を作成
+						D3DXVECTOR3 NewVelocity{ m_velocity * 0.25f };
+						NewVelocity.z = -1.5f;
+
+						// 衝撃を生成
+						CImpact::Create(GetPos() + (m_velocity * 3.0f) + (RandomVelocity * 2.0f),	// 座標
+							NewVelocity);															// 加速度
+					}
+
 					// 破壊仕切れない場合、押し出し処理
 					CUtility::GetInstance()->OnlyCube(m_posTarget, m_velocity, GetPos(), GetSize(), pDest_Big->GetPos(), pDest_Big->GetSize());
 				
@@ -407,8 +422,9 @@ bool CPlayer::Collision()
 				// 押し出し処理
 				CUtility::GetInstance()->OnlyCube(m_posTarget, m_velocity, GetPos(), GetSize(), pDest_Big->GetPos(), pDest_Big->GetSize());
 
-				// 飛行状態の場合のみ
-				if (typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateFlying))
+				// 飛行・停止状態の場合のみ
+				if (typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateFlying) ||
+					typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateStopping))
 				{
 					// ダメージ処理
 					if (!pDest_Big->Damage(-1))
@@ -427,6 +443,23 @@ bool CPlayer::Collision()
 
 							// 大きく
 							pSmoke->SetScale(1.2f);
+						}
+					}
+					else
+					{
+						// エフェクトを生成
+						for (int i = 0; i < 5; i++)
+						{
+							// ランダムな加速度を作成
+							D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, fabsf(CUtility::GetInstance()->GetRandomValue<float>()) * 0.01f, 0.0f };
+
+							// 新しい加速度を作成
+							D3DXVECTOR3 NewVelocity{ m_velocity * 0.25f };
+							NewVelocity.z = -1.5f;
+
+							// 衝撃を生成
+							CImpact::Create(GetPos() + (m_velocity * 3.0f) + (RandomVelocity * 2.0f),	// 座標
+								NewVelocity);															// 加速度
 						}
 					}
 

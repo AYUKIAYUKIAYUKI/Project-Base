@@ -479,25 +479,25 @@ void CCamera::Control()
 		m_fDistance = 200.0f;
 	}
 
-	// ¶‰E
-	if (CManager::GetKeyboard()->GetPress(DIK_RIGHT))
-	{
-		m_rotTarget.y += 0.02f;
-	}
-	else if (CManager::GetKeyboard()->GetPress(DIK_LEFT))
-	{
-		m_rotTarget.y -= 0.02f;
-	}
+	//// ¶‰E
+	//if (CManager::GetKeyboard()->GetPress(DIK_RIGHT))
+	//{
+	//	m_rotTarget.y += 0.02f;
+	//}
+	//else if (CManager::GetKeyboard()->GetPress(DIK_LEFT))
+	//{
+	//	m_rotTarget.y -= 0.02f;
+	//}
 
-	// ã‰º
-	if (CManager::GetKeyboard()->GetPress(DIK_UP))
-	{
-		m_rotTarget.x += 0.02f;
-	}
-	else if (CManager::GetKeyboard()->GetPress(DIK_DOWN))
-	{
-		m_rotTarget.x -= 0.02f;
-	}
+	//// ã‰º
+	//if (CManager::GetKeyboard()->GetPress(DIK_UP))
+	//{
+	//	m_rotTarget.x += 0.02f;
+	//}
+	//else if (CManager::GetKeyboard()->GetPress(DIK_DOWN))
+	//{
+	//	m_rotTarget.x -= 0.02f;
+	//}
 }
 
 //============================================================================

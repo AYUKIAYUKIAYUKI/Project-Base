@@ -75,7 +75,7 @@ void CImpact::Update()
 	//CUtility::GetInstance()->Gravity(m_Velocity);
 
 	// ‰Á‘¬“x‚ªŒ¸Š
-	m_Velocity = CUtility::GetInstance()->AdjustToTarget(m_Velocity, D3DXVECTOR3{ 0.0f, 0.0f, 0.0f }, 0.3f);
+	m_Velocity = CUtility::GetInstance()->AdjustToTarget(m_Velocity, D3DXVECTOR3{ 0.0f, 0.0f, 0.0f }, 0.1f);
 
 	// ˆÚ“®
 	D3DXVECTOR3 NewPos = GetPos();
