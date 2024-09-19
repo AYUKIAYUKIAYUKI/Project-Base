@@ -51,6 +51,7 @@ private:
 
 	void ImportLevel();	// レベル読み込み
 
+	bool m_bEndTutorial;					// チュートリアル確認
 	PHASE m_phase;							// フェーズ識別
 	int m_nMaxStage;						// ステージ数
 	int m_nSelectLevel;						// レベル選択

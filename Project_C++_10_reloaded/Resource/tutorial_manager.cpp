@@ -56,7 +56,8 @@ void CTutorial_Manager::DeleteInstance()
 CTutorial_Manager::CTutorial_Manager() :
 	m_pText{ nullptr }
 {
-
+	// テキストを生成
+	CreateText();
 }
 
 //============================================================================
@@ -149,11 +150,6 @@ void CTutorial_Manager::CheckPlayerPos()
 
 		// 以降テキストをいじらない
 		return;
-	}
-	else
-	{
-		// テキストを生成
-		CreateText();
 	}
 
 	// テキストの目標座標を設定

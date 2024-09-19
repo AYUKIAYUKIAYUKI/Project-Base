@@ -88,7 +88,7 @@ void CGameManager::Release()
 //============================================================================
 void CGameManager::Uninit()
 {
-	// チュートリアルマネージャーを破棄
+	// 念のためチュートリアルマネージャーを破棄
 	CTutorial_Manager::DeleteInstance();
 }
 
@@ -231,18 +231,18 @@ void CGameManager::Update()
 
 	case PHASE::INGAME:
 
+		// 初回限定
+		if (!m_bEndTutorial)
+		{
+			// チュートリアルの更新
+			CTutorial_Manager::UpdateTutorial();
+		}
+
 		// 葉っぱ生成の更新
 		//CLeaf::UpdateToCreate();
 
 		// タイムの動作
 		CTimer::SwitchControlByPahse(m_nSelectLevel);
-
-		// このステージが最初のステージの場合
-		if (m_nSelectLevel == 0)
-		{
-			// チュートリアルを更新する
-			CTutorial_Manager::UpdateTutorial();
-		}
 
 		// ステージセレクトに戻る
 		if (pKeyboard->GetTrigger(DIK_BACK) || pPad->GetTrigger(CInputPad::JOYKEY::START) || pPad->GetTrigger(CInputPad::JOYKEY::BACK))
@@ -280,6 +280,16 @@ void CGameManager::Update()
 
 	case PHASE::FINISH:
 
+		// 初回限定
+		if (!m_bEndTutorial)
+		{
+			// チュートリアル終了
+			m_bEndTutorial = true;
+
+			// チュートリアルマネージャーを破棄
+			CTutorial_Manager::DeleteInstance();
+		}
+
 		// ゴール時にアチーブメントが見つからなければ
 		if (!CObject::FindObject(CObject::TYPE::ACHIEVE))
 		{
@@ -315,6 +325,16 @@ void CGameManager::Update()
 		break;
 
 	case PHASE::RETIRE:
+
+		// 初回限定
+		if (!m_bEndTutorial)
+		{
+			// チュートリアル終了
+			m_bEndTutorial = true;
+
+			// チュートリアルマネージャーを破棄
+			CTutorial_Manager::DeleteInstance();
+		}
 
 		// レコードを生成
 		CRecord::Create();
@@ -408,6 +428,7 @@ CGameManager* CGameManager::GetInstance()
 // デフォルトコンストラクタ
 //============================================================================
 CGameManager::CGameManager() :
+	m_bEndTutorial{ false },
 	m_phase{ PHASE::NONE },	// フェーズ識別
 	m_nMaxStage{ 0 },		// ステージ数
 	m_nSelectLevel{ 0 },	// レベル選択
