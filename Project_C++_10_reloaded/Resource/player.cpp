@@ -281,9 +281,9 @@ bool CPlayer::Collision()
 				D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.0f };
 
 				// 煙を生成
-				CSmoke* pSmoke{ CSmoke::Create(
+				CSmoke::Create(
 					pDestructible->GetPos() + RandomVelocity * 5.0f,	// 座標
-					m_velocity * -0.5f) };								// 加速度
+					m_velocity * -0.5f);								// 加速度
 
 				// 破壊音
 				CSound::GetInstance()->Play(CSound::LABEL::BREAK);
@@ -495,6 +495,14 @@ bool CPlayer::Collision()
 			// 突進状態の場合のみ
 			if (typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateRushing))
 			{
+				// ランダムな加速度を生成
+				D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.0f };
+
+				// 煙を生成
+				CSmoke::Create(
+					pEnemy->GetPos() + RandomVelocity * 5.0f,	// 座標
+					m_velocity * -0.5f);						// 加速度
+
 				// エネミーを破棄
 				pEnemy->SetRelease();
 			}
@@ -503,8 +511,26 @@ bool CPlayer::Collision()
 				if (typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateFlying))
 				{ // 飛行状態の場合
 
+					// この時点での加速度を保持
+					D3DXVECTOR3 OldVelocity{ m_velocity };
+
 					// 押し出し処理
 					CUtility::GetInstance()->OnlyCube(m_posTarget, m_velocity, GetPos(), GetSize(), pEnemy->GetPos(), pEnemy->GetSize());
+
+					// エフェクトを作成
+					for (int i = 0; i < 3; i++)
+					{
+						// ランダムな加速度を生成
+						D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.0f };
+
+						// 煙を生成
+						CSmoke* pSmoke{ CSmoke::Create(
+							pEnemy->GetPos() + RandomVelocity * 2.0f,	// 座標
+							OldVelocity * -0.5f) };						// 加速度
+
+						// 小さめに
+						pSmoke->SetScale(0.75f);
+					}
 
 					// エネミーを破棄
 					pEnemy->SetRelease();

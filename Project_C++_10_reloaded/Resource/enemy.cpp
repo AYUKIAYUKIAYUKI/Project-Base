@@ -91,7 +91,7 @@ void CEnemy::Update()
 		{
 			m_nCast = 0;
 
-			CBullet::Create(GetPos(), { 10.0f, 10.0f, 0.0f });
+			CBullet::Create(GetPos(), { 5.0f, 5.0f, 0.0f });
 
 			// ”­ŽË‰¹
 			CSound::GetInstance()->Play(CSound::LABEL::SHOT);

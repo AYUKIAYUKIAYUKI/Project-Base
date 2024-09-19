@@ -58,6 +58,9 @@ CBullet::~CBullet()
 
 	// 小さめに
 	pSmoke->SetScale(0.25f);
+
+	// 描画される前に一度更新
+	pSmoke->Update();
 }
 
 //============================================================================
@@ -96,9 +99,9 @@ void CBullet::Update()
 
 	// 回転
 	D3DXVECTOR3 rotTaget = GetRot();
-	rotTaget.x += CUtility::GetInstance()->GetRandomValue<float>() * 0.01f;
-	rotTaget.y += CUtility::GetInstance()->GetRandomValue<float>() * 0.01f;
-	rotTaget.z += CUtility::GetInstance()->GetRandomValue<float>() * 0.01f;
+	//rotTaget.x += CUtility::GetInstance()->GetRandomValue<float>() * 0.01f;
+	rotTaget.y += fabsf(CUtility::GetInstance()->GetRandomValue<float>()) * 0.0025f;
+	rotTaget.z += fabsf(CUtility::GetInstance()->GetRandomValue<float>()) * 0.0025f;
 	SetRot(rotTaget);
 
 	// 現在の座標を取得し、変更を加えていく
@@ -116,6 +119,12 @@ void CBullet::Update()
 
 	// 座標を反映
 	SetPos(m_posTarget);
+
+	// 消滅直前に縮小
+	if (m_nDuration <= 10)
+	{
+		SetScale(CUtility::GetInstance()->AdjustToTarget(GetScale(), 0.0f, 0.1f));
+	}
 
 	// 基底クラスの更新
 	CObject_X::Update();
@@ -156,10 +165,10 @@ CBullet* CBullet::Create(D3DXVECTOR3 pos, D3DXVECTOR3 size)
 	pBullet->SetSize(size);
 
 	// モデルを取得
-	auto model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::BULLET_CORE);
+	auto Model{ CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::BULLET_CORE) };
 
 	// モデルを設定
-	pBullet->BindModel(model);
+	pBullet->BindModel(Model);
 
 	// プレイヤーを取得
 	CPlayer* pPlayer = CUtility::GetInstance()->DownCast<CPlayer, CObject>(CObject::FindObject(TYPE::PLAYER));
