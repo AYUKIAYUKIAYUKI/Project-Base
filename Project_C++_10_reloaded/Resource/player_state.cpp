@@ -521,7 +521,10 @@ void CPlayerStateFlying::Update()
 		}
 
 		// ‰½‚©‚ÉÕ“Ë‚Å•Ïg’âŽ~‚Ö
-		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::STOPPING);
+		if (m_pPlayer->GetStateManager()->GetPendingState() != CPlayerState::STATE::GOAL)
+		{
+			m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::STOPPING);
+		}
 
 		// ‰¡•ûŒü‚ÉÕ“Ë‚µ‚Ä‚¢‚é‚È‚ç
 		if (m_pPlayer->GetVelocity().x == 0.0f)
@@ -891,7 +894,10 @@ void CPlayerStateCharging::Update()
 		}
 
 		// ‰½‚©‚ÉÕ“Ë‚Å•Ïg’âŽ~‚Ö
-		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::STOPPING);
+		if (m_pPlayer->GetStateManager()->GetPendingState() != CPlayerState::STATE::GOAL)
+		{
+			m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::STOPPING);
+		}
 
 		// ‰¡•ûŒü‚ÉÕ“Ë‚µ‚Ä‚¢‚é‚È‚ç
 		if (m_pPlayer->GetVelocity().x == 0.0f)
@@ -1220,7 +1226,10 @@ void CPlayerStateRushing::Update()
 		}
 
 		// ‰½‚©‚ÉÕ“Ë‚Å•Ïg’âŽ~‚Ö
-		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::STOPPING);
+		if (m_pPlayer->GetStateManager()->GetPendingState() != CPlayerState::STATE::GOAL)
+		{
+			m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::STOPPING);
+		}
 
 		// ‰¡•ûŒü‚ÉÕ“Ë‚µ‚Ä‚¢‚é‚È‚ç
 		if (m_pPlayer->GetVelocity().x == 0.0f)
