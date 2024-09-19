@@ -1424,7 +1424,7 @@ void CPlayerStateStopping::Update()
 				}
 				else 
 				{ // ‘«‚è‚È‚¯‚ê‚Î–³‚¯‚ê‚Î‚»‚Ì•ª‚Ì¨‚¢‚ğ•â‚¤Aƒ|ƒ“ƒ|ƒ“”ò‚Î‚·				
-					OldVelocity.y = 1.0f;
+					OldVelocity.y = -1.0f;
 				}
 			}
 
