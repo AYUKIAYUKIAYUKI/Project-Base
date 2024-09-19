@@ -1,41 +1,43 @@
 //============================================================================
 // 
-// 可壊でかブロック、ヘッダファイル [block_destructible_big.h]
+// がれきエフェクト、ヘッダファイル [rubble.h]
 // Author : 福田歩希
 // 
 //============================================================================
 
-#ifndef _BLOCK_DESTRUCRTIBLE_BIG_H_
-#define _BLOCK_DESTRUCRTIBLE_BIG_H_	// 二重インクルード防止
+#ifndef _RUBBLE_H_
+#define _RUBBLE_H_	// 二重インクルード防止
 
 //****************************************************
 // インクルードファイル
 //****************************************************
 #include "object_X.h"
-#include "rubble.h"
 
 //****************************************************
-// 可壊でかブロッククラス
+// がれきエフェクトクラス
 //****************************************************
-class CBlockDestructibleBig : public CObject_X
+class CRubble : public CObject_X
 {
 public:
 
-	CBlockDestructibleBig();				// デフォルトコンストラクタ
-	CBlockDestructibleBig(LAYER priority);	// プライオリティ指定コンストラクタ
-	~CBlockDestructibleBig() override;		// デストラクタ
+	CRubble();	// コンストラクタ
+	~CRubble();	// デストラクタ
 
 	HRESULT Init() override;	// 初期設定
 	void Uninit() override;		// 終了処理
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
-	bool Damage(int nAtk = -1);	// ダメージ処理
 
-	static CBlockDestructibleBig* Create(D3DXVECTOR3 pos);	// 生成
+	D3DXVECTOR3& GetVelocity();				// 加速度を取得
+	void SetVelocity(D3DXVECTOR3 Velocity);	// 加速度を設定
+
+	static CRubble* Create(D3DXVECTOR3 Pos, D3DXVECTOR3 Velocity);	// 生成
 
 private:
 
-	int m_nLife;	// ライフ
+	void CheckDisappear();	// 消滅するかチェック
+
+	D3DXVECTOR3 m_Velocity;	// 加速度
 };
 
-#endif // _BLOCK_DESTRUCTIBLE_BIG_H_
+#endif	// _RUBBLE_H_

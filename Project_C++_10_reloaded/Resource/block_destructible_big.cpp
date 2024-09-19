@@ -35,7 +35,18 @@ CBlockDestructibleBig::CBlockDestructibleBig(LAYER priority) :
 //============================================================================
 CBlockDestructibleBig::~CBlockDestructibleBig()
 {
+	for (int i = 0; i < 7; i++)
+	{
+		// ランダムな加速度を設定 ( ややY↑に偏った)
+		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, fabsf(CUtility::GetInstance()->GetRandomValue<float>()) * 0.03f, 0.01f };
 
+		// がれきを生成
+		CRubble* pRubble{ CRubble::Create(GetPos() + RandomVelocity * 5.0f,	// 座標
+			RandomVelocity * 0.5f) };										// 加速度
+
+		// 少し大きめに
+		pRubble->SetScale(1.5f);
+	}
 }
 
 //============================================================================

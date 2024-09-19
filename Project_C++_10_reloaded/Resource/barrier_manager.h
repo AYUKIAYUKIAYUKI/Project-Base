@@ -25,6 +25,11 @@ public:
 	~CBarrier_Manager();	// デストラクタ
 
 	static void CreateStageBarrier();	// ステージにバリアを生成する
+	static float GetCurrentMinPosY();	// 現在のバリアの最も低い座標を取得
+
+private:
+
+	static float m_fCurrentMinPosY;	// 最新のバリアの最も低い座標
 };
 
 #endif	// _BARRIER_MANAGER_H

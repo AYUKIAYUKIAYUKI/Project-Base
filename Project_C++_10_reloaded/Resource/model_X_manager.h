@@ -45,6 +45,8 @@ public:
 		DESTRUCTIBLE,		// 可壊ブロック
 		DEST_BIG,			// 可壊でかブロック
 		DEST_BIG_DAMAGE,	// 可壊でかブロック(ダメージ)
+		RUBBLE_00,			// がれき00
+		RUBBLE_01,			// がれき01
 		SPIKES,				// とげブロック
 		SPIKES_MOVE,		// とげ移動ブロック
 		ENEMY,				// エネミー

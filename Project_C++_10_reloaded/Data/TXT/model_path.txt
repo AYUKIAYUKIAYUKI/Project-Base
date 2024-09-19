@@ -23,6 +23,8 @@ data\\MODEL\\block_Y_0.x
 data\\MODEL\\destructible.x
 data\\MODEL\\destructible_big.x
 data\\MODEL\\destructible_big_damage.x
+data\\MODEL\\rubble.x
+data\\MODEL\\rubble.x
 data\\MODEL\\spikes.x
 data\\MODEL\\spikes_move.x
 data\\MODEL\\enemy.x

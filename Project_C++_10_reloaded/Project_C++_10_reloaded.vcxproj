@@ -65,6 +65,7 @@
     <ClCompile Include="Resource\record.cpp" />
     <ClCompile Include="Resource\ring.cpp" />
     <ClCompile Include="Resource\ripple.cpp" />
+    <ClCompile Include="Resource\rubble.cpp" />
     <ClCompile Include="Resource\square.cpp" />
     <ClCompile Include="Resource\star.cpp" />
     <ClCompile Include="Resource\structure.cpp" />
@@ -133,6 +134,7 @@
     <ClInclude Include="Resource\record.h" />
     <ClInclude Include="Resource\ring.h" />
     <ClInclude Include="Resource\ripple.h" />
+    <ClInclude Include="Resource\rubble.h" />
     <ClInclude Include="Resource\square.h" />
     <ClInclude Include="Resource\star.h" />
     <ClInclude Include="Resource\structure.h" />

@@ -14,6 +14,11 @@
 // デバッグ表示用
 #include "renderer.h"
 
+//****************************************************
+// 静的メンバ変数の初期化
+//****************************************************
+float CBarrier_Manager::m_fCurrentMinPosY = 0.0f;	// 現在のバリアの最も低い座標
+
 //============================================================================
 // デフォルトコンストラクタ
 //============================================================================
@@ -35,6 +40,9 @@ CBarrier_Manager::~CBarrier_Manager()
 //============================================================================
 void CBarrier_Manager::CreateStageBarrier()
 {
+	// バリアの最も低い座標をリセット
+	m_fCurrentMinPosY = 0.0f;
+
 	// バリアアンカータグをすべて取得
 	CObject** pObject{ CObject::FindAllObject(CObject::TYPE::BARRIER_ANCHOR) };
 
@@ -89,11 +97,17 @@ void CBarrier_Manager::CreateStageBarrier()
 	{
 		fBeginY = pAnchor[0]->GetPos().y;
 		fEndY = pAnchor[1]->GetPos().y;
+
+		// バリアの最も低い座標を保存しておく
+		m_fCurrentMinPosY = pAnchor[0]->GetPos().y;
 	}
 	else
 	{
 		fBeginY = pAnchor[1]->GetPos().y;
 		fEndY = pAnchor[0]->GetPos().y;
+
+		// バリアの最も低い座標を保存しておく
+		m_fCurrentMinPosY = pAnchor[1]->GetPos().y;
 	}
 
 	// 横のラインを2本引く
@@ -117,4 +131,12 @@ void CBarrier_Manager::CreateStageBarrier()
 
 		fBeginY += 20.0f;
 	}
+}
+
+//============================================================================
+// 現在のバリアの最も低い座標を取得
+//============================================================================
+float CBarrier_Manager::GetCurrentMinPosY()
+{
+	return m_fCurrentMinPosY;
 }
