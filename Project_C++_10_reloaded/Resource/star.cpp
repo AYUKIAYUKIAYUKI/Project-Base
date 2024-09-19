@@ -141,6 +141,30 @@ CStar* CStar::Create(D3DXVECTOR3&& pos, D3DXVECTOR3 velocity)
 	// À•W‚ÌÝ’è
 	pStar->SetPos(pos);
 
+	// Œü‚«‚ÌÝ’è
+	switch (rand() % 4)
+	{
+	case 0:
+		pStar->SetRot(D3DXVECTOR3{ 0.0f, 0.0f, 0.0f });
+		break;
+
+	case 1:
+		pStar->SetRot(D3DXVECTOR3{ 0.0f, 0.0f, D3DX_PI * 0.5f });
+		break;
+
+	case 2:
+		pStar->SetRot(D3DXVECTOR3{ 0.0f, 0.0f, D3DX_PI });
+		break;
+
+	case 3:
+		pStar->SetRot(D3DXVECTOR3{ 0.0f, 0.0f, D3DX_PI * -0.5f });
+		break;
+
+	default:
+		pStar->SetRot(D3DXVECTOR3{ 0.0f, 0.0f, 0.0f });
+		break;
+	}
+
 	// ‰Á‘¬“x‚ðÝ’è
 	pStar->SetVelocity(velocity);
 
