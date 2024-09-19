@@ -12,6 +12,7 @@
 // インクルードファイル
 //****************************************************
 #include "text.h"
+#include "texture_manager.h"
 
 //****************************************************
 // チュートリアルマネージャークラス
@@ -34,7 +35,8 @@ private:
 	
 	static void CreateInstance();	// 生成
 
-	CText* m_pText;	// テキストのポインタ
+	CText* m_pText;						// テキストのポインタ
+	CTexture_Manager::TYPE m_TexType;	// テクスチャタイプを保持
 
 	static CTutorial_Manager* m_pInstance;	// 自クラスのポインタ
 };

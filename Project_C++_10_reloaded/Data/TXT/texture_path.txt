@@ -20,3 +20,4 @@ Data\\TEXTURE\\text03.png
 Data\\TEXTURE\\text04.png
 Data\\TEXTURE\\text05.png
 Data\\TEXTURE\\text06.png
+Data\\TEXTURE\\text07.png
