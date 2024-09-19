@@ -38,7 +38,7 @@ CBlockDestructibleBig::~CBlockDestructibleBig()
 	for (int i = 0; i < 7; i++)
 	{
 		// ƒ‰ƒ“ƒ_ƒ€‚È‰Á‘¬“x‚ğİ’è ( ‚â‚âYª‚É•Î‚Á‚½)
-		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, fabsf(CUtility::GetInstance()->GetRandomValue<float>()) * 0.03f, 0.01f };
+		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, fabsf(CUtility::GetInstance()->GetRandomValue<float>()) * 0.03f, -0.5f };
 
 		// ‚ª‚ê‚«‚ğ¶¬
 		CRubble* pRubble{ CRubble::Create(1,	// ‚Å‚©

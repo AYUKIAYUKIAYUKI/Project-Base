@@ -43,6 +43,7 @@ public:
 		PLAYER_006,			// プレイヤー006
 		PLAYER_007,			// プレイヤー007
 		BLOCK_000,			// ブロック000
+		IMPACT,				// 衝撃
 		DESTRUCTIBLE,		// 可壊ブロック
 		DEST_BIG,			// 可壊でかブロック
 		DEST_BIG_DAMAGE,	// 可壊でかブロック(ダメージ)

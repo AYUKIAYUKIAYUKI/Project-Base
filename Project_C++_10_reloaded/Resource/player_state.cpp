@@ -1383,15 +1383,15 @@ void CPlayerStateStopping::Update()
 		if (m_pPlayer->Collision())
 		{
 			// ランダムな加速度を作成
-			D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>() };
+			D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.01f };
 
 			// 煙を生成
 			CSmoke* pSmoke = CSmoke::Create(
-				m_pPlayer->GetPos(),		// 座標
-				RandomVelocity * 0.001f);	// 加速度
+				m_pPlayer->GetPos() + RandomVelocity * 3.0f,	// 座標
+				m_pPlayer->GetVelocity() * -0.5f);				// 加速度
 
 			// 小さめに
-			pSmoke->SetScale(0.5f);
+			pSmoke->SetScale(0.25f);
 
 			// 横方向に衝突しているなら
 			if (m_pPlayer->GetVelocity().x == 0.0f)
@@ -1405,8 +1405,6 @@ void CPlayerStateStopping::Update()
 			{
 				// 縦方向の反射ベクトルを代入しておく
 				OldVelocity.y *= -1.0f;
-
-				OldVelocity.y *= 0.75f;
 			}
 
 			// 加速度を反映
