@@ -37,8 +37,8 @@ data\\MODEL\\ripple00.x
 data\\MODEL\\ripple01_alt.x
 data\\MODEL\\ripple02.x
 data\\MODEL\\ripple03_alt.x
-data\\MODEL\\star00_alt.x
-data\\MODEL\\star01_alt.x
+data\\MODEL\\star00.x
+data\\MODEL\\star01.x
 data\\MODEL\\particle00.x
 data\\MODEL\\particle01.x
 data\\MODEL\\particle02_b.x
