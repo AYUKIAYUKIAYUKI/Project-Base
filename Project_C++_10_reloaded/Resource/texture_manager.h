@@ -35,6 +35,8 @@ public:
 		BESTTIME,		// ベストタイム
 		BACK,			// 戻るマーク
 		CROWN,			// 王冠
+		TEXT00,			// テキスト00
+		TEXT01,			// テキスト01
 		MAX,
 	};
 

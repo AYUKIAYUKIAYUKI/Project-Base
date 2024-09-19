@@ -29,6 +29,7 @@
 #include "record.h"
 #include "square.h"
 #include "timer.h"
+#include "tutorial_manager.h"
 
 // テスト用
 #include "KARIHAIKEI.h"
@@ -87,7 +88,8 @@ void CGameManager::Release()
 //============================================================================
 void CGameManager::Uninit()
 {
-
+	// チュートリアルマネージャーを破棄
+	CTutorial_Manager::DeleteInstance();
 }
 
 //============================================================================
@@ -234,6 +236,13 @@ void CGameManager::Update()
 
 		// タイムの動作
 		CTimer::SwitchControlByPahse(m_nSelectLevel);
+
+		// このステージが最初のステージの場合
+		if (m_nSelectLevel == 0)
+		{
+			// チュートリアルを更新する
+			CTutorial_Manager::UpdateTutorial();
+		}
 
 		// ステージセレクトに戻る
 		if (pKeyboard->GetTrigger(DIK_BACK) || pPad->GetTrigger(CInputPad::JOYKEY::START) || pPad->GetTrigger(CInputPad::JOYKEY::BACK))
