@@ -8,7 +8,8 @@ data\\MODEL\\speaker_big.x
 data\\MODEL\\gramophone.x
 data\\MODEL\\indoor_plants.x
 data\\MODEL\\poster.x
-data\\MODEL\\paper.x
+data\\MODEL\\paper00.x
+data\\MODEL\\paper01.x
 data\\MODEL\\lamp.x
 data\\MODEL\\tv_stand.x
 data\\MODEL\\player1_Y_0.x

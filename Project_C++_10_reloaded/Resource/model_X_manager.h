@@ -30,7 +30,8 @@ public:
 		GRAMOPHONE,			// 蓄音機
 		INDOOR_PLANTS,		// 観葉植物
 		POSTER,				// ポスター
-		MEMO,				// メモ
+		MEMO_00,			// メモ00
+		MEMO_01,			// メモ01
 		LAMP,				// ランプ
 		TV_STAND,			// テレビ台
 		PLAYER_000,			// プレイヤー000

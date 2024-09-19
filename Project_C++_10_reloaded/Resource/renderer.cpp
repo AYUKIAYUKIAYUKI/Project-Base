@@ -433,13 +433,13 @@ void CRenderer::LayoutFurniture()
 	CFurniture::Create({ -52.5f, -22.5f, -8.0f }, 2.0f, CModel_X_Manager::TYPE::INDOOR_PLANTS);
 
 	// ポスターの生成
-	CFurniture::Create({ 0.0f, 35.0f, 10.0f }, 1.75f, CModel_X_Manager::TYPE::POSTER);
+	CFurniture::Create({ 0.0f, 32.5f, 10.0f }, 1.75f, CModel_X_Manager::TYPE::POSTER);
 
 	// メモの生成
-	CFurniture::Create({ 30.0f, 40.0f, 10.0f }, 1.0f, CModel_X_Manager::TYPE::MEMO);
+	CFurniture::Create({ 30.0f, 37.5f, 10.0f }, 1.0f, CModel_X_Manager::TYPE::MEMO_01);
 
 	// メモの生成
-	CFurniture::Create({ 52.5f, 30.0f, 10.0f }, 1.0f, CModel_X_Manager::TYPE::MEMO);
+	CFurniture::Create({ 52.5f, 27.5f, 10.0f }, 1.0f, CModel_X_Manager::TYPE::MEMO_00);
 
 	// ランプの生成
 	CFurniture::Create({ 0.0f, 55.0f, -10.0f }, 2.0f, CModel_X_Manager::TYPE::LAMP);
