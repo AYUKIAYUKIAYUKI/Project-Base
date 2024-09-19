@@ -380,20 +380,23 @@ void CPlayerStateBeginning::Update()
 			// 死亡音
 			CSound::GetInstance()->Play(CSound::LABEL::DIE);
 		}
-
-		// ランダムな加速度を作成
-		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.0f };
-
-		// 波紋を生成
-		CRipple* pRipple{ CRipple::Create(
-			m_pPlayer->GetPos() + RandomVelocity,	// 座標
-			D3DXVECTOR3{ 0.0f, 0.0f, 0.0f, }) };	// 加速度
-
-		// 加速度を再設定
-		pRipple->SetVelocity((pRipple->GetPos() - m_pPlayer->GetPos()) * 2.0f);
 	}
 	else
 	{
+		for (int i = 0; i < 10; i++)
+		{
+			// ランダムな加速度を作成
+			D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.0f };
+
+			// 波紋を生成
+			CRipple* pRipple{ CRipple::Create(
+				m_pPlayer->GetPos() + RandomVelocity,	// 座標
+				D3DXVECTOR3{ 0.0f, 0.0f, 0.0f, }) };	// 加速度
+
+			// 加速度を再設定
+			pRipple->SetVelocity((pRipple->GetPos() - m_pPlayer->GetPos()) * 3.0f);
+		}
+
 		// 状態変更
 		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::FLYING);
 	}
@@ -1412,8 +1415,17 @@ void CPlayerStateStopping::Update()
 			// 縦方向に衝突しているなら
 			if (m_pPlayer->GetVelocity().y == 0.0f)
 			{
-				// 縦方向の反射ベクトルを代入しておく
-				OldVelocity.y *= -1.0f;
+				// 極少数値で高速反発するのを防ぐ
+				if (fabsf(OldVelocity.y) > 1.0f)
+				{ // Y方向に|1.0f|以上の加速度があれば反発
+
+					// 縦方向の反射ベクトルを代入しておく
+					OldVelocity.y *= -1.0f;
+				}
+				else 
+				{ // 足りなければ無ければその分の勢いを補う、ポンポン飛ばす				
+					OldVelocity.y = 1.0f;
+				}
 			}
 
 			// 加速度を反映

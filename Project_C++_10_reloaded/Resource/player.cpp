@@ -140,7 +140,7 @@ void CPlayer::Update()
 	// 座標をデバッグ表示
 	CRenderer::GetInstance()->SetDebugString("【プレイヤー座標】");
 	std::ostringstream oss;
-	oss << std::fixed << std::setprecision(1) << "X:" << GetPos().x << "\nY:" << GetPos().y;
+	oss << std::fixed << std::setprecision(6) << "X:" << GetPos().x << "\nY:" << GetPos().y;
 	CRenderer::GetInstance()->SetDebugString(oss.str().c_str());
 
 	CRenderer::GetInstance()->SetDebugString("加速度X : " + std::to_string(m_velocity.x));
@@ -259,11 +259,14 @@ bool CPlayer::Collision()
 
 					// 新しい加速度を作成
 					D3DXVECTOR3 NewVelocity{ m_velocity * 0.25f };
-					NewVelocity.z = -1.5f;
+					NewVelocity.z = -2.0f;
 
 					// 衝撃を生成
-					CImpact::Create(GetPos() + (m_velocity * 3.0f) + (RandomVelocity * 2.0f),	// 座標
-						NewVelocity);															// 加速度
+					CImpact* pImpact{ CImpact::Create(GetPos() + (m_velocity * 5.0f) + (RandomVelocity * 3.0f),	// 座標
+						NewVelocity) };																			// 加速度
+				
+					// 大きめに
+					pImpact->SetScale(1.25f);
 				}
 			}
 
@@ -380,11 +383,14 @@ bool CPlayer::Collision()
 
 						// 新しい加速度を作成
 						D3DXVECTOR3 NewVelocity{ m_velocity * 0.25f };
-						NewVelocity.z = -1.5f;
+						NewVelocity.z = -2.0f;
 
 						// 衝撃を生成
-						CImpact::Create(GetPos() + (m_velocity * 3.0f) + (RandomVelocity * 2.0f),	// 座標
-							NewVelocity);															// 加速度
+						CImpact* pImpact{ CImpact::Create(GetPos() + (m_velocity * 5.0f) + (RandomVelocity * 3.0f),	// 座標
+							NewVelocity) };																			// 加速度
+
+						// 大きめに
+						pImpact->SetScale(1.5f);
 					}
 
 					// 破壊仕切れない場合、押し出し処理
@@ -455,11 +461,14 @@ bool CPlayer::Collision()
 
 							// 新しい加速度を作成
 							D3DXVECTOR3 NewVelocity{ m_velocity * 0.25f };
-							NewVelocity.z = -1.5f;
+							NewVelocity.z = -2.0f;
 
 							// 衝撃を生成
-							CImpact::Create(GetPos() + (m_velocity * 3.0f) + (RandomVelocity * 2.0f),	// 座標
-								NewVelocity);															// 加速度
+							CImpact* pImpact{ CImpact::Create(GetPos() + (m_velocity * 5.0f) + (RandomVelocity * 3.0f),	// 座標
+								NewVelocity) };																			// 加速度
+
+							// 大きめに
+							pImpact->SetScale(1.5f);
 						}
 					}
 

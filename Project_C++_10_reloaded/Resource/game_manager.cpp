@@ -134,7 +134,7 @@ void CGameManager::Update()
 	case PHASE::SELECT:
 	
 		// 葉っぱ生成の更新
-		CLeaf::UpdateToCreate();
+		//CLeaf::UpdateToCreate();
 
 		if (pKeyboard->GetTrigger(DIK_A) && m_nSelectLevel > -1 ||
 			pPad->GetTrigger(CInputPad::JOYKEY::LEFT) && m_nSelectLevel > -1 ||
@@ -230,7 +230,7 @@ void CGameManager::Update()
 	case PHASE::INGAME:
 
 		// 葉っぱ生成の更新
-		CLeaf::UpdateToCreate();
+		//CLeaf::UpdateToCreate();
 
 		// タイムの動作
 		CTimer::SwitchControlByPahse(m_nSelectLevel);
