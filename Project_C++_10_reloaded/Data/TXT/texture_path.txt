@@ -15,3 +15,8 @@ Data\\TEXTURE\\back.png
 Data\\TEXTURE\\crown_256.png
 Data\\TEXTURE\\text00.png
 Data\\TEXTURE\\text01.png
+Data\\TEXTURE\\text02.png
+Data\\TEXTURE\\text03.png
+Data\\TEXTURE\\text04.png
+Data\\TEXTURE\\text05.png
+Data\\TEXTURE\\text06.png
