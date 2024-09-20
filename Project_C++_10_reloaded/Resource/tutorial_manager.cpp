@@ -155,7 +155,7 @@ void CTutorial_Manager::CreateText()
 		m_pText->SetPosTarget(D3DXVECTOR3{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.8f, 0.0f });
 
 		// 目標サイズを設定
-		m_pText->SetSizeTarget(D3DXVECTOR3{ 200.0f, 50.0f, 0.0f });
+		m_pText->SetSizeTarget(D3DXVECTOR3{ 200.0f * 1.25f, 50.0f * 1.25f, 0.0f });
 	}
 }
 
@@ -242,7 +242,7 @@ void CTutorial_Manager::CheckPlayerPos()
 		// テキスト変更
 		m_TexType = CTexture_Manager::TYPE::TEXT04;
 		m_pText->BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
-		m_pText->SetSizeTarget(D3DXVECTOR3{ 200.0f, 50.0f, 0.0f });
+		m_pText->SetSizeTarget(D3DXVECTOR3{ 200.0f * 1.25f, 50.0f * 1.25f, 0.0f });
 		m_pText->SetRotTarget(D3DXVECTOR3{ 0.0f, 0.0f, 0.0f });
 	}
 
@@ -259,7 +259,7 @@ void CTutorial_Manager::CheckPlayerPos()
 		// テキスト変更
 		m_TexType = CTexture_Manager::TYPE::TEXT06;
 		m_pText->BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
-		m_pText->SetSizeTarget(D3DXVECTOR3{ 200.0f, 50.0f, 0.0f });
+		m_pText->SetSizeTarget(D3DXVECTOR3{ 200.0f * 1.25f, 50.0f * 1.25f, 0.0f });
 	}
 
 	if (m_TexType == CTexture_Manager::TYPE::TEXT06 && Pos.x > 260.0f)

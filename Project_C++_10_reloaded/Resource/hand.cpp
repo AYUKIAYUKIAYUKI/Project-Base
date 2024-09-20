@@ -332,47 +332,49 @@ void CHand::Disappear()
 //============================================================================
 void CHand::UpdateL()
 {
-	if (CTutorial_Manager::GetTexType() == CTexture_Manager::TYPE::TEXT00 || 
-		CTutorial_Manager::GetTexType() == CTexture_Manager::TYPE::TEXT02)
+	//if (CTutorial_Manager::GetTexType() == CTexture_Manager::TYPE::TEXT00 || 
+	//	CTutorial_Manager::GetTexType() == CTexture_Manager::TYPE::TEXT02)
+	//{
+	//	// ランダムな座標
+	//	D3DXVECTOR3 RandomPos{ CUtility::GetInstance()->GetRandomValue<float>() * 0.001f ,CUtility::GetInstance()->GetRandomValue<float>() * 0.001f, 0.0f };
+
+	//	// 目標座標の設定
+	//	SetPosTarget(D3DXVECTOR3{ -3.0f, -10.0f, -10.0f, } + RandomPos * 2.0f);
+
+	//	// 一定間隔でテクスチャを変更する
+	//	if (m_nDuration < 5)
+	//	{
+	//		m_nDuration++;
+	//	}
+	//	else
+	//	{
+	//		m_nDuration = 0;
+
+	//		if (m_TexType == CTexture_Manager::TYPE::LHAND)
+	//		{
+	//			m_TexType = CTexture_Manager::TYPE::LHAND_ALT;
+	//			BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
+	//		}
+	//		else if (m_TexType == CTexture_Manager::TYPE::LHAND_ALT)
+	//		{
+	//			m_TexType = CTexture_Manager::TYPE::LHAND;
+	//			BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
+	//		}
+	//	}
+	//}
+	//else
+	//{
+	
+	// 目標座標の設定
+	SetPosTarget(D3DXVECTOR3{ -3.0f, -10.0f, -10.0f });
+
+	if (m_TexType != CTexture_Manager::TYPE::LHAND)
 	{
-		// ランダムな座標
-		D3DXVECTOR3 RandomPos{ CUtility::GetInstance()->GetRandomValue<float>() * 0.001f ,CUtility::GetInstance()->GetRandomValue<float>() * 0.001f, 0.0f };
-
-		// 目標座標の設定
-		SetPosTarget(D3DXVECTOR3{ -3.0f, -10.0f, -10.0f, } + RandomPos * 2.0f);
-
-		// 一定間隔でテクスチャを変更する
-		if (m_nDuration < 5)
-		{
-			m_nDuration++;
-		}
-		else
-		{
-			m_nDuration = 0;
-
-			if (m_TexType == CTexture_Manager::TYPE::LHAND)
-			{
-				m_TexType = CTexture_Manager::TYPE::LHAND_ALT;
-				BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
-			}
-			else if (m_TexType == CTexture_Manager::TYPE::LHAND_ALT)
-			{
-				m_TexType = CTexture_Manager::TYPE::LHAND;
-				BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
-			}
-		}
+		m_TexType = CTexture_Manager::TYPE::LHAND;
+		BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
 	}
-	else
-	{
-		// 目標座標の設定
-		SetPosTarget(D3DXVECTOR3{ -3.0f, -10.0f, -10.0f });
 
-		if (m_TexType != CTexture_Manager::TYPE::LHAND)
-		{
-			m_TexType = CTexture_Manager::TYPE::LHAND;
-			BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
-		}
-	}
+	//}
 }
 
 //============================================================================
