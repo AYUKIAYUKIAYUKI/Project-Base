@@ -49,6 +49,7 @@ private:
 	virtual void Disappear();	// 消滅
 
 	CTexture_Manager::TYPE m_TexType;	// テクスチャタイプを保持
+	int m_nDuration;					// 汎用カウント
 	bool m_bAppear;						// 出現フラグ
 	bool m_bDisappear;					// 消滅フラグ
 	D3DXVECTOR3 m_posTarget;			// 目標座標

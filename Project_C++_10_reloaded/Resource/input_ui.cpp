@@ -17,12 +17,16 @@
 // カメラ取得用
 #include "manager.h"
 
+// フェーズ取得用
+#include "tutorial_manager.h"
+
 //============================================================================
 // デフォルトコンストラクタ
 //============================================================================
 CInput_UI::CInput_UI() :
 	CObject_3D{ static_cast<int>(LAYER::BG) },
 	m_TexType{ CTexture_Manager::TYPE::CROWN },
+	m_nDuration{ 0 },
 	m_bAppear{ false },
 	m_bDisappear{ false },
 	m_posTarget{ 0.0f, 0.0f, 0.0f },
@@ -74,7 +78,7 @@ void CInput_UI::Uninit()
 //============================================================================
 void CInput_UI::Update()
 {
-	if (m_TexType == CTexture_Manager::TYPE::CNT && !m_bDisappear)
+	if (!m_bDisappear)
 	{
 		// BGカメラの間距離を設定
 		CManager::GetCamera()->SetDistanceBG(CUtility::GetInstance()->AdjustToTarget(CManager::GetCamera()->GetDistanceBG(), 35.0f, 0.025f));
@@ -82,6 +86,67 @@ void CInput_UI::Update()
 		// BGカメラの目標座標を設定
 		CManager::GetCamera()->SetPosBG(CUtility::GetInstance()->AdjustToTarget(CManager::GetCamera()->GetPosBG(), D3DXVECTOR3{ -3.0f, -12.5f, 0.0f }, 0.025f));
 	}
+
+	// テクスチャ反映
+	if (m_nDuration < 5)
+	{
+		m_nDuration++;
+
+	}
+	else
+	{
+		m_nDuration = 0;
+
+		// フェーズに応じて差し替え変更
+		switch (CTutorial_Manager::GetTexType())
+		{
+		case CTexture_Manager::TYPE::TEXT00:
+			if (m_TexType != CTexture_Manager::TYPE::CNT_M0)
+			{
+				m_TexType = CTexture_Manager::TYPE::CNT_M0;
+				BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
+			}
+			else if (m_TexType != CTexture_Manager::TYPE::CNT_M1)
+			{
+				m_TexType = CTexture_Manager::TYPE::CNT_M1;
+				BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
+			}
+			break;
+
+		case CTexture_Manager::TYPE::TEXT01:
+			if (m_TexType != CTexture_Manager::TYPE::CNT_B0)
+			{
+				m_TexType = CTexture_Manager::TYPE::CNT_B0;
+				BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
+			}
+			else if (m_TexType != CTexture_Manager::TYPE::CNT_B1)
+			{
+				m_TexType = CTexture_Manager::TYPE::CNT_B1;
+				BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
+			}
+			break;
+
+		case CTexture_Manager::TYPE::TEXT04:
+			if (m_TexType != CTexture_Manager::TYPE::CNT_B0)
+			{
+				m_TexType = CTexture_Manager::TYPE::CNT_B0;
+				BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
+			}
+			else if (m_TexType != CTexture_Manager::TYPE::CNT_B1)
+			{
+				m_TexType = CTexture_Manager::TYPE::CNT_B1;
+				BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
+			}
+			break;
+
+		default:
+			m_TexType = CTexture_Manager::TYPE::CNT;
+			BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
+			break;
+		}
+
+	}
+
 
 	// 出現
 	Appear();

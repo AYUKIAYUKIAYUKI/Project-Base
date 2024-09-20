@@ -58,6 +58,12 @@ public:
 		RHAND_X,		// 右手X
 		RHAND_Y,		// 右手Y
 		CNT,			// コントローラー
+		CNT_M0,			// コントローラーM0
+		CNT_M1,			// コントローラーM1
+		CNT_M2,			// コントローラーM2
+		CNT_M3,			// コントローラーM3
+		CNT_B0,			// コントローラーB0
+		CNT_B1,			// コントローラーB1
 		MAX,
 	};
 
