@@ -79,7 +79,7 @@ CTutorial_Manager::CTutorial_Manager() :
 
 	// è‚Æ‚©‚ğ¶¬
 	m_apHand[0] = CHand::Create(CTexture_Manager::TYPE::LHAND);
-	m_apHand[1] = CHand::Create(CTexture_Manager::TYPE::RHAND_B);
+	m_apHand[1] = CHand::Create(CTexture_Manager::TYPE::RHAND);
 }
 
 //============================================================================

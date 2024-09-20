@@ -45,8 +45,9 @@ public:
 		TEXT07,			// テキスト07
 		LHAND,			// 左手
 		LHAND_ALT,		// 左手Alt
-		RHAND_B,		// 右手B
+		RHAND,			// 右手
 		RHAND_A,		// 右手A
+		RHAND_B,		// 右手B
 		RHAND_X,		// 右手X
 		RHAND_Y,		// 右手Y
 		CNT,			// コントローラー
