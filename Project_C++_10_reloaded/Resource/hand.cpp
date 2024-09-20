@@ -430,6 +430,26 @@ void CHand::UpdateL()
 		m_TexType = CTexture_Manager::TYPE::LHAND_SD;
 		BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
 	}
+	else if (nTypeRot == -1 && pPad->GetPress(CInputPad::JOYKEY::LEFT))
+	{
+		m_TexType = CTexture_Manager::TYPE::LHAND_JL;
+		BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
+	}
+	else if (nTypeRot == -1 && pPad->GetPress(CInputPad::JOYKEY::RIGHT))
+	{
+		m_TexType = CTexture_Manager::TYPE::LHAND_JR;
+		BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
+	}
+	else if (nTypeRot == -1 && pPad->GetPress(CInputPad::JOYKEY::UP))
+	{
+		m_TexType = CTexture_Manager::TYPE::LHAND_JU;
+		BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
+	}
+	else if (nTypeRot == -1 && pPad->GetPress(CInputPad::JOYKEY::DOWN))
+	{
+		m_TexType = CTexture_Manager::TYPE::LHAND_JD;
+		BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
+	}
 	else
 	{
 		// –Ú•WÀ•W‚Ìİ’è

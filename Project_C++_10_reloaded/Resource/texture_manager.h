@@ -48,6 +48,10 @@ public:
 		LHAND_SR,		// ¶ŽèSR
 		LHAND_SU,		// ¶ŽèSU
 		LHAND_SD,		// ¶ŽèSD
+		LHAND_JL,		// ¶ŽèJL
+		LHAND_JR,		// ¶ŽèJR
+		LHAND_JU,		// ¶ŽèJU
+		LHAND_JD,		// ¶ŽèJD
 		RHAND,			// ‰EŽè
 		RHAND_A,		// ‰EŽèA
 		RHAND_B,		// ‰EŽèB
