@@ -101,13 +101,16 @@ void CHand::Update()
 
 #endif // _DEBUG
 
-	if (m_nLR == 0)
+	if (!m_bDisappear)
 	{
-		UpdateL();
-	}
-	else if (m_nLR == 1)
-	{
-		UpdateR();
+		if (m_nLR == 0)
+		{
+			UpdateL();
+		}
+		else if (m_nLR == 1)
+		{
+			UpdateR();
+		}
 	}
 
 	// èoåª

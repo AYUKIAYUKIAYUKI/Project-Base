@@ -77,10 +77,10 @@ void CInput_UI::Update()
 	if (m_TexType == CTexture_Manager::TYPE::CNT && !m_bDisappear)
 	{
 		// BGカメラの間距離を設定
-		CManager::GetCamera()->SetDistanceBG(CUtility::GetInstance()->AdjustToTarget(CManager::GetCamera()->GetDistanceBG(), 37.5f, 0.025f));
+		CManager::GetCamera()->SetDistanceBG(CUtility::GetInstance()->AdjustToTarget(CManager::GetCamera()->GetDistanceBG(), 35.0f, 0.025f));
 
 		// BGカメラの目標座標を設定
-		CManager::GetCamera()->SetPosBG(CUtility::GetInstance()->AdjustToTarget(CManager::GetCamera()->GetPosBG(), D3DXVECTOR3{ -3.0f, -10.0f, 0.0f }, 0.025f));
+		CManager::GetCamera()->SetPosBG(CUtility::GetInstance()->AdjustToTarget(CManager::GetCamera()->GetPosBG(), D3DXVECTOR3{ -3.0f, -12.5f, 0.0f }, 0.025f));
 	}
 
 	// 出現

@@ -99,7 +99,7 @@ CTutorial_Manager::~CTutorial_Manager()
 	if (m_apHand[0])
 	{
 		m_apHand[0]->SetDisappear();
-		m_apHand[0]->SetPosTarget({ -3.0f, -10.0f + -20.0f, -10.0f, });	// 値はCHand::Initより
+		m_apHand[0]->SetPosTarget({ -3.0f, -7.5f, -10.0f, });	// 値はCHand::Initより
 		m_apHand[0]->SetSizeTarget(D3DXVECTOR3{ 10.0f, 10.0f, 0.0f });
 		m_apHand[0] = nullptr;
 	}
@@ -107,7 +107,7 @@ CTutorial_Manager::~CTutorial_Manager()
 	if (m_apHand[1])
 	{
 		m_apHand[1]->SetDisappear();
-		m_apHand[1]->SetPosTarget({ -3.0f, -10.0f + -20.0f, -10.0f, });	// 値はCHand::Initより
+		m_apHand[1]->SetPosTarget({ -3.0f, -7.5f, -10.0f, });	// 値はCHand::Initより
 		m_apHand[1]->SetSizeTarget(D3DXVECTOR3{ 10.0f, 10.0f, 0.0f });
 		m_apHand[1] = nullptr;
 	}
@@ -115,7 +115,7 @@ CTutorial_Manager::~CTutorial_Manager()
 	if (m_pInput_UI)
 	{
 		m_pInput_UI->SetDisappear();
-		m_pInput_UI->SetPosTarget({ -3.0f, -10.0f + -20.0f, -10.0f, });	// 値はCHand::Initより
+		m_pInput_UI->SetPosTarget({ -3.0f, -7.5f, -10.0f, });	// 値はCHand::Initより
 		m_pInput_UI->SetSizeTarget(D3DXVECTOR3{ 10.0f, 10.0f, 0.0f });
 		m_pInput_UI = nullptr;
 	}
