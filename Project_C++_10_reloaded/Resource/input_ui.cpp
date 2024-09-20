@@ -127,14 +127,14 @@ void CInput_UI::Update()
 			break;
 
 		case CTexture_Manager::TYPE::TEXT04:
-			if (m_TexType != CTexture_Manager::TYPE::CNT_B0)
+			if (m_TexType != CTexture_Manager::TYPE::CNT_M2)
 			{
-				m_TexType = CTexture_Manager::TYPE::CNT_B0;
+				m_TexType = CTexture_Manager::TYPE::CNT_M2;
 				BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
 			}
-			else if (m_TexType != CTexture_Manager::TYPE::CNT_B1)
+			else if (m_TexType != CTexture_Manager::TYPE::CNT_M3)
 			{
-				m_TexType = CTexture_Manager::TYPE::CNT_B1;
+				m_TexType = CTexture_Manager::TYPE::CNT_M3;
 				BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
 			}
 			break;
