@@ -12,6 +12,7 @@
 // インクルードファイル
 //****************************************************
 #include "text.h"
+#include "hand.h"
 #include "texture_manager.h"
 
 //****************************************************
@@ -21,8 +22,9 @@ class CTutorial_Manager
 {
 public:
 
-	static void UpdateTutorial();	// チュートリアルの更新
-	static void DeleteInstance();	// 削除
+	static void UpdateTutorial();					// チュートリアルの更新
+	static void DeleteInstance();					// 削除
+	static CTexture_Manager::TYPE GetTexType();		// テクスチャタイプを取得
 
 private:
 
@@ -36,6 +38,7 @@ private:
 	static void CreateInstance();	// 生成
 
 	CText* m_pText;						// テキストのポインタ
+	CHand* m_apHand[2];					// 手とかのポインタ
 	CTexture_Manager::TYPE m_TexType;	// テクスチャタイプを保持
 
 	static CTutorial_Manager* m_pInstance;	// 自クラスのポインタ

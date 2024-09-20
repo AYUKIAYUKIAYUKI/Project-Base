@@ -51,14 +51,32 @@ void CTutorial_Manager::DeleteInstance()
 }
 
 //============================================================================
+// テクスチャタイプを取得
+//============================================================================
+CTexture_Manager::TYPE CTutorial_Manager::GetTexType()
+{
+	if (m_pInstance)
+	{
+		return m_pInstance->m_TexType;
+	}
+
+	return CTexture_Manager::TYPE::TEXT00;
+}
+
+//============================================================================
 // デフォルトコンストラクタ
 //============================================================================
 CTutorial_Manager::CTutorial_Manager() :
 	m_pText{ nullptr },
+	m_apHand{ nullptr, nullptr },
 	m_TexType{ CTexture_Manager::TYPE::TEXT00 }
 {
 	// テキストを生成
 	CreateText();
+
+	// 手とかを生成
+	m_apHand[0] = CHand::Create(CTexture_Manager::TYPE::LHAND);
+	m_apHand[1] = CHand::Create(CTexture_Manager::TYPE::RHAND);
 }
 
 //============================================================================
@@ -73,6 +91,22 @@ CTutorial_Manager::~CTutorial_Manager()
 		m_pText->SetPosTarget(D3DXVECTOR3{ 0.0f, SCREEN_HEIGHT + 100.0f, 0.0f });
 		m_pText->SetSizeTarget(D3DXVECTOR3{ 0.0f, 0.0f, 0.0f });
 		m_pText = nullptr;
+	}
+
+	if (m_apHand[0])
+	{
+		m_apHand[0]->SetDisappear();
+		m_apHand[0]->SetPosTarget({ -3.0f, -10.0f + -20.0f, -10.0f, });	// 値はCHand::Initより
+		m_apHand[0]->SetSizeTarget(D3DXVECTOR3{ 10.0f, 10.0f, 0.0f });
+		m_apHand[0] = nullptr;
+	}
+
+	if (m_apHand[1])
+	{
+		m_apHand[1]->SetDisappear();
+		m_apHand[1]->SetPosTarget({ -3.0f, -10.0f + -20.0f, -10.0f, });	// 値はCHand::Initより
+		m_apHand[1]->SetSizeTarget(D3DXVECTOR3{ 10.0f, 10.0f, 0.0f });
+		m_apHand[1] = nullptr;
 	}
 }
 

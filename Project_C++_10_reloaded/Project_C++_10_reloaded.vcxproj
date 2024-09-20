@@ -42,6 +42,7 @@
     <ClCompile Include="Resource\game_manager.cpp" />
     <ClCompile Include="Resource\game_phase.cpp" />
     <ClCompile Include="Resource\goal.cpp" />
+    <ClCompile Include="Resource\hand.cpp" />
     <ClCompile Include="Resource\impact.cpp" />
     <ClCompile Include="resource\input.cpp" />
     <ClCompile Include="Resource\KARIHAIKEI.cpp" />
@@ -116,6 +117,7 @@
     <ClInclude Include="Resource\game_manager.h" />
     <ClInclude Include="Resource\game_phase.h" />
     <ClInclude Include="Resource\goal.h" />
+    <ClInclude Include="Resource\hand.h" />
     <ClInclude Include="Resource\impact.h" />
     <ClInclude Include="resource\input.h" />
     <ClInclude Include="Resource\KARIHAIKEI.h" />
