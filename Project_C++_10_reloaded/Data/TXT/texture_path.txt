@@ -21,8 +21,11 @@ Data\\TEXTURE\\text04.png
 Data\\TEXTURE\\text05.png
 Data\\TEXTURE\\text06.png
 Data\\TEXTURE\\text07.png
-Data\\TEXTURE\\LHAND_512.png
-Data\\TEXTURE\\LHAND_Alt_512.png
+Data\\TEXTURE\\LHAND_DEF_512.png
+Data\\TEXTURE\\LHAND_SL_512.png
+Data\\TEXTURE\\LHAND_SR_512.png
+Data\\TEXTURE\\LHAND_SU_512.png
+Data\\TEXTURE\\LHAND_SD_512.png
 Data\\TEXTURE\\RHAND_DEF_512.png
 Data\\TEXTURE\\RHAND_A_512.png
 Data\\TEXTURE\\RHAND_B_512.png

@@ -44,7 +44,10 @@ public:
 		TEXT06,			// テキスト06
 		TEXT07,			// テキスト07
 		LHAND,			// 左手
-		LHAND_ALT,		// 左手Alt
+		LHAND_SL,		// 左手SL
+		LHAND_SR,		// 左手SR
+		LHAND_SU,		// 左手SU
+		LHAND_SD,		// 左手SD
 		RHAND,			// 右手
 		RHAND_A,		// 右手A
 		RHAND_B,		// 右手B

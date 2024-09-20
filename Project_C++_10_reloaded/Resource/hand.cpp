@@ -364,12 +364,77 @@ void CHand::UpdateL()
 	//}
 	//else
 	//{
-	
-	// 目標座標の設定
-	SetPosTarget(D3DXVECTOR3{ -3.0f, -10.0f, -10.0f });
 
-	if (m_TexType != CTexture_Manager::TYPE::LHAND)
+	// コントローラを取得
+	CInputPad* pPad{ CManager::GetPad() };
+
+	// スティック入力をコピー
+	SHORT StickX{ pPad->GetJoyStickL().X }, StickY{ pPad->GetJoyStickL().Y };
+
+	// 方向の種類を格納
+	int nTypeRot{ -1 };
+
+	// 方向の種類を決定
+	float fAngle{ atan2f(StickY, StickX) };
+
+#ifdef _DEBUG
+	CRenderer::GetInstance()->SetDebugString("Lスティッくの傾き : " + std::to_string(fAngle));
+#endif // _DEBUG
+
+	// 入力がされていれば
+	if (StickX != 0 || StickY != 0)
 	{
+		// 傾きに応じてテクスチャ指定
+		if (fAngle >= D3DX_PI * -0.25f && fAngle <= D3DX_PI * 0.25f)
+		{
+			nTypeRot = 1;
+		}
+		else if (fAngle >= D3DX_PI * 0.25f && fAngle <= D3DX_PI * 0.75f)
+		{
+			nTypeRot = 2;
+		}
+		else if (fAngle <= D3DX_PI * -0.25f && fAngle >= D3DX_PI * -0.75f)
+		{
+			nTypeRot = 3;
+		}
+		else
+		{
+			nTypeRot = 0;
+		}
+	}
+
+	// ランダムな座標
+	D3DXVECTOR3 RandomPos{ CUtility::GetInstance()->GetRandomValue<float>() * 0.001f ,CUtility::GetInstance()->GetRandomValue<float>() * 0.001f, 0.0f };
+
+	// 目標座標の設定
+	SetPosTarget(D3DXVECTOR3{ -3.0f, -10.0f, -10.0f, } + RandomPos * 3.0f);
+	
+	// テクスチャ反映
+	if (nTypeRot == 0)
+	{
+		m_TexType = CTexture_Manager::TYPE::LHAND_SL;
+		BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
+	}
+	else if (nTypeRot == 1)
+	{
+		m_TexType = CTexture_Manager::TYPE::LHAND_SR;
+		BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
+	}
+	else if (nTypeRot == 2)
+	{
+		m_TexType = CTexture_Manager::TYPE::LHAND_SU;
+		BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
+	}
+	else if (nTypeRot == 3)
+	{
+		m_TexType = CTexture_Manager::TYPE::LHAND_SD;
+		BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
+	}
+	else
+	{
+		// 目標座標の設定
+		SetPosTarget({ -3.0f, -10.0f, -10.0f, });
+
 		m_TexType = CTexture_Manager::TYPE::LHAND;
 		BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
 	}
