@@ -48,7 +48,12 @@ private:
 	virtual void Appear();		// 出現
 	virtual void Disappear();	// 消滅
 
+	void UpdateL();	// 左の更新
+	void UpdateR();	// 右の更新
+
+	int m_nLR;							// LR識別
 	CTexture_Manager::TYPE m_TexType;	// テクスチャタイプを保持
+	int m_nDuration;					// 汎用カウント
 	bool m_bAppear;						// 出現フラグ
 	bool m_bDisappear;					// 消滅フラグ
 	D3DXVECTOR3 m_posTarget;			// 目標座標

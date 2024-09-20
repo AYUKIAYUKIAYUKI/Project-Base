@@ -44,7 +44,11 @@ public:
 		TEXT06,			// テキスト06
 		TEXT07,			// テキスト07
 		LHAND,			// 左手
-		RHAND,			// 右手
+		LHAND_ALT,		// 左手Alt
+		RHAND_B,		// 右手B
+		RHAND_A,		// 右手A
+		RHAND_X,		// 右手X
+		RHAND_Y,		// 右手Y
 		CNT,			// コントローラー
 		MAX,
 	};
