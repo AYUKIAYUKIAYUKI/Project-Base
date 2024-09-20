@@ -84,6 +84,15 @@ void CHand::Uninit()
 //============================================================================
 void CHand::Update()
 {
+#ifdef _DEBUG
+
+	CRenderer::GetInstance()->SetDebugString("【手座標】");
+	std::ostringstream oss;
+	oss << std::fixed << std::setprecision(6) << "X:" << GetPos().x << "\nY:" << GetPos().y << "\nY:" << GetPos().z;
+	CRenderer::GetInstance()->SetDebugString(oss.str().c_str());
+
+#endif // _DEBUG
+
 	// 出現
 	Appear();
 
@@ -117,11 +126,11 @@ void CHand::Draw()
 {
 	auto pDev{ CRenderer::GetInstance()->GetDeviece() };
 
-	//// 深度テストの比較方法の変更
-	//pDev->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+	// 深度テストの比較方法の変更
+	pDev->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
 
-	//// 深度バッファに描画しない
-	//pDev->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+	// 深度バッファに描画しない
+	pDev->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 
 	// ライト反映を無効にする
 	pDev->SetRenderState(D3DRS_LIGHTING, FALSE);
@@ -132,11 +141,11 @@ void CHand::Draw()
 	// ライト反映を有効にする
 	pDev->SetRenderState(D3DRS_LIGHTING, TRUE);
 
-	//// 深度テストの比較方法の変更
-	//pDev->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+	// 深度テストの比較方法の変更
+	pDev->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
 
-	//// 深度バッファに書き込む
-	//pDev->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+	// 深度バッファに書き込む
+	pDev->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 }
 
 //============================================================================
