@@ -368,6 +368,9 @@ void CHand::UpdateL()
 	//else
 	//{
 
+	// キーボードを取得
+	CInputKeyboard* pKeyboard{ CManager::GetKeyboard() };
+
 	// コントローラを取得
 	CInputPad* pPad{ CManager::GetPad() };
 
@@ -413,22 +416,26 @@ void CHand::UpdateL()
 	SetPosTarget(D3DXVECTOR3{ -3.0f, -10.0f, -10.0f, } + RandomPos * 3.0f);
 	
 	// テクスチャ反映
-	if (nTypeRot == 0)
+	if (nTypeRot == 0 ||
+		nTypeRot == -1 && pKeyboard->GetPress(DIK_A))
 	{
 		m_TexType = CTexture_Manager::TYPE::LHAND_SL;
 		BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
 	}
-	else if (nTypeRot == 1)
+	else if (nTypeRot == 1 ||
+		nTypeRot == -1 && pKeyboard->GetPress(DIK_D))
 	{
 		m_TexType = CTexture_Manager::TYPE::LHAND_SR;
 		BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
 	}
-	else if (nTypeRot == 2)
+	else if (nTypeRot == 2 ||
+		nTypeRot == -1 && pKeyboard->GetPress(DIK_W))
 	{
 		m_TexType = CTexture_Manager::TYPE::LHAND_SU;
 		BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
 	}
-	else if (nTypeRot == 3)
+	else if (nTypeRot == 3 ||
+		nTypeRot == -1 && pKeyboard->GetPress(DIK_S))
 	{
 		m_TexType = CTexture_Manager::TYPE::LHAND_SD;
 		BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
@@ -513,11 +520,14 @@ void CHand::UpdateR()
 	//else
 	//{ 
 
-	// ランダムな座標
-	D3DXVECTOR3 RandomPos{ CUtility::GetInstance()->GetRandomValue<float>() * 0.001f ,CUtility::GetInstance()->GetRandomValue<float>() * 0.001f, 0.0f };
+	// キーボードを取得
+	CInputKeyboard* pKeyboard{ CManager::GetKeyboard() };
 
 	// コントローラを取得
 	CInputPad* pPad{ CManager::GetPad() };
+
+	// ランダムな座標
+	D3DXVECTOR3 RandomPos{ CUtility::GetInstance()->GetRandomValue<float>() * 0.001f ,CUtility::GetInstance()->GetRandomValue<float>() * 0.001f, 0.0f };
 
 	// 目標座標の設定
 	SetPosTarget(D3DXVECTOR3{ -3.0f, -10.0f, -10.0f, } + RandomPos * 3.0f);
@@ -532,7 +542,8 @@ void CHand::UpdateR()
 		m_TexType = CTexture_Manager::TYPE::RHAND_B;
 		BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
 	}
-	else if (pPad->GetPress(CInputPad::JOYKEY::X))
+	else if (pPad->GetPress(CInputPad::JOYKEY::X) ||
+		pKeyboard->GetPress(DIK_SPACE))
 	{
 		m_TexType = CTexture_Manager::TYPE::RHAND_X;
 		BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
