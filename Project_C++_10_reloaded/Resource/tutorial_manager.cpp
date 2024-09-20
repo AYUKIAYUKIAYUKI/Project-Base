@@ -74,6 +74,9 @@ CTutorial_Manager::CTutorial_Manager() :
 	// テキストを生成
 	CreateText();
 
+	// インプットUIを生成 (手より先行)
+	m_pInput_UI = CInput_UI::Create(CTexture_Manager::TYPE::CNT);
+
 	// 手とかを生成
 	m_apHand[0] = CHand::Create(CTexture_Manager::TYPE::LHAND);
 	m_apHand[1] = CHand::Create(CTexture_Manager::TYPE::RHAND);
@@ -107,6 +110,14 @@ CTutorial_Manager::~CTutorial_Manager()
 		m_apHand[1]->SetPosTarget({ -3.0f, -10.0f + -20.0f, -10.0f, });	// 値はCHand::Initより
 		m_apHand[1]->SetSizeTarget(D3DXVECTOR3{ 10.0f, 10.0f, 0.0f });
 		m_apHand[1] = nullptr;
+	}
+
+	if (m_pInput_UI)
+	{
+		m_pInput_UI->SetDisappear();
+		m_pInput_UI->SetPosTarget({ -3.0f, -10.0f + -20.0f, -10.0f, });	// 値はCHand::Initより
+		m_pInput_UI->SetSizeTarget(D3DXVECTOR3{ 10.0f, 10.0f, 0.0f });
+		m_pInput_UI = nullptr;
 	}
 }
 

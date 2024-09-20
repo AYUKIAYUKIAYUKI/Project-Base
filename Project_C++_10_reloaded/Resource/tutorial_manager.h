@@ -11,8 +11,9 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
-#include "text.h"
 #include "hand.h"
+#include "input_ui.h"
+#include "text.h"
 #include "texture_manager.h"
 
 //****************************************************
@@ -39,6 +40,7 @@ private:
 
 	CText* m_pText;						// テキストのポインタ
 	CHand* m_apHand[2];					// 手とかのポインタ
+	CInput_UI* m_pInput_UI;				// インプットUIのポインタ
 	CTexture_Manager::TYPE m_TexType;	// テクスチャタイプを保持
 
 	static CTutorial_Manager* m_pInstance;	// 自クラスのポインタ

@@ -97,6 +97,15 @@ void CGameManager::Uninit()
 //============================================================================
 void CGameManager::Update()
 {
+	if (m_bEndTutorial)
+	{
+		// BGカメラの間距離を設定
+		CManager::GetCamera()->SetDistanceBG(CUtility::GetInstance()->AdjustToTarget(CManager::GetCamera()->GetDistanceBG(), 25.0f, 0.025f));
+
+		// BGカメラの目標座標を設定
+		CManager::GetCamera()->SetPosBG(CUtility::GetInstance()->AdjustToTarget(CManager::GetCamera()->GetPosBG(), D3DXVECTOR3{ -3.0f, 0.0f, 0.0f }, 0.025f));
+	}
+
 	// キーボードを取得
 	CInputKeyboard* pKeyboard = CManager::GetKeyboard();
 
