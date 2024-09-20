@@ -121,7 +121,8 @@ void CPlayerStateDefault::Enter()
 	m_pPlayer->BindModel(Model);
 
 	// サイズを設定
-	m_pPlayer->SetSize(Model->size);
+	//m_pPlayer->SetSize(Model->size);
+	m_pPlayer->SetSize(D3DXVECTOR3{ 10.0f, 10.0f, 10.0f });
 }
 
 //============================================================================
@@ -332,7 +333,8 @@ void CPlayerStateBeginning::Enter()
 	m_pPlayer->BindModel(Model);
 
 	// サイズを設定
-	m_pPlayer->SetSize(Model->size);
+	//m_pPlayer->SetSize(Model->size);
+	m_pPlayer->SetSize(D3DXVECTOR3{ 10.0f, 10.0f, 10.0f });
 
 	// 爆発音
 	CSound::GetInstance()->Play(CSound::LABEL::EXPLOSION);
@@ -468,7 +470,8 @@ void CPlayerStateFlying::Enter()
 	m_pPlayer->BindModel(Model);
 
 	// サイズを設定
-	m_pPlayer->SetSize(Model->size);
+	//m_pPlayer->SetSize(Model->size);
+	m_pPlayer->SetSize(D3DXVECTOR3{ 10.0f, 10.0f, 10.0f });
 
 	// エフェクト生成
 	for (int i = 0; i < 5; i++)
@@ -656,14 +659,14 @@ bool CPlayerStateFlying::Control()
 	{
 		// 波紋を生成
 		CRipple::Create(
-			m_pPlayer->GetPos() - (RandomVelocity * 2.0f),	// 座標
+			m_pPlayer->GetPos() + (NewVelocity * -5.0f) + (RandomVelocity * 2.0f),	// 座標
 			NewVelocity * -0.5f);							// 加速度
 	}
 	else if (nRandom == 1)
 	{
 		// 星を生成
 		CStar::Create(
-			m_pPlayer->GetPos() - (NewVelocity * 2.0f),	// 座標
+			m_pPlayer->GetPos() + (NewVelocity * -5.0f) + (NewVelocity * 2.0f),	// 座標
 			RandomVelocity * -0.5f);					// 加速度
 	}
 
@@ -819,7 +822,8 @@ void CPlayerStateCharging::Enter()
 	m_pPlayer->BindModel(Model);
 
 	// サイズを設定
-	m_pPlayer->SetSize(Model->size);
+	//m_pPlayer->SetSize(Model->size);
+	m_pPlayer->SetSize(D3DXVECTOR3{ 10.0f, 10.0f, 10.0f });
 
 	// チャージ音
 	CSound::GetInstance()->Play(CSound::LABEL::CHARGE);
@@ -1172,7 +1176,8 @@ void CPlayerStateRushing::Enter()
 	m_pPlayer->BindModel(Model);
 
 	// サイズを設定
-	m_pPlayer->SetSize(Model->size);
+	//m_pPlayer->SetSize(Model->size);
+	m_pPlayer->SetSize(D3DXVECTOR3{ 10.0f, 10.0f, 10.0f });
 
 	// 突進音
 	CSound::GetInstance()->Play(CSound::LABEL::RUSH);
@@ -1204,12 +1209,12 @@ void CPlayerStateRushing::Update()
 
 		// 星を生成
 		CStar::Create(
-			m_pPlayer->GetPos() + RandomVelocity * 3.0f,	// 座標
+			m_pPlayer->GetPos() + (m_pPlayer->GetVelocity() * -2.5f) + RandomVelocity * 3.0f,	// 座標
 			-m_pPlayer->GetVelocity() + RandomVelocity);	// 加速度 (飛行方向の逆)
 		
 		// 波紋を生成
 		CRipple::Create(
-			m_pPlayer->GetPos() + RandomVelocity * 3.0f,	// 座標
+			m_pPlayer->GetPos() + (m_pPlayer->GetVelocity() * -2.5f) + RandomVelocity * 3.0f,	// 座標
 			-m_pPlayer->GetVelocity() + RandomVelocity);	// 加速度 (飛行方向の逆)
 	}
 
@@ -1345,7 +1350,8 @@ void CPlayerStateStopping::Enter()
 	m_pPlayer->BindModel(Model);
 
 	// サイズを設定
-	m_pPlayer->SetSize(Model->size);
+	//m_pPlayer->SetSize(Model->size);
+	m_pPlayer->SetSize(D3DXVECTOR3{ 10.0f, 10.0f, 10.0f });
 
 	//// エフェクトを生成
 	//for (int i = 0; i < 10; i++)
@@ -1463,7 +1469,8 @@ void CPlayerStateStopping::Exit()
 	m_pPlayer->BindModel(Model);
 
 	// サイズを設定
-	m_pPlayer->SetSize(Model->size);
+	//m_pPlayer->SetSize(Model->size);
+	m_pPlayer->SetSize(D3DXVECTOR3{ 10.0f, 10.0f, 10.0f });
 }
 
 //============================================================================
@@ -1566,7 +1573,8 @@ void CPlayerStateMistook::Enter()
 	m_pPlayer->BindModel(Model);
 
 	// サイズを設定
-	m_pPlayer->SetSize(Model->size);
+	//m_pPlayer->SetSize(Model->size);
+	m_pPlayer->SetSize(D3DXVECTOR3{ 10.0f, 10.0f, 10.0f });
 
 	// スタートオブジェクトの位置情報を取得
 	FindStartObject();
@@ -1703,7 +1711,8 @@ void CPlayerStateGoal::Enter()
 	m_pPlayer->BindModel(Model);
 
 	// サイズを設定
-	m_pPlayer->SetSize(Model->size);
+	//m_pPlayer->SetSize(Model->size);
+	m_pPlayer->SetSize(D3DXVECTOR3{ 10.0f, 10.0f, 10.0f });
 }
 
 //============================================================================
