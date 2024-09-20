@@ -177,7 +177,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    0.800000;0.800000;0.800000;;
    TextureFilename {
-    "Data\\TEXTURE\\1.png";
+    "Data\\TEXTURE\\def.jpg";
    }
   }
  }
