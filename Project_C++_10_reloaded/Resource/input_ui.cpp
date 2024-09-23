@@ -3,8 +3,7 @@
 // インプットUI [input_ui.cpp]
 // Author : 福田歩希
 //
-//=============================================================================7979797
-
+//=============================================================================
 
 //****************************************************
 // インクルードファイル
@@ -65,12 +64,12 @@ HRESULT CInput_UI::Init()
 	else if (m_nType == 1)
 	{
 		// 座標設定
-		SetPos({ -16.0f, 4.0f + 50.0f, -10.0f });
-		SetPosTarget({ -16.0f, 4.0f, -10.0f });
+		SetPos({ -15.5f, 3.0f + 50.0f, -10.0f });
+		SetPosTarget({ -15.5f, 3.0f, -10.0f });
 
 		// サイズ設定
-		SetSize({ 5.0f, 5.0f, 0.0f });
-		SetSizeTarget({ 5.0f, 5.0f, 0.0f });
+		SetSize({ 5.5f, 5.5f, 0.0f });
+		SetSizeTarget({ 5.5f, 5.5f, 0.0f });
 	}
 
 	// 基底クラスの初期設定
@@ -403,12 +402,12 @@ void CInput_UI::UpdateBoard()
 	D3DXVECTOR3 NewPosTarget{ GetPosTarget() };
 
 	// 増加量
-	static float fAdder{ 0.001f };
+	static float fAdder{ 0.002f };
 
 	// 少し動く
 	NewPosTarget.x += fAdder;
 
-	if (NewPosTarget.x >= -15.9f || NewPosTarget.x <= -16.9f)
+	if (NewPosTarget.x >= -15.5f + 0.1f || NewPosTarget.x <= -15.5f + -0.1f)
 	{
 		fAdder *= -1.0f;
 	}

@@ -125,8 +125,8 @@ CTutorial_Manager::~CTutorial_Manager()
 	if (m_apInput_UI[1])
 	{
 		m_apInput_UI[1]->SetDisappear();
-		m_apInput_UI[1]->SetPosTarget({ -16.0f, 6.5f, -10.0f });	// ’l‚ÍCInput_UI::Init‚æ‚è
-		m_apInput_UI[1]->SetSizeTarget(D3DXVECTOR3{ 5.0f, 5.0f, 0.0f });
+		m_apInput_UI[1]->SetPosTarget({ -15.5f, 6.0f, -10.0f });	// ’l‚ÍCInput_UI::Init‚æ‚è
+		m_apInput_UI[1]->SetSizeTarget(D3DXVECTOR3{ 5.5f, 5.5f, 0.0f });
 		m_apInput_UI[1] = nullptr;
 	}
 }
