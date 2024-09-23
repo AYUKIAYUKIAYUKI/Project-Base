@@ -986,8 +986,8 @@ void CPlayerStateCharging::Rotation()
 	NewRot = CUtility::GetInstance()->AdjustToTarget(NewRot, NewRotTarget, 0.1f);
 
 	// 震える
-	NewRot.x = CUtility::GetInstance()->GetRandomValue<float>() * 0.0005f;
-	NewRot.y = CUtility::GetInstance()->GetRandomValue<float>() * 0.0005f;
+	NewRot.x = CUtility::GetInstance()->GetRandomValue<float>() * 0.001f;
+	NewRot.y = CUtility::GetInstance()->GetRandomValue<float>() * 0.001f;
 
 	// 向き情報設定
 	m_pPlayer->SetRot(NewRot);
@@ -1177,7 +1177,7 @@ void CPlayerStateRushing::Enter()
 
 	// サイズを設定
 	//m_pPlayer->SetSize(Model->size);
-	m_pPlayer->SetSize(D3DXVECTOR3{ 10.0f, 10.0f, 10.0f });
+	m_pPlayer->SetSize(D3DXVECTOR3{ 10.0f, 10.0f, 10.0f });	// 少し大きめに
 
 	// 突進音
 	CSound::GetInstance()->Play(CSound::LABEL::RUSH);
@@ -1259,6 +1259,9 @@ void CPlayerStateRushing::Update()
 		CSound::GetInstance()->Play(CSound::LABEL::BOUND);
 	}
 
+	// 目標サイズへ拡大
+	m_pPlayer->SetScale(CUtility::GetInstance()->AdjustToTarget(m_pPlayer->GetScale(), 1.1f, 0.1f));
+
 #ifdef _DEBUG
 	if (CManager::GetKeyboard()->GetTrigger(DIK_LSHIFT))
 	{
@@ -1274,8 +1277,8 @@ void CPlayerStateRushing::Exit()
 {
 	// X・Y軸の向きを少し大げさに設定
 	D3DXVECTOR3 NewRot{ m_pPlayer->GetRot() };
-	NewRot.x = CUtility::GetInstance()->GetRandomValue<float>() * 0.003f;
-	NewRot.y = CUtility::GetInstance()->GetRandomValue<float>() * 0.003f;
+	NewRot.x = CUtility::GetInstance()->GetRandomValue<float>() * 0.0025f;
+	NewRot.y = CUtility::GetInstance()->GetRandomValue<float>() * 0.0025f;
 	m_pPlayer->SetRot(NewRot);
 }
 
@@ -1446,6 +1449,9 @@ void CPlayerStateStopping::Update()
 			// 加速度を反映
 			m_pPlayer->SetVelocity(OldVelocity);
 		}
+
+		// 目標サイズへ縮小
+		m_pPlayer->SetScale(CUtility::GetInstance()->AdjustToTarget(m_pPlayer->GetScale(), 1.0f, 0.1f));
 	}
 	else
 	{
