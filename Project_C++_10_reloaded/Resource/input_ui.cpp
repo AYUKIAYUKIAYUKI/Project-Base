@@ -372,7 +372,7 @@ void CInput_UI::UpdateCNT()
 			}
 			break;
 
-		case CTexture_Manager::TYPE::TEXT04:
+		case CTexture_Manager::TYPE::TEXT05:
 			if (m_TexType != CTexture_Manager::TYPE::CNT_M2)
 			{
 				m_TexType = CTexture_Manager::TYPE::CNT_M2;

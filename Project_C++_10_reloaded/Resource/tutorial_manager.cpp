@@ -162,10 +162,10 @@ void CTutorial_Manager::CreateText()
 		m_pText->SetAppear(true);
 
 		// 目標座標を設定
-		m_pText->SetPosTarget(D3DXVECTOR3{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.8f, 0.0f });
+		// 更新側で通常座標設定
 
 		// 目標サイズを設定
-		m_pText->SetSizeTarget(D3DXVECTOR3{ 200.0f * 1.25f, 50.0f * 1.25f, 0.0f });
+		m_pText->SetSizeTarget(D3DXVECTOR3{ 200.0f * 1.4f, 50.0f * 1.4f, 0.0f });
 	}
 }
 
@@ -212,70 +212,78 @@ void CTutorial_Manager::CheckPlayerPos()
 	}
 
 	// テキストの目標座標を設定
-	m_pText->SetPosTarget(D3DXVECTOR3{ SCREEN_WIDTH * 0.5f, (SCREEN_HEIGHT * 0.8f) + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f });
+	m_pText->SetPosTarget(D3DXVECTOR3{ SCREEN_WIDTH * 0.5f, (SCREEN_HEIGHT * 0.75f) + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f });
 
 	// プレイヤーの座標をコピー
 	D3DXVECTOR3 Pos{ pPlayer->GetPos() };
 
 	//===== 以下無法地帯 =====//
 
+	// 「移動してみよう」から
 	if (m_TexType == CTexture_Manager::TYPE::TEXT00 && Pos.y < -60.0f)
 	{
 		// テキスト変更
-		m_TexType = CTexture_Manager::TYPE::TEXT01;
+		m_TexType = CTexture_Manager::TYPE::TEXT01;	// とんでみよう
 		m_pText->BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
 	}
 
 	if (m_TexType == CTexture_Manager::TYPE::TEXT01 && typeid(*pPlayer->GetStateManager()->GetState()) == typeid(CPlayerStateFlying) && Pos.y > -20.0f)
 	{
 		// テキスト変更
-		m_TexType = CTexture_Manager::TYPE::TEXT02;
+		m_TexType = CTexture_Manager::TYPE::TEXT02;	// ブロックにぶつかろう
 		m_pText->BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
 	}
 
-	if (m_TexType == CTexture_Manager::TYPE::TEXT02 && typeid(*pPlayer->GetStateManager()->GetState()) == typeid(CPlayerStateStopping) && Pos.x > 560.0f)
+	if (m_TexType == CTexture_Manager::TYPE::TEXT02 && Pos.x > 300.0f)
 	{
 		// テキスト変更
-		m_TexType = CTexture_Manager::TYPE::TEXT03;
+		m_TexType = CTexture_Manager::TYPE::TEXT03;	// 右へ進んでみよう
 		m_pText->BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
-		m_pText->SetSizeTarget(D3DXVECTOR3{ 200.0f * 1.5f, 50.0f * 1.5f, 0.0f });
+	}
+
+	if (m_TexType == CTexture_Manager::TYPE::TEXT03 && Pos.x > 560.0f)
+	{
+		// テキスト変更
+		m_TexType = CTexture_Manager::TYPE::TEXT04;	// 大変そうですね
+		m_pText->BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
+		m_pText->SetSizeTarget(D3DXVECTOR3{ 200.0f * 1.65f, 50.0f * 1.65f, 0.0f });
 	}
 
 	// 煽りブルブル
-	if (m_TexType == CTexture_Manager::TYPE::TEXT03)
+	if (m_TexType == CTexture_Manager::TYPE::TEXT04)
 	{
 		m_pText->SetRotTarget(D3DXVECTOR3{ 0.0f, 0.0f, CUtility::GetInstance()->GetRandomValue<float>() * 0.005f });
 	}
 
-	if (m_TexType == CTexture_Manager::TYPE::TEXT03 && typeid(*pPlayer->GetStateManager()->GetState()) == typeid(CPlayerStateStopping) && Pos.x > 640.0f)
+	if (m_TexType == CTexture_Manager::TYPE::TEXT04 && typeid(*pPlayer->GetStateManager()->GetState()) == typeid(CPlayerStateStopping) && Pos.x > 600.0f)
 	{
 		// テキスト変更
-		m_TexType = CTexture_Manager::TYPE::TEXT04;
+		m_TexType = CTexture_Manager::TYPE::TEXT05;	// 突進してみよう
 		m_pText->BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
-		m_pText->SetSizeTarget(D3DXVECTOR3{ 200.0f * 1.25f, 50.0f * 1.25f, 0.0f });
+		m_pText->SetSizeTarget(D3DXVECTOR3{ 200.0f * 1.4f, 50.0f * 1.4f, 0.0f });
 		m_pText->SetRotTarget(D3DXVECTOR3{ 0.0f, 0.0f, 0.0f });
 	}
 
-	if (m_TexType == CTexture_Manager::TYPE::TEXT04 && typeid(*pPlayer->GetStateManager()->GetState()) == typeid(CPlayerStateMistook) && Pos.x > 1000.0f)
+	if (m_TexType == CTexture_Manager::TYPE::TEXT05 && typeid(*pPlayer->GetStateManager()->GetState()) == typeid(CPlayerStateMistook) && Pos.x > 1000.0f)
 	{
 		// テキスト変更
-		m_TexType = CTexture_Manager::TYPE::TEXT05;
+		m_TexType = CTexture_Manager::TYPE::TEXT06;	// 残念！ざまーみろ
 		m_pText->BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
-		m_pText->SetSizeTarget(D3DXVECTOR3{ 200.0f * 0.75f, 50.0f * 0.75f, 0.0f });
+		m_pText->SetSizeTarget(D3DXVECTOR3{ 200.0f * 0.9f, 50.0f * 0.9f, 0.0f });
 	}
 
-	if (m_TexType == CTexture_Manager::TYPE::TEXT05 && typeid(*pPlayer->GetStateManager()->GetState()) == typeid(CPlayerStateMistook) && Pos.x < 260.0f)
+	if (m_TexType == CTexture_Manager::TYPE::TEXT06 && typeid(*pPlayer->GetStateManager()->GetState()) == typeid(CPlayerStateMistook) && Pos.x < 260.0f)
 	{
 		// テキスト変更
-		m_TexType = CTexture_Manager::TYPE::TEXT06;
+		m_TexType = CTexture_Manager::TYPE::TEXT07;	// おっと！大丈夫そうだね
 		m_pText->BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
-		m_pText->SetSizeTarget(D3DXVECTOR3{ 200.0f * 1.25f, 50.0f * 1.25f, 0.0f });
+		m_pText->SetSizeTarget(D3DXVECTOR3{ 200.0f * 1.4f, 50.0f * 1.4f, 0.0f });
 	}
 
-	if (m_TexType == CTexture_Manager::TYPE::TEXT06 && Pos.x > 260.0f)
+	if (m_TexType == CTexture_Manager::TYPE::TEXT07 && Pos.x > 260.0f)
 	{
 		// テキスト変更
-		m_TexType = CTexture_Manager::TYPE::TEXT07;
+		m_TexType = CTexture_Manager::TYPE::TEXT08;	// もう一度突進してみよう
 		m_pText->BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
 	}
 }

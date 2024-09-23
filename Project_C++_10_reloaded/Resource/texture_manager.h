@@ -43,6 +43,7 @@ public:
 		TEXT05,			// テキスト05
 		TEXT06,			// テキスト06
 		TEXT07,			// テキスト07
+		TEXT08,			// テキスト08
 		LHAND,			// 左手
 		LHAND_SL,		// 左手SL
 		LHAND_SR,		// 左手SR
