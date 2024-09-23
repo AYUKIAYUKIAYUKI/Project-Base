@@ -50,6 +50,7 @@ private:
 
 	void UpdateCNT();	// CNTの更新
 	void UpdateBoard();	// ボードの更新
+	void UpdateSpeech();	// ふきだしの更新
 
 	int m_nType;						// 種類
 	CTexture_Manager::TYPE m_TexType;	// テクスチャタイプを保持

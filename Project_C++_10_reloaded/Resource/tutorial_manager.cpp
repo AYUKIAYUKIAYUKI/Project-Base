@@ -70,7 +70,7 @@ CTutorial_Manager::CTutorial_Manager() :
 	m_nCnt09{ 0 },
 	m_pText{ nullptr },
 	m_apHand{ nullptr, nullptr },
-	m_apInput_UI{ nullptr, nullptr },
+	m_apInput_UI{ nullptr, nullptr, nullptr },
 	m_TexType{ CTexture_Manager::TYPE::TEXT00 }
 {
 	// テキストを生成
@@ -79,6 +79,7 @@ CTutorial_Manager::CTutorial_Manager() :
 	// インプットUIを生成 (手より先行)
 	m_apInput_UI[0] = CInput_UI::Create(CTexture_Manager::TYPE::CNT);
 	m_apInput_UI[1] = CInput_UI::Create(CTexture_Manager::TYPE::BOARD);
+	m_apInput_UI[2] = CInput_UI::Create(CTexture_Manager::TYPE::SPEECH);
 
 	// 手とかを生成
 	m_apHand[0] = CHand::Create(CTexture_Manager::TYPE::LHAND);
@@ -126,9 +127,17 @@ CTutorial_Manager::~CTutorial_Manager()
 	if (m_apInput_UI[1])
 	{
 		m_apInput_UI[1]->SetDisappear();
-		m_apInput_UI[1]->SetPosTarget({ -15.5f, 6.0f, -10.0f });	// 値はCInput_UI::Initより
+		m_apInput_UI[1]->SetPosTarget({ -16.5f, 6.0f, -10.0f });	// 値はCInput_UI::Initより
 		m_apInput_UI[1]->SetSizeTarget(D3DXVECTOR3{ 5.5f, 5.5f, 0.0f });
 		m_apInput_UI[1] = nullptr;
+	}
+
+	if (m_apInput_UI[2])
+	{
+		m_apInput_UI[2]->SetDisappear();
+		m_apInput_UI[2]->SetPosTarget({ 13.5f, 1.0f, -10.0f });	// 値はCInput_UI::Initより
+		m_apInput_UI[2]->SetSizeTarget(D3DXVECTOR3{ 5.5f, 5.5f, 0.0f });
+		m_apInput_UI[2] = nullptr;
 	}
 }
 
@@ -329,7 +338,7 @@ void CTutorial_Manager::CheckPlayerPos()
 		m_pText->BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
 	}
 
-	if (m_TexType == CTexture_Manager::TYPE::TEXT08 && Pos.x > 1090.0f)
+	if (m_TexType == CTexture_Manager::TYPE::TEXT08 && typeid(*pPlayer->GetStateManager()->GetState()) != typeid(CPlayerStateRushing) && Pos.x > 1090.0f)
 	{
 		// テキスト変更
 		m_TexType = CTexture_Manager::TYPE::TEXT11;	// おっと

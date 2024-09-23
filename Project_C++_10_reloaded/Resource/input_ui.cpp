@@ -64,8 +64,18 @@ HRESULT CInput_UI::Init()
 	else if (m_nType == 1)
 	{
 		// 座標設定
-		SetPos({ -15.5f, 3.0f + 50.0f, -10.0f });
-		SetPosTarget({ -15.5f, 3.0f, -10.0f });
+		SetPos({ -16.5f, 3.0f + 50.0f, -10.0f });
+		SetPosTarget({ -16.5f, 3.0f, -10.0f });
+
+		// サイズ設定
+		SetSize({ 5.5f, 5.5f, 0.0f });
+		SetSizeTarget({ 5.5f, 5.5f, 0.0f });
+	}
+	else if (m_nType == 2)
+	{
+		// 座標設定
+		SetPos({ 11.0f + 50.0f, 1.0f, -10.0f });
+		SetPosTarget({ 11.f, 1.0f, -10.0f });
 
 		// サイズ設定
 		SetSize({ 5.5f, 5.5f, 0.0f });
@@ -102,6 +112,10 @@ void CInput_UI::Update()
 		else if (m_nType == 1)
 		{
 			UpdateBoard();
+		}
+		else if (m_nType == 2)
+		{
+			UpdateSpeech();
 		}
 	}
 
@@ -247,6 +261,10 @@ CInput_UI* CInput_UI::Create(CTexture_Manager::TYPE TexType)
 	else if (TexType == CTexture_Manager::TYPE::BOARD)
 	{
 		pInput_UI->m_nType = 1;
+	}
+	else if (TexType == CTexture_Manager::TYPE::SPEECH)
+	{
+		pInput_UI->m_nType = 2;
 	}
 
 	// タイプを設定
@@ -401,13 +419,47 @@ void CInput_UI::UpdateBoard()
 	// 新しい情報を作成
 	D3DXVECTOR3 NewPosTarget{ GetPosTarget() };
 
+	// 切り替えスイッチ
+	static bool bSwitch{ false };
+
+	if (bSwitch)
+	{
+		NewPosTarget.x = CUtility::GetInstance()->AdjustToTarget(NewPosTarget.x, -16.6f, 0.03f);
+		
+		if (NewPosTarget.x <= -16.59f)
+		{
+			bSwitch = !bSwitch;
+		}
+	}
+	else
+	{
+		NewPosTarget.x = CUtility::GetInstance()->AdjustToTarget(NewPosTarget.x, -16.4f, 0.03f);
+
+		if (NewPosTarget.x >= -16.41f)
+		{
+			bSwitch = !bSwitch;
+		}
+	}
+
+	// 座標を反映
+	SetPosTarget(NewPosTarget);
+}
+
+//============================================================================
+// ふきだしの更新
+//============================================================================
+void CInput_UI::UpdateSpeech()
+{
+	// 新しい情報を作成
+	D3DXVECTOR3 NewPosTarget{ GetPosTarget() };
+
 	// 増加量
-	static float fAdder{ 0.002f };
+	static float fAdder{ 0.0035f };
 
 	// 少し動く
-	NewPosTarget.x += fAdder;
+	NewPosTarget.y += fAdder;
 
-	if (NewPosTarget.x >= -15.5f + 0.1f || NewPosTarget.x <= -15.5f + -0.1f)
+	if (NewPosTarget.y >= 1.0f + 0.2f || NewPosTarget.y <= 1.0f + -0.2f)
 	{
 		fAdder *= -1.0f;
 	}

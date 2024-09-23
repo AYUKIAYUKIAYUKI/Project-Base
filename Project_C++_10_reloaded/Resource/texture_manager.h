@@ -70,6 +70,7 @@ public:
 		CNT_B0,			// コントローラーB0
 		CNT_B1,			// コントローラーB1
 		BOARD,			// ボード
+		SPEECH,			// ふきだし
 		MAX,
 	};
 

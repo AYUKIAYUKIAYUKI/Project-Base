@@ -41,7 +41,7 @@ private:
 	int m_nCnt09;						// 09用カウント
 	CText* m_pText;						// テキストのポインタ
 	CHand* m_apHand[2];					// 手とかのポインタ
-	CInput_UI* m_apInput_UI[2];			// インプットUIのポインタ
+	CInput_UI* m_apInput_UI[3];			// インプットUIのポインタ
 	CTexture_Manager::TYPE m_TexType;	// テクスチャタイプを保持
 
 	static CTutorial_Manager* m_pInstance;	// 自クラスのポインタ
