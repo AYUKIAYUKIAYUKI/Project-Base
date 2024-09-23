@@ -38,6 +38,7 @@ private:
 	
 	static void CreateInstance();	// 生成
 
+	int m_nCnt09;						// 09用カウント
 	CText* m_pText;						// テキストのポインタ
 	CHand* m_apHand[2];					// 手とかのポインタ
 	CInput_UI* m_apInput_UI[2];			// インプットUIのポインタ
