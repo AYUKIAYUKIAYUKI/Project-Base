@@ -54,22 +54,22 @@ HRESULT CHand::Init()
 	if (m_nLR == 0)
 	{
 		// 座標設定
-		SetPos({ -3.0f + -50.0f, -10.0f + -50.0f, -10.0f, });
-		SetPosTarget({ -3.0f, -10.0f, -10.0f, });
+		SetPos({ -3.0f + -50.0f, -10.0f + -50.0f, -10.0f });
+		SetPosTarget({ -3.0f, -10.0f, -10.0f });
 
 		// サイズ設定
-		SetSize({ 10.0f, 10.0f, 0.0f, });
-		SetSizeTarget({ 10.0f, 10.0f, 0.0f, });
+		SetSize({ 10.0f, 10.0f, 0.0f });
+		SetSizeTarget({ 10.0f, 10.0f, 0.0f });
 	}
 	else if (m_nLR == 1)
 	{
 		// 座標設定
-		SetPos({ -3.0f + 50.0f, -10.0f + -50.0f, -10.0f, });
-		SetPosTarget({ -3.0f, -10.0f, -10.0f, });
+		SetPos({ -3.0f + 50.0f, -10.0f + -50.0f, -10.0f });
+		SetPosTarget({ -3.0f, -10.0f, -10.0f });
 
 		// サイズ設定
-		SetSize({ 10.0f, 10.0f, 0.0f, });
-		SetSizeTarget({ 10.0f, 10.0f, 0.0f, });
+		SetSize({ 10.0f, 10.0f, 0.0f });
+		SetSizeTarget({ 10.0f, 10.0f, 0.0f });
 	}
 
 	// 基底クラスの初期設定

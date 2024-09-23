@@ -48,6 +48,10 @@ private:
 	virtual void Appear();		// 出現
 	virtual void Disappear();	// 消滅
 
+	void UpdateCNT();	// CNTの更新
+	void UpdateBoard();	// ボードの更新
+
+	int m_nType;						// 種類
 	CTexture_Manager::TYPE m_TexType;	// テクスチャタイプを保持
 	int m_nDuration;					// 汎用カウント
 	bool m_bAppear;						// 出現フラグ

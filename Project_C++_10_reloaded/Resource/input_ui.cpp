@@ -3,7 +3,8 @@
 // インプットUI [input_ui.cpp]
 // Author : 福田歩希
 //
-//=============================================================================
+//=============================================================================7979797
+
 
 //****************************************************
 // インクルードファイル
@@ -25,6 +26,7 @@
 //============================================================================
 CInput_UI::CInput_UI() :
 	CObject_3D{ static_cast<int>(LAYER::BG) },
+	m_nType{ 0 },
 	m_TexType{ CTexture_Manager::TYPE::CROWN },
 	m_nDuration{ 0 },
 	m_bAppear{ false },
@@ -50,13 +52,26 @@ CInput_UI::~CInput_UI()
 //============================================================================
 HRESULT CInput_UI::Init()
 {
-	// 座標設定
-	SetPos({ -3.0f, -10.0f + -50.0f, -10.0f, });
-	SetPosTarget({ -3.0f, -10.0f, -10.0f, });
+	if (m_nType == 0)
+	{
+		// 座標設定
+		SetPos({ -3.0f, -10.0f + -50.0f, -10.0f });
+		SetPosTarget({ -3.0f, -10.0f, -10.0f });
 
-	// サイズ設定
-	SetSize({ 10.0f, 10.0f, 0.0f, });
-	SetSizeTarget({ 10.0f, 10.0f, 0.0f, });
+		// サイズ設定
+		SetSize({ 10.0f, 10.0f, 0.0f });
+		SetSizeTarget({ 10.0f, 10.0f, 0.0f });
+	}
+	else if (m_nType == 1)
+	{
+		// 座標設定
+		SetPos({ -16.0f, 4.0f + 50.0f, -10.0f });
+		SetPosTarget({ -16.0f, 4.0f, -10.0f });
+
+		// サイズ設定
+		SetSize({ 5.0f, 5.0f, 0.0f });
+		SetSizeTarget({ 5.0f, 5.0f, 0.0f });
+	}
 
 	// 基底クラスの初期設定
 	HRESULT hr = CObject_3D::Init();
@@ -80,73 +95,16 @@ void CInput_UI::Update()
 {
 	if (!m_bDisappear)
 	{
-		// BGカメラの間距離を設定
-		CManager::GetCamera()->SetDistanceBG(CUtility::GetInstance()->AdjustToTarget(CManager::GetCamera()->GetDistanceBG(), 35.0f, 0.025f));
-
-		// BGカメラの目標座標を設定
-		CManager::GetCamera()->SetPosBG(CUtility::GetInstance()->AdjustToTarget(CManager::GetCamera()->GetPosBG(), D3DXVECTOR3{ -3.0f, -12.5f, 0.0f }, 0.025f));
-	}
-
-	// テクスチャ反映
-	if (m_nDuration < 5)
-	{
-		m_nDuration++;
-
-	}
-	else
-	{
-		m_nDuration = 0;
-
-		// フェーズに応じて差し替え変更
-		switch (CTutorial_Manager::GetTexType())
+		// 識別に応じて更新を変更
+		if (m_nType == 0)
 		{
-		case CTexture_Manager::TYPE::TEXT00:
-			if (m_TexType != CTexture_Manager::TYPE::CNT_M0)
-			{
-				m_TexType = CTexture_Manager::TYPE::CNT_M0;
-				BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
-			}
-			else if (m_TexType != CTexture_Manager::TYPE::CNT_M1)
-			{
-				m_TexType = CTexture_Manager::TYPE::CNT_M1;
-				BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
-			}
-			break;
-
-		case CTexture_Manager::TYPE::TEXT01:
-			if (m_TexType != CTexture_Manager::TYPE::CNT_B0)
-			{
-				m_TexType = CTexture_Manager::TYPE::CNT_B0;
-				BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
-			}
-			else if (m_TexType != CTexture_Manager::TYPE::CNT_B1)
-			{
-				m_TexType = CTexture_Manager::TYPE::CNT_B1;
-				BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
-			}
-			break;
-
-		case CTexture_Manager::TYPE::TEXT04:
-			if (m_TexType != CTexture_Manager::TYPE::CNT_M2)
-			{
-				m_TexType = CTexture_Manager::TYPE::CNT_M2;
-				BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
-			}
-			else if (m_TexType != CTexture_Manager::TYPE::CNT_M3)
-			{
-				m_TexType = CTexture_Manager::TYPE::CNT_M3;
-				BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
-			}
-			break;
-
-		default:
-			m_TexType = CTexture_Manager::TYPE::CNT;
-			BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
-			break;
+			UpdateCNT();
 		}
-
+		else if (m_nType == 1)
+		{
+			UpdateBoard();
+		}
 	}
-
 
 	// 出現
 	Appear();
@@ -181,11 +139,11 @@ void CInput_UI::Draw()
 {
 	auto pDev{ CRenderer::GetInstance()->GetDeviece() };
 
-	//// 深度テストの比較方法の変更
-	//pDev->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
+	// 深度テストの比較方法の変更
+	pDev->SetRenderState(D3DRS_ZFUNC, D3DCMP_ALWAYS);
 
-	//// 深度バッファに描画しない
-	//pDev->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
+	// 深度バッファに描画しない
+	pDev->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 
 	// ライト反映を無効にする
 	pDev->SetRenderState(D3DRS_LIGHTING, FALSE);
@@ -196,11 +154,11 @@ void CInput_UI::Draw()
 	// ライト反映を有効にする
 	pDev->SetRenderState(D3DRS_LIGHTING, TRUE);
 
-	//// 深度テストの比較方法の変更
-	//pDev->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
+	// 深度テストの比較方法の変更
+	pDev->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESSEQUAL);
 
-	//// 深度バッファに書き込む
-	//pDev->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+	// 深度バッファに書き込む
+	pDev->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 }
 
 //============================================================================
@@ -273,32 +231,41 @@ void CInput_UI::SetSizeTarget(D3DXVECTOR3 sizeTarget)
 CInput_UI* CInput_UI::Create(CTexture_Manager::TYPE TexType)
 {
 	// インスタンスを生成
-	CInput_UI* pHand = DBG_NEW CInput_UI{};
+	CInput_UI* pInput_UI = DBG_NEW CInput_UI{};
 
-	if (pHand == nullptr)
+	if (pInput_UI == nullptr)
 	{ // 生成失敗
 		assert(false);
 	}
 
 	// テクスチャタイプを保持
-	pHand->m_TexType = TexType;
+	pInput_UI->m_TexType = TexType;
+
+	if (TexType == CTexture_Manager::TYPE::CNT)
+	{
+		pInput_UI->m_nType = 0;
+	}
+	else if (TexType == CTexture_Manager::TYPE::BOARD)
+	{
+		pInput_UI->m_nType = 1;
+	}
 
 	// タイプを設定
-	pHand->SetType(TYPE::NONE);
+	pInput_UI->SetType(TYPE::NONE);
 
 	// 基底クラスの初期設定
-	pHand->Init();
+	pInput_UI->Init();
 
 	// テクスチャを設定
-	pHand->BindTex(CTexture_Manager::GetInstance()->GetTexture(TexType));
+	pInput_UI->BindTex(CTexture_Manager::GetInstance()->GetTexture(TexType));
 
 	// アルファ値を設定
-	pHand->SetAlpha(0.0f);
+	pInput_UI->SetAlpha(0.0f);
 
 	// 出現設定
-	pHand->SetAppear();
+	pInput_UI->SetAppear();
 
-	return pHand;
+	return pInput_UI;
 }
 
 //============================================================================
@@ -354,4 +321,98 @@ void CInput_UI::Disappear()
 		// 破棄予約
 		SetRelease();
 	}
+}
+
+//============================================================================
+// CNTの更新
+//============================================================================
+void CInput_UI::UpdateCNT()
+{
+	// BGカメラの間距離を設定
+	CManager::GetCamera()->SetDistanceBG(CUtility::GetInstance()->AdjustToTarget(CManager::GetCamera()->GetDistanceBG(), 35.0f, 0.025f));
+
+	// BGカメラの目標座標を設定
+	CManager::GetCamera()->SetPosBG(CUtility::GetInstance()->AdjustToTarget(CManager::GetCamera()->GetPosBG(), D3DXVECTOR3{ -3.0f, -12.5f, 0.0f }, 0.025f));
+
+	// テクスチャ反映
+	if (m_nDuration < 5)
+	{
+		m_nDuration++;
+
+	}
+	else
+	{
+		m_nDuration = 0;
+
+		// フェーズに応じて差し替え変更
+		switch (CTutorial_Manager::GetTexType())
+		{
+		case CTexture_Manager::TYPE::TEXT00:
+			if (m_TexType != CTexture_Manager::TYPE::CNT_M0)
+			{
+				m_TexType = CTexture_Manager::TYPE::CNT_M0;
+				BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
+			}
+			else if (m_TexType != CTexture_Manager::TYPE::CNT_M1)
+			{
+				m_TexType = CTexture_Manager::TYPE::CNT_M1;
+				BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
+			}
+			break;
+
+		case CTexture_Manager::TYPE::TEXT01:
+			if (m_TexType != CTexture_Manager::TYPE::CNT_B0)
+			{
+				m_TexType = CTexture_Manager::TYPE::CNT_B0;
+				BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
+			}
+			else if (m_TexType != CTexture_Manager::TYPE::CNT_B1)
+			{
+				m_TexType = CTexture_Manager::TYPE::CNT_B1;
+				BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
+			}
+			break;
+
+		case CTexture_Manager::TYPE::TEXT04:
+			if (m_TexType != CTexture_Manager::TYPE::CNT_M2)
+			{
+				m_TexType = CTexture_Manager::TYPE::CNT_M2;
+				BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
+			}
+			else if (m_TexType != CTexture_Manager::TYPE::CNT_M3)
+			{
+				m_TexType = CTexture_Manager::TYPE::CNT_M3;
+				BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
+			}
+			break;
+
+		default:
+			m_TexType = CTexture_Manager::TYPE::CNT;
+			BindTex(CTexture_Manager::GetInstance()->GetTexture(m_TexType));
+			break;
+		}
+	}
+}
+
+//============================================================================
+// ボードの更新
+//============================================================================
+void CInput_UI::UpdateBoard()
+{
+	// 新しい情報を作成
+	D3DXVECTOR3 NewPosTarget{ GetPosTarget() };
+
+	// 増加量
+	static float fAdder{ 0.001f };
+
+	// 少し動く
+	NewPosTarget.x += fAdder;
+
+	if (NewPosTarget.x >= -15.9f || NewPosTarget.x <= -16.9f)
+	{
+		fAdder *= -1.0f;
+	}
+
+	// 座標を反映
+	SetPosTarget(NewPosTarget);
 }

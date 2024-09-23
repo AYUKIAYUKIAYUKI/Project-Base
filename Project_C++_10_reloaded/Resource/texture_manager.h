@@ -64,6 +64,7 @@ public:
 		CNT_M3,			// コントローラーM3
 		CNT_B0,			// コントローラーB0
 		CNT_B1,			// コントローラーB1
+		BOARD,			// ボード
 		MAX,
 	};
 

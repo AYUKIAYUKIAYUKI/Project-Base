@@ -69,13 +69,15 @@ CTexture_Manager::TYPE CTutorial_Manager::GetTexType()
 CTutorial_Manager::CTutorial_Manager() :
 	m_pText{ nullptr },
 	m_apHand{ nullptr, nullptr },
+	m_apInput_UI{ nullptr, nullptr },
 	m_TexType{ CTexture_Manager::TYPE::TEXT00 }
 {
 	// テキストを生成
 	CreateText();
 
 	// インプットUIを生成 (手より先行)
-	m_pInput_UI = CInput_UI::Create(CTexture_Manager::TYPE::CNT);
+	m_apInput_UI[0] = CInput_UI::Create(CTexture_Manager::TYPE::CNT);
+	m_apInput_UI[1] = CInput_UI::Create(CTexture_Manager::TYPE::BOARD);
 
 	// 手とかを生成
 	m_apHand[0] = CHand::Create(CTexture_Manager::TYPE::LHAND);
@@ -112,12 +114,20 @@ CTutorial_Manager::~CTutorial_Manager()
 		m_apHand[1] = nullptr;
 	}
 
-	if (m_pInput_UI)
+	if (m_apInput_UI[0])
 	{
-		m_pInput_UI->SetDisappear();
-		m_pInput_UI->SetPosTarget({ -3.0f, -7.5f, -10.0f, });	// 値はCHand::Initより
-		m_pInput_UI->SetSizeTarget(D3DXVECTOR3{ 10.0f, 10.0f, 0.0f });
-		m_pInput_UI = nullptr;
+		m_apInput_UI[0]->SetDisappear();
+		m_apInput_UI[0]->SetPosTarget({ -3.0f, -7.5f, -10.0f, });	// 値はCInput_UI::Initより
+		m_apInput_UI[0]->SetSizeTarget(D3DXVECTOR3{ 10.0f, 10.0f, 0.0f });
+		m_apInput_UI[0] = nullptr;
+	}
+
+	if (m_apInput_UI[1])
+	{
+		m_apInput_UI[1]->SetDisappear();
+		m_apInput_UI[1]->SetPosTarget({ -16.0f, 6.5f, -10.0f });	// 値はCInput_UI::Initより
+		m_apInput_UI[1]->SetSizeTarget(D3DXVECTOR3{ 5.0f, 5.0f, 0.0f });
+		m_apInput_UI[1] = nullptr;
 	}
 }
 
