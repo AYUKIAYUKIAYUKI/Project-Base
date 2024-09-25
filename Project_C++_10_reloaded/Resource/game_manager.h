@@ -25,15 +25,19 @@ public:
 		START,		// レベル開始
 		INGAME,		// レベル進行
 		FINISH,		// レベル終了
-		RETIRE,		// リタイア
+		RETIRE,		// レベルリタイア
+		C_START,	// チャレンジ開始
+		C_INGAME,	// チャレンジ進行
+		C_FINISH,	// チャレンジ終了
 		MAX,
 	};
 
-	void Create();	// 生成
-	void Init();	// 初期設定
-	void Release();	// 解放
-	void Uninit();	// 終了処理
-	void Update();	// 更新処理
+	void Create();			// 生成
+	void Init();			// 初期設定
+	void Init(PHASE phase);	// 初期設定とフェーズ設定
+	void Release();			// 解放
+	void Uninit();			// 終了処理
+	void Update();			// 更新処理
 
 	PHASE GetPhase();			// フェーズ取得
 	void SetPhase(PHASE phase);	// フェーズ設定

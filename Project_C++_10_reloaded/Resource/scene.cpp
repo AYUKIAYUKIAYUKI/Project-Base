@@ -11,6 +11,7 @@
 #include "scene.h"
 
 // ƒV[ƒ“—p
+#include "challenge.h"
 #include "fakescreen.h"
 #include "game.h"
 #include "result.h"
@@ -112,6 +113,11 @@ CScene* CScene::Create(MODE mode)
 	//	pScene = DBG_NEW CResult;
 	//	pScene->m_mode = MODE::RESULT;
 	//	break;
+
+	case CScene::MODE::CHALLENGE:
+		pScene = DBG_NEW CChallenge;
+		pScene->m_mode = MODE::CHALLENGE;
+		break;
 
 	default:
 		assert(false);

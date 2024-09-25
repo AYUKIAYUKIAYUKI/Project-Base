@@ -25,6 +25,7 @@ public:
 	void Release();					// 解放
 	void Uninit();					// 終了処理
 	void Update();					// 更新処理
+	void Import();					// チャレンジステージ読み込み
 	void Import(std::string path);	// ステージ読み込み
 
 	int& GetPatternRef();	// 配置物の種類を参照

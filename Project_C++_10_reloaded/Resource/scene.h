@@ -23,8 +23,8 @@ public:
 		NONE = 0,	// 無し
 		TITLE,		// タイトル
 		GAME,		// ゲーム
+		CHALLENGE,	// チャレンジ
 		STAGE,		// ステージデバッグ
-		//RESULT,		// リザルト
 		MAX,
 	};
 

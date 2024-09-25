@@ -92,14 +92,12 @@ void CHand::Uninit()
 //============================================================================
 void CHand::Update()
 {
-#ifdef _DEBUG
-
-	CRenderer::GetInstance()->SetDebugString("yèÀ•Wz");
-	std::ostringstream oss;
-	oss << std::fixed << std::setprecision(6) << "X:" << GetPos().x << "\nY:" << GetPos().y << "\nY:" << GetPos().z;
-	CRenderer::GetInstance()->SetDebugString(oss.str().c_str());
-
-#endif // _DEBUG
+//#ifdef _DEBUG
+//	CRenderer::GetInstance()->SetDebugString("yèÀ•Wz");
+//	std::ostringstream oss;
+//	oss << std::fixed << std::setprecision(6) << "X:" << GetPos().x << "\nY:" << GetPos().y << "\nY:" << GetPos().z;
+//	CRenderer::GetInstance()->SetDebugString(oss.str().c_str());
+//#endif // _DEBUG
 
 	if (!m_bDisappear)
 	{

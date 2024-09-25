@@ -70,15 +70,21 @@ void CTitle::Uninit()
 //============================================================================
 void CTitle::Update()
 {
-	// ƒQ[ƒ€‰æ–Ê‚Ö
 	if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN) ||
 		CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::START) ||
 		CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::A) ||
 		CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::B) ||
 		CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::X) ||
 		CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::Y))
-	{
+	{ 
+		// ƒŒƒxƒ‹ƒQ[ƒ€‚Ö
 		CFakeScreen::GetInstance()->SetFade(MODE::GAME);
+	}
+	else if (CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::BACK) ||
+		CManager::GetKeyboard()->GetTrigger(DIK_BACK))
+	{
+		// ƒ`ƒƒƒŒƒ“ƒWƒQ[ƒ€‚Ö
+		CFakeScreen::GetInstance()->SetFade(MODE::CHALLENGE);
 	}
 }
 

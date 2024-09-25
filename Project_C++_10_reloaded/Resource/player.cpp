@@ -13,6 +13,9 @@
 #include "utility.h"
 #include "sound.h"
 
+// モード情報用
+#include "manager.h"
+
 // フェーズ情報用
 #include "game_manager.h"
 
@@ -647,8 +650,19 @@ bool CPlayer::Collision()
 		// ウェーブを強制終了
 		CFakeScreen::GetInstance()->StopWave();
 
-		// レベル終了フェーズへ移行
-		CFakeScreen::GetInstance()->SetWave(CGameManager::PHASE::FINISH);
+		// 現在のモードを取得
+		CScene::MODE Mode{ CManager::GetScene()->GetMode() };
+
+		if (Mode == CScene::MODE::GAME)
+		{
+			// レベル終了フェーズへ移行
+			CFakeScreen::GetInstance()->SetWave(CGameManager::PHASE::FINISH);
+		}
+		else if (Mode == CScene::MODE::CHALLENGE)
+		{
+			// チャレンジ終了フェーズへ移行
+			CFakeScreen::GetInstance()->SetWave(CGameManager::PHASE::C_FINISH);
+		}
 
 		// ゴール音
 		CSound::GetInstance()->Play(CSound::LABEL::GOAL);

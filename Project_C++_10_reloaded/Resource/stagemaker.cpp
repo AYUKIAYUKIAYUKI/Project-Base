@@ -103,6 +103,104 @@ void CStageMaker::Update()
 }
 
 //============================================================================
+// チャレンジステージ読み込み
+//============================================================================
+void CStageMaker::Import()
+{
+	// ステージ保存情報を展開
+	std::ifstream Import("Data\\TXT\\STAGE\\Stage_CH.txt");
+
+	if (!Import)
+	{ // 展開に失敗
+		assert(false);
+	}
+
+	// 文章格納先
+	std::string str;
+
+	// テキストを読み取る
+	while (std::getline(Import, str))
+	{
+		// 座標格納先
+		D3DXVECTOR3 pos = {};
+
+		// 数値となる文字格納先
+		std::string str_pos[3];
+
+		for (int i = 0; i < 3; i++)
+		{
+			// 数値部分のみ抽出する
+			str_pos[i] = str.substr(str.find(":") + 1, str.find(",") - (str.find(":") + 1));
+
+			// 不必要になった部分を削除する
+			str.erase(0, str.find(",") + 1);
+		}
+
+		// 抽出した数値を座標に変換
+		pos.x = std::stof(str_pos[0]);
+		pos.y = std::stof(str_pos[1]);
+		pos.z = std::stof(str_pos[2]);
+
+		// 種類を識別する文字格納先
+		std::string str_type;
+
+		// 種類を抽出する
+		str_type = str.substr(str.find(":") + 1, str.find(",") - (str.find(":") + 1));
+
+		// 種類に応じて生成する
+		if (str_type == "block")
+		{ // ブロック
+			CBlock::Create(pos);
+		}
+		else if (str_type == "destructible")
+		{ // 可壊ブロック
+			CBlockDestructible::Create(pos);
+		}
+		else if (str_type == "dest_big")
+		{ // 可壊でかブロック
+			CBlockDestructibleBig::Create(pos);
+		}
+		else if (str_type == "spikes")
+		{ // とげブロック
+			CBlockSpikes::Create(pos);
+		}
+		else if (str_type == "spikes_move")
+		{ // とげ移動ブロック
+			float fAngleInit{ std::stof(str.substr(str.find("i:") + 2, str.find(","))) };
+			float fAdder{ std::stof(str.substr(str.find("a:") + 2, str.find(","))) };
+			float fCoeff{ std::stof(str.substr(str.find("c:") + 2, str.find(","))) };
+			CBlockSpikesMove::Create(pos, fAngleInit, fAdder, fCoeff);
+		}
+		else if (str_type == "enemy")
+		{ // エネミー
+			CEnemy::Create(pos);
+		}
+		else if (str_type == "start")
+		{ // スタート
+			CStart::Create(pos);
+		}
+		else if (str_type == "goal")
+		{ // ゴール
+			CGoal::Create(pos);
+		}
+		else if (str_type == "archieve")
+		{ // アチーブ
+			CAchieve::Create(pos);
+		}
+		else if (str_type == "anchor")
+		{ // バリアアンカー
+			CBarrier_Anchor::Create(pos);
+		}
+		else
+		{ // 不明
+			assert(false);
+		}
+	}
+
+	Import.close();	// ファイルを閉じる
+}
+
+//============================================================================
 // ステージ読み込み
 //============================================================================
 void CStageMaker::Import(std::string path)

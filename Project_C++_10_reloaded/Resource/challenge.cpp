@@ -1,6 +1,6 @@
 //============================================================================
 // 
-// ゲーム [game.cpp]
+// チャレンジ [challenge.cpp]
 // Author : 福田歩希
 // 
 //============================================================================
@@ -8,7 +8,7 @@
 //****************************************************
 // インクルードファイル
 //****************************************************
-#include "game.h"
+#include "challenge.h"
 #include "game_manager.h"
 #include "stagemaker.h"
 #include "fakescreen.h"
@@ -19,7 +19,7 @@
 //============================================================================
 // デフォルトコンストラクタ
 //============================================================================
-CGame::CGame()
+CChallenge::CChallenge()
 {
 
 }
@@ -27,7 +27,7 @@ CGame::CGame()
 //============================================================================
 // デストラクタ
 //============================================================================
-CGame::~CGame()
+CChallenge::~CChallenge()
 {
 
 }
@@ -35,10 +35,10 @@ CGame::~CGame()
 //============================================================================
 // 初期設定
 //============================================================================
-HRESULT CGame::Init()
+HRESULT CChallenge::Init()
 {
 	// ゲームマネージャーの初期設定
-	CGameManager::GetInstance()->Init(CGameManager::PHASE::START);
+	CGameManager::GetInstance()->Init(CGameManager::PHASE::C_START);
 
 	return S_OK;
 }
@@ -46,7 +46,7 @@ HRESULT CGame::Init()
 //============================================================================
 // 終了処理
 //============================================================================
-void CGame::Uninit()
+void CChallenge::Uninit()
 {
 	// ステージメーカーの解放
 	CStageMaker::GetInstance()->Release();
@@ -61,18 +61,13 @@ void CGame::Uninit()
 //============================================================================
 // 更新処理
 //============================================================================
-void CGame::Update()
+void CChallenge::Update()
 {
 	// ゲームマネージャーの更新処理
 	CGameManager::GetInstance()->Update();
 
 #ifdef _DEBUG
-	if (CManager::GetKeyboard()->GetTrigger(DIK_F1))
-	{
-		// ステージデバッグ画面へ
-		CFakeScreen::GetInstance()->SetFade(MODE::STAGE);
-	}
-	else if (CManager::GetKeyboard()->GetTrigger(DIK_DELETE))
+	if (CManager::GetKeyboard()->GetTrigger(DIK_DELETE))
 	{
 		// タイトル画面へ
 		CFakeScreen::GetInstance()->SetFade(MODE::TITLE);
@@ -83,7 +78,7 @@ void CGame::Update()
 //============================================================================
 // 描画処理
 //============================================================================
-void CGame::Draw()
+void CChallenge::Draw()
 {
 
 }

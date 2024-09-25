@@ -624,7 +624,7 @@ void CCamera::UpdateBG()
 	CScene::MODE mode{ CManager::GetScene()->GetMode() };
 
 	// アンカーポイントの番号
-	static int nNumElement{ 0 };
+	static unsigned int nNumElement{ 0 };
 
 	// 実数値 -> 目標数値への補間速度を格納
 	float fCoeff{ 0.0f };
@@ -634,7 +634,7 @@ void CCamera::UpdateBG()
 		// 処理を行わない
 		return;
 	}
-	else if (mode == CScene::MODE::GAME)
+	else if (mode == CScene::MODE::GAME || mode == CScene::MODE::CHALLENGE)
 	{
 		// 背景用カメラの目標座標・目標向きを、保持している目標数値とは別途で固定する
 		D3DXVECTOR3 posTarget = { -3.0f, 0.0f, 0.0f };
