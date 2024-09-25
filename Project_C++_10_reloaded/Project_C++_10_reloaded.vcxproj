@@ -50,6 +50,7 @@
     <ClCompile Include="Resource\KARIHAIKEI.cpp" />
     <ClCompile Include="Resource\leaf.cpp" />
     <ClCompile Include="resource\light.cpp" />
+    <ClCompile Include="Resource\limit_timer.cpp" />
     <ClCompile Include="Resource\line.cpp" />
     <ClCompile Include="resource\main.cpp" />
     <ClCompile Include="resource\manager.cpp" />
@@ -127,6 +128,7 @@
     <ClInclude Include="Resource\KARIHAIKEI.h" />
     <ClInclude Include="Resource\leaf.h" />
     <ClInclude Include="resource\light.h" />
+    <ClInclude Include="Resource\limit_timer.h" />
     <ClInclude Include="Resource\line.h" />
     <ClInclude Include="resource\main.h" />
     <ClInclude Include="resource\manager.h" />

@@ -23,11 +23,14 @@
 // オブジェクト生成用
 #include "barrier_manager.h"
 #include "block_destructible.h"
+#include "goal.h"
 #include "leaf.h"
+#include "limit_timer.h"
 #include "player.h"
 #include "player_state.h"
 #include "record.h"
 #include "square.h"
+#include "start.h"
 #include "timer.h"
 #include "tutorial_manager.h"
 
@@ -402,11 +405,14 @@ void CGameManager::Update()
 		// チャレンジステージを読み込む
 		CStageMaker::GetInstance()->Import();
 
+		// プレビュー開始 (ステージ読み込み後)
+		StartPreview();
+
 		// ステージにバリアを生成する
 		CBarrier_Manager::CreateStageBarrier();
 
-		// プレイヤーの生成
-		CPlayer::Create();
+		// リミットタイムを生成
+		CLimit_Timer::Create();
 
 		// レベル進行フェーズへ
 		m_phase = PHASE::C_INGAME;
@@ -414,6 +420,9 @@ void CGameManager::Update()
 		break;
 
 	case PHASE::C_INGAME:
+
+		// プレビューの更新
+		StagePreview();
 
 		// リミットタイムの動作
 
@@ -499,7 +508,8 @@ CGameManager::CGameManager() :
 	m_nMaxStage{ 0 },		// ステージ数
 	m_nSelectLevel{ 0 },	// レベル選択
 	m_stagePath{},			// ステージパス
-	m_vbCollectAchieve{}	// アチーブ回収状態
+	m_vbCollectAchieve{},	// アチーブ回収状態
+	m_bPreview{}			// プレビュー状態
 {
 	// タイムを生成
 	CTimer::Create();
@@ -549,4 +559,83 @@ void CGameManager::ImportLevel()
 
 	// ステージ数を保持
 	m_nMaxStage = nCntStage;
+}
+
+//============================================================================
+// プレビュー開始
+//============================================================================
+void CGameManager::StartPreview()
+{
+	// プレビュー開始
+	m_bPreview = true;
+
+	// ゴールタグを取得
+	CObject* pFindGoal{ CObject::FindObject(CObject::TYPE::GOAL) };
+
+	if (pFindGoal)
+	{
+		// それぞれのクラスへダウンキャスト
+		CGoal* pGoal{ CUtility::GetInstance()->DownCast<CGoal, CObject>(pFindGoal) };
+
+		// カメラの座標を更新
+		CManager::GetCamera()->SetPos(pGoal->GetPos());
+		CManager::GetCamera()->SetPosTarget({ pGoal->GetPos().x, pGoal->GetPos().y, -500.0f });
+	}
+}
+
+//============================================================================
+// ステージプレビュー
+//============================================================================
+void CGameManager::StagePreview()
+{
+	if (!m_bPreview)
+	{
+		return;
+	}
+
+	// カメラの座標を目標座標へ補正
+	//CManager::GetCamera()->SetPos(CUtility::GetInstance()->AdjustToTarget(CManager::GetCamera()->GetPos(), CManager::GetCamera()->GetPosTarget(), 0.05f));
+
+	//// 新しい目標座標を設定
+	//D3DXVECTOR3 NewPosTarget{ CManager::GetCamera()->GetPosTarget() };
+
+	//// カメラ目標座標を後方へ
+	//NewPosTarget.z = -1000.0f;
+
+	//// カメラの座標を更新
+	//CManager::GetCamera()->SetPosTarget(NewPosTarget);
+
+	// ある程度カメラが後ろに引いたら
+	if (CManager::GetCamera()->GetPos().z < -500.0f + 50.0f)
+	{
+		// スタートタグを取得
+		CObject* pFindStart{ CObject::FindObject(CObject::TYPE::START) };
+
+		if (pFindStart)
+		{
+			// それぞれのクラスへダウンキャスト
+			CStart* pStart{ CUtility::GetInstance()->DownCast<CStart, CObject>(pFindStart) };
+
+			// カメラの目標座標がスタート座標に設定されていなければ
+			if (CManager::GetCamera()->GetPosTarget() != pStart->GetPos())
+			{
+				// 目標座標を更新
+				CManager::GetCamera()->SetPosTarget({ pStart->GetPos().x, pStart->GetPos().y, -500.0f });
+			}
+
+#ifdef _DEBUG
+			CRenderer::GetInstance()->SetDebugString("ぁぁぁぁぁぁぁぁ:" + std::to_string(fabsf(CManager::GetCamera()->GetPos().x) - fabsf(pStart->GetPos().x)));
+#endif // _DEBUG
+		
+			// カメラの座標がほとんどスタートに一致したら
+			if (fabsf(CManager::GetCamera()->GetPos().x) - fabsf(pStart->GetPos().x) <= 10.0f)
+			{
+				// プレビュー終了
+				m_bPreview = false;
+
+				// プレイヤーを生成
+				CPlayer::Create();
+			}
+		}
+	}
 }

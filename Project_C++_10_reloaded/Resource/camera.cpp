@@ -20,8 +20,14 @@
 // 追従地点参照用
 #include "game.h"
 #include "player.h"
+#include "player_state.h"
 #include "dummy.h"
 #include "stagemaker.h"
+
+//****************************************************
+// 静的メンバ変数の初期化
+//****************************************************
+const float CCamera::DEFUALT_DISTANCE = 300.0f;	// 通常間距離
 
 //============================================================================
 // デフォルトコンストラクタ
@@ -35,7 +41,7 @@ CCamera::CCamera() :
 	m_posTargetR{ 0.0f, 0.0f, 0.0f },	// 目標注視点位置
 	m_rot{ 0.0f, 0.0f, 0.0f },			// 向き
 	m_rotTarget{ 0.0f, 0.0f, 0.0f },	// 目標向き
-	m_fDistance{ 300.0f },				// 視点 -> 注視点間の距離
+	m_fDistance{ DEFUALT_DISTANCE },	// 視点 -> 注視点間の距離
 	m_posBG{ 0.0f, 0.0f, 0.0f },		// 背景座標
 	m_posTargetBG{ 0.0f, 0.0f, 0.0f },	// 背景目標座標
 	m_posVBG{ 0.0f, 0.0f, 0.0f },		// 背景視点
@@ -445,9 +451,21 @@ void CCamera::UpdateScreen()
 		// プレイヤークラスにダウンキャスト
 		CPlayer* pPlayer = CUtility::GetInstance()->DownCast<CPlayer, CObject>(pObj);
 
-		// 位置を同期
-		m_pos = pPlayer->GetPos();
-		m_fAdjust = 50.0f;
+		// プレイヤーの状態に応じて目標座標を補正
+		if (typeid(*pPlayer->GetStateManager()->GetState()) != typeid(CPlayerStateFlying) &&
+			typeid(*pPlayer->GetStateManager()->GetState()) != typeid(CPlayerStateRushing))
+		{
+			// プレイヤーの座標と同期
+			m_posTarget = pPlayer->GetPos() + pPlayer->GetVelocity() * 15.0f;
+		}
+		else
+		{
+			// プレイヤーの飛行方向に寄せる
+			m_posTarget = pPlayer->GetPos() + pPlayer->GetVelocity() * 30.0f;
+
+			// カメラの間距離を広く設定
+			m_fDistance = CUtility::GetInstance()->AdjustToTarget(m_fDistance, DEFUALT_DISTANCE * 1.0f, 0.05f);
+		}
 	}
 	else
 	{ // プレイヤータイプの取得に失敗
@@ -461,9 +479,9 @@ void CCamera::UpdateScreen()
 			// ダミークラスにダウンキャスト
 			CDummy* pDummy = CUtility::GetInstance()->DownCast<CDummy, CObject>(pObj);
 
-			// 位置を同期
+			// 座標を設定
 			m_pos = pDummy->GetPos();
-			m_fAdjust = 0.0f;
+			m_posTarget = pDummy->GetPos();
 		}
 	}
 
@@ -477,6 +495,9 @@ void CCamera::UpdateScreen()
 
 	// 移動
 	//Translation();
+
+	// 座標を目標座標に補正
+	m_pos = CUtility::GetInstance()->AdjustToTarget(m_pos, m_posTarget, 0.05f);
 
 	// ヨー角の範囲を制限
 	RestrictYaw();

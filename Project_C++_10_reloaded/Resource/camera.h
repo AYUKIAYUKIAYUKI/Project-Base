@@ -15,6 +15,8 @@ class CCamera
 {
 public:
 
+	static const float DEFUALT_DISTANCE;	// 通常間距離
+
 	CCamera();	// デフォルトコンストラクタ
 	~CCamera();	// デストラクタ
 

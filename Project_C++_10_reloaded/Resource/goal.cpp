@@ -87,7 +87,7 @@ void CGoal::Update()
 		if (typeid(*pPlayer->GetStateManager()->GetState()) == typeid(CPlayerStateGoal))
 		{
 			// カメラの間距離をズームイン
-			CManager::GetCamera()->SetDistance(CUtility::GetInstance()->AdjustToTarget(CManager::GetCamera()->GetDistance(), 150.0f, 0.02f));
+			CManager::GetCamera()->SetDistance(CUtility::GetInstance()->AdjustToTarget(CManager::GetCamera()->GetDistance(), CCamera::DEFUALT_DISTANCE * 0.5f, 0.02f));
 		
 			// ゴールシンボルが上昇していく
 			//m_ActualPos.y += 0.5f;
@@ -98,7 +98,7 @@ void CGoal::Update()
 		else
 		{
 			// カメラの間距離をアウト
-			CManager::GetCamera()->SetDistance(CUtility::GetInstance()->AdjustToTarget(CManager::GetCamera()->GetDistance(), 300.0f, 0.05f));
+			CManager::GetCamera()->SetDistance(CUtility::GetInstance()->AdjustToTarget(CManager::GetCamera()->GetDistance(), CCamera::DEFUALT_DISTANCE, 0.05f));
 		}
 
 		// 正面を向く

@@ -33,6 +33,7 @@ public:
 		NUMBER_00,		// 数字00
 		LASTTIME,		// ラストタイム
 		BESTTIME,		// ベストタイム
+		LIMITTIME,		// 残り時間
 		BACK,			// 戻るマーク
 		CROWN,			// 王冠
 		TEXT00,			// テキスト00

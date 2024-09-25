@@ -53,7 +53,9 @@ private:
 	CGameManager();		// デフォルトコンストラクタ
 	~CGameManager();	// デストラクタ
 
-	void ImportLevel();	// レベル読み込み
+	void ImportLevel();		// レベル読み込み
+	void StartPreview();	// プレビュー開始
+	void StagePreview();	// ステージプレビュー
 
 	bool m_bEndTutorial;					// チュートリアル確認
 	PHASE m_phase;							// フェーズ識別
@@ -61,6 +63,7 @@ private:
 	int m_nSelectLevel;						// レベル選択
 	std::vector<std::string> m_stagePath;	// ステージパス
 	std::vector<bool> m_vbCollectAchieve;	// アチーブ回収状態
+	bool m_bPreview;						// プレビュー状態
 
 	static CGameManager* m_pInstance;	// ゲームマネージャー
 };

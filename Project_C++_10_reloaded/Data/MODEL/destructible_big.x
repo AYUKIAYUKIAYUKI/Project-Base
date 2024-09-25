@@ -177,7 +177,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    1.000000;1.000000;1.000000;;
    TextureFilename {
-    "C:\\Users\\student\\Desktop\\virtual\\Project-Base\\Project_C++_10_reloaded\\Data\\TEXTURE\\destructible.jpg";
+    "Data\\TEXTURE\\destructible.jpg";
    }
   }
  }
