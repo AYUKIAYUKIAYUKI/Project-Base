@@ -108,7 +108,7 @@ void CStageMaker::Update()
 void CStageMaker::Import()
 {
 	// ステージ保存情報を展開
-	std::ifstream Import("Data\\TXT\\STAGE\\Stage_CH.txt");
+	std::ifstream Import("Data\\TXT\\Stage.txt");
 
 	if (!Import)
 	{ // 展開に失敗

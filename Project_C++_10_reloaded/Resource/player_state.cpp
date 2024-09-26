@@ -1146,7 +1146,9 @@ void CPlayerStateCharging::UpdateArrow()
 // コンストラクタ
 //============================================================================
 CPlayerStateRushing::CPlayerStateRushing() :
-	m_OldRotTarget{ 0.0f, 0.0f, 0.0f }
+	m_OldRotTarget{ 0.0f, 0.0f, 0.0f },
+	m_WaveVelocity{ 0.0f, 0.0f, 0.0f },
+	m_fCoeff{ 0.0f }
 {
 
 }
@@ -1356,17 +1358,21 @@ void CPlayerStateRushing::C_Update()
 	}
 
 	// 波打ちベクトル
-	D3DXVECTOR3 WaveVec{ 0.0f, 0.0f, 0.0f };
+	D3DXVECTOR3 WaveVelocity{ 0.0f, 0.0f, 0.0f };
 
 	// 移動判定が出ていれば
 	if (bMove)
 	{
 		// ウェーブ係数
-		static float fCoeff{ 0.0f };
-		fCoeff += 0.25f;
+		m_fCoeff += 0.2f;
+
+		if (m_fCoeff > D3DX_PI * 2.0f)
+		{
+			m_fCoeff += -D3DX_PI * 2.0f;
+		}
 
 #ifdef _DEBUG
-		CRenderer::GetInstance()->SetDebugString("波打ち係数 : " + std::to_string(fCoeff));
+		CRenderer::GetInstance()->SetDebugString("波打ち係数 : " + std::to_string(m_fCoeff));
 #endif // _DEBUG
 
 		// 飛行方向を設定
@@ -1378,29 +1384,35 @@ void CPlayerStateRushing::C_Update()
 		m_pPlayer->SetRotTarget(NewRotTarget);
 
 		// ウェーブ加速度を設定
-		WaveVec.x = cosf(fCoeff);
-		WaveVec.y = -cosf(fCoeff);
-		WaveVec *= 2.0f;
+		WaveVelocity.x = cosf(m_fCoeff);
+		WaveVelocity.y = -cosf(m_fCoeff);
+
+#ifdef _DEBUG
+		CRenderer::GetInstance()->SetDebugString("波打ち X : " + std::to_string(WaveVelocity.x));
+		CRenderer::GetInstance()->SetDebugString("波打ち Y : " + std::to_string(WaveVelocity.y));
+#endif // _DEBUG
+
+		WaveVelocity *= 2.0f;
 	}
 
 	// 目標加速度を設定
 	D3DXVECTOR3 NewVelocityTarget{ 0.0f, 0.0f, 0.0f };
-	NewVelocityTarget.x = sinf(m_pPlayer->GetAngleFlying()) * (CPlayerStateFlying::FLY_SPEED * 1.5f);
-	NewVelocityTarget.y = cosf(m_pPlayer->GetAngleFlying()) * (CPlayerStateFlying::FLY_SPEED * 1.5f);
+	NewVelocityTarget.x = sinf(m_pPlayer->GetAngleFlying()) * (CPlayerStateFlying::FLY_SPEED * 1.75f);
+	NewVelocityTarget.y = cosf(m_pPlayer->GetAngleFlying()) * (CPlayerStateFlying::FLY_SPEED * 1.75f);
 	m_pPlayer->SetVelocityTarget(NewVelocityTarget);
 
 	// 現在の加速度を取得
 	D3DXVECTOR3 NewVelocity{ m_pPlayer->GetVelocity() };
 
 	// 現在の加速度を補正
-	NewVelocity += (m_pPlayer->GetVelocityTarget() - NewVelocity) * 0.025f;
+	NewVelocity += (m_pPlayer->GetVelocityTarget() - NewVelocity) * 0.1f;
 
 	// 変更した加速度を反映
 	m_pPlayer->SetVelocity(NewVelocity);
 
 	// 加速度分、目標座標を変動
 	D3DXVECTOR3 NewPosTarget{ m_pPlayer->GetPosTarget() };
-	NewPosTarget += m_pPlayer->GetVelocity() + WaveVec;
+	NewPosTarget += m_pPlayer->GetVelocity() + WaveVelocity;
 	m_pPlayer->SetPosTarget(NewPosTarget);
 
 	if (CManager::GetScene()->GetMode() == CScene::MODE::GAME)
@@ -1581,13 +1593,25 @@ void CPlayerStateStopping::Update()
 		// 回転
 		Rotation();
 
-		// 重力加速
-		D3DXVECTOR3 NewVelocity{ m_pPlayer->GetVelocity() };
-		CUtility::GetInstance()->Gravity(NewVelocity);
-		m_pPlayer->SetVelocity(NewVelocity);
-
 		// 加速度を減衰
-		m_pPlayer->SetVelocity(CUtility::GetInstance()->AdjustToTarget(m_pPlayer->GetVelocity(), D3DXVECTOR3{ 0.0f, 0.0f, 0.0f }, 0.025f));
+		if (CManager::GetScene()->GetMode() == CScene::MODE::GAME)
+		{
+			// 重力加速
+			D3DXVECTOR3 NewVelocity{ m_pPlayer->GetVelocity() };
+			CUtility::GetInstance()->Gravity(NewVelocity);
+			m_pPlayer->SetVelocity(NewVelocity);
+
+			m_pPlayer->SetVelocity(CUtility::GetInstance()->AdjustToTarget(m_pPlayer->GetVelocity(), D3DXVECTOR3{ 0.0f, 0.0f, 0.0f }, 0.025f));
+		}
+		else if (CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE)
+		{
+			// 新しい向き情報を反映
+			D3DXVECTOR3 NewRotTarget{ m_pPlayer->GetRotTarget() };
+			NewRotTarget.z += 1.0f;
+			m_pPlayer->SetRotTarget(NewRotTarget);
+
+			m_pPlayer->SetVelocity(CUtility::GetInstance()->AdjustToTarget(m_pPlayer->GetVelocity(), D3DXVECTOR3{ 0.0f, 0.0f, 0.0f }, 0.1f));
+		}
 
 		// 加速度分、目標座標を変動
 		D3DXVECTOR3 NewPosTarget{ m_pPlayer->GetPosTarget() };
@@ -1643,8 +1667,15 @@ void CPlayerStateStopping::Update()
 	}
 	else
 	{
-		// 通常状態に変更
-		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::DEFAULT);
+		// 状態変更
+		if (CManager::GetScene()->GetMode() == CScene::MODE::GAME)
+		{
+			m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::DEFAULT);
+		}
+		else if (CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE)
+		{
+			m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::RUSHING);
+		}
 	}
 }
 

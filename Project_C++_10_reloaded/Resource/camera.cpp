@@ -476,16 +476,16 @@ void CCamera::UpdateScreen()
 			if (typeid(*pPlayer->GetStateManager()->GetState()) != typeid(CPlayerStateFlying) &&
 				typeid(*pPlayer->GetStateManager()->GetState()) != typeid(CPlayerStateRushing))
 			{
-				m_posTarget = pPlayer->GetPos() + pPlayer->GetVelocity() * 15.0f;
+				m_posTarget = pPlayer->GetPos() + pPlayer->GetVelocity() * 10.0f;
 			}
 			else
 			{
 				// プレイヤーの飛行方向に寄せる
-				m_posTarget = pPlayer->GetPos() + pPlayer->GetVelocity() * 30.0f;
+				m_posTarget = pPlayer->GetPos() + pPlayer->GetVelocity() * 20.0f;
 			}
 
 			// カメラの間距離を広く設定
-			m_fDistance = CUtility::GetInstance()->AdjustToTarget(m_fDistance, DEFUALT_DISTANCE * 1.5f, 0.05f);
+			m_fDistance = CUtility::GetInstance()->AdjustToTarget(m_fDistance, DEFUALT_DISTANCE * 2.0f, 0.05f);
 		}
 	}
 	else

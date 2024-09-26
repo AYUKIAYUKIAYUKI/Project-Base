@@ -313,7 +313,9 @@ bool CPlayer::Collision()
 		{
 			// 突進状態の場合のみ
 			if (typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateRushing) ||
-				CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE && typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateBeginning))
+				CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE && typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateBeginning) ||
+				CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE && typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateCharging) ||
+				CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE && typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateStopping))
 			{
 				// 可壊ブロックを破棄
 				pDestructible->SetRelease();

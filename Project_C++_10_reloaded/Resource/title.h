@@ -13,6 +13,10 @@
 //****************************************************
 #include "scene.h"
 
+// タイトル表示用
+#include "bg.h"
+#include "text.h"
+
 //****************************************************
 // タイトルクラス
 //****************************************************
@@ -27,6 +31,23 @@ public:
 	void Uninit() override;		// 終了処理
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
+
+private:
+
+	//****************************************************
+	// UIタイプ
+	//****************************************************
+	enum class UI_TYPE
+	{
+		NORMAL = 0,
+		CHALLENGE,
+		CURSOR,
+		MAX
+	};
+
+	CBg* m_pBg;										// 背景情報のポインタ
+	CText* m_pUI[static_cast<int>(UI_TYPE::MAX)];	// UI用
+	int m_nSelect;									// モード選択情報
 };
 
 #endif // _TITLE_H_

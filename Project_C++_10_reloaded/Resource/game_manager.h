@@ -9,6 +9,11 @@
 #define _GAME_MANAGER_H_	// 二重インクルード防止
 
 //****************************************************
+// インクルードファイル
+//****************************************************
+#include "text.h"
+
+//****************************************************
 // ゲームマネージャークラス
 //****************************************************
 class CGameManager final
@@ -69,6 +74,7 @@ private:
 	void ImportLevel();		// レベル読み込み
 	void StartPreview();	// プレビュー開始
 	void StagePreview();	// ステージプレビュー
+	void ChallengeResult();	// チャレンジリザルト
 
 	bool m_bEndTutorial;					// チュートリアル確認
 	PHASE m_phase;							// フェーズ識別
@@ -79,6 +85,7 @@ private:
 	std::vector<bool> m_vbCollectAchieve;	// アチーブ回収状態
 	PREVIEW m_Preview;						// プレビュー状態
 	int m_nCntPreview;						// プレビュー待機カウント
+	
 
 	static CGameManager* m_pInstance;	// ゲームマネージャー
 };

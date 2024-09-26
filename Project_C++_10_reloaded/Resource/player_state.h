@@ -184,6 +184,8 @@ private:
 	void Rotation();	// 回転
 
 	D3DXVECTOR3 m_OldRotTarget;	// 過去の目標向き
+	D3DXVECTOR3 m_WaveVelocity;	// ウェーブ加速度
+	float m_fCoeff;				// ウェーブ変化量
 };
 
 //****************************************************

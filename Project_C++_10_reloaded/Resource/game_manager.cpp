@@ -444,14 +444,12 @@ void CGameManager::Update()
 		// プレビューの更新
 		StagePreview();
 
-		// リミットタイムの動作
-
 		break;
 
 	case PHASE::C_FINISH:
 
-		// 破壊記録を書き出す
-
+		// チャレンジリザルト
+		//ChallengeResult();
 
 		break;
 
@@ -724,5 +722,35 @@ void CGameManager::StagePreview()
 				CPlayer::Create();
 			}
 		}
+	}
+}
+
+//============================================================================
+// チャレンジリザルト
+//============================================================================
+void CGameManager::ChallengeResult()
+{
+	// リミットタイムを取得
+	CObject* pFind{ CObject::FindObject(CObject::TYPE::TIMER) };
+
+	if (!pFind)
+	{
+		return;
+	}
+
+	// リミットタイムにダウンキャスト
+	CLimit_Timer* pLimit{ CUtility::GetInstance()->DownCast<CLimit_Timer, CObject>(pFind) };
+
+	// タイム情報を取得
+	int nTime{ pLimit->GetTimer() };
+
+	if (nTime < 0)
+	{ // 失敗
+
+		
+	}
+	else
+	{ // 成功
+
 	}
 }

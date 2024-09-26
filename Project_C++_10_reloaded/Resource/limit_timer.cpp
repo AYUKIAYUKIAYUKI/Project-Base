@@ -125,6 +125,14 @@ void CLimit_Timer::Draw()
 }
 
 //============================================================================
+// タイム情報を取得
+//============================================================================
+int CLimit_Timer::GetTimer()
+{
+	return m_nTimer;
+}
+
+//============================================================================
 // 時間減少
 //============================================================================
 void CLimit_Timer::Decrement()
@@ -222,6 +230,15 @@ void CLimit_Timer::Decrement()
 						// タイマー減少
 						m_nTimer--;
 					}
+				}
+				else
+				{
+					// 強制ゴール状態へ
+					//pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::GOAL);
+
+					// その場に固してしまう
+					pPlayer->SetPos(pPlayer->GetPos());
+					pPlayer->SetPosTarget(pPlayer->GetPos());
 				}
 			}
 		}

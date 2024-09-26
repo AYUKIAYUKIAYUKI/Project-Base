@@ -31,6 +31,8 @@ public:
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
 
+	int GetTimer();	// タイム情報を取得
+
 	static CLimit_Timer* Create();	// 生成
 
 private:
