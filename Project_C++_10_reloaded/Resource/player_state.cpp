@@ -1363,14 +1363,6 @@ void CPlayerStateRushing::C_Update()
 	// ˆÚ“®”»’è‚ªo‚Ä‚¢‚ê‚Î
 	if (bMove)
 	{
-		// ƒEƒF[ƒuŒW”
-		m_fCoeff += 0.2f;
-
-		if (m_fCoeff > D3DX_PI * 2.0f)
-		{
-			m_fCoeff += -D3DX_PI * 2.0f;
-		}
-
 #ifdef _DEBUG
 		CRenderer::GetInstance()->SetDebugString("”g‘Å‚¿ŒW” : " + std::to_string(m_fCoeff));
 #endif // _DEBUG
@@ -1383,13 +1375,22 @@ void CPlayerStateRushing::C_Update()
 		NewRotTarget.z = atan2f(-X, Y);
 		m_pPlayer->SetRotTarget(NewRotTarget);
 
+		// ƒEƒF[ƒu‘‰ÁŒW”
+		m_fCoeff += 0.2f;
+
+		if (m_fCoeff > D3DX_PI)
+		{
+			m_fCoeff += -D3DX_PI * 2.0f;
+		}
+
 		// ƒEƒF[ƒu‰Á‘¬“x‚ðÝ’è
-		WaveVelocity.x = cosf(m_fCoeff);
-		WaveVelocity.y = -cosf(m_fCoeff);
+		/* ŽüŠú“I‚É•Ï‚í‚é’l‚É‘Î‚µ‚ÄA‚Ç‚ê‚®‚ç‚¢‚»‚Ì’l‚ð”½‰f‚·‚é‚©‚Ì”{—¦‚ð•ûŒü‚©‚ç”²‚«o‚µ‚Ä‚©‚¯‚é */
+		WaveVelocity.x = cosf(m_fCoeff) * fabsf(cosf(m_pPlayer->GetAngleFlying()));
+		WaveVelocity.y = cosf(m_fCoeff) * fabsf(sinf(m_pPlayer->GetAngleFlying()));
 
 #ifdef _DEBUG
-		CRenderer::GetInstance()->SetDebugString("”g‘Å‚¿ X : " + std::to_string(WaveVelocity.x));
-		CRenderer::GetInstance()->SetDebugString("”g‘Å‚¿ Y : " + std::to_string(WaveVelocity.y));
+		CRenderer::GetInstance()->SetDebugString("”g‘Å‚¿ X : " + std::to_string(WaveVelocity.x) + " : " + std::to_string(fabsf(cosf(m_pPlayer->GetAngleFlying()))));
+		CRenderer::GetInstance()->SetDebugString("”g‘Å‚¿ Y : " + std::to_string(WaveVelocity.y) + " : " + std::to_string(fabsf(sinf(m_pPlayer->GetAngleFlying()))));
 #endif // _DEBUG
 
 		WaveVelocity *= 2.0f;

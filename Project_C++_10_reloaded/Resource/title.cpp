@@ -73,15 +73,46 @@ void CTitle::Uninit()
 //============================================================================
 void CTitle::Update()
 {
+	// ƒpƒbƒh‚ðŽæ“¾
+	CInputPad* pPad = CManager::GetPad();
+
+	// ¶‰E‚Ì“ü—Íî•ñ
+	static DWORD dwOldInput{ 0 };
+	static bool bInputUp{ false };
+	static bool bInputDown{ false };
+
+	// ã‹^Ž—ƒgƒŠƒK[“ü—Í
+	if (pPad->GetJoyStickL().Y > 0 && dwOldInput == 0)
+	{
+		bInputUp = true;
+	}
+	else
+	{
+		bInputUp = false;
+	}
+
+	// ‰º‹^Ž—ƒgƒŠƒK[“ü—Í
+	if (pPad->GetJoyStickL().Y < 0 && dwOldInput == 0)
+	{
+		bInputDown = true;
+	}
+	else
+	{
+		bInputDown = false;
+	}
+
+	// ‰ß‹Ž‚Ì“ü—Íî•ñ‚ð•ÛŽ
+	dwOldInput = pPad->GetJoyStickL().Y;
+
 	// ‰ž‹}ˆ’u
 	if (m_nSelect == 0)
 	{
 		if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN) ||
-			CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::START) ||
-			CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::A) ||
-			CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::B) ||
-			CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::X) ||
-			CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::Y))
+			pPad->GetTrigger(CInputPad::JOYKEY::START) ||
+			pPad->GetTrigger(CInputPad::JOYKEY::A) ||
+			pPad->GetTrigger(CInputPad::JOYKEY::B) ||
+			pPad->GetTrigger(CInputPad::JOYKEY::X) ||
+			pPad->GetTrigger(CInputPad::JOYKEY::Y))
 		{
 			m_nSelect = 1;
 
@@ -134,18 +165,19 @@ void CTitle::Update()
 			}
 
 			if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN) ||
-				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::START) ||
-				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::A) ||
-				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::B) ||
-				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::X) ||
-				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::Y))
+				pPad->GetTrigger(CInputPad::JOYKEY::START) ||
+				pPad->GetTrigger(CInputPad::JOYKEY::A) ||
+				pPad->GetTrigger(CInputPad::JOYKEY::B) ||
+				pPad->GetTrigger(CInputPad::JOYKEY::X) ||
+				pPad->GetTrigger(CInputPad::JOYKEY::Y))
 			{
 				// ƒm[ƒ}ƒ‹ƒQ[ƒ€‚Ö
 				CFakeScreen::GetInstance()->SetFade(MODE::GAME);
 			}
 			else if (CManager::GetKeyboard()->GetTrigger(DIK_S) ||
 				CManager::GetKeyboard()->GetTrigger(DIK_DOWN) ||
-				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::DOWN))
+				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::DOWN) ||
+				bInputDown)
 			{
 				m_nSelect = 2;
 
@@ -166,18 +198,19 @@ void CTitle::Update()
 			}
 
 			if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN) ||
-				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::START) ||
-				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::A) ||
-				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::B) ||
-				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::X) ||
-				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::Y))
+				pPad->GetTrigger(CInputPad::JOYKEY::START) ||
+				pPad->GetTrigger(CInputPad::JOYKEY::A) ||
+				pPad->GetTrigger(CInputPad::JOYKEY::B) ||
+				pPad->GetTrigger(CInputPad::JOYKEY::X) ||
+				pPad->GetTrigger(CInputPad::JOYKEY::Y))
 			{
 				// ƒ`ƒƒƒŒƒ“ƒWƒQ[ƒ€‚Ö
 				CFakeScreen::GetInstance()->SetFade(MODE::CHALLENGE);
 			}
 			else if (CManager::GetKeyboard()->GetTrigger(DIK_W) ||
 				CManager::GetKeyboard()->GetTrigger(DIK_UP) ||
-				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::UP))
+				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::UP) ||
+				bInputUp)
 			{
 				m_nSelect = 1;
 
