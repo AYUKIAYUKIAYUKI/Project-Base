@@ -92,19 +92,17 @@ void CStart::Update()
 			// ƒ‚ƒfƒ‹‚ðŠg‘å
 			SetScale(1.5f);
 		}
-		else
-		{
-			// ³–Ê‚ðŒü‚­
-			m_RotTarget = {
-				0.0f,
-				0.0f,
-				CUtility::GetInstance()->GetRandomValue<float>() * 0.005f };
-
-			// ã‰º‚·‚é
-			m_PosTarget.x = m_ActualPos.x;
-			m_PosTarget.y = m_ActualPos.y + CUtility::GetInstance()->GetRandomValue<float>() * 0.1f;
-		}
 	}
+
+	// ³–Ê‚ðŒü‚­
+	m_RotTarget = {
+		0.0f,
+		0.0f,
+		CUtility::GetInstance()->GetRandomValue<float>() * 0.005f };
+
+	// ã‰º‚·‚é
+	m_PosTarget.x = m_ActualPos.x;
+	m_PosTarget.y = m_ActualPos.y + CUtility::GetInstance()->GetRandomValue<float>() * 0.1f;
 
 	// –Ú•WŒü‚«‚Ö
 	SetRot(CUtility::GetInstance()->AdjustToTarget(GetRot(), m_RotTarget, 0.05f));

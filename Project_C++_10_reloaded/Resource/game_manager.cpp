@@ -531,7 +531,8 @@ CGameManager::CGameManager() :
 	m_nSelectLevel{ 0 },		// レベル選択
 	m_stagePath{},				// ステージパス
 	m_vbCollectAchieve{},		// アチーブ回収状態
-	m_Preview{ PREVIEW::NONE }	// プレビュー状態
+	m_Preview{ PREVIEW::NONE },	// プレビュー状態
+	m_nCntPreview{ 0 }			// プレビュー待機カウント
 {
 	// タイムを生成
 	CTimer::Create();
@@ -590,18 +591,25 @@ void CGameManager::StartPreview()
 {
 	// プレビュー開始
 	m_Preview = PREVIEW::BIGEN;
+	
+	// プレビュー待機カウント
+	m_nCntPreview = 0;
 
-	// ゴールタグを取得
-	CObject* pFindGoal{ CObject::FindObject(CObject::TYPE::GOAL) };
-
-	if (pFindGoal)
+	// チュートリアル・チャレンジモード時のみ、カメラの初期座標をゴールに同期
+	if (!m_bEndTutorial || CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE)
 	{
-		// それぞれのクラスへダウンキャスト
-		CGoal* pGoal{ CUtility::GetInstance()->DownCast<CGoal, CObject>(pFindGoal) };
+		// ゴールタグを取得
+		CObject* pFindGoal{ CObject::FindObject(CObject::TYPE::GOAL) };
 
-		// カメラの座標を更新
-		CManager::GetCamera()->SetPos( pGoal->GetPos() );
-		CManager::GetCamera()->SetPosTarget( pGoal->GetPos() );
+		if (pFindGoal)
+		{
+			// それぞれのクラスへダウンキャスト
+			CGoal* pGoal{ CUtility::GetInstance()->DownCast<CGoal, CObject>(pFindGoal) };
+
+			// カメラの座標を更新
+			CManager::GetCamera()->SetPos(pGoal->GetPos());
+			CManager::GetCamera()->SetPosTarget(pGoal->GetPos());
+		}
 	}
 }
 
@@ -624,9 +632,9 @@ void CGameManager::StagePreview()
 
 		if (pFindGoal)
 		{
-			if (nCntLinger < 40)
+			if (m_nCntPreview < 40)
 			{
-				nCntLinger++;
+				m_nCntPreview++;
 
 				// この間わずかにカメラが後退していく
 				D3DXVECTOR3 NewPos{ CManager::GetCamera()->GetPos() };
@@ -706,9 +714,6 @@ void CGameManager::StagePreview()
 				m_Preview = PREVIEW::NONE;
 
 				CPlayer::Create();
-
-				// スタティックな強調カウントをリセット
-				nCntLinger = 0;
 			}
 		}
 	}
