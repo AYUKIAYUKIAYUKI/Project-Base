@@ -68,6 +68,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Resource\record.cpp" />
+    <ClCompile Include="Resource\record_dest.cpp" />
     <ClCompile Include="Resource\ring.cpp" />
     <ClCompile Include="Resource\ripple.cpp" />
     <ClCompile Include="Resource\rubble.cpp" />
@@ -143,6 +144,7 @@
     <ClInclude Include="resource\object_X.h" />
     <ClInclude Include="resource\pch.h" />
     <ClInclude Include="Resource\record.h" />
+    <ClInclude Include="Resource\record_dest.h" />
     <ClInclude Include="Resource\ring.h" />
     <ClInclude Include="Resource\ripple.h" />
     <ClInclude Include="Resource\rubble.h" />

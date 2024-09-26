@@ -157,7 +157,7 @@ void CLimit_Timer::Decrement()
 		}
 
 		// テキストの目標座標を設定し、震わす
-		SetPosTarget({ SCREEN_WIDTH * 0.6f, SCREEN_HEIGHT * 0.15f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f, });
+		SetPosTarget({ SCREEN_WIDTH * 0.8f, SCREEN_HEIGHT * 0.15f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f, });
 
 		// テキスト用の目標座標のコピーを作成
 		D3DXVECTOR3 CopyPosTarget{ GetPosTarget() };
@@ -184,7 +184,7 @@ void CLimit_Timer::Decrement()
 		m_pText->SetPosTarget(CopyPosTarget);
 
 		// 数字の目標座標を設定し、震わす
-		SetPosTarget({ SCREEN_WIDTH * 0.58f, SCREEN_HEIGHT * 0.15f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f, });
+		SetPosTarget({ SCREEN_WIDTH * 0.78f, SCREEN_HEIGHT * 0.15f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f, });
 
 		// 数字用の目標座標のコピーを作成
 		CopyPosTarget = GetPosTarget();

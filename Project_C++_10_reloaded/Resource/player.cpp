@@ -38,6 +38,9 @@
 #include "smoke.h"
 #include "start.h"
 
+// 破壊記録用
+#include "record_dest.h"
+
 //============================================================================
 // コンストラクタ
 //============================================================================
@@ -320,6 +323,12 @@ bool CPlayer::Collision()
 				// 可壊ブロックを破棄
 				pDestructible->SetRelease();
 
+				if (CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE)
+				{
+					// 破壊記録を加算
+					CRecord_Dest::AddDest();
+				}
+
 				// ランダムな加速度を生成
 				D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.0f };
 
@@ -345,6 +354,12 @@ bool CPlayer::Collision()
 				{
 					// 可壊ブロックを破棄
 					pDestructible->SetRelease();
+
+					if (CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE)
+					{
+						// 破壊記録を加算
+						CRecord_Dest::AddDest();
+					}
 
 					// エフェクトを作成
 					for (int i = 0; i < 3; i++)

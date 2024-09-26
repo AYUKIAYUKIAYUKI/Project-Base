@@ -29,6 +29,7 @@
 #include "player.h"
 #include "player_state.h"
 #include "record.h"
+#include "record_dest.h"
 #include "square.h"
 #include "start.h"
 #include "timer.h"
@@ -434,6 +435,12 @@ void CGameManager::Update()
 		// リミットタイムを生成
 		CLimit_Timer::Create();
 
+		// レコードを生成
+		if (!CObject::FindObject(CObject::TYPE::RECORD))
+		{
+			CRecord_Dest::Create();
+		}
+
 		// レベル進行フェーズへ
 		m_phase = PHASE::C_INGAME;
 
@@ -447,9 +454,6 @@ void CGameManager::Update()
 		break;
 
 	case PHASE::C_FINISH:
-
-		// チャレンジリザルト
-		//ChallengeResult();
 
 		break;
 
