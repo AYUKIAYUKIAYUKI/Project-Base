@@ -439,6 +439,9 @@ void CCamera::ImportAnchorPoint()
 //============================================================================
 void CCamera::UpdateScreen()
 {
+	// 間距離補正係数
+	float fAdjustDistance{ 0.05f };
+
 	// オブジェクト用ポインタ
 	CObject* pObj{ nullptr };
 
@@ -452,19 +455,28 @@ void CCamera::UpdateScreen()
 		CPlayer* pPlayer = CUtility::GetInstance()->DownCast<CPlayer, CObject>(pObj);
 
 		// プレイヤーの状態に応じて目標座標を補正
-		if (typeid(*pPlayer->GetStateManager()->GetState()) != typeid(CPlayerStateFlying) &&
-			typeid(*pPlayer->GetStateManager()->GetState()) != typeid(CPlayerStateRushing))
+		if (CManager::GetScene()->GetMode() == CScene::MODE::GAME)
 		{
 			// プレイヤーの座標と同期
-			m_posTarget = pPlayer->GetPos() + pPlayer->GetVelocity() * 15.0f;
+			m_posTarget = pPlayer->GetPos();
+			fAdjustDistance = 0.1f;
 		}
-		else
+		else if (CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE)
 		{
-			// プレイヤーの飛行方向に寄せる
-			m_posTarget = pPlayer->GetPos() + pPlayer->GetVelocity() * 30.0f;
+			// 状態に応じてカメラの挙動を変更
+			if (typeid(*pPlayer->GetStateManager()->GetState()) != typeid(CPlayerStateFlying) &&
+				typeid(*pPlayer->GetStateManager()->GetState()) != typeid(CPlayerStateRushing))
+			{
+				m_posTarget = pPlayer->GetPos() + pPlayer->GetVelocity() * 15.0f;
+			}
+			else
+			{
+				// プレイヤーの飛行方向に寄せる
+				m_posTarget = pPlayer->GetPos() + pPlayer->GetVelocity() * 30.0f;
+			}
 
 			// カメラの間距離を広く設定
-			m_fDistance = CUtility::GetInstance()->AdjustToTarget(m_fDistance, DEFUALT_DISTANCE * 1.0f, 0.05f);
+			m_fDistance = CUtility::GetInstance()->AdjustToTarget(m_fDistance, DEFUALT_DISTANCE * 1.5f, 0.05f);
 		}
 	}
 	else
@@ -497,7 +509,7 @@ void CCamera::UpdateScreen()
 	//Translation();
 
 	// 座標を目標座標に補正
-	m_pos = CUtility::GetInstance()->AdjustToTarget(m_pos, m_posTarget, 0.05f);
+	m_pos = CUtility::GetInstance()->AdjustToTarget(m_pos, m_posTarget, fAdjustDistance);
 
 	// ヨー角の範囲を制限
 	RestrictYaw();

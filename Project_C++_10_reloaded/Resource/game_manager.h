@@ -50,6 +50,18 @@ public:
 
 private:
 
+	//****************************************************
+	// プレビューフェーズ識別
+	//****************************************************
+	enum class PREVIEW
+	{
+		NONE = 0,	// 無し
+		BIGEN,		// 開始
+		SHOWING,	// 見せつけ
+		END,		// 終了
+		MAX,
+	};
+
 	CGameManager();		// デフォルトコンストラクタ
 	~CGameManager();	// デストラクタ
 
@@ -63,7 +75,7 @@ private:
 	int m_nSelectLevel;						// レベル選択
 	std::vector<std::string> m_stagePath;	// ステージパス
 	std::vector<bool> m_vbCollectAchieve;	// アチーブ回収状態
-	bool m_bPreview;						// プレビュー状態
+	PREVIEW m_Preview;						// プレビュー状態
 
 	static CGameManager* m_pInstance;	// ゲームマネージャー
 };

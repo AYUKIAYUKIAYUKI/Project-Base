@@ -179,6 +179,8 @@ public:
 
 private:
 
+	void L_Update();	// レベル更新
+	void C_Update();	// チャレンジ更新
 	void Rotation();	// 回転
 
 	D3DXVECTOR3 m_OldRotTarget;	// 過去の目標向き

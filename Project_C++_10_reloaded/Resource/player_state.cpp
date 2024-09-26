@@ -1188,6 +1188,35 @@ void CPlayerStateRushing::Enter()
 //============================================================================
 void CPlayerStateRushing::Update()
 {
+	if (CManager::GetScene()->GetMode() == CScene::MODE::GAME)
+	{
+		// レベル更新
+		L_Update();
+	}
+	else if (CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE)
+	{
+		// チャレンジ更新
+		C_Update();
+	}
+}
+
+//============================================================================
+// 変更終了
+//============================================================================
+void CPlayerStateRushing::Exit()
+{
+	// X・Y軸の向きを少し大げさに設定
+	D3DXVECTOR3 NewRot{ m_pPlayer->GetRot() };
+	NewRot.x = CUtility::GetInstance()->GetRandomValue<float>() * 0.0025f;
+	NewRot.y = CUtility::GetInstance()->GetRandomValue<float>() * 0.0025f;
+	m_pPlayer->SetRot(NewRot);
+}
+
+//============================================================================
+// レベル更新
+//============================================================================
+void CPlayerStateRushing::L_Update()
+{
 	// 回転
 	Rotation();
 
@@ -1211,7 +1240,7 @@ void CPlayerStateRushing::Update()
 		CStar::Create(
 			m_pPlayer->GetPos() + (m_pPlayer->GetVelocity() * -2.5f) + RandomVelocity * 3.0f,	// 座標
 			-m_pPlayer->GetVelocity() + RandomVelocity);	// 加速度 (飛行方向の逆)
-		
+
 		// 波紋を生成
 		CRipple::Create(
 			m_pPlayer->GetPos() + (m_pPlayer->GetVelocity() * -2.5f) + RandomVelocity * 3.0f,	// 座標
@@ -1242,7 +1271,7 @@ void CPlayerStateRushing::Update()
 			// 横方向の反射ベクトルを代入しておく
 			OldVelocity.x *= -1.0f;
 		}
-		
+
 		// 縦方向に衝突しているなら
 		if (m_pPlayer->GetVelocity().y == 0.0f)
 		{
@@ -1271,15 +1300,120 @@ void CPlayerStateRushing::Update()
 }
 
 //============================================================================
-// 変更終了
+// チャレンジ更新
 //============================================================================
-void CPlayerStateRushing::Exit()
+void CPlayerStateRushing::C_Update()
 {
-	// X・Y軸の向きを少し大げさに設定
-	D3DXVECTOR3 NewRot{ m_pPlayer->GetRot() };
-	NewRot.x = CUtility::GetInstance()->GetRandomValue<float>() * 0.0025f;
-	NewRot.y = CUtility::GetInstance()->GetRandomValue<float>() * 0.0025f;
-	m_pPlayer->SetRot(NewRot);
+	// 回転
+	Rotation();
+
+	// パッド取得
+	CInputPad* pPad{ CManager::GetPad() };
+
+	// 移動方向用
+	bool bMove{ false };
+	float X{ 0.0f }, Y{ 0.0f };
+
+	// スティックの傾きを取得
+	X = pPad->GetJoyStickL().X;
+	Y = pPad->GetJoyStickL().Y;
+
+	// 何か入力していれば移動判定を出す
+	if (X != 0.0f || Y != 0.0f)
+	{
+		bMove = true;
+	}
+
+	// 波打ちベクトル
+	D3DXVECTOR3 WaveVec{ 0.0f, 0.0f, 0.0f };
+
+	// 移動判定が出ていれば
+	if (bMove)
+	{
+		// ウェーブ係数
+		static float fCoeff{ 0.0f };
+		fCoeff += 0.2f;
+
+#ifdef _DEBUG
+		CRenderer::GetInstance()->SetDebugString("波打ち係数 : " + std::to_string(fCoeff));
+#endif // _DEBUG
+
+		WaveVec.x = sinf(fCoeff) * 2.0f;
+		WaveVec.y = cosf(fCoeff) * 2.0f;
+	}
+
+	// 加速度分、目標座標を変動
+	D3DXVECTOR3 NewPosTarget{ m_pPlayer->GetPosTarget() };
+	NewPosTarget += m_pPlayer->GetVelocity() + WaveVec;
+	m_pPlayer->SetPosTarget(NewPosTarget);
+
+	// エフェクト生成
+	if (rand() % 2 == 0)
+	{
+		// ランダムな加速度を作成
+		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.0f };
+
+		// 星を生成
+		CStar::Create(
+			m_pPlayer->GetPos() + (m_pPlayer->GetVelocity() * -2.5f) + RandomVelocity * 3.0f,	// 座標
+			-m_pPlayer->GetVelocity() + RandomVelocity);	// 加速度 (飛行方向の逆)
+
+		// 波紋を生成
+		CRipple::Create(
+			m_pPlayer->GetPos() + (m_pPlayer->GetVelocity() * -2.5f) + RandomVelocity * 3.0f,	// 座標
+			-m_pPlayer->GetVelocity() + RandomVelocity);	// 加速度 (飛行方向の逆)
+	}
+
+	// この時点での加速度を保持
+	D3DXVECTOR3 OldVelocity{ m_pPlayer->GetVelocity() };
+
+	// 当たり判定
+	if (m_pPlayer->Collision())
+	{
+		// この時、判定により死亡状態に移行するなら強制終了
+		if (m_pPlayer->GetStateManager()->GetPendingState() == CPlayerState::STATE::MISS)
+		{
+			return;
+		}
+
+		// 何かに衝突で変身停止へ
+		if (m_pPlayer->GetStateManager()->GetPendingState() != CPlayerState::STATE::GOAL)
+		{
+			m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::STOPPING);
+		}
+
+		// 横方向に衝突しているなら
+		if (m_pPlayer->GetVelocity().x == 0.0f)
+		{
+			// 横方向の反射ベクトルを代入しておく
+			OldVelocity.x *= -1.0f;
+		}
+
+		// 縦方向に衝突しているなら
+		if (m_pPlayer->GetVelocity().y == 0.0f)
+		{
+			// 縦方向の反射ベクトルを代入しておく
+			OldVelocity.y *= -1.0f;
+		}
+
+		m_pPlayer->SetVelocity(OldVelocity);
+
+		// 衝突音
+		CSound::GetInstance()->Play(CSound::LABEL::STOP);
+
+		// バウンド音
+		CSound::GetInstance()->Play(CSound::LABEL::BOUND);
+	}
+
+	// 目標サイズへ拡大
+	m_pPlayer->SetScale(CUtility::GetInstance()->AdjustToTarget(m_pPlayer->GetScale(), 1.1f, 0.1f));
+
+#ifdef _DEBUG
+	if (CManager::GetKeyboard()->GetTrigger(DIK_LSHIFT))
+	{
+		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::STOPPING);
+	}
+#endif // _DEBUG
 }
 
 //============================================================================
