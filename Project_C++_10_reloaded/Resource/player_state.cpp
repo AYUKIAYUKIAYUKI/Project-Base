@@ -119,10 +119,6 @@ void CPlayerStateDefault::Enter()
 
 	// モデルの設定
 	m_pPlayer->BindModel(Model);
-
-	// サイズを設定
-	//m_pPlayer->SetSize(Model->size);
-	m_pPlayer->SetSize(D3DXVECTOR3{ 10.0f, 10.0f, 10.0f });
 }
 
 //============================================================================
@@ -157,8 +153,8 @@ void CPlayerStateDefault::Update()
 	NewPosTarget += m_pPlayer->GetVelocity();
 	m_pPlayer->SetPosTarget(NewPosTarget);
 
-	// 目標サイズへ拡大
-	m_pPlayer->SetScale(CUtility::GetInstance()->AdjustToTarget(m_pPlayer->GetScale(), 1.0f, 0.1f));
+	// 規定サイズへ拡大
+	m_pPlayer->SetScale(CUtility::GetInstance()->AdjustToTarget(m_pPlayer->GetScale(), m_pPlayer->GetDefScale(), 0.1f));
 
 	// 当たり判定
 	m_pPlayer->Collision();
@@ -332,10 +328,6 @@ void CPlayerStateBeginning::Enter()
 	// モデルの設定
 	m_pPlayer->BindModel(Model);
 
-	// サイズを設定
-	//m_pPlayer->SetSize(Model->size);
-	m_pPlayer->SetSize(D3DXVECTOR3{ 10.0f, 10.0f, 10.0f });
-
 	// 爆発音
 	CSound::GetInstance()->Play(CSound::LABEL::EXPLOSION);
 
@@ -468,10 +460,6 @@ void CPlayerStateFlying::Enter()
 
 	// モデルの設定
 	m_pPlayer->BindModel(Model);
-
-	// サイズを設定
-	//m_pPlayer->SetSize(Model->size);
-	m_pPlayer->SetSize(D3DXVECTOR3{ 10.0f, 10.0f, 10.0f });
 
 	// エフェクト生成
 	for (int i = 0; i < 5; i++)
@@ -820,10 +808,6 @@ void CPlayerStateCharging::Enter()
 
 	// モデルの設定
 	m_pPlayer->BindModel(Model);
-
-	// サイズを設定
-	//m_pPlayer->SetSize(Model->size);
-	m_pPlayer->SetSize(D3DXVECTOR3{ 10.0f, 10.0f, 10.0f });
 
 	// チャージ音
 	CSound::GetInstance()->Play(CSound::LABEL::CHARGE);
@@ -1175,10 +1159,6 @@ void CPlayerStateRushing::Enter()
 	// モデルの設定
 	m_pPlayer->BindModel(Model);
 
-	// サイズを設定
-	//m_pPlayer->SetSize(Model->size);
-	m_pPlayer->SetSize(D3DXVECTOR3{ 10.0f, 10.0f, 10.0f });	// 少し大きめに
-
 	// 突進音
 	CSound::GetInstance()->Play(CSound::LABEL::RUSH);
 }
@@ -1288,8 +1268,8 @@ void CPlayerStateRushing::L_Update()
 		CSound::GetInstance()->Play(CSound::LABEL::BOUND);
 	}
 
-	// 目標サイズへ拡大
-	m_pPlayer->SetScale(CUtility::GetInstance()->AdjustToTarget(m_pPlayer->GetScale(), 1.1f, 0.1f));
+	// 大きめのサイズへ拡大
+	m_pPlayer->SetScale(CUtility::GetInstance()->AdjustToTarget(m_pPlayer->GetScale(), m_pPlayer->GetDefScale() * 1.1f, 0.1f));
 
 #ifdef _DEBUG
 	if (CManager::GetKeyboard()->GetTrigger(DIK_LSHIFT))
@@ -1405,8 +1385,8 @@ void CPlayerStateRushing::C_Update()
 		CSound::GetInstance()->Play(CSound::LABEL::BOUND);
 	}
 
-	// 目標サイズへ拡大
-	m_pPlayer->SetScale(CUtility::GetInstance()->AdjustToTarget(m_pPlayer->GetScale(), 1.1f, 0.1f));
+	// 大きめサイズへ拡大
+	m_pPlayer->SetScale(CUtility::GetInstance()->AdjustToTarget(m_pPlayer->GetScale(), m_pPlayer->GetDefScale() * 1.1f, 0.1f));
 
 #ifdef _DEBUG
 	if (CManager::GetKeyboard()->GetTrigger(DIK_LSHIFT))
@@ -1486,22 +1466,6 @@ void CPlayerStateStopping::Enter()
 	// モデルの設定
 	m_pPlayer->BindModel(Model);
 
-	// サイズを設定
-	//m_pPlayer->SetSize(Model->size);
-	m_pPlayer->SetSize(D3DXVECTOR3{ 10.0f, 10.0f, 10.0f });
-
-	//// エフェクトを生成
-	//for (int i = 0; i < 10; i++)
-	//{
-	//	// ランダムな加速度を作成
-	//	D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>() };
-
-	//	// 煙を生成
-	//	CSmoke::Create(
-	//		m_pPlayer->GetPos(),		// 座標
-	//		RandomVelocity * 0.0075f);	// 加速度
-	//}
-
 	// 反動
 	Recoil();
 }
@@ -1549,14 +1513,6 @@ void CPlayerStateStopping::Update()
 			// 小さめに
 			pSmoke->SetScale(0.25f);
 
-			//// 新しい加速度を作成
-			//D3DXVECTOR3 NewVelocityImpact{ OldVelocity * 0.25f };
-			//NewVelocityImpact.z = -1.5f;
-			//
-			//// 衝撃を生成
-			//CImpact::Create(m_pPlayer->GetPos() + (OldVelocity * 5.0f),	// 座標
-			//	NewVelocityImpact);										// 加速度
-
 			// 横方向に衝突しているなら
 			if (m_pPlayer->GetVelocity().x == 0.0f)
 			{
@@ -1584,8 +1540,8 @@ void CPlayerStateStopping::Update()
 			m_pPlayer->SetVelocity(OldVelocity);
 		}
 
-		// 目標サイズへ縮小
-		m_pPlayer->SetScale(CUtility::GetInstance()->AdjustToTarget(m_pPlayer->GetScale(), 1.0f, 0.1f));
+		// 規定サイズへ補正
+		m_pPlayer->SetScale(CUtility::GetInstance()->AdjustToTarget(m_pPlayer->GetScale(), m_pPlayer->GetDefScale(), 0.1f));
 	}
 	else
 	{
@@ -1607,10 +1563,6 @@ void CPlayerStateStopping::Exit()
 
 	// モデルの設定
 	m_pPlayer->BindModel(Model);
-
-	// サイズを設定
-	//m_pPlayer->SetSize(Model->size);
-	m_pPlayer->SetSize(D3DXVECTOR3{ 10.0f, 10.0f, 10.0f });
 }
 
 //============================================================================
@@ -1712,10 +1664,6 @@ void CPlayerStateMistook::Enter()
 	// モデルの設定
 	m_pPlayer->BindModel(Model);
 
-	// サイズを設定
-	//m_pPlayer->SetSize(Model->size);
-	m_pPlayer->SetSize(D3DXVECTOR3{ 10.0f, 10.0f, 10.0f });
-
 	// スタートオブジェクトの位置情報を取得
 	FindStartObject();
 
@@ -1740,7 +1688,7 @@ void CPlayerStateMistook::Exit()
 	// 加速度を初期化
 	m_pPlayer->SetVelocity({ 0.0f, 0.0f, 0.0f });
 
-	// 縮尺をリセット
+	// 縮尺を無くす
 	m_pPlayer->SetScale(0.0f);
 }
 
@@ -1849,10 +1797,6 @@ void CPlayerStateGoal::Enter()
 
 	// モデルの設定
 	m_pPlayer->BindModel(Model);
-
-	// サイズを設定
-	//m_pPlayer->SetSize(Model->size);
-	m_pPlayer->SetSize(D3DXVECTOR3{ 10.0f, 10.0f, 10.0f });
 }
 
 //============================================================================
@@ -1876,7 +1820,6 @@ void CPlayerStateGoal::Update()
 
 	// 縮小させていく
 	m_pPlayer->SetScale(CUtility::GetInstance()->AdjustToTarget(m_pPlayer->GetScale(), 0.0f, 0.035f));
-
 }
 
 //============================================================================

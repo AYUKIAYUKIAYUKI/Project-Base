@@ -49,6 +49,8 @@ public:
 	D3DXVECTOR3 GetRotTarget();					// 目標向きを取得
 	void SetRotTarget(D3DXVECTOR3 rotTarget);	// 目標向きを設定
 
+	float GetDefScale();	// 規定縮尺を取得
+
 	CPlayerStateManager* GetStateManager();	// 状態マネージャーを取得
 
 	static CPlayer* Create();	// 生成
@@ -61,6 +63,7 @@ private:
 	D3DXVECTOR3 m_posTarget;				// 目標位置
 	D3DXVECTOR3 m_rotTarget;				// 目標向き
 	float m_fAngleFlying;					// 飛行方向
+	float m_fDefaultScale;					// 規定縮尺
 };
 
 #endif // _PALYER_H_

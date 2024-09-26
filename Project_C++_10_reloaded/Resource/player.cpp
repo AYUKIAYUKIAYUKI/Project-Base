@@ -64,6 +64,7 @@ CPlayer::~CPlayer()
 	m_posTarget = { 0.0f, 0.0f, 0.0f };			// 目標位置の初期化
 	m_rotTarget = { 0.0f, 0.0f, 0.0f };			// 目標向きの初期化
 	m_fAngleFlying = 0.0f;						// 飛行向きの初期化
+	m_fDefaultScale = 0.0f;						// 規定縮尺の初期化
 }
 
 //============================================================================
@@ -89,6 +90,18 @@ HRESULT CPlayer::Init()
 
 	// 初期座標をスタート地点に
 	SetPos(pStart->GetPos());
+
+	// モードに応じてサイズ設定
+	if (CManager::GetScene()->GetMode() == CScene::MODE::GAME)
+	{
+		SetSize(D3DXVECTOR3{ 10.0f, 10.0f, 10.0f });
+		m_fDefaultScale = 1.0f;
+	}
+	else if (CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE)
+	{
+		SetSize(D3DXVECTOR3{ 15.0f, 15.0f, 15.0f });
+		m_fDefaultScale = 1.5f;
+	}
 
 	// 初期縮尺を設定
 	SetScale(0.0f);
@@ -749,6 +762,14 @@ D3DXVECTOR3 CPlayer::GetRotTarget()
 void CPlayer::SetRotTarget(D3DXVECTOR3 rotTarget)
 {
 	m_rotTarget = rotTarget;
+}
+
+//============================================================================
+// 規定縮尺を取得
+//============================================================================
+float CPlayer::GetDefScale()
+{
+	return m_fDefaultScale;
 }
 
 //============================================================================
