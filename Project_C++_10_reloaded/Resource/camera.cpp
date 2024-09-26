@@ -461,10 +461,9 @@ void CCamera::UpdateScreen()
 			m_posTarget = pPlayer->GetPos();
 
 			// ó‘Ô‚É‰ž‚¶‚ÄƒJƒƒ‰‚Ì‹““®‚ð•ÏX
-			if (typeid(*pPlayer->GetStateManager()->GetState()) != typeid(CPlayerStateFlying) &&
-				typeid(*pPlayer->GetStateManager()->GetState()) != typeid(CPlayerStateRushing))
+			if (typeid(*pPlayer->GetStateManager()->GetState()) == typeid(CPlayerStateDefault))
 			{
-				fAdjustDistance = 0.05f;
+				fAdjustDistance = 0.5f;
 			}
 			else
 			{

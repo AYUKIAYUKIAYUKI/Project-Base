@@ -322,6 +322,9 @@ void CGameManager::Update()
 
 	case PHASE::FINISH:
 
+		// 選択を記録
+		m_nOldSelectLevel = m_nSelectLevel;
+
 		// 初回限定
 		if (!m_bEndTutorial)
 		{
@@ -367,6 +370,9 @@ void CGameManager::Update()
 		break;
 
 	case PHASE::RETIRE:
+
+		// 選択を記録
+		m_nOldSelectLevel = m_nSelectLevel;
 
 		// 初回限定
 		if (!m_bEndTutorial)
@@ -529,6 +535,7 @@ CGameManager::CGameManager() :
 	m_phase{ PHASE::NONE },		// フェーズ識別
 	m_nMaxStage{ 0 },			// ステージ数
 	m_nSelectLevel{ 0 },		// レベル選択
+	m_nOldSelectLevel{ 0 },		// 過去のレベル選択
 	m_stagePath{},				// ステージパス
 	m_vbCollectAchieve{},		// アチーブ回収状態
 	m_Preview{ PREVIEW::NONE },	// プレビュー状態
@@ -595,8 +602,8 @@ void CGameManager::StartPreview()
 	// プレビュー待機カウント
 	m_nCntPreview = 0;
 
-	// チュートリアル・チャレンジモード時のみ、カメラの初期座標をゴールに同期
-	if (!m_bEndTutorial || CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE)
+	// チュートリアル・チャレンジモード・ステージ変更のみ、カメラの初期座標をゴールに同期
+	if (!m_bEndTutorial || CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE || m_nOldSelectLevel != m_nSelectLevel)
 	{
 		// ゴールタグを取得
 		CObject* pFindGoal{ CObject::FindObject(CObject::TYPE::GOAL) };
@@ -632,13 +639,14 @@ void CGameManager::StagePreview()
 
 		if (pFindGoal)
 		{
-			if (m_nCntPreview < 40)
+			if (m_nCntPreview < 30)
 			{
 				m_nCntPreview++;
 
 				// この間わずかにカメラが後退していく
 				D3DXVECTOR3 NewPos{ CManager::GetCamera()->GetPos() };
-				NewPos.z += -1.0f;
+				NewPos.z += -10.0f;
+				CManager::GetCamera()->SetPosTarget({ NewPos });
 			}
 			else
 			{

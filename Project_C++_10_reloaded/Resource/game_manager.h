@@ -74,6 +74,7 @@ private:
 	PHASE m_phase;							// フェーズ識別
 	int m_nMaxStage;						// ステージ数
 	int m_nSelectLevel;						// レベル選択
+	int m_nOldSelectLevel;					// 過去のレベル選択
 	std::vector<std::string> m_stagePath;	// ステージパス
 	std::vector<bool> m_vbCollectAchieve;	// アチーブ回収状態
 	PREVIEW m_Preview;						// プレビュー状態
