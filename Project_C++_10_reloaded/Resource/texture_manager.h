@@ -21,7 +21,10 @@ public:
 	enum class TYPE
 	{
 		BG_000 = 0,		// 背景000
-		LOGO,		// タイトルロゴ
+		LOGO,			// タイトルロゴ
+		NORMAL,			// ノーマルモード
+		CHALLENGE,		// チャレンジモード
+		CURSOR,			// カーソル
 		BG_001,			// 背景001
 		ARROW,			// 矢印
 		RING,			// リング

@@ -1,5 +1,8 @@
 Data\\TEXTURE\\title.jpg
 Data\\TEXTURE\\METAMOl.png
+Data\\TEXTURE\\normal.png
+Data\\TEXTURE\\challenge.png
+Data\\TEXTURE\\cursor.png
 Data\\TEXTURE\\result.png
 Data\\TEXTURE\\arrow.png
 Data\\TEXTURE\\ring.png
