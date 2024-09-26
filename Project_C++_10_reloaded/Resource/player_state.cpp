@@ -117,6 +117,11 @@ void CPlayerStateDefault::Enter()
 	// モデルを取得
 	auto Model{ CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_000) };
 
+	if (CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE)
+	{
+		Model = CModel_X_Manager::GetInstance()->GetModel(CModel_X_Manager::TYPE::PLAYER_001);
+	}
+
 	// モデルの設定
 	m_pPlayer->BindModel(Model);
 }
@@ -152,6 +157,21 @@ void CPlayerStateDefault::Update()
 	D3DXVECTOR3 NewPosTarget{ m_pPlayer->GetPosTarget() };
 	NewPosTarget += m_pPlayer->GetVelocity();
 	m_pPlayer->SetPosTarget(NewPosTarget);
+	
+	if (CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE)
+	{
+		// エフェクト生成
+		if (rand() % 5 == 0)
+		{
+			// ランダムな加速度を作成
+			D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.0f };
+
+			// 星を生成
+			CStar::Create(
+				m_pPlayer->GetPos() + RandomVelocity * 3.0f,	// 座標
+				RandomVelocity);								// 加速度 (ランダム)
+		}
+	}
 
 	// 規定サイズへ拡大
 	m_pPlayer->SetScale(CUtility::GetInstance()->AdjustToTarget(m_pPlayer->GetScale(), m_pPlayer->GetDefScale(), 0.1f));
@@ -1211,11 +1231,6 @@ void CPlayerStateRushing::L_Update()
 		// ランダムな加速度を作成
 		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.0f };
 
-		//// 煙を生成
-		//CSmoke::Create(
-		//	m_pPlayer->GetPos() + RandomVelocity * 3.0f,	// 座標
-		//	m_pPlayer->GetVelocity() * -0.25f);				// 加速度 (飛行方向)
-
 		// 星を生成
 		CStar::Create(
 			m_pPlayer->GetPos() + (m_pPlayer->GetVelocity() * -2.5f) + RandomVelocity * 3.0f,	// 座標
@@ -1287,6 +1302,9 @@ void CPlayerStateRushing::C_Update()
 	// 回転
 	Rotation();
 
+	// キーボード取得
+	CInputKeyboard* pKeyboard{ CManager::GetKeyboard() };
+
 	// パッド取得
 	CInputPad* pPad{ CManager::GetPad() };
 
@@ -1297,6 +1315,32 @@ void CPlayerStateRushing::C_Update()
 	// スティックの傾きを取得
 	X = pPad->GetJoyStickL().X;
 	Y = pPad->GetJoyStickL().Y;
+
+	// 何か入力していれば移動判定を出す
+	if (X != 0.0f || Y != 0.0f)
+	{
+		bMove = true;
+	}
+
+	// X軸
+	if (pKeyboard->GetPress(DIK_A) || pPad->GetPress(CInputPad::JOYKEY::LEFT))
+	{
+		X = -1.0f;
+	}
+	else if (pKeyboard->GetPress(DIK_D) || pPad->GetPress(CInputPad::JOYKEY::RIGHT))
+	{
+		X = 1.0f;
+	}
+
+	// Y軸
+	if (pKeyboard->GetPress(DIK_W) || pPad->GetPress(CInputPad::JOYKEY::UP))
+	{
+		Y = 1.0f;
+	}
+	else if (pKeyboard->GetPress(DIK_S) || pPad->GetPress(CInputPad::JOYKEY::DOWN))
+	{
+		Y = -1.0f;
+	}
 
 	// 何か入力していれば移動判定を出す
 	if (X != 0.0f || Y != 0.0f)
@@ -1318,9 +1362,33 @@ void CPlayerStateRushing::C_Update()
 		CRenderer::GetInstance()->SetDebugString("波打ち係数 : " + std::to_string(fCoeff));
 #endif // _DEBUG
 
-		WaveVec.x = sinf(fCoeff) * 2.0f;
-		WaveVec.y = cosf(fCoeff) * 2.0f;
+		// 飛行方向を設定
+		m_pPlayer->SetAngleFlying(atan2f(X, Y));
+
+		// モデルの目標向きを設定
+		D3DXVECTOR3 NewRotTarget{ 0.0f, 0.0f, 0.0f };
+		NewRotTarget.z = atan2f(-X, Y);
+		m_pPlayer->SetRotTarget(NewRotTarget);
+
+		// ウェーブ加速度を設定
+		WaveVec.x = sinf(fCoeff) * 1.0f;
+		WaveVec.y = cosf(fCoeff) * 1.0f;
 	}
+
+	// 目標加速度を設定
+	D3DXVECTOR3 NewVelocityTarget{ 0.0f, 0.0f, 0.0f };
+	NewVelocityTarget.x = sinf(m_pPlayer->GetAngleFlying()) * (CPlayerStateFlying::FLY_SPEED * 1.5f);
+	NewVelocityTarget.y = cosf(m_pPlayer->GetAngleFlying()) * (CPlayerStateFlying::FLY_SPEED * 1.5f);
+	m_pPlayer->SetVelocityTarget(NewVelocityTarget);
+
+	// 現在の加速度を取得
+	D3DXVECTOR3 NewVelocity{ m_pPlayer->GetVelocity() };
+
+	// 現在の加速度を補正
+	NewVelocity += (m_pPlayer->GetVelocityTarget() - NewVelocity) * 0.025f;
+
+	// 変更した加速度を反映
+	m_pPlayer->SetVelocity(NewVelocity);
 
 	// 加速度分、目標座標を変動
 	D3DXVECTOR3 NewPosTarget{ m_pPlayer->GetPosTarget() };
