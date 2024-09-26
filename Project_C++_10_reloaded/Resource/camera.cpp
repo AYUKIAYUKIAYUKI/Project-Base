@@ -440,7 +440,7 @@ void CCamera::ImportAnchorPoint()
 void CCamera::UpdateScreen()
 {
 	// 間距離補正係数
-	float fAdjustDistance{ 0.05f };
+	float fAdjustDistance{ 0.1f };
 
 	// オブジェクト用ポインタ
 	CObject* pObj{ nullptr };
@@ -457,9 +457,19 @@ void CCamera::UpdateScreen()
 		// プレイヤーの状態に応じて目標座標を補正
 		if (CManager::GetScene()->GetMode() == CScene::MODE::GAME)
 		{
-			// プレイヤーの座標と同期
+			// カメラの目標座標をプレイヤー座標に
 			m_posTarget = pPlayer->GetPos();
-			fAdjustDistance = 0.1f;
+
+			// 状態に応じてカメラの挙動を変更
+			if (typeid(*pPlayer->GetStateManager()->GetState()) != typeid(CPlayerStateFlying) &&
+				typeid(*pPlayer->GetStateManager()->GetState()) != typeid(CPlayerStateRushing))
+			{
+				fAdjustDistance = 0.05f;
+			}
+			else
+			{
+				fAdjustDistance = 1.0f;
+			}
 		}
 		else if (CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE)
 		{
@@ -522,6 +532,11 @@ void CCamera::UpdateScreen()
 
 	// 注視点位置を算出
 	CalcPosR();
+
+#ifdef _DEBUG
+	CRenderer::GetInstance()->SetDebugString("カメラ間距離 : " + std::to_string(m_fDistance));
+	CRenderer::GetInstance()->SetDebugString("カメラZ座標 : " + std::to_string(m_pos.z));
+#endif	// _DEBUG
 }
 
 //============================================================================

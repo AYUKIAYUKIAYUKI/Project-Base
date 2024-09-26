@@ -171,10 +171,11 @@ void CTutorial_Manager::CreateText()
 		// 出現設定
 		m_pText->SetAppear(true);
 
-		// 目標座標を設定
-		// 更新側で通常座標設定
+		// 初期座標を設定
+		m_pText->SetPos(D3DXVECTOR3{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT + 100.0f, 0.0f });
+		m_pText->SetPosTarget(D3DXVECTOR3{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT + 100.0f, 0.0f });
 
-		// 目標サイズを設定
+		// 初期目標サイズを設定
 		m_pText->SetSizeTarget(D3DXVECTOR3{ 200.0f * 1.4f, 50.0f * 1.4f, 0.0f });
 	}
 }

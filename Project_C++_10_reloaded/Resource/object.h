@@ -92,10 +92,10 @@ public:
 
 private:
 
-	static CObject* m_apFind[MAX_OBJ];							// 検索されたオブジェクト保持用
-	static int m_nNumAll;										// オブジェクト総数
-	static CObject* m_pTop[static_cast<int>(LAYER::MAX)];		// 先頭オブジェクトのポインタ
-	static CObject* m_pCur[static_cast<int>(LAYER::MAX)];		// 終端オブジェクトのポインタ
+	static CObject* m_apFind[MAX_OBJ];						// 検索されたオブジェクト保持用
+	static int m_nNumAll;									// オブジェクト総数
+	static CObject* m_pTop[static_cast<int>(LAYER::MAX)];	// 先頭オブジェクトのポインタ
+	static CObject* m_pCur[static_cast<int>(LAYER::MAX)];	// 終端オブジェクトのポインタ
 
 	int m_nPriority;	// 描画優先度
 	CObject* m_pPrev;	// 前のオブジェクトのポインタ

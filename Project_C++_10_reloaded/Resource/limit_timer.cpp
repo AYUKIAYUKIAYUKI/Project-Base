@@ -209,16 +209,19 @@ void CLimit_Timer::Decrement()
 			// ゴール状態でなければ
 			if (typeid(*pPlayer->GetStateManager()->GetState()) != typeid(CPlayerStateGoal))
 			{
-				// フレームカウント
-				m_nCntFrame++;
-
-				if (m_nCntFrame > 60)
+				if (m_nTimer > 0)
 				{
-					// カウントリセット
-					m_nCntFrame = 0;
+					// フレームカウント
+					m_nCntFrame++;
 
-					// タイマー減少
-					m_nTimer--;
+					if (m_nCntFrame > 60)
+					{
+						// カウントリセット
+						m_nCntFrame = 0;
+
+						// タイマー減少
+						m_nTimer--;
+					}
 				}
 			}
 		}

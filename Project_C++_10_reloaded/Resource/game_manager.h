@@ -42,6 +42,7 @@ public:
 	PHASE GetPhase();			// フェーズ取得
 	void SetPhase(PHASE phase);	// フェーズ設定
 
+	bool GetEndTutorial();					// チュートリアル終了フラグを取得
 	int GetMaxStage();						// ステージ数を取得
 	int GetSelectLevel();					// 選択レベル番号を取得
 	std::vector<bool> GetCollectAchieve();	// アチーブ回収状態

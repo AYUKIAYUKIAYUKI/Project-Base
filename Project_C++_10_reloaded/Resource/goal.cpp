@@ -17,6 +17,9 @@
 // カメラ取得用
 #include "manager.h"
 
+// チュートリアル情報取得用
+#include "game_manager.h"
+
 // プレイヤー取得用
 #include "player.h"
 #include "player_state.h"
@@ -97,19 +100,27 @@ void CGoal::Update()
 		}
 		else
 		{
-			// カメラの間距離をアウト
-			CManager::GetCamera()->SetDistance(CUtility::GetInstance()->AdjustToTarget(CManager::GetCamera()->GetDistance(), CCamera::DEFUALT_DISTANCE, 0.05f));
+			if (CGameManager::GetInstance()->GetEndTutorial())
+			{
+				// カメラの間距離をアウト
+				CManager::GetCamera()->SetDistance(CUtility::GetInstance()->AdjustToTarget(CManager::GetCamera()->GetDistance(), CCamera::DEFUALT_DISTANCE, 0.05f));
+			}
+			else
+			{
+				// チュートリアルのときだけ寄せる
+				CManager::GetCamera()->SetDistance(CUtility::GetInstance()->AdjustToTarget(CManager::GetCamera()->GetDistance(), CCamera::DEFUALT_DISTANCE * 0.75f, 0.05f));
+			}
 		}
-
-		// 正面を向く
-		m_RotTarget = {
-			0.0f,
-			0.0f,
-			CUtility::GetInstance()->GetRandomValue<float>() * 0.005f };
-
-		// 上下する
-		m_PosTarget.y = m_ActualPos.y + CUtility::GetInstance()->GetRandomValue<float>() * 0.1f;
 	}
+
+	// 正面を向く
+	m_RotTarget = {
+		0.0f,
+		0.0f,
+		CUtility::GetInstance()->GetRandomValue<float>() * 0.005f };
+
+	// 上下する
+	m_PosTarget.y = m_ActualPos.y + CUtility::GetInstance()->GetRandomValue<float>() * 0.1f;
 
 	// 目標向きへ
 	SetRot(CUtility::GetInstance()->AdjustToTarget(GetRot(), m_RotTarget, 0.05f));

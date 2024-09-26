@@ -82,6 +82,9 @@ void CGameManager::Init(PHASE phase)
 		// チュートリアルを表示しない
 		m_bEndTutorial = 1;
 	}
+
+	// ゲーム開始時、初回はカメラの間距離を固定する
+	CManager::GetCamera()->SetDistance(CCamera::DEFUALT_DISTANCE * 0.5f);
 }
 
 //============================================================================
@@ -472,6 +475,14 @@ void CGameManager::SetPhase(PHASE phase)
 }
 
 //============================================================================
+// チュートリアル終了フラグを取得
+//============================================================================
+bool CGameManager::GetEndTutorial()
+{
+	return m_bEndTutorial;
+}
+
+//============================================================================
 // ステージ数を取得
 //============================================================================
 int CGameManager::GetMaxStage()
@@ -589,8 +600,8 @@ void CGameManager::StartPreview()
 		CGoal* pGoal{ CUtility::GetInstance()->DownCast<CGoal, CObject>(pFindGoal) };
 
 		// カメラの座標を更新
-		CManager::GetCamera()->SetPos(pGoal->GetPos());
-		CManager::GetCamera()->SetPosTarget({ pGoal->GetPos().x, pGoal->GetPos().y, -500.0f });
+		CManager::GetCamera()->SetPos( pGoal->GetPos() );
+		CManager::GetCamera()->SetPosTarget( pGoal->GetPos() );
 	}
 }
 
@@ -599,31 +610,57 @@ void CGameManager::StartPreview()
 //============================================================================
 void CGameManager::StagePreview()
 {
+	// ゴール強調のためカウント
+	static int nCntLinger{ 0 };
+
 	if (m_Preview == PREVIEW::NONE)
 	{
 		return;
 	}
 	else if (m_Preview == PREVIEW::BIGEN)
 	{
-		// ある程度カメラが後ろに引いたら
-		if (CManager::GetCamera()->GetPos().z < -500.0f + 50.0f)
-		{
-			// スタートタグを取得
-			CObject* pFindStart{ CObject::FindObject(CObject::TYPE::START) };
+		// ゴールタグを取得
+		CObject* pFindGoal{ CObject::FindObject(CObject::TYPE::GOAL) };
 
-			if (pFindStart)
+		if (pFindGoal)
+		{
+			if (nCntLinger < 40)
+			{
+				nCntLinger++;
+
+				// この間わずかにカメラが後退していく
+				D3DXVECTOR3 NewPos{ CManager::GetCamera()->GetPos() };
+				NewPos.z += -1.0f;
+			}
+			else
 			{
 				// それぞれのクラスへダウンキャスト
-				CStart* pStart{ CUtility::GetInstance()->DownCast<CStart, CObject>(pFindStart) };
+				CGoal* pGoal{ CUtility::GetInstance()->DownCast<CGoal, CObject>(pFindGoal) };
 
-				// カメラの目標座標がスタート座標に設定されていなければ
-				if (CManager::GetCamera()->GetPosTarget() != pStart->GetPos())
+				// カメラの目標座標を更新
+				CManager::GetCamera()->SetPosTarget({ pGoal->GetPos().x, pGoal->GetPos().y, -500.0f });
+
+				// ある程度カメラが後ろに引いたら
+				if (CManager::GetCamera()->GetPos().z < -500.0f + 10.0f)
 				{
-					// 見せつけ開始
-					m_Preview = PREVIEW::SHOWING;
+					// スタートタグを取得
+					CObject* pFindStart{ CObject::FindObject(CObject::TYPE::START) };
 
-					// カメラ目標座標を更新
-					CManager::GetCamera()->SetPosTarget({ pStart->GetPos().x, pStart->GetPos().y, -500.0f });
+					if (pFindStart)
+					{
+						// それぞれのクラスへダウンキャスト
+						CStart* pStart{ CUtility::GetInstance()->DownCast<CStart, CObject>(pFindStart) };
+
+						// カメラの目標座標がスタート座標に設定されていなければ
+						if (CManager::GetCamera()->GetPosTarget() != pStart->GetPos())
+						{
+							// 見せつけ開始
+							m_Preview = PREVIEW::SHOWING;
+
+							// カメラ目標座標を更新
+							CManager::GetCamera()->SetPosTarget({ pStart->GetPos().x, pStart->GetPos().y, -500.0f });
+						}
+					}
 				}
 			}
 		}
@@ -644,8 +681,8 @@ void CGameManager::StagePreview()
 #endif // _DEBUG
 
 			// カメラの座標がほとんどスタートに一致したら
-			if (fabsf(CManager::GetCamera()->GetPos().x) - fabsf(pStart->GetPos().x) <= 10.0f &&
-				fabsf(CManager::GetCamera()->GetPos().y) - fabsf(pStart->GetPos().y) <= 10.0f)
+			if (fabsf(CManager::GetCamera()->GetPos().x) - fabsf(pStart->GetPos().x) <= 5.0f &&
+				fabsf(CManager::GetCamera()->GetPos().y) - fabsf(pStart->GetPos().y) <= 5.0f)
 			{
 				// 終了へ
 				m_Preview = PREVIEW::END;
@@ -660,7 +697,7 @@ void CGameManager::StagePreview()
 	else if (m_Preview == PREVIEW::END)
 	{
 		// カメラの座標が通常状態に戻りがけると
-		if (CManager::GetCamera()->GetPos().z > -10.0f)
+		if (CManager::GetCamera()->GetPos().z > -5.0f)
 		{
 			// 一度だけプレイヤーを生成
 			if (!CObject::FindObject(CObject::TYPE::PLAYER))
@@ -669,6 +706,9 @@ void CGameManager::StagePreview()
 				m_Preview = PREVIEW::NONE;
 
 				CPlayer::Create();
+
+				// スタティックな強調カウントをリセット
+				nCntLinger = 0;
 			}
 		}
 	}
