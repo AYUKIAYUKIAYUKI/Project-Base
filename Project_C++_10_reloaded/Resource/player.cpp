@@ -312,7 +312,8 @@ bool CPlayer::Collision()
 		if (CUtility::GetInstance()->OnlyCube(pDestructible->GetPos(), pDestructible->GetSize(), m_posTarget, GetSize()))
 		{
 			// 突進状態の場合のみ
-			if (typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateRushing))
+			if (typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateRushing) ||
+				CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE && typeid(*m_pStateManager->GetState()) == typeid(CPlayerStateBeginning))
 			{
 				// 可壊ブロックを破棄
 				pDestructible->SetRelease();

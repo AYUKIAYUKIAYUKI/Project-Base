@@ -360,7 +360,15 @@ void CPlayerStateBeginning::Enter()
 //============================================================================
 void CPlayerStateBeginning::Update()
 {
-	if (m_nCntMetamorphose < BEGIN_CNT_MAX)
+	// チャレンジモードときのみ必要フレーム追加
+	int nCntAdder{ 0 };
+
+	if (CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE)
+	{
+		nCntAdder = 10;
+	}
+
+	if (m_nCntMetamorphose < BEGIN_CNT_MAX + nCntAdder)
 	{
 		// 変身時間をカウントアップ
 		m_nCntMetamorphose++;
@@ -412,7 +420,14 @@ void CPlayerStateBeginning::Update()
 		}
 
 		// 状態変更
-		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::FLYING);
+		if (CManager::GetScene()->GetMode() == CScene::MODE::GAME)
+		{
+			m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::FLYING);
+		}
+		else if (CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE)
+		{
+			m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::CHARGING);
+		}
 	}
 }
 
@@ -844,22 +859,14 @@ void CPlayerStateCharging::Update()
 		// ミス状態へ
 		m_pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::MISS);
 
-		//for (int i = 0; i < 300; i++)
-		//{
-		//	// ランダムな加速度を作成
-		//	D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>(), CUtility::GetInstance()->GetRandomValue<float>() };
-
-		//	// 煙を生成
-		//	CSmoke::Create(
-		//		m_pPlayer->GetPos() + (RandomVelocity * 10.0f),	// 座標
-		//		RandomVelocity * 10.0f);							// 加速度
-		//}
-
 		return;
 	}
 
 	// チャージ猶予カウント
-	m_nLimitCharge++;
+	if (CManager::GetScene()->GetMode() == CScene::MODE::GAME)
+	{
+		m_nLimitCharge++;
+	}
 
 	// パッド取得
 	CInputPad* pPad{ CManager::GetPad() };
@@ -1356,7 +1363,7 @@ void CPlayerStateRushing::C_Update()
 	{
 		// ウェーブ係数
 		static float fCoeff{ 0.0f };
-		fCoeff += 0.2f;
+		fCoeff += 0.25f;
 
 #ifdef _DEBUG
 		CRenderer::GetInstance()->SetDebugString("波打ち係数 : " + std::to_string(fCoeff));
@@ -1371,8 +1378,9 @@ void CPlayerStateRushing::C_Update()
 		m_pPlayer->SetRotTarget(NewRotTarget);
 
 		// ウェーブ加速度を設定
-		WaveVec.x = sinf(fCoeff) * 1.0f;
-		WaveVec.y = cosf(fCoeff) * 1.0f;
+		WaveVec.x = cosf(fCoeff);
+		WaveVec.y = -cosf(fCoeff);
+		WaveVec *= 2.0f;
 	}
 
 	// 目標加速度を設定
@@ -1395,21 +1403,43 @@ void CPlayerStateRushing::C_Update()
 	NewPosTarget += m_pPlayer->GetVelocity() + WaveVec;
 	m_pPlayer->SetPosTarget(NewPosTarget);
 
-	// エフェクト生成
-	if (rand() % 2 == 0)
+	if (CManager::GetScene()->GetMode() == CScene::MODE::GAME)
 	{
-		// ランダムな加速度を作成
-		D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.0f };
+		// エフェクト生成
+		if (rand() % 2 == 0)
+		{
+			// ランダムな加速度を作成
+			D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.0f };
 
-		// 星を生成
-		CStar::Create(
-			m_pPlayer->GetPos() + (m_pPlayer->GetVelocity() * -2.5f) + RandomVelocity * 3.0f,	// 座標
-			-m_pPlayer->GetVelocity() + RandomVelocity);	// 加速度 (飛行方向の逆)
+			// 星を生成
+			CStar::Create(
+				m_pPlayer->GetPos() + (m_pPlayer->GetVelocity() * -2.5f) + RandomVelocity * 3.0f,	// 座標
+				-m_pPlayer->GetVelocity() + RandomVelocity);	// 加速度 (飛行方向の逆)
 
-		// 波紋を生成
-		CRipple::Create(
-			m_pPlayer->GetPos() + (m_pPlayer->GetVelocity() * -2.5f) + RandomVelocity * 3.0f,	// 座標
-			-m_pPlayer->GetVelocity() + RandomVelocity);	// 加速度 (飛行方向の逆)
+			// 波紋を生成
+			CRipple::Create(
+				m_pPlayer->GetPos() + (m_pPlayer->GetVelocity() * -2.5f) + RandomVelocity * 3.0f,	// 座標
+				-m_pPlayer->GetVelocity() + RandomVelocity);	// 加速度 (飛行方向の逆)
+		}
+	}
+	else if (CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE)
+	{
+		// エフェクト生成
+		if (rand() % 4 == 0)
+		{
+			// ランダムな加速度を作成
+			D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.0f };
+
+			// 星を生成
+			CStar::Create(
+				m_pPlayer->GetPos() + (m_pPlayer->GetVelocity() * -5.0f) + RandomVelocity * 3.0f,	// 座標
+				(m_pPlayer->GetVelocity() * -2.0f) + RandomVelocity);	// 加速度 (飛行方向の逆)
+
+			// 波紋を生成
+			CRipple::Create(
+				m_pPlayer->GetPos() + (m_pPlayer->GetVelocity() * -5.0f) + RandomVelocity * 3.0f,	// 座標
+				(m_pPlayer->GetVelocity() * -2.0f) + RandomVelocity);	// 加速度 (飛行方向の逆)
+		}
 	}
 
 	// この時点での加速度を保持
