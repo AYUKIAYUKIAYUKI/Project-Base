@@ -1,4 +1,5 @@
-Data\\TEXTURE\\METAMOl.jpg
+Data\\TEXTURE\\title.jpg
+Data\\TEXTURE\\METAMOl.png
 Data\\TEXTURE\\result.png
 Data\\TEXTURE\\arrow.png
 Data\\TEXTURE\\ring.png

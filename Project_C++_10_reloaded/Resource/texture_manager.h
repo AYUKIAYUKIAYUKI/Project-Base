@@ -21,6 +21,7 @@ public:
 	enum class TYPE
 	{
 		BG_000 = 0,		// 背景000
+		LOGO,		// タイトルロゴ
 		BG_001,			// 背景001
 		ARROW,			// 矢印
 		RING,			// リング

@@ -9,6 +9,7 @@
 // インクルードファイル
 //****************************************************
 #include "title.h"
+#include "utility.h"
 #include "fakescreen.h"
 
 // インプット取得用
@@ -48,6 +49,13 @@ HRESULT CTitle::Init()
 		{ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f },	// サイズ
 		CTexture_Manager::TYPE::BG_000);						// テクスチャ
 
+	// タイトルロゴの生成
+	m_pUI[3] = CText::Create(CTexture_Manager::TYPE::LOGO);
+	m_pUI[3]->SetPos({ SCREEN_WIDTH * 0.5f, 0.0f, 0.0f });
+	m_pUI[3]->SetPosTarget({ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f });
+	m_pUI[3]->SetSizeTarget({ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f });
+	m_pUI[3]->SetAppear(true);
+
 	return S_OK;
 }
 
@@ -80,8 +88,9 @@ void CTitle::Update()
 			if (!m_pUI[0])
 			{
 				m_pUI[0] = CText::Create(CTexture_Manager::TYPE::CROWN);
-				m_pUI[0]->SetPosTarget({ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.25f, 0.0f });
+				m_pUI[0]->SetPosTarget({ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f, 0.0f });
 				m_pUI[0]->SetSizeTarget({ 50.0f, 50.0f, 0.0f });
+				m_pUI[0]->SetCol({ 0.5f, 0.5f, 0.5f, 0.0f });
 				m_pUI[0]->SetAppear(true);
 			}
 
@@ -90,64 +99,90 @@ void CTitle::Update()
 				m_pUI[1] = CText::Create(CTexture_Manager::TYPE::CROWN);
 				m_pUI[1]->SetPosTarget({ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.75f, 0.0f });
 				m_pUI[1]->SetSizeTarget({ 50.0f, 50.0f, 0.0f });
+				m_pUI[1]->SetCol({ 0.5f, 0.5f, 0.5f, 0.0f });
 				m_pUI[1]->SetAppear(true);
 			}
 
 			if (!m_pUI[2])
 			{
 				m_pUI[2] = CText::Create(CTexture_Manager::TYPE::CROWN);
-				m_pUI[2]->SetPosTarget({ SCREEN_WIDTH * 0.25f, SCREEN_HEIGHT * 0.25f, 0.0f });
+				m_pUI[2]->SetPosTarget({ SCREEN_WIDTH * 0.25f, SCREEN_HEIGHT * 0.5f, 0.0f });
 				m_pUI[2]->SetSizeTarget({ 30.0f, 30.0f, 0.0f });
 				m_pUI[2]->SetAppear(true);
 			}
+
+			m_pUI[3]->SetPosTarget({ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.25f, 0.0f });
+			m_pUI[3]->SetSizeTarget({ SCREEN_WIDTH * 0.25f, SCREEN_HEIGHT * 0.25f, 0.0f });
 		}
 	}
-	else if (m_nSelect == 1)
+	else
 	{
-		if (m_pUI[2])
-		{
-			m_pUI[2]->SetPosTarget({ SCREEN_WIDTH * 0.25f, SCREEN_HEIGHT * 0.25f, 0.0f });
-		}
+		// BGカメラの間距離を設定
+		CManager::GetCamera()->SetDistanceBG(CUtility::GetInstance()->AdjustToTarget(CManager::GetCamera()->GetDistanceBG(), 25.0f, 0.025f));
 
-		if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN) ||
-			CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::START) ||
-			CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::A) ||
-			CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::B) ||
-			CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::X) ||
-			CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::Y))
+		if (m_nSelect == 1)
 		{
-			// ノーマルゲームへ
-			CFakeScreen::GetInstance()->SetFade(MODE::GAME);
-		}
-		else if (CManager::GetKeyboard()->GetTrigger(DIK_S) ||
-			CManager::GetKeyboard()->GetTrigger(DIK_DOWN) ||
-			CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::DOWN))
-		{
-			m_nSelect = 2;
-		}
-	}
-	else if (m_nSelect == 2)
-	{
-		if (m_pUI[2])
-		{
-			m_pUI[2]->SetPosTarget({ SCREEN_WIDTH * 0.25f, SCREEN_HEIGHT * 0.75f, 0.0f });
-		}
+			if (m_pUI[0])
+			{
+				m_pUI[0]->SetPosTarget({ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.5f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f });
+				m_pUI[0]->SetCol({ 1.0f, 1.0f, 1.0f, m_pUI[0]->GetAlpha() });
+			}
 
-		if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN) ||
-			CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::START) ||
-			CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::A) ||
-			CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::B) ||
-			CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::X) ||
-			CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::Y))
-		{
-			// チャレンジゲームへ
-			CFakeScreen::GetInstance()->SetFade(MODE::CHALLENGE);
+			if (m_pUI[2])
+			{
+				m_pUI[2]->SetPosTarget({ SCREEN_WIDTH * 0.25f, SCREEN_HEIGHT * 0.5f, 0.0f });
+			}
+
+			if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN) ||
+				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::START) ||
+				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::A) ||
+				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::B) ||
+				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::X) ||
+				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::Y))
+			{
+				// ノーマルゲームへ
+				CFakeScreen::GetInstance()->SetFade(MODE::GAME);
+			}
+			else if (CManager::GetKeyboard()->GetTrigger(DIK_S) ||
+				CManager::GetKeyboard()->GetTrigger(DIK_DOWN) ||
+				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::DOWN))
+			{
+				m_nSelect = 2;
+
+				m_pUI[0]->SetCol({ 0.5f, 0.5f, 0.5f, m_pUI[0]->GetAlpha() });
+			}
 		}
-		else if (CManager::GetKeyboard()->GetTrigger(DIK_W) ||
-			CManager::GetKeyboard()->GetTrigger(DIK_UP) ||
-			CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::UP))
+		else if (m_nSelect == 2)
 		{
-			m_nSelect = 1;
+			if (m_pUI[1])
+			{
+				m_pUI[1]->SetPosTarget({ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.75f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f });
+				m_pUI[1]->SetCol({ 1.0f, 1.0f, 1.0f, m_pUI[1]->GetAlpha() });
+			}
+
+			if (m_pUI[2])
+			{
+				m_pUI[2]->SetPosTarget({ SCREEN_WIDTH * 0.25f, SCREEN_HEIGHT * 0.75f, 0.0f });
+			}
+
+			if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN) ||
+				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::START) ||
+				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::A) ||
+				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::B) ||
+				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::X) ||
+				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::Y))
+			{
+				// チャレンジゲームへ
+				CFakeScreen::GetInstance()->SetFade(MODE::CHALLENGE);
+			}
+			else if (CManager::GetKeyboard()->GetTrigger(DIK_W) ||
+				CManager::GetKeyboard()->GetTrigger(DIK_UP) ||
+				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::UP))
+			{
+				m_nSelect = 1;
+
+				m_pUI[1]->SetCol({ 0.5f, 0.5f, 0.5f, m_pUI[1]->GetAlpha() });
+			}
 		}
 	}
 }
@@ -158,4 +193,23 @@ void CTitle::Update()
 void CTitle::Draw()
 {
 
+}
+
+//============================================================================
+// モード選択情報取得
+//============================================================================
+int CTitle::GetSelect()
+{
+	// シーン情報を取得
+	CScene* pScene{ CManager::GetScene() };
+
+	if (!pScene)
+	{
+		return -1;
+	}
+
+	// タイトルクラスにダウンキャスト
+	CTitle* pTitle{ CUtility::GetInstance()->DownCast<CTitle, CScene >(pScene) };
+
+	return pTitle->m_nSelect;
 }

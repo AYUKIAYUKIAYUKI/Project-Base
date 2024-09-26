@@ -32,6 +32,8 @@ public:
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
 
+	static int GetSelect();	// モード選択情報取得
+
 private:
 
 	//****************************************************
@@ -42,6 +44,7 @@ private:
 		NORMAL = 0,
 		CHALLENGE,
 		CURSOR,
+		TITLE,
 		MAX
 	};
 

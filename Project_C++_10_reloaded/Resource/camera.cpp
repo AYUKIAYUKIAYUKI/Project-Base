@@ -18,11 +18,12 @@
 #include "renderer.h"
 
 // 追従地点参照用
+#include "dummy.h"
 #include "game.h"
 #include "player.h"
 #include "player_state.h"
-#include "dummy.h"
 #include "stagemaker.h"
+#include "title.h"
 
 //****************************************************
 // 静的メンバ変数の初期化
@@ -681,7 +682,7 @@ void CCamera::UpdateBG()
 		// 処理を行わない
 		return;
 	}
-	else if (mode == CScene::MODE::GAME || mode == CScene::MODE::CHALLENGE)
+	else if (mode == CScene::MODE::GAME || mode == CScene::MODE::CHALLENGE || CTitle::GetSelect() > 0)
 	{
 		// 背景用カメラの目標座標・目標向きを、保持している目標数値とは別途で固定する
 		D3DXVECTOR3 posTarget = { -3.0f, 0.0f, 0.0f };
