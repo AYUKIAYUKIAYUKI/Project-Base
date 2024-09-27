@@ -101,42 +101,46 @@ void CRecord_Dest::Update()
 
 	/* 設定系統 */
 
-	m_pDestText->SetPosTarget({ SCREEN_WIDTH * 0.25f, SCREEN_HEIGHT * 0.15f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f });
-	m_pDestText->SetSizeTarget({ 140.0f, 30.0f, 0.0f });
-
-	// 設定用共通情報
-	D3DXVECTOR3 CopyPosTarget{ m_pDestText->GetPosTarget() };
-	float fSizeX{ 42.5f };	// 共通横サイズ
-
-	// 数字を並べる
-	for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
-	{
-		// 中心座標から、相対的な先頭の位置を設定
-		CopyPosTarget.x = m_pDestText->GetPosTarget().x + (fSizeX * MAX_DIGIT * 0.5f) - (fSizeX * 0.5f) + 210.0f;
-
-		// 先頭座標から数字が並ぶように調整
-		CopyPosTarget.x += -fSizeX * nCntNum;
-		m_apDestNum[nCntNum]->SetPosTarget(CopyPosTarget);
-
-		// 数字の目標サイズを設定
-		m_apDestNum[nCntNum]->SetSizeTarget({ fSizeX, 30.0f, 0.0f });
-	}
-
-	// カウント数のコピー
-	int nCopy{ m_nCntDest };
-
-	for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
-	{
-		// 数字を設定
-		m_apDestNum[nCntNum]->SetNumber(nCopy % 10);
-
-		// 桁を減らす
-		nCopy /= 10;
-	}
-
-	// 終了フェーズなら最高記録・選択肢を生成
+	// フェーズによるUI動作分岐
 	if (CGameManager::GetInstance()->GetPhase() == CGameManager::PHASE::C_FINISH)
-	{
+	{ // 最高記録・選択肢を生成、通常記録を拡大
+
+		m_pDestText->SetPosTarget({ SCREEN_WIDTH * 0.425f, SCREEN_HEIGHT * 0.5f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f });
+		m_pDestText->SetSizeTarget({ 200.0f, 40.0f, 0.0f });
+
+		// 設定用共通情報
+		D3DXVECTOR3 CopyPosTarget{ m_pDestText->GetPosTarget() };
+		float fSizeX{ 55.0f };	// 共通横サイズ
+
+		// 数字を並べる
+		for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
+		{
+			// 中心座標から、相対的な先頭の位置を設定
+			CopyPosTarget.x = m_pDestText->GetPosTarget().x + (fSizeX * MAX_DIGIT * 0.5f) - (fSizeX * 0.5f) + 300.0f;
+
+			// 先頭座標から数字が並ぶように調整
+			CopyPosTarget.x += -fSizeX * nCntNum;
+			m_apDestNum[nCntNum]->SetPosTarget(CopyPosTarget);
+
+			// 数字の目標サイズを設定
+			m_apDestNum[nCntNum]->SetSizeTarget({ fSizeX, 40.0f, 0.0f });
+		}
+
+		// カウント数のコピー
+		int nCopy{ m_nCntDest };
+
+		for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
+		{
+			// 数字を設定
+			m_apDestNum[nCntNum]->SetNumber(nCopy % 10);
+
+			// 桁を減らす
+			nCopy /= 10;
+		}
+		
+		/////////////////////////////////////////////////////////////////////////
+		/////////////////////////////////////////////////////////////////////////
+		
 		if (!m_pBestText)
 		{
 			// 初期座標用
@@ -168,12 +172,12 @@ void CRecord_Dest::Update()
 		else
 		{ // 生成済みの場合は目標値設定
 
-			m_pBestText->SetPosTarget({ SCREEN_WIDTH * 0.625f, SCREEN_HEIGHT * 0.15f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f });
-			m_pBestText->SetSizeTarget({ 140.0f, 30.0f, 0.0f });
+			m_pBestText->SetPosTarget({ SCREEN_WIDTH * 0.425f, SCREEN_HEIGHT * 0.25f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f });
+			m_pBestText->SetSizeTarget({ 200.0f, 40.0f, 0.0f });
 
 			// 設定用共通情報
 			CopyPosTarget = m_pBestText->GetPosTarget();
-			fSizeX = 42.5f;	// 共通横サイズ
+			fSizeX = 55.0f;	// 共通横サイズ
 
 			// カウント数のコピー
 			nCopy = CRecord_Dest::ImportBestRecord();
@@ -182,14 +186,14 @@ void CRecord_Dest::Update()
 			for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
 			{
 				// 中心座標から、相対的な先頭の位置を設定
-				CopyPosTarget.x = m_pBestText->GetPosTarget().x + (fSizeX * MAX_DIGIT * 0.5f) - (fSizeX * 0.5f) + 210.0f;
+				CopyPosTarget.x = m_pBestText->GetPosTarget().x + (fSizeX * MAX_DIGIT * 0.5f) - (fSizeX * 0.5f) + 300.0f;
 
 				// 先頭座標から数字が並ぶように調整
 				CopyPosTarget.x += -fSizeX * nCntNum;
 				m_apBestNum[nCntNum]->SetPosTarget(CopyPosTarget);
 
 				// 数字の目標サイズを設定
-				m_apBestNum[nCntNum]->SetSizeTarget({ fSizeX, 30.0f, 0.0f });
+				m_apBestNum[nCntNum]->SetSizeTarget({ fSizeX, 40.0f, 0.0f });
 
 				// 数字を設定
 				m_apBestNum[nCntNum]->SetNumber(nCopy % 10);
@@ -199,27 +203,66 @@ void CRecord_Dest::Update()
 			}
 
 			// 選択肢に目標座標を設定
-			m_apUI[0]->SetPosTarget({ SCREEN_WIDTH * 0.25f, SCREEN_HEIGHT * 0.75f, 0.0f });
-			m_apUI[1]->SetPosTarget({ SCREEN_WIDTH * 0.75f, SCREEN_HEIGHT * 0.75f, 0.0f });
+			m_apUI[0]->SetPosTarget({ SCREEN_WIDTH * 0.35f, SCREEN_HEIGHT * 0.75f, 0.0f });
+			m_apUI[1]->SetPosTarget({ SCREEN_WIDTH * 0.65f, SCREEN_HEIGHT * 0.75f, 0.0f });
 			
 			// 選択肢に目標サイズを設定
-			m_apUI[0]->SetSizeTarget({ 200.0f, 50.0f, 0.0f });
-			m_apUI[1]->SetSizeTarget({ 200.0f, 50.0f, 0.0f });
+			m_apUI[0]->SetSizeTarget({ 100.0f, 30.0f, 0.0f });
+			m_apUI[1]->SetSizeTarget({ 125.0f, 30.0f, 0.0f });
 			m_apUI[2]->SetSizeTarget({ 30.0f, 30.0f, 0.0f });
 
 			// 選択に応じてさらに変化
+			/* カーソル座標はテキスト横幅強のサイズがぴったし */
 			if (CGameManager::GetInstance()->GetSelectChallenge() == 0)
 			{
 				m_apUI[0]->SetCol({ 1.0f, 1.0f, 1.0f, m_apUI[1]->GetCol().a });
+				m_apUI[0]->SetPosTarget({ SCREEN_WIDTH * 0.35f, SCREEN_HEIGHT * 0.75f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f });
 				m_apUI[1]->SetCol({ 0.5f, 0.5f, 0.5f, m_apUI[1]->GetCol().a });
-				m_apUI[2]->SetPosTarget({ SCREEN_WIDTH * 0.2f, SCREEN_HEIGHT * 0.75f, 0.0f });
+				m_apUI[2]->SetPosTarget({ SCREEN_WIDTH * 0.35f - 150.0f, SCREEN_HEIGHT * 0.75f, 0.0f });
 			}
 			else
 			{
 				m_apUI[0]->SetCol({ 0.5f, 0.5f, 0.5f, m_apUI[0]->GetCol().a });
 				m_apUI[1]->SetCol({ 1.0f, 1.0f, 1.0f, m_apUI[0]->GetCol().a });
-				m_apUI[2]->SetPosTarget({ SCREEN_WIDTH * 0.7f, SCREEN_HEIGHT * 0.75f, 0.0f });
+				m_apUI[1]->SetPosTarget({ SCREEN_WIDTH * 0.65f, SCREEN_HEIGHT * 0.75f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f });
+				m_apUI[2]->SetPosTarget({ SCREEN_WIDTH * 0.65f - 175.0f, SCREEN_HEIGHT * 0.75f, 0.0f });
 			}
+		}
+	}
+	else
+	{ // 通常記録を縮小
+
+		m_pDestText->SetPosTarget({ SCREEN_WIDTH * 0.25f, SCREEN_HEIGHT * 0.15f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f });
+		m_pDestText->SetSizeTarget({ 140.0f, 30.0f, 0.0f });
+
+		// 設定用共通情報
+		D3DXVECTOR3 CopyPosTarget{ m_pDestText->GetPosTarget() };
+		float fSizeX{ 42.5f };	// 共通横サイズ
+
+		// 数字を並べる
+		for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
+		{
+			// 中心座標から、相対的な先頭の位置を設定
+			CopyPosTarget.x = m_pDestText->GetPosTarget().x + (fSizeX * MAX_DIGIT * 0.5f) - (fSizeX * 0.5f) + 210.0f;
+
+			// 先頭座標から数字が並ぶように調整
+			CopyPosTarget.x += -fSizeX * nCntNum;
+			m_apDestNum[nCntNum]->SetPosTarget(CopyPosTarget);
+
+			// 数字の目標サイズを設定
+			m_apDestNum[nCntNum]->SetSizeTarget({ fSizeX, 30.0f, 0.0f });
+		}
+
+		// カウント数のコピー
+		int nCopy{ m_nCntDest };
+
+		for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
+		{
+			// 数字を設定
+			m_apDestNum[nCntNum]->SetNumber(nCopy % 10);
+
+			// 桁を減らす
+			nCopy /= 10;
 		}
 	}
 

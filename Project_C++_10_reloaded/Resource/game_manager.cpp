@@ -707,7 +707,7 @@ void CGameManager::StagePreview()
 
 		if (pFindGoal)
 		{
-			if (m_nCntPreview < 30)
+			if (m_nCntPreview < 40)
 			{
 				m_nCntPreview++;
 

@@ -171,41 +171,14 @@ void CLimit_Timer::Decrement()
 			m_pText->SetSizeTarget({ 130.0f, 30.0f, 0.0f });
 		}
 
-		// テキストの目標座標を設定し、震わす
+		// 全体の目標座標を設定し、震わす
 		SetPosTarget({ SCREEN_WIDTH * 0.8f, SCREEN_HEIGHT * 0.15f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f, });
 
-		// テキスト用の目標座標のコピーを作成
+		// 数字用の目標座標のコピーを作成
 		D3DXVECTOR3 CopyPosTarget{ GetPosTarget() };
 
 		// 共通横サイズを設定
-		float fSizeX{ 24.75f };
-
-		// 数字を並べる
-		for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
-		{
-			// 中心座標から、相対的な先頭の位置を設定
-			CopyPosTarget.x = GetPosTarget().x + (fSizeX * MAX_DIGIT * 0.5f) - (fSizeX * 0.5f);
-
-			// 先頭座標から数字が並ぶように調整
-			CopyPosTarget.x += -fSizeX * nCntNum;
-			m_apNumber[nCntNum]->SetPosTarget(CopyPosTarget);
-
-			// 数字の目標サイズを設定
-			m_apNumber[nCntNum]->SetSizeTarget({ fSizeX, 17.5f, 0.0f });
-		}
-
-		// テキストを横に付ける
-		CopyPosTarget.x += -195.0f;
-		m_pText->SetPosTarget(CopyPosTarget);
-
-		// 数字の目標座標を設定し、震わす
-		SetPosTarget({ SCREEN_WIDTH * 0.78f, SCREEN_HEIGHT * 0.15f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f, });
-
-		// 数字用の目標座標のコピーを作成
-		CopyPosTarget = GetPosTarget();
-
-		// 共通横サイズを設定
-		fSizeX = 42.5f;
+		float fSizeX{ 42.5f };
 
 		// 数字を並べる
 		for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
@@ -220,6 +193,13 @@ void CLimit_Timer::Decrement()
 			// 数字の目標サイズを設定
 			m_apNumber[nCntNum]->SetSizeTarget({ fSizeX, 30.0f, 0.0f });
 		}
+
+		// テキスト用の目標座標のコピーを作成
+		CopyPosTarget = GetPosTarget();
+
+		// テキストを数字の横に付ける
+		CopyPosTarget.x += -195.0f;
+		m_pText->SetPosTarget(CopyPosTarget);
 
 		// プレイヤーを検索
 		CObject* pFind = CObject::FindObject(CObject::TYPE::PLAYER);

@@ -172,7 +172,7 @@ Mesh {
    0.000000;0.000000;0.000000;;
    1.000000;1.000000;1.000000;;
    TextureFilename {
-    "Data\\TEXTURE\\dest_big.jpg";
+    "Data\\TEXTURE\\destructible.jpg";
    }
   }
  }
