@@ -51,6 +51,9 @@ CRecord_Dest::CRecord_Dest() :
 		m_apDestNum[nCntNum] = CNumber::Create();
 		m_apDestNum[nCntNum]->SetPos(InitPos);
 		m_apDestNum[nCntNum]->SetAppear(true);
+
+		/* 数がピッタシなのでついでにこれも初期化 */
+		m_apUI[nCntNum] = nullptr;
 	}
 
 	// 出現予約
@@ -131,7 +134,7 @@ void CRecord_Dest::Update()
 		nCopy /= 10;
 	}
 
-	// 終了フェーズなら最高記録を生成
+	// 終了フェーズなら最高記録・選択肢を生成
 	if (CGameManager::GetInstance()->GetPhase() == CGameManager::PHASE::C_FINISH)
 	{
 		if (!m_pBestText)
@@ -144,12 +147,22 @@ void CRecord_Dest::Update()
 			m_pBestText->SetPos(InitPos);
 			m_pBestText->SetAppear(true);
 
+			// 数字を生成
 			for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
 			{
-				// 数字を生成
 				m_apBestNum[nCntNum] = CNumber::Create();
 				m_apBestNum[nCntNum]->SetPos(InitPos);
 				m_apBestNum[nCntNum]->SetAppear(true);
+			}
+
+			// 選択肢を生成
+			m_apUI[0] = CText::Create(CTexture_Manager::TYPE::QUIT);
+			m_apUI[1] = CText::Create(CTexture_Manager::TYPE::RETRY);
+			m_apUI[2] = CText::Create(CTexture_Manager::TYPE::CURSOR);
+			for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
+			{
+				m_apUI[nCntNum]->SetPos(InitPos);
+				m_apUI[nCntNum]->SetAppear(true);
 			}
 		}
 		else
@@ -183,6 +196,29 @@ void CRecord_Dest::Update()
 
 				// 桁を減らす
 				nCopy /= 10;
+			}
+
+			// 選択肢に目標座標を設定
+			m_apUI[0]->SetPosTarget({ SCREEN_WIDTH * 0.25f, SCREEN_HEIGHT * 0.75f, 0.0f });
+			m_apUI[1]->SetPosTarget({ SCREEN_WIDTH * 0.75f, SCREEN_HEIGHT * 0.75f, 0.0f });
+			
+			// 選択肢に目標サイズを設定
+			m_apUI[0]->SetSizeTarget({ 200.0f, 50.0f, 0.0f });
+			m_apUI[1]->SetSizeTarget({ 200.0f, 50.0f, 0.0f });
+			m_apUI[2]->SetSizeTarget({ 30.0f, 30.0f, 0.0f });
+
+			// 選択に応じてさらに変化
+			if (CGameManager::GetInstance()->GetSelectChallenge() == 0)
+			{
+				m_apUI[0]->SetCol({ 1.0f, 1.0f, 1.0f, m_apUI[1]->GetCol().a });
+				m_apUI[1]->SetCol({ 0.5f, 0.5f, 0.5f, m_apUI[1]->GetCol().a });
+				m_apUI[2]->SetPosTarget({ SCREEN_WIDTH * 0.2f, SCREEN_HEIGHT * 0.75f, 0.0f });
+			}
+			else
+			{
+				m_apUI[0]->SetCol({ 0.5f, 0.5f, 0.5f, m_apUI[0]->GetCol().a });
+				m_apUI[1]->SetCol({ 1.0f, 1.0f, 1.0f, m_apUI[0]->GetCol().a });
+				m_apUI[2]->SetPosTarget({ SCREEN_WIDTH * 0.7f, SCREEN_HEIGHT * 0.75f, 0.0f });
 			}
 		}
 	}
@@ -229,15 +265,20 @@ void CRecord_Dest::ResetCntDest()
 }
 
 //============================================================================
-// 最高記録表記を消去予定
+// 最高記録表記・選択肢を消去予定
 //============================================================================
-void CRecord_Dest::SetDisappearBest()
+void CRecord_Dest::SetDisappearBestAndUI()
 {
+	// 応急処置
 	m_pBestText->SetDisappear(true);
 	m_pBestText = nullptr;
 	for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++) {
 		m_apBestNum[nCntNum]->SetDisappear(true);
 		m_apBestNum[nCntNum] = nullptr;
+	}
+	for (int nCntUI = 0; nCntUI < 3; nCntUI++) {
+		m_apUI[nCntUI]->SetDisappear(true);
+		m_apUI[nCntUI] = nullptr;
 	}
 }
 

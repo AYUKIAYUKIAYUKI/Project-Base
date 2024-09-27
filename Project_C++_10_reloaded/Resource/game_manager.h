@@ -51,6 +51,7 @@ public:
 	int GetMaxStage();						// ステージ数を取得
 	int GetSelectLevel();					// 選択レベル番号を取得
 	std::vector<bool> GetCollectAchieve();	// アチーブ回収状態
+	int GetSelectChallenge();				// チャレンジ選択
 
 	static CGameManager* GetInstance();	// ゲームマネージャーを取得
 

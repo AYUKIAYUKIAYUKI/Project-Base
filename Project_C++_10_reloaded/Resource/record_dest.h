@@ -25,12 +25,12 @@ public:
 	CRecord_Dest();				// デフォルトコンストラクタ
 	~CRecord_Dest() override;	// デストラクタ
 
-	HRESULT Init() override;	// 初期設定
-	void Uninit() override;		// 終了処理
-	void Update() override;		// 更新処理
-	void Draw() override;		// 描画処理
-	void ResetCntDest();		// 破壊記録をリセット
-	void SetDisappearBest();	// 最高記録表示を消去
+	HRESULT Init() override;		// 初期設定
+	void Uninit() override;			// 終了処理
+	void Update() override;			// 更新処理
+	void Draw() override;			// 描画処理
+	void ResetCntDest();			// 破壊記録をリセット
+	void SetDisappearBestAndUI();	// 最高記録表示・選択肢を消去
 
 	static CRecord_Dest* Create();	// 生成
 	static void AddDest();			// 破壊記録の増加
@@ -49,6 +49,7 @@ private:
 	CNumber* m_apDestNum[MAX_DIGIT];	// 今回数字情報
 	CText* m_pBestText;					// 最高テキスト
 	CNumber* m_apBestNum[MAX_DIGIT];	// 最高数字情報
+	CText* m_apUI[3];					// リザルト用UI
 };
 
 #endif	// _RECORD_DEST_H_

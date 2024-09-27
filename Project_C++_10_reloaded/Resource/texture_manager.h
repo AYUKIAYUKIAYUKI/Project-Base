@@ -40,6 +40,8 @@ public:
 		LIMITTIME,		// 残り時間
 		RECORDDEST,		// 破壊記録
 		RECORDBEST,		// 最高記録
+		RETRY,			// もう一度
+		QUIT,			// やめる
 		BACK,			// 戻るマーク
 		CROWN,			// 王冠
 		TEXT00,			// テキスト00

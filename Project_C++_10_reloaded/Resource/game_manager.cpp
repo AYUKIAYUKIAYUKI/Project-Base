@@ -505,11 +505,11 @@ void CGameManager::Update()
 			// ウェーブを停止し、チャレンジスタートフェーズへ移行
 			CFakeScreen::GetInstance()->StopWave(PHASE::C_START);
 
-			// レコード->最高記録表示のみ消去予約
+			// レコード->最高記録表示・選択肢のみ消去予約
 			if (CObject::FindObject(CObject::TYPE::RECORD))
 			{
 				CRecord_Dest* pRecord{ CUtility::GetInstance()->DownCast<CRecord_Dest, CObject>(CObject::FindObject(CObject::TYPE::RECORD)) };
-				pRecord->SetDisappearBest();
+				pRecord->SetDisappearBestAndUI();
 			}
 		}
 
@@ -570,6 +570,14 @@ int CGameManager::GetSelectLevel()
 std::vector<bool> CGameManager::GetCollectAchieve()
 {
 	return m_vbCollectAchieve;
+}
+
+//============================================================================
+// チャレンジ選択を取得
+//============================================================================
+int CGameManager::GetSelectChallenge()
+{
+	return m_nSelectChallenge;
 }
 
 //============================================================================
