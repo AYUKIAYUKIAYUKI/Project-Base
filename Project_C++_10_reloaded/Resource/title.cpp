@@ -119,7 +119,9 @@ void CTitle::Update()
 			if (!m_pUI[0])
 			{
 				m_pUI[0] = CText::Create(CTexture_Manager::TYPE::NORMAL);
+				m_pUI[0]->SetPos({ 0.0f, SCREEN_HEIGHT * 0.55f, 0.0f });
 				m_pUI[0]->SetPosTarget({ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.55f, 0.0f });
+				//m_pUI[0]->SetSize({ 0.0f, 0.0f, 0.0f });
 				m_pUI[0]->SetSizeTarget({ 250.0f, 62.5f, 0.0f });
 				m_pUI[0]->SetCol({ 0.5f, 0.5f, 0.5f, 0.0f });
 				m_pUI[0]->SetAppear(true);
@@ -128,7 +130,9 @@ void CTitle::Update()
 			if (!m_pUI[1])
 			{
 				m_pUI[1] = CText::Create(CTexture_Manager::TYPE::CHALLENGE);
+				m_pUI[1]->SetPos({ SCREEN_WIDTH, SCREEN_HEIGHT * 0.75f, 0.0f });
 				m_pUI[1]->SetPosTarget({ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.75f, 0.0f });
+				//m_pUI[1]->SetSize({ 0.0f, 0.0f, 0.0f });
 				m_pUI[1]->SetSizeTarget({ 250.0f, 62.5f, 0.0f });
 				m_pUI[1]->SetCol({ 0.5f, 0.5f, 0.5f, 0.0f });
 				m_pUI[1]->SetAppear(true);
@@ -137,7 +141,9 @@ void CTitle::Update()
 			if (!m_pUI[2])
 			{
 				m_pUI[2] = CText::Create(CTexture_Manager::TYPE::CURSOR);
+				m_pUI[2]->SetPos({ 0.0f, SCREEN_HEIGHT * 0.55f, 0.0f });
 				m_pUI[2]->SetPosTarget({ SCREEN_WIDTH * 0.25f, SCREEN_HEIGHT * 0.55f, 0.0f });
+				m_pUI[2]->SetSize({ 0.0f, 0.0f, 0.0f });
 				m_pUI[2]->SetSizeTarget({ 30.0f, 30.0f, 0.0f });
 				m_pUI[2]->SetAppear(true);
 			}
@@ -161,7 +167,7 @@ void CTitle::Update()
 
 			if (m_pUI[2])
 			{
-				m_pUI[2]->SetPosTarget({ SCREEN_WIDTH * 0.25f, SCREEN_HEIGHT * 0.55f, 0.0f });
+				m_pUI[2]->SetPosTarget({ SCREEN_WIDTH * 0.5f - 275.0f, SCREEN_HEIGHT * 0.55f, 0.0f });
 			}
 
 			if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN) ||
@@ -194,7 +200,7 @@ void CTitle::Update()
 
 			if (m_pUI[2])
 			{
-				m_pUI[2]->SetPosTarget({ SCREEN_WIDTH * 0.25f, SCREEN_HEIGHT * 0.75f, 0.0f });
+				m_pUI[2]->SetPosTarget({ SCREEN_WIDTH * 0.5f - 275.0f, SCREEN_HEIGHT * 0.75f, 0.0f });
 			}
 
 			if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN) ||

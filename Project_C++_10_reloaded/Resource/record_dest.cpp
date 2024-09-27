@@ -344,14 +344,6 @@ CRecord_Dest* CRecord_Dest::Create()
 	// 初期設定
 	pRecord->Init();
 
-	//// ランダムな座標を設定
-	//pRecord->SetPos({ (SCREEN_WIDTH * 0.5f) + CUtility::GetInstance()->GetRandomValue<float>() * 10.0f,
-	//				(SCREEN_HEIGHT * 0.5f) + CUtility::GetInstance()->GetRandomValue<float>() * 10.0f,
-	//				0.0f });
-
-	//// サイズの設定
-	//pRecord->SetSize({ 0.0f, 0.0f, 0.0f });
-
 	return pRecord;
 }
 
@@ -366,6 +358,30 @@ void CRecord_Dest::AddDest()
 
 	// 増加
 	pRecord->m_nCntDest++;
+
+	// 表示拡大率
+	float fScaleCoeff{ 1.2f };
+
+	// 表示が拡大
+	pRecord->m_pDestText->SetSize({ 140.0f * fScaleCoeff, 30.0f * fScaleCoeff, 0.0f });
+
+	// 設定用共通情報
+	D3DXVECTOR3 CopyPos{ pRecord->m_pDestText->GetPos() };
+	float fSizeX{ 42.5f * fScaleCoeff };	// 共通横サイズ
+
+	// 数字を広く並べる
+	for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
+	{
+		// 中心座標から、相対的な先頭の位置を設定
+		CopyPos.x = pRecord->m_pDestText->GetPos().x + (fSizeX * MAX_DIGIT * 0.5f) - (fSizeX * 0.5f) + (210.0f * fScaleCoeff);
+
+		// 先頭座標から数字が並ぶように調整
+		CopyPos.x += -fSizeX * nCntNum;
+		pRecord->m_apDestNum[nCntNum]->SetPos(CopyPos);
+
+		// 数字のサイズを設定
+		pRecord->m_apDestNum[nCntNum]->SetSize({ fSizeX, 30.0f * fScaleCoeff, 0.0f });
+	}
 }
 
 //============================================================================
