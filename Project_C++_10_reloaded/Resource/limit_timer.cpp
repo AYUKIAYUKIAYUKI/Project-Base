@@ -113,6 +113,21 @@ void CLimit_Timer::Update()
 		// 目標サイズへ
 		m_apNumber[nCntNum]->SetSize(CUtility::GetInstance()->AdjustToTarget(m_apNumber[nCntNum]->GetSize(), m_apNumber[nCntNum]->GetSizeTarget(), 0.05f));
 	}
+
+	///////////////////////////////////////////////////////////////
+	///////////////////////////////////////////////////////////////
+
+	// 消去予定なら付属品も消去予定に
+	if (GetDisappear())
+	{
+		m_pText->SetDisappear(true);
+
+		for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
+		{
+			// 目標座標へ
+			m_apNumber[nCntNum]->SetDisappear(true);
+		}
+	}
 }
 
 //============================================================================

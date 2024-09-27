@@ -17,6 +17,9 @@
 // テクスチャ取得用
 #include "texture_manager.h"
 
+// ゲームマネージャー取得
+#include "game_manager.h"
+
 // プレイヤーの状態取得用
 #include "player.h"
 #include "player_state.h"
@@ -46,11 +49,7 @@ CRecord_Dest::CRecord_Dest() :
 
 		// 数字を生成
 		m_apDestNum[nCntNum] = CNumber::Create();
-
-		// 初期座標の設定
 		m_apDestNum[nCntNum]->SetPos(InitPos);
-
-		// 数字の出現予約
 		m_apDestNum[nCntNum]->SetAppear(true);
 	}
 
@@ -132,22 +131,83 @@ void CRecord_Dest::Update()
 		nCopy /= 10;
 	}
 
+	// 終了フェーズなら最高記録を生成
+	if (CGameManager::GetInstance()->GetPhase() == CGameManager::PHASE::C_FINISH)
+	{
+		if (!m_pBestText)
+		{
+			// 初期座標用
+			D3DXVECTOR3 InitPos{ (SCREEN_WIDTH * 0.5f), -100.0f, 0.0f };
+
+			// テキストを生成
+			m_pBestText = CText::Create(CTexture_Manager::TYPE::RECORDBEST);
+			m_pBestText->SetPos(InitPos);
+			m_pBestText->SetAppear(true);
+
+			for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
+			{
+				// 数字を生成
+				m_apBestNum[nCntNum] = CNumber::Create();
+				m_apBestNum[nCntNum]->SetPos(InitPos);
+				m_apBestNum[nCntNum]->SetAppear(true);
+			}
+		}
+		else
+		{ // 生成済みの場合は目標値設定
+
+			m_pBestText->SetPosTarget({ SCREEN_WIDTH * 0.625f, SCREEN_HEIGHT * 0.15f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f });
+			m_pBestText->SetSizeTarget({ 140.0f, 30.0f, 0.0f });
+
+			// 設定用共通情報
+			CopyPosTarget = m_pBestText->GetPosTarget();
+			fSizeX = 42.5f;	// 共通横サイズ
+
+			// カウント数のコピー
+			nCopy = CRecord_Dest::ImportBestRecord();
+
+			// 数字を並べる
+			for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
+			{
+				// 中心座標から、相対的な先頭の位置を設定
+				CopyPosTarget.x = m_pBestText->GetPosTarget().x + (fSizeX * MAX_DIGIT * 0.5f) - (fSizeX * 0.5f) + 210.0f;
+
+				// 先頭座標から数字が並ぶように調整
+				CopyPosTarget.x += -fSizeX * nCntNum;
+				m_apBestNum[nCntNum]->SetPosTarget(CopyPosTarget);
+
+				// 数字の目標サイズを設定
+				m_apBestNum[nCntNum]->SetSizeTarget({ fSizeX, 30.0f, 0.0f });
+
+				// 数字を設定
+				m_apBestNum[nCntNum]->SetNumber(nCopy % 10);
+
+				// 桁を減らす
+				nCopy /= 10;
+			}
+		}
+	}
+
 	///////////////////////////////////////////////////////////////
 	///////////////////////////////////////////////////////////////
 
 	/* 反映系統 */
 
-	// テキスト
-	m_pDestText->SetPos(CUtility::GetInstance()->AdjustToTarget(m_pDestText->GetPos(), m_pDestText->GetPosTarget(), 0.075f));
-	m_pDestText->SetRot(CUtility::GetInstance()->AdjustToTarget(m_pDestText->GetRot(), m_pDestText->GetRotTarget(), 0.075f));
-	m_pDestText->SetSize(CUtility::GetInstance()->AdjustToTarget(m_pDestText->GetSize(), m_pDestText->GetSizeTarget(), 0.075f));
-
-	// 数字のみ
+	// 数字系統
 	for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
 	{
-		m_apDestNum[nCntNum]->SetPos(CUtility::GetInstance()->AdjustToTarget(m_apDestNum[nCntNum]->GetPos(), m_apDestNum[nCntNum]->GetPosTarget(), 0.075f));
-		m_apDestNum[nCntNum]->SetRot(CUtility::GetInstance()->AdjustToTarget(m_apDestNum[nCntNum]->GetRot(), m_apDestNum[nCntNum]->GetRotTarget(), 0.075f));
-		m_apDestNum[nCntNum]->SetSize(CUtility::GetInstance()->AdjustToTarget(m_apDestNum[nCntNum]->GetSize(), m_apDestNum[nCntNum]->GetSizeTarget(), 0.05f));
+		if (m_apDestNum[nCntNum])
+		{
+			m_apDestNum[nCntNum]->SetPos(CUtility::GetInstance()->AdjustToTarget(m_apDestNum[nCntNum]->GetPos(), m_apDestNum[nCntNum]->GetPosTarget(), 0.075f));
+			m_apDestNum[nCntNum]->SetRot(CUtility::GetInstance()->AdjustToTarget(m_apDestNum[nCntNum]->GetRot(), m_apDestNum[nCntNum]->GetRotTarget(), 0.075f));
+			m_apDestNum[nCntNum]->SetSize(CUtility::GetInstance()->AdjustToTarget(m_apDestNum[nCntNum]->GetSize(), m_apDestNum[nCntNum]->GetSizeTarget(), 0.05f));
+		}
+
+		if (m_apBestNum[nCntNum])
+		{
+			m_apBestNum[nCntNum]->SetPos(CUtility::GetInstance()->AdjustToTarget(m_apBestNum[nCntNum]->GetPos(), m_apBestNum[nCntNum]->GetPosTarget(), 0.075f));
+			m_apBestNum[nCntNum]->SetRot(CUtility::GetInstance()->AdjustToTarget(m_apBestNum[nCntNum]->GetRot(), m_apBestNum[nCntNum]->GetRotTarget(), 0.075f));
+			m_apBestNum[nCntNum]->SetSize(CUtility::GetInstance()->AdjustToTarget(m_apBestNum[nCntNum]->GetSize(), m_apBestNum[nCntNum]->GetSizeTarget(), 0.05f));
+		}
 	}
 }
 
@@ -251,9 +311,9 @@ void CRecord_Dest::ExportRecord()
 	int nBestTime{ std::stoi(vStr.front().substr(vStr.front().find("b") + 2, vStr.front().find(","))) };
 
 	// ベスト情報とラスト情報を比べる
-	if (pRecord->m_nCntDest < nBestTime)
+	if (pRecord->m_nCntDest > nBestTime)
 	{
-		// ベストを下回っていたなら更新
+		// ベストを上回っていたなら更新
 		nBestTime = pRecord->m_nCntDest;
 	}
 
@@ -315,8 +375,8 @@ int CRecord_Dest::ImportBestRecord()
 	// テキストを読み取る
 	std::getline(Import, str);
 
-	// ファイルのラスト部分を抽出
-	std::string best = str.substr(str.find("l") + 2, str.find(","));
+	// ファイルのベスト部分を抽出
+	std::string best = str.substr(str.find("b:") + 2, str.find(","));
 
 	// 整数値に変換
 	return std::stoi(best);

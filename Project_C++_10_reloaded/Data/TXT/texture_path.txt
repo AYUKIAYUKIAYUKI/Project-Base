@@ -17,6 +17,7 @@ Data\\TEXTURE\\lasttime.png
 Data\\TEXTURE\\besttime.png
 Data\\TEXTURE\\limittime.png
 Data\\TEXTURE\\recorddest.png
+Data\\TEXTURE\\recordbest.png
 Data\\TEXTURE\\back.png
 Data\\TEXTURE\\crown_256.png
 Data\\TEXTURE\\text00.png

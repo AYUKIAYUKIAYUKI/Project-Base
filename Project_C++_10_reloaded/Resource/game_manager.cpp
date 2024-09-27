@@ -83,6 +83,11 @@ void CGameManager::Init(PHASE phase)
 		// チュートリアルを表示しない
 		m_bEndTutorial = 1;
 	}
+	else
+	{
+		// タイムを生成
+		CTimer::Create();
+	}
 
 	// ゲーム開始時、初回はカメラの間距離を固定する
 	CManager::GetCamera()->SetDistance(CCamera::DEFUALT_DISTANCE * 0.5f);
@@ -455,6 +460,13 @@ void CGameManager::Update()
 
 	case PHASE::C_FINISH:
 
+		// リミットタイムを消去
+		if (CObject::FindObject(CObject::TYPE::TIMER))
+		{
+			CLimit_Timer* pLimit{ CUtility::GetInstance()->DownCast<CLimit_Timer, CObject>(CObject::FindObject(CObject::TYPE::TIMER)) };
+			pLimit->SetDisappear(true);
+		}
+
 		break;
 
 	default:
@@ -543,8 +555,7 @@ CGameManager::CGameManager() :
 	m_Preview{ PREVIEW::NONE },	// プレビュー状態
 	m_nCntPreview{ 0 }			// プレビュー待機カウント
 {
-	// タイムを生成
-	CTimer::Create();
+
 }
 
 //============================================================================
