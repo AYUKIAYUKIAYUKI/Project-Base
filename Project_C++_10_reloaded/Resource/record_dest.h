@@ -29,6 +29,8 @@ public:
 	void Uninit() override;		// 終了処理
 	void Update() override;		// 更新処理
 	void Draw() override;		// 描画処理
+	void ResetCntDest();		// 破壊記録をリセット
+	void SetDisappearBest();	// 最高記録表示を消去
 
 	static CRecord_Dest* Create();	// 生成
 	static void AddDest();			// 破壊記録の増加

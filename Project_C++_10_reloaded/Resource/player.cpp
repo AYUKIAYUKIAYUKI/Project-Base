@@ -693,6 +693,9 @@ bool CPlayer::Collision()
 		{
 			// チャレンジ終了フェーズへ移行
 			CFakeScreen::GetInstance()->SetWave(CGameManager::PHASE::C_FINISH);
+
+			// 記録を書き出す
+			CRecord_Dest::ExportRecord();
 		}
 
 		// ゴール音

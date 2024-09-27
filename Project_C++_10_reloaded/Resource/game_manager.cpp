@@ -419,6 +419,9 @@ void CGameManager::Update()
 
 	case PHASE::C_START:
 
+		// 選択をリセット
+		m_nSelectChallenge = 0;
+
 		// スクリーン画面内の解放処理
 		CObject::ReleaseScreen();
 
@@ -445,6 +448,11 @@ void CGameManager::Update()
 		{
 			CRecord_Dest::Create();
 		}
+		else
+		{
+			CRecord_Dest* pRecord{ CUtility::GetInstance()->DownCast<CRecord_Dest, CObject>(CObject::FindObject(CObject::TYPE::RECORD)) };
+			pRecord->ResetCntDest();
+		}
 
 		// レベル進行フェーズへ
 		m_phase = PHASE::C_INGAME;
@@ -465,6 +473,44 @@ void CGameManager::Update()
 		{
 			CLimit_Timer* pLimit{ CUtility::GetInstance()->DownCast<CLimit_Timer, CObject>(CObject::FindObject(CObject::TYPE::TIMER)) };
 			pLimit->SetDisappear(true);
+		}
+
+		if (pKeyboard->GetTrigger(DIK_A) ||
+			pPad->GetTrigger(CInputPad::JOYKEY::LEFT) ||
+			bInputLeft)
+		{
+			m_nSelectChallenge = 0;
+		}
+		else if (pKeyboard->GetTrigger(DIK_D)  ||
+			pPad->GetTrigger(CInputPad::JOYKEY::RIGHT) ||
+			bInputRight)
+		{
+			m_nSelectChallenge = 1;
+		}
+
+		if (pKeyboard->GetTrigger(DIK_RETURN) || pPad->GetTrigger(CInputPad::JOYKEY::START) || pPad->GetTrigger(CInputPad::JOYKEY::A) ||
+			pPad->GetTrigger(CInputPad::JOYKEY::B) || pPad->GetTrigger(CInputPad::JOYKEY::X) || pPad->GetTrigger(CInputPad::JOYKEY::Y))
+		{
+			// 決定音
+			CSound::GetInstance()->Play(CSound::LABEL::DEFINE);
+
+			if (m_nSelectChallenge == 0)
+			{
+				// タイトル画面へ
+				CFakeScreen::GetInstance()->SetFade(CScene::MODE::TITLE);
+
+				return;
+			}
+
+			// ウェーブを停止し、チャレンジスタートフェーズへ移行
+			CFakeScreen::GetInstance()->StopWave(PHASE::C_START);
+
+			// レコード->最高記録表示のみ消去予約
+			if (CObject::FindObject(CObject::TYPE::RECORD))
+			{
+				CRecord_Dest* pRecord{ CUtility::GetInstance()->DownCast<CRecord_Dest, CObject>(CObject::FindObject(CObject::TYPE::RECORD)) };
+				pRecord->SetDisappearBest();
+			}
 		}
 
 		break;
@@ -550,6 +596,7 @@ CGameManager::CGameManager() :
 	m_nMaxStage{ 0 },			// ステージ数
 	m_nSelectLevel{ 0 },		// レベル選択
 	m_nOldSelectLevel{ 0 },		// 過去のレベル選択
+	m_nSelectChallenge{ 0 },	// チャレンジ選択
 	m_stagePath{},				// ステージパス
 	m_vbCollectAchieve{},		// アチーブ回収状態
 	m_Preview{ PREVIEW::NONE },	// プレビュー状態

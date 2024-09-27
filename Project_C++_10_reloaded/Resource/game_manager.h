@@ -83,9 +83,9 @@ private:
 	int m_nOldSelectLevel;					// 過去のレベル選択
 	std::vector<std::string> m_stagePath;	// ステージパス
 	std::vector<bool> m_vbCollectAchieve;	// アチーブ回収状態
+	int m_nSelectChallenge;					// チャレンジ選択
 	PREVIEW m_Preview;						// プレビュー状態
 	int m_nCntPreview;						// プレビュー待機カウント
-	
 
 	static CGameManager* m_pInstance;	// ゲームマネージャー
 };

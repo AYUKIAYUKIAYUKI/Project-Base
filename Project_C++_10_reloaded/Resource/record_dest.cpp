@@ -221,6 +221,27 @@ void CRecord_Dest::Draw()
 }
 
 //============================================================================
+// ”j‰ó‹L˜^‚ðƒŠƒZƒbƒg
+//============================================================================
+void CRecord_Dest::ResetCntDest()
+{
+	m_nCntDest = 0;
+}
+
+//============================================================================
+// Å‚‹L˜^•\‹L‚ðÁ‹Ž—\’è
+//============================================================================
+void CRecord_Dest::SetDisappearBest()
+{
+	m_pBestText->SetDisappear(true);
+	m_pBestText = nullptr;
+	for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++) {
+		m_apBestNum[nCntNum]->SetDisappear(true);
+		m_apBestNum[nCntNum] = nullptr;
+	}
+}
+
+//============================================================================
 // ¶¬
 //============================================================================
 CRecord_Dest* CRecord_Dest::Create()
@@ -318,10 +339,10 @@ void CRecord_Dest::ExportRecord()
 	}
 
 	// ƒ‰ƒXƒgî•ñ‚ð‘‚«Š·‚¦‚é
-	vStr.front() = vStr.front().substr(0, vStr.front().find(",") + 1) + ("l:" + std::to_string(pRecord->m_nCntDest) + ",") + ("b:" + std::to_string(nBestTime) + ",");
+	vStr.front() = "b:" + std::to_string(nBestTime) + ",";
 
 	// ƒŒƒxƒ‹ƒtƒ@ƒCƒ‹‚ð“WŠJ
-	std::ofstream Export{ "Data\\TXT\\level.txt" };
+	std::ofstream Export{ "Data\\TXT\\dest_record.txt" };
 
 	if (!Export)
 	{ // “WŠJŽ¸”s
@@ -353,7 +374,7 @@ void CRecord_Dest::ExportRecord()
 int CRecord_Dest::ImportBestRecord()
 {
 	// ”j‰ó‹L˜^ƒtƒ@ƒCƒ‹‚ð“WŠJ
-	std::ifstream Import{ "Data\\TXT\\record_dest.txt" };
+	std::ifstream Import{ "Data\\TXT\\dest_record.txt" };
 
 	if (!Import)
 	{ // “WŠJŽ¸”s

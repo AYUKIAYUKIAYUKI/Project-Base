@@ -178,7 +178,7 @@ void CLimit_Timer::Decrement()
 		D3DXVECTOR3 CopyPosTarget{ GetPosTarget() };
 
 		// 共通横サイズを設定
-		float fSizeX{ 24.75 };
+		float fSizeX{ 24.75f };
 
 		// 数字を並べる
 		for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
@@ -248,8 +248,8 @@ void CLimit_Timer::Decrement()
 				}
 				else
 				{
-					// 強制ゴール状態へ
-					//pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::GOAL);
+					// 強制ミス状態へ
+					pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::MISS);
 
 					// その場に固してしまう
 					pPlayer->SetPos(pPlayer->GetPos());
