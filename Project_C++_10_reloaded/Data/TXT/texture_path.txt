@@ -59,5 +59,7 @@ Data\\TEXTURE\\CNT_M2_512.png
 Data\\TEXTURE\\CNT_M3_512.png
 Data\\TEXTURE\\CNT_B0_512.png
 Data\\TEXTURE\\CNT_B1_512.png
-Data\\TEXTURE\\board.png
+Data\\TEXTURE\\board_00.png
+Data\\TEXTURE\\board_01.png
+Data\\TEXTURE\\board_02.png
 Data\\TEXTURE\\speech.png

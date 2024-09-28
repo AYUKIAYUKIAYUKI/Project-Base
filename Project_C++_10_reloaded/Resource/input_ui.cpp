@@ -288,7 +288,7 @@ CInput_UI* CInput_UI::Create(CTexture_Manager::TYPE TexType)
 	{
 		pInput_UI->m_nType = 0;
 	}
-	else if (TexType == CTexture_Manager::TYPE::BOARD)
+	else if (TexType == CTexture_Manager::TYPE::BOARD_0)
 	{
 		pInput_UI->m_nType = 1;
 	}
@@ -477,6 +477,29 @@ void CInput_UI::UpdateBoard()
 
 	// À•W‚ð”½‰f
 	SetPosTarget(NewPosTarget);
+
+	// ƒTƒCƒY–Ú•W‚ðŒÅ’è
+	SetSizeTarget({ 5.5f, 5.5f, 0.0f });
+
+	if (CTutorial_Manager::GetTexType() == CTexture_Manager::TYPE::TEXT05 && m_TexType != CTexture_Manager::TYPE::BOARD_2)
+	{
+		m_TexType = CTexture_Manager::TYPE::BOARD_2;
+
+		BindTex(CTexture_Manager::GetInstance()->GetTexture(CTexture_Manager::TYPE::BOARD_2));
+		
+		// Šg‘å
+		SetSize(GetSize() * 1.25f);
+	}
+	
+	if (CTutorial_Manager::GetTexType() == CTexture_Manager::TYPE::TEXT01 && m_TexType != CTexture_Manager::TYPE::BOARD_1)
+	{
+		m_TexType = CTexture_Manager::TYPE::BOARD_1;
+
+		BindTex(CTexture_Manager::GetInstance()->GetTexture(CTexture_Manager::TYPE::BOARD_1));
+
+		// Šg‘å
+		SetSize(GetSize() * 1.25f);
+	}
 }
 
 //============================================================================

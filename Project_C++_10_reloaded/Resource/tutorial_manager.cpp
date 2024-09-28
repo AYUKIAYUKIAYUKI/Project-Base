@@ -78,7 +78,7 @@ CTutorial_Manager::CTutorial_Manager() :
 
 	// インプットUIを生成 (手より先行)
 	m_apInput_UI[0] = CInput_UI::Create(CTexture_Manager::TYPE::CNT);
-	m_apInput_UI[1] = CInput_UI::Create(CTexture_Manager::TYPE::BOARD);
+	m_apInput_UI[1] = CInput_UI::Create(CTexture_Manager::TYPE::BOARD_0);
 	m_apInput_UI[2] = CInput_UI::Create(CTexture_Manager::TYPE::SPEECH);
 
 	// 手とかを生成
@@ -297,8 +297,8 @@ void CTutorial_Manager::CheckPlayerPos()
 		m_pText->SetRotTarget(D3DXVECTOR3{ 0.0f, 0.0f, CUtility::GetInstance()->GetRandomValue<float>() * 0.005f });
 	}
 
-	if (m_TexType == CTexture_Manager::TYPE::TEXT03  && Pos.x > 560.0f ||
-		m_TexType == CTexture_Manager::TYPE::TEXT04  && Pos.x > 560.0f)
+	if (m_TexType == CTexture_Manager::TYPE::TEXT03  && Pos.x > 580.0f ||
+		m_TexType == CTexture_Manager::TYPE::TEXT04  && Pos.x > 580.0f)
 	{
 		// テキスト変更
 		m_TexType = CTexture_Manager::TYPE::TEXT05;	// 突進してみよう

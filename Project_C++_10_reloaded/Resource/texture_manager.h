@@ -81,7 +81,9 @@ public:
 		CNT_M3,			// コントローラーM3
 		CNT_B0,			// コントローラーB0
 		CNT_B1,			// コントローラーB1
-		BOARD,			// ボード
+		BOARD_0,		// ボード0
+		BOARD_1,		// ボード1
+		BOARD_2,		// ボード3
 		SPEECH,			// ふきだし
 		MAX,
 	};

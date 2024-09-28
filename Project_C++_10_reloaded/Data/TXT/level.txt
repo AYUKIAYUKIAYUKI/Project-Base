@@ -1,4 +1,4 @@
-Data\\TXT\\STAGE\\stage_00.txt,l:30,b:10,
+Data\\TXT\\STAGE\\stage_00.txt,l:33,b:10,
 Data\\TXT\\STAGE\\stage_01.txt,l:38,b:15,
 Data\\TXT\\STAGE\\stage_02.txt,l:15,b:3,
 Data\\TXT\\STAGE\\stage_03.txt,l:20,b:6,
