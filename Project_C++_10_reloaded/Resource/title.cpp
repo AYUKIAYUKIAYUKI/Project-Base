@@ -9,8 +9,9 @@
 // インクルードファイル
 //****************************************************
 #include "title.h"
-#include "utility.h"
 #include "fakescreen.h"
+#include "sound.h"
+#include "utility.h"
 
 // インプット取得用
 #include "manager.h"
@@ -177,14 +178,19 @@ void CTitle::Update()
 				pPad->GetTrigger(CInputPad::JOYKEY::X) ||
 				pPad->GetTrigger(CInputPad::JOYKEY::Y))
 			{
+				// 決定音
+				CSound::GetInstance()->Play(CSound::LABEL::DEFINE);
+
 				// ノーマルゲームへ
 				CFakeScreen::GetInstance()->SetFade(MODE::GAME);
 			}
 			else if (CManager::GetKeyboard()->GetTrigger(DIK_S) ||
-				CManager::GetKeyboard()->GetTrigger(DIK_DOWN) ||
 				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::DOWN) ||
 				bInputDown)
 			{
+				// 選択音
+				CSound::GetInstance()->Play(CSound::LABEL::SELECT);
+
 				m_nSelect = 2;
 
 				m_pUI[0]->SetCol({ 0.5f, 0.5f, 0.5f, m_pUI[0]->GetAlpha() });
@@ -210,14 +216,19 @@ void CTitle::Update()
 				pPad->GetTrigger(CInputPad::JOYKEY::X) ||
 				pPad->GetTrigger(CInputPad::JOYKEY::Y))
 			{
+				// 決定音
+				CSound::GetInstance()->Play(CSound::LABEL::DEFINE);
+
 				// チャレンジゲームへ
 				CFakeScreen::GetInstance()->SetFade(MODE::CHALLENGE);
 			}
 			else if (CManager::GetKeyboard()->GetTrigger(DIK_W) ||
-				CManager::GetKeyboard()->GetTrigger(DIK_UP) ||
 				CManager::GetPad()->GetTrigger(CInputPad::JOYKEY::UP) ||
 				bInputUp)
 			{
+				// 選択音
+				CSound::GetInstance()->Play(CSound::LABEL::SELECT);
+
 				m_nSelect = 1;
 
 				m_pUI[1]->SetCol({ 0.5f, 0.5f, 0.5f, m_pUI[1]->GetAlpha() });

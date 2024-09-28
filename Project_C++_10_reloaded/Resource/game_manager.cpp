@@ -479,12 +479,18 @@ void CGameManager::Update()
 			pPad->GetTrigger(CInputPad::JOYKEY::LEFT) ||
 			bInputLeft)
 		{
+			// ‘I‘ð‰¹
+			CSound::GetInstance()->Play(CSound::LABEL::SELECT);
+
 			m_nSelectChallenge = 0;
 		}
 		else if (pKeyboard->GetTrigger(DIK_D)  ||
 			pPad->GetTrigger(CInputPad::JOYKEY::RIGHT) ||
 			bInputRight)
 		{
+			// ‘I‘ð‰¹
+			CSound::GetInstance()->Play(CSound::LABEL::SELECT);
+
 			m_nSelectChallenge = 1;
 		}
 
