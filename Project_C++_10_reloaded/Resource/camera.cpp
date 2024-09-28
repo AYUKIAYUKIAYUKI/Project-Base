@@ -464,11 +464,11 @@ void CCamera::UpdateScreen()
 			// ó‘Ô‚É‰ž‚¶‚ÄƒJƒƒ‰‚Ì‹““®‚ð•ÏX
 			if (typeid(*pPlayer->GetStateManager()->GetState()) == typeid(CPlayerStateDefault))
 			{
-				fAdjustDistance = 0.5f;
+				fAdjustDistance = CUtility::GetInstance()->AdjustToTarget<float>(fAdjustDistance, 0.5f, 0.1f);
 			}
 			else
 			{
-				fAdjustDistance = 1.0f;
+				fAdjustDistance = CUtility::GetInstance()->AdjustToTarget<float>(fAdjustDistance, 1.0f, 0.1f);
 			}
 		}
 		else if (CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE)

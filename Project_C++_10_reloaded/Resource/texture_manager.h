@@ -43,6 +43,7 @@ public:
 		RETRY,			// もう一度
 		QUIT,			// やめる
 		BACK,			// 戻るマーク
+		FAILED,			// 失敗
 		CROWN,			// 王冠
 		TEXT00,			// テキスト00
 		TEXT01,			// テキスト01

@@ -17,7 +17,11 @@
 // テクスチャ取得用
 #include "texture_manager.h"
 
+// フェーズ切り替え用
+#include "fakescreen.h"
+
 // プレイヤーの状態取得用
+#include "record_dest.h"
 #include "player.h"
 #include "player_state.h"
 
@@ -27,7 +31,7 @@
 CLimit_Timer::CLimit_Timer() :
 	CObject_UI{ static_cast<int>(LAYER::UI) },
 	m_nCntFrame{ 0 },
-	m_nTimer{ 30 },
+	m_nTimer{ 10 },
 	m_pText{ nullptr }
 {
 	for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)
@@ -209,10 +213,10 @@ void CLimit_Timer::Decrement()
 		{
 			CPlayer* pPlayer = CUtility::GetInstance()->DownCast<CPlayer, CObject>(pFind);
 
-			// ゴール状態でなければ
-			if (typeid(*pPlayer->GetStateManager()->GetState()) != typeid(CPlayerStateGoal))
+			if (m_nTimer > 0)
 			{
-				if (m_nTimer > 0)
+				// ゴール状態でなければ
+				if (typeid(*pPlayer->GetStateManager()->GetState()) != typeid(CPlayerStateGoal))
 				{
 					// フレームカウント
 					m_nCntFrame++;
@@ -226,14 +230,28 @@ void CLimit_Timer::Decrement()
 						m_nTimer--;
 					}
 				}
-				else
-				{
+			}
+			else
+			{ // 時間切れで
+
+				if (!GetDisappear())
+				{ // リミットタイムに削除フラグが出る前なら
+
+					// 削除フラグを出しておく
+					SetDisappear(true);
+
+					// ウェーブを強制終了
+					CFakeScreen::GetInstance()->StopWave();
+
+					// チャレンジ終了フェーズへ移行
+					CFakeScreen::GetInstance()->SetWave(CGameManager::PHASE::C_FINISH);
+
 					// 強制ミス状態へ
 					pPlayer->GetStateManager()->SetPendingState(CPlayerState::STATE::MISS);
 
-					// その場に固してしまう
-					pPlayer->SetPos(pPlayer->GetPos());
-					pPlayer->SetPosTarget(pPlayer->GetPos());
+					// タイムアップ判定を出す
+					CRecord_Dest* pRecord{ CUtility::GetInstance()->DownCast<CRecord_Dest, CObject>(CObject::FindObject(CObject::TYPE::RECORD)) };
+					pRecord->SetTimeUp();
 				}
 			}
 		}

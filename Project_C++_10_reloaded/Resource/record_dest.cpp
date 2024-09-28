@@ -31,7 +31,8 @@ CRecord_Dest::CRecord_Dest() :
 	CObject_UI{ static_cast<int>(LAYER::UI) },
 	m_nCntDest{ 0 },
 	m_pDestText{ nullptr },
-	m_pBestText{ nullptr }
+	m_pBestText{ nullptr },
+	m_pFailed{ nullptr }
 {
 	// 初期座標用
 	D3DXVECTOR3 InitPos{ (SCREEN_WIDTH * 0.5f), -100.0f, 0.0f };
@@ -104,6 +105,39 @@ void CRecord_Dest::Update()
 	// フェーズによるUI動作分岐
 	if (CGameManager::GetInstance()->GetPhase() == CGameManager::PHASE::C_FINISH)
 	{ // 最高記録・選択肢を生成、通常記録を拡大
+
+		// プレイヤーを検索
+		CObject* pFind = CObject::FindObject(CObject::TYPE::PLAYER);
+
+		// プレイヤーが見つかれば
+		if (pFind)
+		{
+			// プレイヤーの加速度を無くす
+			CPlayer* pPlayer = CUtility::GetInstance()->DownCast<CPlayer, CObject>(pFind);
+			pPlayer->SetVelocity({ 0.0f, 0.0f, 0.0f });
+		}
+
+		// タイムアップしている時
+		if (m_bTimeUp)
+		{
+			if (!m_pFailed)
+			{
+				// 失敗表示が出現
+				m_pFailed = CText::Create(CTexture_Manager::TYPE::FAILED);
+
+				// 初期設定
+				m_pFailed->SetPos({ SCREEN_WIDTH,  SCREEN_HEIGHT * 0.5f, 0.0f});
+				m_pFailed->SetSizeTarget({ 160.0f, 30.0f, 0.0f });
+			}
+			else
+			{
+				// 目標座標を設定
+				m_pFailed->SetPosTarget({ SCREEN_WIDTH * 0.75f,  SCREEN_HEIGHT * 0.575f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f });
+			}
+		}
+
+		///////////////////////////////////////////////////////////////////
+		///////////////////////////////////////////////////////////////////
 
 		m_pDestText->SetPosTarget({ SCREEN_WIDTH * 0.425f, SCREEN_HEIGHT * 0.5f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f });
 		m_pDestText->SetSizeTarget({ 200.0f, 40.0f, 0.0f });
@@ -313,16 +347,40 @@ void CRecord_Dest::ResetCntDest()
 void CRecord_Dest::SetDisappearBestAndUI()
 {
 	// 応急処置
-	m_pBestText->SetDisappear(true);
-	m_pBestText = nullptr;
+	if (m_pBestText) {
+		m_pBestText->SetDisappear(true);
+		m_pBestText = nullptr;
+	}
+
 	for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++) {
-		m_apBestNum[nCntNum]->SetDisappear(true);
-		m_apBestNum[nCntNum] = nullptr;
+		if (m_apBestNum[nCntNum]) {
+			m_apBestNum[nCntNum]->SetDisappear(true);
+			m_apBestNum[nCntNum] = nullptr;
+		}
 	}
+
 	for (int nCntUI = 0; nCntUI < 3; nCntUI++) {
-		m_apUI[nCntUI]->SetDisappear(true);
-		m_apUI[nCntUI] = nullptr;
+		if (m_apUI[nCntUI]) {
+			m_apUI[nCntUI]->SetDisappear(true);
+			m_apUI[nCntUI] = nullptr;
+		}
 	}
+
+	if (m_pFailed) {
+		m_pFailed->SetDisappear(true);
+		m_pFailed = nullptr;
+	}
+
+	// タイムアップ判定をリセット
+	m_bTimeUp = false;
+}
+
+//============================================================================
+// タイムアップ判定を出す
+//============================================================================
+void CRecord_Dest::SetTimeUp()
+{
+	m_bTimeUp = true;
 }
 
 //============================================================================
@@ -429,17 +487,17 @@ void CRecord_Dest::ExportRecord()
 	CRecord_Dest* pRecord{ CUtility::GetInstance()->DownCast<CRecord_Dest, CObject>(pFind) };
 
 	// ベスト情報を抜き出す
-	int nBestTime{ std::stoi(vStr.front().substr(vStr.front().find("b") + 2, vStr.front().find(","))) };
+	int nBest{ std::stoi(vStr.front().substr(vStr.front().find("b") + 2, vStr.front().find(","))) };
 
 	// ベスト情報とラスト情報を比べる
-	if (pRecord->m_nCntDest > nBestTime)
+	if (pRecord->m_nCntDest > nBest)
 	{
 		// ベストを上回っていたなら更新
-		nBestTime = pRecord->m_nCntDest;
+		nBest = pRecord->m_nCntDest;
 	}
 
 	// ラスト情報を書き換える
-	vStr.front() = "b:" + std::to_string(nBestTime) + ",";
+	vStr.front() = "b:" + std::to_string(nBest) + ",";
 
 	// レベルファイルを展開
 	std::ofstream Export{ "Data\\TXT\\dest_record.txt" };

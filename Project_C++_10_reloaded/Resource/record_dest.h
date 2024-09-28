@@ -31,6 +31,7 @@ public:
 	void Draw() override;			// 描画処理
 	void ResetCntDest();			// 破壊記録をリセット
 	void SetDisappearBestAndUI();	// 最高記録表示・選択肢を消去
+	void SetTimeUp();				// 時間切れ判定
 
 	static CRecord_Dest* Create();	// 生成
 	static void AddDest();			// 破壊記録の増加
@@ -45,11 +46,13 @@ private:
 	int ImportBestRecord();			// 最高記録の読み込み
 
 	int m_nCntDest;						// 破壊記録
+	bool m_bTimeUp;						// 時間切れ判定
 	CText* m_pDestText;					// 今回テキスト
 	CNumber* m_apDestNum[MAX_DIGIT];	// 今回数字情報
 	CText* m_pBestText;					// 最高テキスト
 	CNumber* m_apBestNum[MAX_DIGIT];	// 最高数字情報
 	CText* m_apUI[3];					// リザルト用UI
+	CText* m_pFailed;					// 失敗時用テキスト
 };
 
 #endif	// _RECORD_DEST_H_
