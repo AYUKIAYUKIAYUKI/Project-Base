@@ -24,6 +24,8 @@ public:
 		LOGO,			// タイトルロゴ
 		NORMAL,			// ノーマルモード
 		CHALLENGE,		// チャレンジモード
+		SPEECH_N,		// ノーマルふきだし
+		SPEECH_C,		// チャレンジふきだし
 		CURSOR,			// カーソル
 		BG_001,			// 背景001
 		ARROW,			// 矢印

@@ -10,6 +10,7 @@
 //****************************************************
 #include "input_ui.h"
 #include "utility.h"
+#include "title.h"
 
 // デバッグ表示用
 #include "renderer.h"
@@ -81,6 +82,16 @@ HRESULT CInput_UI::Init()
 		SetSize({ 5.5f, 5.5f, 0.0f });
 		SetSizeTarget({ 5.5f, 5.5f, 0.0f });
 	}
+	else if (m_nType == 3)
+	{
+		// 座標設定
+		SetPos({ -37.5f, 3.0f, -10.0f });
+		SetPosTarget({ -17.5f, 3.0f, -10.0f });
+
+		// サイズ設定
+		SetSize({ 0.0f, 0.0f, 0.0f });
+		SetSizeTarget({ 5.5f, 5.5f, 0.0f });
+	}
 
 	// 基底クラスの初期設定
 	HRESULT hr = CObject_3D::Init();
@@ -116,6 +127,25 @@ void CInput_UI::Update()
 		else if (m_nType == 2)
 		{
 			UpdateSpeech();
+		}
+		else if (m_nType == 3)
+		{
+			// 新しい情報を作成
+			D3DXVECTOR3 NewPosTarget{ GetPosTarget() };
+
+			// 増加量
+			static float fAdder{ 0.0035f };
+
+			// 少し動く
+			NewPosTarget.y += fAdder;
+
+			if (NewPosTarget.y >= 3.0f + 0.3f || NewPosTarget.y <= 3.0f + -0.3f)
+			{
+				fAdder *= -1.0f;
+			}
+
+			// 座標を反映
+			SetPosTarget(NewPosTarget);
 		}
 	}
 
@@ -265,6 +295,10 @@ CInput_UI* CInput_UI::Create(CTexture_Manager::TYPE TexType)
 	else if (TexType == CTexture_Manager::TYPE::SPEECH)
 	{
 		pInput_UI->m_nType = 2;
+	}
+	else if (TexType == CTexture_Manager::TYPE::SPEECH_N)
+	{
+		pInput_UI->m_nType = 3;
 	}
 
 	// タイプを設定

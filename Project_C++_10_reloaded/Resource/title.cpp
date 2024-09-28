@@ -23,6 +23,7 @@
 // コンストラクタ
 //============================================================================
 CTitle::CTitle() : m_pBg { nullptr },
+	m_pSpeech{ nullptr },
 	m_nSelect{ 0 }
 {
 	for (int i = 0; i < static_cast<int>(UI_TYPE::MAX); i++)
@@ -36,7 +37,11 @@ CTitle::CTitle() : m_pBg { nullptr },
 //============================================================================
 CTitle::~CTitle()
 {
-
+	if (m_pSpeech)
+	{
+		m_pSpeech->SetDisappear();
+		m_pSpeech = nullptr;
+	}
 }
 
 //============================================================================
@@ -151,6 +156,12 @@ void CTitle::Update()
 
 			m_pUI[3]->SetPosTarget({ SCREEN_WIDTH * 0.5f, SCREEN_HEIGHT * 0.25f, 0.0f });
 			m_pUI[3]->SetSizeTarget({ SCREEN_WIDTH * 0.25f, SCREEN_HEIGHT * 0.25f, 0.0f });
+		
+			// ふきだしの生成
+			if (!m_pSpeech) 
+			{
+				m_pSpeech = CInput_UI::Create(CTexture_Manager::TYPE::SPEECH_N);
+			}
 		}
 	}
 	else
@@ -170,6 +181,9 @@ void CTitle::Update()
 			{
 				m_pUI[2]->SetPosTarget({ SCREEN_WIDTH * 0.5f - 275.0f, SCREEN_HEIGHT * 0.55f, 0.0f });
 			}
+
+			// テクスチャを設定
+			m_pSpeech->BindTex(CTexture_Manager::GetInstance()->GetTexture(CTexture_Manager::TYPE::SPEECH_N));
 
 			if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN) ||
 				pPad->GetTrigger(CInputPad::JOYKEY::START) ||
@@ -208,6 +222,9 @@ void CTitle::Update()
 			{
 				m_pUI[2]->SetPosTarget({ SCREEN_WIDTH * 0.5f - 275.0f, SCREEN_HEIGHT * 0.75f, 0.0f });
 			}
+
+			// テクスチャを設定
+			m_pSpeech->BindTex(CTexture_Manager::GetInstance()->GetTexture(CTexture_Manager::TYPE::SPEECH_C));
 
 			if (CManager::GetKeyboard()->GetTrigger(DIK_RETURN) ||
 				pPad->GetTrigger(CInputPad::JOYKEY::START) ||
@@ -259,7 +276,7 @@ int CTitle::GetSelect()
 	}
 
 	// タイトルクラスにダウンキャスト
-	CTitle* pTitle{ CUtility::GetInstance()->DownCast<CTitle, CScene >(pScene) };
+	CTitle* pTitle{ CUtility::GetInstance()->DownCast<CTitle, CScene>(pScene) };
 
 	return pTitle->m_nSelect;
 }

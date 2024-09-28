@@ -686,7 +686,7 @@ void CCamera::UpdateBG()
 		// 処理を行わない
 		return;
 	}
-	else if (mode == CScene::MODE::GAME || mode == CScene::MODE::CHALLENGE || CTitle::GetSelect() > 0)
+	else if (mode == CScene::MODE::GAME || mode == CScene::MODE::CHALLENGE)
 	{
 		// 背景用カメラの目標座標・目標向きを、保持している目標数値とは別途で固定する
 		D3DXVECTOR3 posTarget = { -3.0f, 0.0f, 0.0f };
@@ -711,6 +711,25 @@ void CCamera::UpdateBG()
 		//{
 		//	it.bSet = false;
 		//}
+	}
+	else if (CManager::GetScene()->GetMode() == CScene::MODE::TITLE && CTitle::GetSelect() != 0)
+	{
+		// 背景用カメラの目標座標・目標向きを、保持している目標数値とは別途で固定する
+		D3DXVECTOR3 posTarget = { -5.0f, 0.0f, -10.0f };
+		D3DXVECTOR3 rotTarget = { 0.0f, 0.0f, 0.0f };
+
+		// 補間速度を設定
+		fCoeff = 0.1f;
+
+		// 目標座標へ迫る
+		m_posBG = CUtility::GetInstance()->AdjustToTarget(m_posBG, posTarget, fCoeff);
+
+		// 目標向きへ迫る
+		m_rotBG = CUtility::GetInstance()->AdjustToTarget(m_rotBG, rotTarget, fCoeff);
+
+		// アンカーポイントの番号をリセット
+		/* コメントアウトでゲーム開始時のポイントから続くように見える */
+		nNumElement = 0;
 	}
 	else
 	{

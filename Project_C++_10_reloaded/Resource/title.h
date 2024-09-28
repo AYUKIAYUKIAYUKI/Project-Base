@@ -16,6 +16,7 @@
 // タイトル表示用
 #include "bg.h"
 #include "text.h"
+#include "input_ui.h"
 
 //****************************************************
 // タイトルクラス
@@ -50,6 +51,7 @@ private:
 
 	CBg* m_pBg;										// 背景情報のポインタ
 	CText* m_pUI[static_cast<int>(UI_TYPE::MAX)];	// UI用
+	CInput_UI* m_pSpeech;							// ふきだし表示用
 	int m_nSelect;									// モード選択情報
 };
 

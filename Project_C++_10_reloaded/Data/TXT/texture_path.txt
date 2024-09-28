@@ -2,6 +2,8 @@ Data\\TEXTURE\\title.jpg
 Data\\TEXTURE\\METAMOl.png
 Data\\TEXTURE\\normal.png
 Data\\TEXTURE\\challenge.png
+Data\\TEXTURE\\speech_normal.png
+Data\\TEXTURE\\speech_challenge.png
 Data\\TEXTURE\\cursor.png
 Data\\TEXTURE\\result.png
 Data\\TEXTURE\\arrow.png

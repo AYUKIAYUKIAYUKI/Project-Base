@@ -30,6 +30,7 @@
 CRecord_Dest::CRecord_Dest() :
 	CObject_UI{ static_cast<int>(LAYER::UI) },
 	m_nCntDest{ 0 },
+	m_bTimeUp{ false },
 	m_pDestText{ nullptr },
 	m_pBestText{ nullptr },
 	m_pFailed{ nullptr }
