@@ -12,6 +12,10 @@
 #include "utility.h"
 #include "sound.h"
 
+// チュートリアル取得用
+#include "game_manager.h"
+#include "tutorial_manager.h"
+
 // インプット取得用
 #include "manager.h"
 
@@ -252,6 +256,13 @@ bool CPlayerStateDefault::Control()
 				// 状態変更をせずに続行する
 				return true;
 			}
+		}
+
+		// チュートリアルなら
+		if (!CGameManager::GetInstance()->GetEndTutorial() && CTutorial_Manager::GetTexType() <= CTexture_Manager::TYPE::TEXT00)
+		{
+			// 状態変更をせずに続行する
+			return true;
 		}
 
 		// Y方向への加速度が無ければ変身
@@ -711,6 +722,13 @@ bool CPlayerStateFlying::Control()
 	if (CManager::GetKeyboard()->GetTrigger(DIK_SPACE) || pPad->GetTrigger(CInputPad::JOYKEY::A) || pPad->GetTrigger(CInputPad::JOYKEY::B) ||
 		pPad->GetTrigger(CInputPad::JOYKEY::X) || pPad->GetTrigger(CInputPad::JOYKEY::Y))
 	{
+		// チュートリアルなら
+		if (!CGameManager::GetInstance()->GetEndTutorial() && CTutorial_Manager::GetTexType() <= CTexture_Manager::TYPE::TEXT04)
+		{
+			// 状態変更をせずに続行する
+			return true;
+		}
+
 		// 溜め状態に移行
 		m_pPlayer->GetStateManager()->SetPendingState(STATE::CHARGING);
 	}
