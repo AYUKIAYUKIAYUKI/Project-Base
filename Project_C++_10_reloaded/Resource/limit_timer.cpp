@@ -31,7 +31,7 @@
 CLimit_Timer::CLimit_Timer() :
 	CObject_UI{ static_cast<int>(LAYER::UI) },
 	m_nCntFrame{ 0 },
-	m_nTimer{ 10 },
+	m_nTimer{ 30 },
 	m_pText{ nullptr }
 {
 	for (int nCntNum = 0; nCntNum < MAX_DIGIT; nCntNum++)

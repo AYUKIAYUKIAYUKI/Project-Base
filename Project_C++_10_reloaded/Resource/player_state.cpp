@@ -1606,12 +1606,18 @@ void CPlayerStateStopping::Update()
 		}
 		else if (CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE)
 		{
-			// 新しい向き情報を反映
-			D3DXVECTOR3 NewRotTarget{ m_pPlayer->GetRotTarget() };
-			NewRotTarget.z += 1.0f;
-			m_pPlayer->SetRotTarget(NewRotTarget);
+			// さらにカウント
+			m_nCntStopMetamorphose++;
 
-			m_pPlayer->SetVelocity(CUtility::GetInstance()->AdjustToTarget(m_pPlayer->GetVelocity(), D3DXVECTOR3{ 0.0f, 0.0f, 0.0f }, 0.1f));
+			// 新しい飛行方向を設定
+			m_pPlayer->SetAngleFlying(atan2f(m_pPlayer->GetVelocity().x, m_pPlayer->GetVelocity().y));
+
+			// 新しい向き情報を反映
+			D3DXVECTOR3 NewRot{ m_pPlayer->GetRot() };
+			NewRot.z += D3DX_PI;
+			m_pPlayer->SetRot(NewRot);
+
+			m_pPlayer->SetVelocity(CUtility::GetInstance()->AdjustToTarget(m_pPlayer->GetVelocity(), m_pPlayer->GetVelocity() *	1.1f, 0.1f));
 		}
 
 		// 加速度分、目標座標を変動

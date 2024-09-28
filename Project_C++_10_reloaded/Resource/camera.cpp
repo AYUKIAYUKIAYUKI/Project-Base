@@ -473,16 +473,20 @@ void CCamera::UpdateScreen()
 		}
 		else if (CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE)
 		{
+			static float fCoeff{ 5.0f };
+
+			// プレイヤーの移動方向に寄せる
+			m_posTarget = pPlayer->GetPos() + pPlayer->GetVelocity() * fCoeff;
+			
 			// 状態に応じてカメラの挙動を変更
 			if (typeid(*pPlayer->GetStateManager()->GetState()) != typeid(CPlayerStateFlying) &&
 				typeid(*pPlayer->GetStateManager()->GetState()) != typeid(CPlayerStateRushing))
 			{
-				m_posTarget = pPlayer->GetPos() + pPlayer->GetVelocity() * 10.0f;
+				fCoeff = CUtility::GetInstance()->AdjustToTarget<float>(fCoeff, 5.0f, 0.1f);
 			}
 			else
 			{
-				// プレイヤーの飛行方向に寄せる
-				m_posTarget = pPlayer->GetPos() + pPlayer->GetVelocity() * 20.0f;
+				fCoeff = CUtility::GetInstance()->AdjustToTarget<float>(fCoeff, 15.0f, 0.1f);
 			}
 
 			// カメラの間距離を広く設定
