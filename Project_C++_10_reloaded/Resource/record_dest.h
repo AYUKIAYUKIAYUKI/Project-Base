@@ -31,7 +31,9 @@ public:
 	void Draw() override;			// 描画処理
 	void ResetCntDest();			// 破壊記録をリセット
 	void SetDisappearBestAndUI();	// 最高記録表示・選択肢を消去
-	void SetTimeUp();				// 時間切れ判定
+
+	void SetTimeUp();	// 時間切れ判定設定
+	bool GetTimeUp();	// 時間切れ判定取得
 
 	static CRecord_Dest* Create();	// 生成
 	static void AddDest();			// 破壊記録の増加

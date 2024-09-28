@@ -127,12 +127,12 @@ void CRecord_Dest::Update()
 
 				// 初期設定
 				m_pFailed->SetPos({ SCREEN_WIDTH,  SCREEN_HEIGHT * 0.5f, 0.0f});
-				m_pFailed->SetSizeTarget({ 160.0f, 30.0f, 0.0f });
+				m_pFailed->SetSizeTarget({ 100.0f, 20.0f, 0.0f });
 			}
 			else
 			{
 				// 目標座標を設定
-				m_pFailed->SetPosTarget({ SCREEN_WIDTH * 0.75f,  SCREEN_HEIGHT * 0.575f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f });
+				m_pFailed->SetPosTarget({ SCREEN_WIDTH * 0.675f,  SCREEN_HEIGHT * 0.5f + CUtility::GetInstance()->GetRandomValue<float>() * 0.2f, 0.0f });
 			}
 		}
 
@@ -381,6 +381,14 @@ void CRecord_Dest::SetDisappearBestAndUI()
 void CRecord_Dest::SetTimeUp()
 {
 	m_bTimeUp = true;
+}
+
+//============================================================================
+// タイムアップ判定取得
+//============================================================================
+bool CRecord_Dest::GetTimeUp()
+{
+	return m_bTimeUp;
 }
 
 //============================================================================

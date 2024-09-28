@@ -22,6 +22,7 @@
 #include "arrow.h"
 #include "impact.h"
 #include "object_2D.h"
+#include "record_dest.h"
 #include "ring.h"
 #include "ripple.h"
 #include "smoke.h"
@@ -239,6 +240,20 @@ bool CPlayerStateDefault::Control()
 	if (pKeyboard->GetTrigger(DIK_SPACE) || pPad->GetTrigger(CInputPad::JOYKEY::A) || pPad->GetTrigger(CInputPad::JOYKEY::B) ||
 		pPad->GetTrigger(CInputPad::JOYKEY::X) || pPad->GetTrigger(CInputPad::JOYKEY::Y))
 	{
+		// チャレンジモードなら
+		if (CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE)
+		{
+			// レコードを取得し
+			CRecord_Dest* pRecord{ CUtility::GetInstance()->DownCast<CRecord_Dest, CObject>(CObject::FindObject(CObject::TYPE::RECORD)) };
+			
+			// タイムアップ判定の時
+			if (pRecord->GetTimeUp())
+			{
+				// 状態変更をせずに続行する
+				return true;
+			}
+		}
+
 		// Y方向への加速度が無ければ変身
 		if (m_pPlayer->GetVelocity().y == 0.0f)
 		{
