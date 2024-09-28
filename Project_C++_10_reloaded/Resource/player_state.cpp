@@ -1438,20 +1438,20 @@ void CPlayerStateRushing::C_Update()
 	else if (CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE)
 	{
 		// エフェクト生成
-		if (rand() % 4 == 0)
+		if (rand() % 2 == 0)
 		{
 			// ランダムな加速度を作成
 			D3DXVECTOR3 RandomVelocity{ CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, CUtility::GetInstance()->GetRandomValue<float>() * 0.01f, 0.0f };
 
 			// 星を生成
 			CStar::Create(
-				m_pPlayer->GetPos() + (m_pPlayer->GetVelocity() * -5.0f) + RandomVelocity * 3.0f,	// 座標
-				(m_pPlayer->GetVelocity() * -2.0f) + RandomVelocity);	// 加速度 (飛行方向の逆)
+				m_pPlayer->GetPos() + (m_pPlayer->GetVelocity() * -2.5f) + RandomVelocity * 3.0f,	// 座標
+				(m_pPlayer->GetVelocity() * -2.5f) + RandomVelocity);	// 加速度 (飛行方向の逆)
 
 			// 波紋を生成
 			CRipple::Create(
-				m_pPlayer->GetPos() + (m_pPlayer->GetVelocity() * -5.0f) + RandomVelocity * 3.0f,	// 座標
-				(m_pPlayer->GetVelocity() * -2.0f) + RandomVelocity);	// 加速度 (飛行方向の逆)
+				m_pPlayer->GetPos() + (m_pPlayer->GetVelocity() * -2.5f) + RandomVelocity * 3.0f,	// 座標
+				(m_pPlayer->GetVelocity() * -2.5f) + RandomVelocity);	// 加速度 (飛行方向の逆)
 		}
 	}
 

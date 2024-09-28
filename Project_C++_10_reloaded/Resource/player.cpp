@@ -281,7 +281,7 @@ bool CPlayer::Collision()
 					NewVelocity.z = -2.0f;
 
 					// 衝撃を生成
-					CImpact* pImpact{ CImpact::Create(GetPos() + (m_velocity * 5.0f) + (RandomVelocity * 3.0f),	// 座標
+					CImpact* pImpact{ CImpact::Create(GetPos() + (m_velocity * 3.0f) + (RandomVelocity * 3.0f),	// 座標
 						NewVelocity) };																			// 加速度
 				
 					// 大きめに
@@ -420,7 +420,7 @@ bool CPlayer::Collision()
 						NewVelocity.z = -2.0f;
 
 						// 衝撃を生成
-						CImpact* pImpact{ CImpact::Create(GetPos() + (m_velocity * 5.0f) + (RandomVelocity * 3.0f),	// 座標
+						CImpact* pImpact{ CImpact::Create(GetPos() + (m_velocity * 3.0f) + (RandomVelocity * 3.0f),	// 座標
 							NewVelocity) };																			// 加速度
 
 						// 大きめに
@@ -435,6 +435,12 @@ bool CPlayer::Collision()
 				}
 				else
 				{
+					if (CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE)
+					{
+						// 破壊記録を加算
+						CRecord_Dest::AddDest();
+					}
+
 					// エフェクトを作成
 					for (int i = 0; i < 10; i++)
 					{
@@ -470,6 +476,12 @@ bool CPlayer::Collision()
 					if (!pDest_Big->Damage(-1))
 					{ // 破壊出来たら
 
+						if (CManager::GetScene()->GetMode() == CScene::MODE::CHALLENGE)
+						{
+							// 破壊記録を加算
+							CRecord_Dest::AddDest();
+						}
+
 						// エフェクトを作成
 						for (int i = 0; i < 5; i++)
 						{
@@ -498,7 +510,7 @@ bool CPlayer::Collision()
 							NewVelocity.z = -2.0f;
 
 							// 衝撃を生成
-							CImpact* pImpact{ CImpact::Create(GetPos() + (m_velocity * 5.0f) + (RandomVelocity * 3.0f),	// 座標
+							CImpact* pImpact{ CImpact::Create(GetPos() + (m_velocity * 3.0f) + (RandomVelocity * 3.0f),	// 座標
 								NewVelocity) };																			// 加速度
 
 							// 大きめに
